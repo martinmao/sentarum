@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.scleropages.sentarum</groupId>
+    <artifactId>sentarum-root</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <modules>
+        <module>sentarum-item</module>
+    </modules>
+    <packaging>pom</packaging>
+
+
+    <name>sentarum-${project.version} Parent</name>
+    <description>Top project pom.xml file</description>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+        <spring-cloud-aliababa.version>2.2.1.RELEASE</spring-cloud-aliababa.version>
+        <spring-cloud.version>Greenwich.SR6</spring-cloud.version>
+        <druid.version>1.1.21</druid.version>
+        <shardingsphere.version>4.0.0-RC3</shardingsphere.version>
+        <guava.version>27.0.1-jre</guava.version>
+        <shiro.version>1.4.2</shiro.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <org.mapstruct.version>1.3.1.Final</org.mapstruct.version>
+        <fastjson.version>1.2.68</fastjson.version>
+        <bukitmerah.version>0.0.1-SNAPSHOT</bukitmerah.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-aliababa.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>sharding-jdbc-core</artifactId>
+                <version>${shardingsphere.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring-boot-web-starter</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scleropages.bukitmerah</groupId>
+                <artifactId>bukitmerah-all</artifactId>
+                <version>${bukitmerah.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.29</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${org.mapstruct.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                        <compilerArgs>
+                            <compilerArg>
+                                -Amapstruct.unmappedTargetPolicy=IGNORE
+                            </compilerArg>
+                            <compilerArg>
+                                -Amapstruct.defaultComponentModel=spring
+                            </compilerArg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <!--<fork>true</fork>-->
+                        <!--<mainClass>org.scleropages.ApplicationStarter</mainClass>-->
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.jooq</groupId>
+                    <artifactId>jooq-codegen-maven</artifactId>
+                    <version>3.12.3</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.jooq</groupId>
+                            <artifactId>jooq-meta-extensions</artifactId>
+                            <version>3.12.3</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>javax.persistence</groupId>
+                            <artifactId>javax.persistence-api</artifactId>
+                            <version>2.2</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>javax.validation</groupId>
+                            <artifactId>validation-api</artifactId>
+                            <version>2.0.1.Final</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.scleropages.kapuas</groupId>
+                            <artifactId>kapuas-core</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <generator>
+                            <generate>
+                                <!--With jOOQ 3.9, support for JSR-310 java.time types has been added to the jOOQ API and to the code generator. Users of Java 8 can now specify that the jOOQ code generator should prefer JSR 310 types over their equivalent JDBC types.-->
+                                <!-- java.time.LocalDate instead of java.sql.Date-->
+                                <!-- java.time.LocalTime instead of java.sql.Time-->
+                                <!-- java.time.LocalDateTime instead of java.sql.Timestamp-->
+                                <javaTimeTypes>false</javaTimeTypes>
+                                <pojos>false</pojos>
+                                <daos>false</daos>
+                            </generate>
+                            <database>
+                                <name>org.jooq.meta.extensions.jpa.JPADatabase</name>
+                                <properties>
+                                    <!-- A comma separated list of Java packages, that contain your entities -->
+                                    <property>
+                                        <key>packages</key>
+                                        <value>org.scleropages.sentarum</value>
+                                    </property>
+                                    <!-- Whether JPA 2.1 AttributeConverters should be auto-mapped to jOOQ Converters.
+                                    Custom <forcedType/> configurations will have a higher priority than these auto-mapped converters. This defaults to true. -->
+                                    <property>
+                                        <key>useAttributeConverters</key>
+                                        <value>true</value>
+                                    </property>
+                                    <!-- The default schema for unqualified objects:
+                                    - public: all unqualified objects are located in the PUBLIC (upper case) schema - none: all unqualified objects are located in the default schema (default)
+                                    This autoconfigure can be overridden with the schema mapping feature -->
+                                    <property>
+                                        <key>unqualifiedSchema</key>
+                                        <value>none</value>
+                                    </property>
+                                </properties>
+                            </database>
+                            <target>
+                                <packageName>org.scleropages.sentarum.jooq</packageName>
+                                <directory>target/generated-sources/jooq</directory>
+                            </target>
+                        </generator>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
