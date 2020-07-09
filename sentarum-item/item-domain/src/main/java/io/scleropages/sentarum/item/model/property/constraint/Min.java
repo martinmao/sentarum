@@ -33,6 +33,13 @@ public class Min extends Constraint {
 
     private Long min;
 
+    public Min() {
+    }
+
+    public Min(Long min) {
+        this.min = min;
+    }
+
     public Long getMin() {
         return min;
     }

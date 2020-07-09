@@ -30,16 +30,43 @@ import java.util.Map;
 public enum PropertyValueType {
 
 
+    /**
+     * INTEGER(1, Integer.class, "整数")
+     */
     INTEGER(1, Integer.class, "整数"),
+    /**
+     * LONG(2, Long.class, "长整数")
+     */
     LONG(2, Long.class, "长整数"),
+    /**
+     * TEXT(3, String.class, "文本")
+     */
     TEXT(3, String.class, "文本"),
+    /**
+     * DATE(4, Date.class, "日期")
+     */
     DATE(4, Date.class, "日期"),
+    /**
+     * DECIMAL(5, BigDecimal.class, "小数")
+     */
     DECIMAL(5, BigDecimal.class, "小数"),
+    /**
+     * STRUCTURE_TEXT(6, String.class, "结构化文本")
+     */
     //DEV tips: 存储到单独的clob表, 表结构需要包含media type（json,html,textarea....）
     STRUCTURE_TEXT(6, String.class, "结构化文本"),
+    /**
+     * BOOLEAN(7, Boolean.class, "是否")
+     */
     BOOLEAN(7, Boolean.class, "是否"),
+    /**
+     * BYTE_ARRAY(8, Byte[].class, "字节序列")
+     */
     //DEV tips: 存储到单独的blob byte array表,表结构需包含二进制序列化协议(kryo,protobuf....)
     BYTE_ARRAY(8, Byte[].class, "字节序列"),
+    /**
+     * PROPERTY_REF(9, Long.class, "属性关联")
+     */
     //属性值关联其他属性，型号->系列->品牌
     PROPERTY_REF(9, Long.class, "属性关联");
 

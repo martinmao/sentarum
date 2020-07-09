@@ -31,6 +31,13 @@ public class Max extends Constraint {
 
     private Long max;
 
+    public Max() {
+    }
+
+    public Max(Long max) {
+        this.max = max;
+    }
+
     public Long getMax() {
         return max;
     }

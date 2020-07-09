@@ -29,6 +29,13 @@ import java.util.List;
  */
 public class MinLength extends Constraint {
 
+    public MinLength() {
+    }
+
+    public MinLength(Integer length) {
+        this.length = length;
+    }
+
     private Integer length;
 
     public Integer getLength() {

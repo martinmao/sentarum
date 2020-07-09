@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.model.property.constraint;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.model.property.Input;
 import io.scleropages.sentarum.item.model.property.PropertyMetadata;
 import io.scleropages.sentarum.item.model.property.input.MultiInput;
@@ -78,6 +79,13 @@ public class ConstraintDepends {
 
     public void setConstraintDepends(List<ConstraintDepend> constraintDepends) {
         this.constraintDepends = constraintDepends;
+    }
+
+    public void addConstraintDepend(ConstraintDepend constraintDepend) {
+        if (null == getConstraintDepends()) {
+            setConstraintDepends(Lists.newArrayList());
+        }
+        constraintDepends.add(constraintDepend);
     }
 
 
@@ -215,6 +223,20 @@ public class ConstraintDepends {
         private String value;
         private Operator operator;
 
+
+        public ConstraintDepend(String propertyName, String value, Operator operator) {
+            this.propertyName = propertyName;
+            this.value = value;
+            this.operator = operator;
+        }
+
+        public ConstraintDepend(String propertyName, Operator operator) {
+            this.propertyName = propertyName;
+            this.operator = operator;
+        }
+
+        public ConstraintDepend() {
+        }
 
         public String getPropertyName() {
             return propertyName;
