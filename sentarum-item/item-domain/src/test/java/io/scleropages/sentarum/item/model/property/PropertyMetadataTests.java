@@ -53,18 +53,21 @@ public class PropertyMetadataTests extends TestCase {
 
         assertSame(NotNull.class, PropertyInputValidators.validate(address).getClass());
 
-        InputText input = (InputText) address.getInput();
-        input.setValue("印度尼西亚-加里曼丹");
+        InputText addressInput = (InputText) address.getInput();
+        addressInput.setValue("印度尼西亚-加里曼丹");
 
         assertSame(MinLength.class, PropertyInputValidators.validate(address).getClass());
 
-        input.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场");
+        addressInput.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场");
 
         assertNull(PropertyInputValidators.validate(address));
 
-        input.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场1");
+        addressInput.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场1");
 
         assertNotNull(PropertyInputValidators.validate(address));
+
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 
         PropertyMetadataBean price = new PropertyMetadataBean();
@@ -75,17 +78,40 @@ public class PropertyMetadataTests extends TestCase {
         price.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
         price.setValueType(PropertyValueType.DECIMAL);
 
-        NotNull notNull = new NotNull();//设置依赖规则，address如果不为空，则price也不为空.
+        NotNull priceNotNull = new NotNull();//设置依赖规则，address如果不为空，则price也不为空.
         ConstraintDepends constraintDepends = new ConstraintDepends();
-        notNull.setConstraintDepends(constraintDepends);
+        priceNotNull.setConstraintDepends(constraintDepends);
         constraintDepends.setConjunction(ConstraintDepends.Conjunction.AND);
         constraintDepends.addConstraintDepend(new ConstraintDepends.ConstraintDepend(address.getName(), ConstraintDepends.Operator.NOT_NULL));
 
 
-        price.setConstraints(Lists.newArrayList(notNull, new Min(0L), new Max(9999L)));
+        price.setConstraints(Lists.newArrayList(priceNotNull, new Min(0L), new Max(9999L)));
         price.setInput(new InputText());
         System.out.println(JsonMapper2.toJson(price));
+        InputText priceInput = (InputText) price.getInput();
+        priceInput.setValue(null);
 
+        assertSame(NotNull.class, PropertyInputValidators.validate(price).getClass());
+
+        addressInput.setValue(null);
+
+        assertNull(PropertyInputValidators.validate(address, price));
+
+        addressInput.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场");
+
+        assertSame(NotNull.class, PropertyInputValidators.validate(address, price).getClass());
+
+        priceInput.setValue("-0.01");
+        assertSame(Min.class, PropertyInputValidators.validate(address, price).getClass());
+
+        priceInput.setValue("-0.00");
+        assertNull(PropertyInputValidators.validate(address, price));
+
+        priceInput.setValue("9999.01");
+        assertSame(Max.class, PropertyInputValidators.validate(address, price).getClass());
+
+        priceInput.setValue("9999.00");
+        assertNull(PropertyInputValidators.validate(address, price));
     }
 
 
@@ -96,8 +122,8 @@ public class PropertyMetadataTests extends TestCase {
         brandName.setName("brandName");
         brandName.setTag("品牌名称");
         brandName.setDescription("品牌名称作为品类的一个关键属性");
-        brandName.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_NODE_PROPERTY);
-        brandName.setValueType(PropertyValueType.PROPERTY_REF);
+        brandName.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_ROOT_PROPERTY);
+        brandName.setValueType(PropertyValueType.LONG);
 
         PropertyMetadataBean seriesName = new PropertyMetadataBean();
         seriesName.setId(2L);
@@ -105,14 +131,18 @@ public class PropertyMetadataTests extends TestCase {
         seriesName.setTag("系列名称");
         seriesName.setDescription("品牌系列作为品类的一个关键属性，属于品牌，二级属性");
         seriesName.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_NODE_PROPERTY);
-        brandName.setValueType(PropertyValueType.PROPERTY_REF);
+        seriesName.setValueType(PropertyValueType.PROPERTY_REF);
+        seriesName.setRefId(1L);
 
 
         PropertyMetadataBean modelName = new PropertyMetadataBean();
+        modelName.setId(3L);
         modelName.setName("modelName");
-        brandName.setTag("型号名称");
-        brandName.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_LEAF_PROPERTY);
-
+        modelName.setTag("型号名称");
+        modelName.setDescription("信号作为品类的一个关键属性，属于系列，三级属性");
+        modelName.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_LEAF_PROPERTY);
+        modelName.setValueType(PropertyValueType.PROPERTY_REF);
+        seriesName.setRefId(2L);
     }
 
 }

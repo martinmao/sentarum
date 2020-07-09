@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * 属性值来源，当属性值非人工输入，而来源于其他关联实体（或枚举项).
- * {@link PropertyMetadata} 作为工厂接口，解析并生成 {@link Value}列表.
+ * {@link PropertyMetadata} 作为工厂接口，解析并生成 {@link SourceValue}列表.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -31,7 +31,7 @@ public interface ValuesSource {
     /**
      * 描述属性来源加载并解析生成统一的结构.
      */
-    interface Value {
+    interface SourceValue {
 
 
         /**
@@ -77,13 +77,5 @@ public interface ValuesSource {
      *
      * @return
      */
-    List<Value> getValues();
-
-
-    /**
-     * return id of {@link ValuesSource} implementations.
-     *
-     * @return
-     */
-    Integer id();
+    List<SourceValue> getValues();
 }

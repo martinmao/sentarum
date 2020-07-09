@@ -20,6 +20,7 @@ import io.scleropages.sentarum.item.model.property.Input;
 import io.scleropages.sentarum.item.model.property.PropertyMetadata;
 import io.scleropages.sentarum.item.model.property.PropertyValueType;
 import io.scleropages.sentarum.item.model.property.ValuesSource;
+import org.springframework.core.OrderComparator;
 
 import java.util.List;
 
@@ -145,6 +146,7 @@ public class PropertyMetadataBean implements PropertyMetadata {
     }
 
     public List<Constraint> getConstraints() {
+        OrderComparator.sort(constraints);
         return constraints;
     }
 

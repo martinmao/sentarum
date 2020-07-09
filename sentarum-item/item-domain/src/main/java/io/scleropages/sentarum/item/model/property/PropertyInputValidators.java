@@ -17,7 +17,6 @@ package io.scleropages.sentarum.item.model.property;
 
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.model.property.constraint.ConstraintDepends;
-import org.springframework.core.OrderComparator;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -117,7 +116,6 @@ public abstract class PropertyInputValidators {
         if (null == constraints || constraints.size() == 0) {
             return null;
         }
-        OrderComparator.sort(constraints);
         for (Constraint constraint : constraints) {
             if (!constraint.validate(propertyMetadata, input))
                 return constraint;
