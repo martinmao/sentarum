@@ -33,7 +33,7 @@ public class SingleCheck implements SingleInput {
     }
 
     @Override
-    public String name() {
+    public String getName() {
         return SINGLE_CHECK;
     }
 }

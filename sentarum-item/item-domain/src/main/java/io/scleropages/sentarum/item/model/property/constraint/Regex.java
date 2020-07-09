@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 public class Regex extends Constraint {
 
     private String regex;
+    private Pattern pattern;
 
     public String getRegex() {
         return regex;
@@ -37,17 +38,21 @@ public class Regex extends Constraint {
 
     public void setRegex(String regex) {
         this.regex = regex;
+        this.pattern = Pattern.compile(regex);
     }
 
     @Override
-    protected boolean validate(PropertyMetadata propertyMetadata, SingleInput input) {
-        Pattern compile = Pattern.compile(regex);
+    protected boolean validateInternal(PropertyMetadata propertyMetadata, SingleInput input) {
+        return pattern.matcher(input.getValue()).matches();
+    }
 
+    @Override
+    protected boolean validateInternal(PropertyMetadata propertyMetadata, MultiInput input) {
         return false;
     }
 
     @Override
-    protected boolean validate(PropertyMetadata propertyMetadata,MultiInput input) {
-        return false;
+    protected String internalMessage() {
+        return "内容格式不合法";
     }
 }

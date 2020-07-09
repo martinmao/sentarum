@@ -52,6 +52,8 @@ public interface GroupedPropertyMetadata extends PropertyMetadata {
         return complexInput;
     }
 
+
+
     /**
      * 返回已排序的属性列表
      *
@@ -61,29 +63,34 @@ public interface GroupedPropertyMetadata extends PropertyMetadata {
 
 
     /**
+     * 添加一个 property metadata
+     *
+     * @param propertyMetadata
+     */
+    void addPropertyMetadata(PropertyMetadata propertyMetadata);
+
+
+    /**
      * 含顺序的 {@link PropertyMetadata}
      */
     class OrderedPropertyMetadata implements PropertyMetadata, Comparable<OrderedPropertyMetadata> {
 
-        private float order;
+        private final float order;
 
-        private PropertyMetadata propertyMetadata;
+        private final PropertyMetadata propertyMetadata;
 
+        public OrderedPropertyMetadata(float order, PropertyMetadata propertyMetadata) {
+            this.order = order;
+            this.propertyMetadata = propertyMetadata;
+        }
 
         public float getOrder() {
             return order;
         }
 
-        public void setOrder(float order) {
-            this.order = order;
-        }
 
         public PropertyMetadata getPropertyMetadata() {
             return propertyMetadata;
-        }
-
-        public void setPropertyMetadata(PropertyMetadata propertyMetadata) {
-            this.propertyMetadata = propertyMetadata;
         }
 
         @Override
@@ -144,6 +151,11 @@ public interface GroupedPropertyMetadata extends PropertyMetadata {
         @Override
         public List<Constraint> constraints() {
             return propertyMetadata.constraints();
+        }
+
+        @Override
+        public Long refId() {
+            return propertyMetadata.refId();
         }
     }
 }

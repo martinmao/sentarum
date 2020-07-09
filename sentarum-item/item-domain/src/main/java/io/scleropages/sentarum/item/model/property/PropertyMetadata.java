@@ -18,7 +18,7 @@ package io.scleropages.sentarum.item.model.property;
 import java.util.List;
 
 /**
- * 属性定义，用于描述一个属性或属性元数据定义.
+ * 属性定义，用于描述一个属性元数据定义.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

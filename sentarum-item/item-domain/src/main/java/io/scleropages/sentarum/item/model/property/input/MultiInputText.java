@@ -39,7 +39,7 @@ public class MultiInputText implements MultiInput {
     }
 
     @Override
-    public String name() {
+    public String getName() {
         return MULTI_TEXT;
     }
 }

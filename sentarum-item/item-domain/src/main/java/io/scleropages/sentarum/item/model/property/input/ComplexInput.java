@@ -46,7 +46,7 @@ public class ComplexInput implements Input {
 
 
     @Override
-    public String name() {
+    public String getName() {
         return COMPLEX;
     }
 }

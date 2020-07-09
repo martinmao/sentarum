@@ -46,7 +46,7 @@ public class MultiComplexInput implements Input {
     }
 
     @Override
-    public String name() {
+    public String getName() {
         return MULTI_COMPLEX;
     }
 }

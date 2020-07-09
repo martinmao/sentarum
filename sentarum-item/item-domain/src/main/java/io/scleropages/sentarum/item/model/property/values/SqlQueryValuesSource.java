@@ -54,7 +54,7 @@
 //
 //    @Override
 //    public String exampleTemplateText() {
-//        return "select 1 as id, 'cafebabe' as name";
+//        return "select 1 as id, 'cafebabe' as getName";
 //    }
 //
 //

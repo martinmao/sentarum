@@ -48,7 +48,7 @@ public class MaxLength extends Constraint {
     }
 
     @Override
-    protected boolean validate(PropertyMetadata propertyMetadata, SingleInput input) {
+    protected boolean validateInternal(PropertyMetadata propertyMetadata, SingleInput input) {
         String value = input.getValue();
         if (null != value) {
             return value.length() <= length;
@@ -57,8 +57,13 @@ public class MaxLength extends Constraint {
     }
 
     @Override
-    protected boolean validate(PropertyMetadata propertyMetadata,MultiInput input) {
+    protected boolean validateInternal(PropertyMetadata propertyMetadata, MultiInput input) {
         List<String> values = input.values();
         return values.size() <= length;
+    }
+
+    @Override
+    protected String internalMessage() {
+        return "超过长度限定: "+length;
     }
 }

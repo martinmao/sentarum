@@ -37,7 +37,7 @@ public class MultiCheck implements MultiInput {
     }
 
     @Override
-    public String name() {
+    public String getName() {
         return MULTI_CHECK;
     }
 }

@@ -34,6 +34,7 @@ public class PropertyMetadataTests {
     @Test
     public void testFlatPropertyMetadata() {
 
+        //create metadata
         PropertyMetadataBean address = new PropertyMetadataBean();
         address.setId(1l);
         address.setName("address");
@@ -41,12 +42,16 @@ public class PropertyMetadataTests {
         address.setDescription("详细地址信息");
         address.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
         address.setValueType(PropertyValueType.TEXT);
-        address.setConstraints(Lists.newArrayList(new NotNull(), new MaxLength(20)));
+        address.setConstraints(Lists.newArrayList(new NotNull(), new MaxLength(32)));
         address.setInput(new InputText());
-
-
-
         System.out.println(JsonMapper2.toJson(address));
+
+        //set value
+        InputText input = (InputText) address.getInput();
+        input.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场");
+
+        PropertyInputValidators.assertInputValid(address);
+
     }
 
 

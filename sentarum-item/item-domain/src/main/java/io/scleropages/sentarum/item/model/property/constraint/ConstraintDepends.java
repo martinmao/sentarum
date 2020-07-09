@@ -15,9 +15,8 @@
  */
 package io.scleropages.sentarum.item.model.property.constraint;
 
-import io.scleropages.sentarum.item.model.property.MetadataContext;
-import io.scleropages.sentarum.item.model.property.PropertyMetadata;
 import io.scleropages.sentarum.item.model.property.Input;
+import io.scleropages.sentarum.item.model.property.PropertyMetadata;
 import io.scleropages.sentarum.item.model.property.input.MultiInput;
 import io.scleropages.sentarum.item.model.property.input.SingleInput;
 import org.apache.commons.collections.ComparatorUtils;
@@ -108,13 +107,19 @@ public class ConstraintDepends {
     }
 
 
+    public interface ConstraintDependsContext {
+
+        PropertyMetadata getPropertyMetadata(String name);
+    }
+
+
     /**
      * return current depends check result.
      *
-     * @param metadataContext
+     * @param dependsContext
      * @return
      */
-    public boolean matches(MetadataContext metadataContext) {
+    public boolean matches(ConstraintDependsContext dependsContext) {
         if (isEmpty())
             return true;
         final Comparator comparator = getComparator();
@@ -122,7 +127,7 @@ public class ConstraintDepends {
         for (ConstraintDepend constraintDepend : constraintDepends) {
             String propertyName = constraintDepend.getPropertyName();
             String compareTo = constraintDepend.getValue();
-            PropertyMetadata propertyMetadata = metadataContext.getPropertyMetadata(propertyName);
+            PropertyMetadata propertyMetadata = dependsContext.getPropertyMetadata(propertyName);
             Input input = propertyMetadata.input();
             boolean match = false;
             if (input instanceof SingleInput) {
@@ -174,7 +179,7 @@ public class ConstraintDepends {
     }
 
     /**
-     * 一组依赖的组合关系
+     * 一组依赖的组合关系: OR，AND
      */
     public enum Conjunction {
         OR, AND

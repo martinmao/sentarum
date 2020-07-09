@@ -42,17 +42,14 @@ public abstract class Constraint implements Ordered {
     }
 
     public boolean validate(PropertyMetadata propertyMetadata) {
-        Input input = propertyMetadata.input();
+        return validate(propertyMetadata, propertyMetadata.input());
+    }
+
+    public boolean validate(PropertyMetadata propertyMetadata, Input input) {
         if (input instanceof SingleInput)
-            return validate(propertyMetadata, (SingleInput) input);
+            return validateInternal(propertyMetadata, (SingleInput) input);
         if (propertyMetadata.input() instanceof MultiInput)
-            return validate(propertyMetadata, (MultiInput) input);
-        if (propertyMetadata instanceof GroupedPropertyMetadata) {
-            GroupedPropertyMetadata groupedPropertyMetadata = (GroupedPropertyMetadata) propertyMetadata;
-            for (GroupedPropertyMetadata.OrderedPropertyMetadata metadata : groupedPropertyMetadata.orderedPropertiesMetadata()) {
-                metadata.constraints().forEach(constraint -> constraint.validate(metadata));
-            }
-        }
+            return validateInternal(propertyMetadata, (MultiInput) input);
         throw new IllegalArgumentException("unsupported input type: " + input);
     }
 
@@ -66,17 +63,19 @@ public abstract class Constraint implements Ordered {
         return 0;
     }
 
-    public String getName(){
+    public String getName() {
         return getClass().getSimpleName();
     }
 
-    abstract protected boolean validate(PropertyMetadata propertyMetadata, SingleInput input);
+    abstract protected boolean validateInternal(PropertyMetadata propertyMetadata, SingleInput input);
 
-    abstract protected boolean validate(PropertyMetadata propertyMetadata, MultiInput input);
+    abstract protected boolean validateInternal(PropertyMetadata propertyMetadata, MultiInput input);
+
+    abstract protected String internalMessage();
 
 
     public String getMessage() {
-        return message;
+        return null != message ? message : internalMessage();
     }
 
     public void setMessage(String message) {

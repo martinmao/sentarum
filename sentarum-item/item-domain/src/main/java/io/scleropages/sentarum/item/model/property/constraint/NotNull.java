@@ -28,12 +28,17 @@ import io.scleropages.sentarum.item.model.property.input.SingleInput;
  */
 public class NotNull extends Constraint {
     @Override
-    protected boolean validate(PropertyMetadata propertyMetadata, SingleInput input) {
+    protected String internalMessage() {
+        return "必须字段";
+    }
+
+    @Override
+    protected boolean validateInternal(PropertyMetadata propertyMetadata, SingleInput input) {
         return null != input.getValue();
     }
 
     @Override
-    protected boolean validate(PropertyMetadata propertyMetadata,MultiInput input) {
+    protected boolean validateInternal(PropertyMetadata propertyMetadata, MultiInput input) {
         return input.values().size() > 1;
     }
 

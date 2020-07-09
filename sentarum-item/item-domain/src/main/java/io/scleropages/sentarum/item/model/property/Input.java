@@ -62,5 +62,5 @@ public interface Input {
      *
      * @return
      */
-    String name();
+    String getName();
 }

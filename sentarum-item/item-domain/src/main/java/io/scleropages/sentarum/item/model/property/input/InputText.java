@@ -33,7 +33,7 @@ public class InputText implements SingleInput {
     }
 
     @Override
-    public String name() {
+    public String getName() {
         return TEXT;
     }
 }

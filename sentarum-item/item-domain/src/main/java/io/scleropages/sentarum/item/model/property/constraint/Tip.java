@@ -48,12 +48,17 @@ public class Tip extends Constraint {
     }
 
     @Override
-    protected boolean validate(PropertyMetadata propertyMetadata, SingleInput input) {
+    protected boolean validateInternal(PropertyMetadata propertyMetadata, SingleInput input) {
         return false;
     }
 
     @Override
-    protected boolean validate(PropertyMetadata propertyMetadata,MultiInput input) {
+    protected boolean validateInternal(PropertyMetadata propertyMetadata, MultiInput input) {
         return false;
+    }
+
+    @Override
+    protected String internalMessage() {
+        return "系统提示";
     }
 }
