@@ -177,11 +177,6 @@
                             <artifactId>validation-api</artifactId>
                             <version>2.0.1.Final</version>
                         </dependency>
-                        <dependency>
-                            <groupId>org.scleropages.kapuas</groupId>
-                            <artifactId>kapuas-core</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
                     </dependencies>
                     <configuration>
                         <generator>
@@ -200,7 +195,7 @@
                                     <!-- A comma separated list of Java packages, that contain your entities -->
                                     <property>
                                         <key>packages</key>
-                                        <value>org.scleropages.sentarum</value>
+                                        <value>io.scleropages.sentarum</value>
                                     </property>
                                     <!-- Whether JPA 2.1 AttributeConverters should be auto-mapped to jOOQ Converters.
                                     Custom <forcedType/> configurations will have a higher priority than these auto-mapped converters. This defaults to true. -->
@@ -218,7 +213,7 @@
                                 </properties>
                             </database>
                             <target>
-                                <packageName>org.scleropages.sentarum.jooq</packageName>
+                                <packageName>io.scleropages.sentarum.jooq</packageName>
                                 <directory>target/generated-sources/jooq</directory>
                             </target>
                         </generator>

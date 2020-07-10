@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
+package io.scleropages.sentarum.item.property.model;
 
-import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
-import java.util.List;
 
 /**
- *
+ * 属性值
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PropertyDefinitionGroupEntity extends IdEntity {
+public interface PropertyValue {
 
-    private String name;
+    /**
+     * 关联的属性定义
+     *
+     * @return
+     */
+    PropertyMetadata propertyMetadata();
 
-    private String tag;
-
-    private String description;
-
-    private List<PropertyMetadataEntity> propertyDefinitions;
-
+    /**
+     * 属性值
+     *
+     * @return
+     */
+    Object value();
 }

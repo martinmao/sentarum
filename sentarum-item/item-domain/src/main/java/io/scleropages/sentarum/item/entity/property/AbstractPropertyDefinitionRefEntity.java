@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.entity.property;
 
+import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;

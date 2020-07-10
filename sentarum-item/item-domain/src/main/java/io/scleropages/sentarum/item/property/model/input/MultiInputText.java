@@ -13,26 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
+package io.scleropages.sentarum.item.property.model.input;
 
-import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PropertyDefinitionGroupEntity extends IdEntity {
+public class MultiInputText implements MultiInput {
 
-    private String name;
 
-    private String tag;
+    private List<String> values = Lists.newArrayList();
 
-    private String description;
 
-    private List<PropertyMetadataEntity> propertyDefinitions;
+    @Override
+    public void addValue(String value) {
+        values.add(value);
+    }
 
+    @Override
+    public List<String> values() {
+        return values;
+    }
+
+    @Override
+    public InputType getType() {
+        return InputType.MULTI_TEXT;
+    }
 }

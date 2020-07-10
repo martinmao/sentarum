@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
+package io.scleropages.sentarum.item.property.model.input;
 
-import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
-
-import java.util.List;
+import io.scleropages.sentarum.item.property.model.Input;
 
 /**
- *
+ * 标识接口，表明实现类的input是一个基本输入类型.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PropertyDefinitionGroupEntity extends IdEntity {
-
-    private String name;
-
-    private String tag;
-
-    private String description;
-
-    private List<PropertyMetadataEntity> propertyDefinitions;
-
+public interface BasicInput extends Input {
 }

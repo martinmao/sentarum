@@ -13,26 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
+package io.scleropages.sentarum.item.property.model.input;
 
-import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+import com.google.common.collect.Lists;
+import io.scleropages.sentarum.item.property.model.Input;
 
 import java.util.List;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PropertyDefinitionGroupEntity extends IdEntity {
+public class MultiComplexInput implements Input {
 
-    private String name;
+    private List<ComplexInput> complexInputs = Lists.newArrayList();
 
-    private String tag;
+    /**
+     * 添加一个复合类型
+     *
+     * @param complexInput
+     */
+    public void addComplexInput(ComplexInput complexInput) {
+        complexInputs.add(complexInput);
+    }
 
-    private String description;
+    /**
+     * 获取所有复合类型
+     *
+     * @return
+     */
+    public List<ComplexInput> complexInputs() {
+        return complexInputs;
+    }
 
-    private List<PropertyMetadataEntity> propertyDefinitions;
-
+    @Override
+    public InputType getType() {
+        return InputType.MULTI_COMPLEX;
+    }
 }

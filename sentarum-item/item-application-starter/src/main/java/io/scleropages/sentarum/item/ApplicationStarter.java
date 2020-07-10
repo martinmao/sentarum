@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
+package io.scleropages.sentarum.item;
 
-import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
-
-import java.util.List;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PropertyDefinitionGroupEntity extends IdEntity {
+public class ApplicationStarter extends SpringBootServletInitializer {
 
-    private String name;
+    public static void main(String[] args) {
+        SpringApplication springApplication = new SpringApplication(ApplicationStarter.class);
+        springApplication.run(args);
 
-    private String tag;
+    }
 
-    private String description;
 
-    private List<PropertyMetadataEntity> propertyDefinitions;
-
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(ApplicationStarter.class);
+    }
 }

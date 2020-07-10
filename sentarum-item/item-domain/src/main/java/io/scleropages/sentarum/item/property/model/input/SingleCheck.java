@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
-
-import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
-
-import java.util.List;
+package io.scleropages.sentarum.item.property.model.input;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PropertyDefinitionGroupEntity extends IdEntity {
+public class SingleCheck implements SingleInput {
 
-    private String name;
+    private String value;
 
-    private String tag;
+    @Override
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-    private String description;
+    @Override
+    public String getValue() {
+        return value;
+    }
 
-    private List<PropertyMetadataEntity> propertyDefinitions;
-
+    @Override
+    public InputType getType() {
+        return InputType.SINGLE_CHECK;
+    }
 }
