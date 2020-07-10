@@ -17,8 +17,6 @@ package io.scleropages.sentarum.item.configuration;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.zaxxer.hikari.HikariDataSource;
-import org.scleropages.core.util.RandomGenerator;
-import org.scleropages.core.util.SecureRandomGenerator;
 import org.scleropages.crud.configure.CrudFeaturesImporter;
 import org.scleropages.crud.dao.jdbc.FrameworkRoutingDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -154,10 +152,5 @@ public class ApplicationConfiguration {
 
         }
 
-    }
-
-    @Bean
-    public RandomGenerator randomGenerator() {
-        return new SecureRandomGenerator();
     }
 }

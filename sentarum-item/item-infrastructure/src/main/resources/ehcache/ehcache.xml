@@ -7,7 +7,6 @@
 
     <persistence directory="${java.io.tmpdir}/ehcache"></persistence>
 
-
     <cache-template name="heap-cache">
         <expiry>
             <ttl unit="minutes">30</ttl>

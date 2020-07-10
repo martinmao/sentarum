@@ -13,11 +13,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.scleropages.sentarum</groupId>
-            <artifactId>item-application</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
@@ -25,6 +20,11 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scleropages.sentarum</groupId>
+            <artifactId>item-application</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>
