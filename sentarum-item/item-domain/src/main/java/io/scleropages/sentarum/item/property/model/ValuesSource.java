@@ -74,5 +74,5 @@ public interface ValuesSource {
      *
      * @return
      */
-    List<SourceValue> getValues();
+    List<? extends SourceValue> values();
 }

@@ -13,28 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
+package io.scleropages.sentarum.item.ge.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 /**
- * 键属性实体,能够通过名称被检索的属性.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prop_key_property",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"biz_type_id", "biz_id", "name_"}),
-        indexes = {
-                @Index(columnList = "biz_type_id,name_,long_,double_,text_,date_,decimal_,bool_")
-        })
-@SequenceGenerator(name = "prop_key_property_id", sequenceName = "seq_prop_key_property", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class KeyPropertyEntity extends AbstractPropertyEntity {
+@Table(name = "ge_byte_array")
+@SequenceGenerator(name = "ge_byte_array_id", sequenceName = "seq_ge_byte_array", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class ByteArrayEntity extends IdEntity {
 
+    private Integer mediaType;
+
+    private byte[] rawBytes;
+
+    @Column(name = "media_type", nullable = false)
+    public Integer getMediaType() {
+        return mediaType;
+    }
+
+    @Column(name = "raw_bytes", nullable = false, length = 2048)
+    public byte[] getRawBytes() {
+        return rawBytes;
+    }
+
+    public void setRawBytes(byte[] rawBytes) {
+        this.rawBytes = rawBytes;
+    }
+
+    public void setMediaType(Integer mediaType) {
+        this.mediaType = mediaType;
+    }
 }

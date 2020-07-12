@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.property.entity;
 
+import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -29,7 +30,7 @@ import javax.persistence.UniqueConstraint;
 import java.util.List;
 
 /**
- * {@link io.scleropages.sentarum.item.property.model.impl.PropertyMetadataBean}'s entity.
+ * {@link PropertyMetadataModel}'s entity.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

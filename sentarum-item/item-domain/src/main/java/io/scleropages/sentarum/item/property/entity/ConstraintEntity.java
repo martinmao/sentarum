@@ -26,8 +26,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
+ * 参考模型:
+ * {@link io.scleropages.sentarum.item.property.model.Constraint}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
- * @ {@link io.scleropages.sentarum.item.property.model.Constraint}
  */
 @Entity
 @Table(name = "prop_constraint")

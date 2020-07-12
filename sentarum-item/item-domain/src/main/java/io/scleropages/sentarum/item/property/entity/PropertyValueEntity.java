@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
+package io.scleropages.sentarum.item.property.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import static io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity.*;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prop_property",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"biz_type_id", "biz_id", "name_"}))
-@SequenceGenerator(name = "prop_property_id", sequenceName = "seq_prop_property", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class PropertyEntity extends AbstractPropertyEntity {
+@Table(name = "prop_property_value",
+        indexes = @Index(columnList = PROPERTY_META_ID_COLUMN),
+        uniqueConstraints = @UniqueConstraint(columnNames = {BIZ_TYPE_COLUMN, BIZ_ID_COLUMN, NAME_COLUMN}))
+@SequenceGenerator(name = "prop_property_value_id", sequenceName = "seq_prop_property_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class PropertyValueEntity extends AbstractPropertyValueEntity {
 
 }

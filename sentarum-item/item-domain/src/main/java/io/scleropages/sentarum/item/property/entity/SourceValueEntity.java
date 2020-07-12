@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.property.entity;
 
+import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -26,7 +27,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * {@link io.scleropages.sentarum.item.property.model.impl.SourceValueBean}
+ * 参考模型： {@link SourceValueModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

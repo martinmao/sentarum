@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PropertyMetadataBean implements PropertyMetadata {
+public class PropertyMetadataModel implements PropertyMetadata {
 
     private Long id;
     private String name;
@@ -40,7 +40,7 @@ public class PropertyMetadataBean implements PropertyMetadata {
     private PropertyValueType valueType;
     private PropertyStructureType structureType;
     private Input input;
-    private ValuesSource valuesSource;
+    private ValuesSourceModel valuesSource;
     private List<Constraint> constraints;
     private Long refId;
 
@@ -142,12 +142,13 @@ public class PropertyMetadataBean implements PropertyMetadata {
         return input;
     }
 
-    public ValuesSource getValuesSource() {
+    public ValuesSourceModel getValuesSource() {
         return valuesSource;
     }
 
     public List<Constraint> getConstraints() {
-        OrderComparator.sort(constraints);
+        if (null != constraints && constraints.size() > 0)
+            OrderComparator.sort(constraints);
         return constraints;
     }
 
@@ -191,7 +192,7 @@ public class PropertyMetadataBean implements PropertyMetadata {
         this.input = input;
     }
 
-    public void setValuesSource(ValuesSource valuesSource) {
+    public void setValuesSource(ValuesSourceModel valuesSource) {
         this.valuesSource = valuesSource;
     }
 

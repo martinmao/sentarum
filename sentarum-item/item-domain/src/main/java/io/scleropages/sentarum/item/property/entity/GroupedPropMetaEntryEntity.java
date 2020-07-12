@@ -27,6 +27,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
+ * 参考模型: {@link io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata}
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity

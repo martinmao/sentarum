@@ -51,14 +51,14 @@ public enum PropertyValueType {
      */
     DECIMAL(5, BigDecimal.class, "小数"),
     /**
-     * STRUCTURE_TEXT(6, String.class, "结构化文本")
+     * BOOLEAN(6, Boolean.class, "是否")
+     */
+    BOOLEAN(6, Boolean.class, "是否"),
+    /**
+     * STRUCTURE_TEXT(7, String.class, "结构化文本")
      */
     //DEV tips: 存储到单独的clob表, 表结构需要包含media type（json,html,textarea....）
-    STRUCTURE_TEXT(6, String.class, "结构化文本"),
-    /**
-     * BOOLEAN(7, Boolean.class, "是否")
-     */
-    BOOLEAN(7, Boolean.class, "是否"),
+    STRUCTURE_TEXT(7, String.class, "结构化文本"),
     /**
      * BYTE_ARRAY(8, Byte[].class, "字节序列")
      */
@@ -67,7 +67,7 @@ public enum PropertyValueType {
     /**
      * PROPERTY_REF(9, Long.class, "属性关联")
      */
-    //属性值关联其他属性，型号->系列->品牌
+    //DEV tips: 属性值关联其他属性，型号->系列->品牌
     PROPERTY_REF(9, Long.class, "属性关联");
 
 

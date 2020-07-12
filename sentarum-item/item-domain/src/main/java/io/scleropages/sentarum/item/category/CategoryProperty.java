@@ -78,7 +78,7 @@ public interface CategoryProperty {
     PropertyMetadata propertyMetadata();
 
     /**
-     * 属性值
+     * 默认属性值
      *
      * @return
      */

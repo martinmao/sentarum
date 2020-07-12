@@ -13,50 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.property.model;
+package io.scleropages.sentarum.item.property.repo;
 
+import io.scleropages.sentarum.item.property.entity.ConstraintEntity;
+import io.scleropages.sentarum.jooq.tables.PropConstraint;
+import io.scleropages.sentarum.jooq.tables.records.PropConstraintRecord;
+import org.scleropages.crud.dao.orm.jpa.GenericRepository;
+import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
 /**
- * 属性值
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PropertyValue {
+public interface ConstraintRepository extends GenericRepository<ConstraintEntity, Long>,
+        JooqRepository<PropConstraint, PropConstraintRecord, ConstraintEntity> {
 
-    /**
-     * 唯一标识
-     *
-     * @return
-     */
-    Long id();
-
-    /**
-     * 业务类型
-     *
-     * @return
-     */
-    Integer bizType();
-
-
-    /**
-     * 业务标识
-     *
-     * @return
-     */
-    Long bizId();
-
-
-    /**
-     * 属性定义(元数据)
-     *
-     * @return
-     */
-    PropertyMetadata propertyMetadata();
-
-    /**
-     * 属性值
-     *
-     * @return
-     */
-    Object value();
 }

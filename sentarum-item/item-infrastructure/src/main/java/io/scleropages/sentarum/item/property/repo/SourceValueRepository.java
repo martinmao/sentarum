@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.property;
+package io.scleropages.sentarum.item.property.repo;
 
-import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
-
-import java.util.List;
+import io.scleropages.sentarum.item.property.entity.SourceValueEntity;
+import io.scleropages.sentarum.jooq.tables.PropSourceValue;
+import io.scleropages.sentarum.jooq.tables.records.PropSourceValueRecord;
+import org.scleropages.crud.dao.orm.jpa.GenericRepository;
+import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PropertyDefinitionGroupEntity extends IdEntity {
-
-    private String name;
-
-    private String tag;
-
-    private String description;
-
-    private List<PropertyMetadataEntity> propertyDefinitions;
+public interface SourceValueRepository extends GenericRepository<SourceValueEntity, Long>,
+        JooqRepository<PropSourceValue, PropSourceValueRecord, SourceValueEntity> {
 
 }

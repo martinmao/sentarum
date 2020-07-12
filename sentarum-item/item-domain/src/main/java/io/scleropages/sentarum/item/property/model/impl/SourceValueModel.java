@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SourceValueBean implements ValuesSource.SourceValue {
+public class SourceValueModel implements ValuesSource.SourceValue {
 
     private Long id;
     private Long value;
@@ -33,23 +33,23 @@ public class SourceValueBean implements ValuesSource.SourceValue {
     private Long refId;
     private Map<String, Object> additionalAttributes;
 
-    public SourceValueBean() {
+    public SourceValueModel() {
     }
 
-    public SourceValueBean(Long id, Long value, String valueTag) {
+    public SourceValueModel(Long id, Long value, String valueTag) {
         this.id = id;
         this.value = value;
         this.valueTag = valueTag;
     }
 
-    public SourceValueBean(Long id, Long value, String valueTag, Long refId) {
+    public SourceValueModel(Long id, Long value, String valueTag, Long refId) {
         this.id = id;
         this.value = value;
         this.valueTag = valueTag;
         this.refId = refId;
     }
 
-    public SourceValueBean(Long id, Long value, String valueTag, Long refId, Map<String, Object> additionalAttributes) {
+    public SourceValueModel(Long id, Long value, String valueTag, Long refId, Map<String, Object> additionalAttributes) {
         this.id = id;
         this.value = value;
         this.valueTag = valueTag;

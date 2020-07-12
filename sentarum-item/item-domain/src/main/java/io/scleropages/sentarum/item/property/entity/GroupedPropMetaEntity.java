@@ -25,7 +25,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 /**
- * {@link io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata}
+ * 参考模型: {@link io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

@@ -26,8 +26,9 @@ import io.scleropages.sentarum.item.property.model.constraint.MaxLength;
 import io.scleropages.sentarum.item.property.model.constraint.Min;
 import io.scleropages.sentarum.item.property.model.constraint.MinLength;
 import io.scleropages.sentarum.item.property.model.constraint.NotNull;
-import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataBean;
-import io.scleropages.sentarum.item.property.model.impl.SourceValueBean;
+import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
+import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
+import io.scleropages.sentarum.item.property.model.impl.ValuesSourceModel;
 import io.scleropages.sentarum.item.property.model.input.InputText;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class PropertyMetadataTests extends TestCase {
     public void testFlatPropertyMetadata() {
 
         //create metadata
-        PropertyMetadataBean address = new PropertyMetadataBean();
+        PropertyMetadataModel address = new PropertyMetadataModel();
         address.setId(1l);
         address.setName("address");
         address.setTag("地址");
@@ -74,7 +75,7 @@ public class PropertyMetadataTests extends TestCase {
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 
-        PropertyMetadataBean price = new PropertyMetadataBean();
+        PropertyMetadataModel price = new PropertyMetadataModel();
         price.setId(2l);
         price.setName("price");
         price.setTag("价格");
@@ -121,17 +122,18 @@ public class PropertyMetadataTests extends TestCase {
 
     public void testHierarchyPropertyMetadata() {
 
-        PropertyMetadataBean brand = new PropertyMetadataBean();
+        PropertyMetadataModel brand = new PropertyMetadataModel();
         brand.setId(1L);
         brand.setName("brand");
         brand.setTag("品牌");
         brand.setDescription("品牌作为品类的一个关键属性");
         brand.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_ROOT_PROPERTY);
         brand.setValueType(PropertyValueType.LONG);
-        brand.setValuesSource(() -> Lists.newArrayList(new SourceValueBean(1L, 1L, "Apple"), new SourceValueBean(2L, 2L, "IBM")));
+
+        brand.setValuesSource(new ValuesSourceModel(Lists.newArrayList(new SourceValueModel(1L, 1L, "Apple"), new SourceValueModel(2L, 2L, "IBM"))));
 
 
-        PropertyMetadataBean series = new PropertyMetadataBean();
+        PropertyMetadataModel series = new PropertyMetadataModel();
         series.setId(2L);
         series.setName("series");
         series.setTag("系列");
@@ -139,10 +141,10 @@ public class PropertyMetadataTests extends TestCase {
         series.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_NODE_PROPERTY);
         series.setValueType(PropertyValueType.PROPERTY_REF);
         series.setRefId(1L);
-        series.setValuesSource(() -> Lists.newArrayList(new SourceValueBean(3L, 1L, "Mac", 1L), new SourceValueBean(4L, 1L, "iPhone", 1L), new SourceValueBean(5L, 2L, "InfoSphere", 2L)));
+        series.setValuesSource(new ValuesSourceModel(Lists.newArrayList(new SourceValueModel(3L, 1L, "Mac", 1L), new SourceValueModel(4L, 1L, "iPhone", 1L), new SourceValueModel(5L, 2L, "InfoSphere", 2L))));
 
 
-        PropertyMetadataBean model = new PropertyMetadataBean();
+        PropertyMetadataModel model = new PropertyMetadataModel();
         model.setId(3L);
         model.setName("madia");
         model.setTag("型号");
@@ -150,7 +152,16 @@ public class PropertyMetadataTests extends TestCase {
         model.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_LEAF_PROPERTY);
         model.setValueType(PropertyValueType.PROPERTY_REF);
         model.setRefId(2L);
-        model.setValuesSource(() -> Lists.newArrayList(new SourceValueBean(6L, 1L, "MacBookPro-13-inch", 3L), new SourceValueBean(7L, 1L, "iPhoneX", 4L), new SourceValueBean(8L, 2L, "InfoSphere Application Server", 5L)));
+        model.setValuesSource(new ValuesSourceModel(Lists.newArrayList(new SourceValueModel(6L, 1L, "MacBookPro-13-inch", 3L), new SourceValueModel(7L, 1L, "iPhoneX", 4L), new SourceValueModel(8L, 2L, "InfoSphere Application Server", 5L))));
+
+        System.out.println(JsonMapper2.toJson(brand));
+        System.out.println(JsonMapper2.toJson(series));
+        System.out.println(JsonMapper2.toJson(model));
+
+        PropertyMetadataModel x=JsonMapper2.fromJson(JsonMapper2.toJson(model),PropertyMetadataModel.class);
+        System.out.println(JsonMapper2.toJson(x));
+
+
     }
 
 }

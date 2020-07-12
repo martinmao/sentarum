@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity;
+package io.scleropages.sentarum.item.ge.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
@@ -26,18 +26,29 @@ import javax.persistence.Table;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "ge_byte_array")
-@SequenceGenerator(name = "ge_byte_array_id", sequenceName = "seq_ge_byte_array", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class ByteArrayValueEntity extends IdEntity {
+@Table(name = "ge_struct_text")
+@SequenceGenerator(name = "ge_struct_text_id", sequenceName = "seq_ge_struct_text", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class StructureTextEntity extends IdEntity {
 
-    private byte[] rawBytes;
+    private Integer mediaType;
 
-    @Column(name = "raw_bytes", nullable = false, length = 2048)
-    public byte[] getRawBytes() {
-        return rawBytes;
+    private String text;
+
+    @Column(name = "media_type", nullable = false)
+    public Integer getMediaType() {
+        return mediaType;
     }
 
-    public void setRawBytes(byte[] rawBytes) {
-        this.rawBytes = rawBytes;
+    @Column(name = "text_", nullable = false)
+    public String getText() {
+        return text;
+    }
+
+    public void setMediaType(Integer mediaType) {
+        this.mediaType = mediaType;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

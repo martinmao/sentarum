@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.madia;
+package io.scleropages.sentarum.item.ge.model;
 
 /**
- * 媒体资源，图片，短视频
+ *
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Media {
-
+public class StructureText {
 }

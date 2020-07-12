@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity;
-
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+package io.scleropages.sentarum.item.ge.model;
 
 /**
+ *
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CategoryEntity extends IdEntity {
-
-    private String name;
-    private String tag;
-    private String description;
+public class ByteArray {
 }
