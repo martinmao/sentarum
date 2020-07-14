@@ -15,15 +15,12 @@
  */
 package io.scleropages.sentarum.item.property.repo;
 
-import io.scleropages.sentarum.item.property.entity.SourceValueEntity;
-import io.scleropages.sentarum.jooq.tables.PtSourceValue;
-import io.scleropages.sentarum.jooq.tables.records.PtSourceValueRecord;
+import io.scleropages.sentarum.item.property.entity.ValuesSourceEntity;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface SourceValueRepository extends GenericRepository<SourceValueEntity, Long>,
-        JooqRepository<PtSourceValue, PtSourceValueRecord, SourceValueEntity> {
+public interface ValuesSourceRepository extends GenericRepository<ValuesSourceEntity, Long> {
+
 }

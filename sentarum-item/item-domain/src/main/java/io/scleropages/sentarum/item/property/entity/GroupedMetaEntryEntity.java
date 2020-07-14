@@ -28,43 +28,45 @@ import javax.persistence.UniqueConstraint;
 
 /**
  * 参考模型: {@link io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prop_grouped_prop_meta_entry", uniqueConstraints = @UniqueConstraint(columnNames = {"grouped_prop_meta_id", "property_meta_id"}))
-@SequenceGenerator(name = "prop_grouped_prop_meta_entry_id", sequenceName = "seq_prop_grouped_prop_meta_entry", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class GroupedPropMetaEntryEntity extends IdEntity {
+@Table(name = "pt_grouped_meta_entry", uniqueConstraints = @UniqueConstraint(columnNames = {"grouped_meta_id", "property_meta_id"}))
+@SequenceGenerator(name = "pt_grouped_meta_entry_id", sequenceName = "seq_pt_grouped_meta_entry", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class GroupedMetaEntryEntity extends IdEntity {
 
-    private float order;
-    private PropertyMetadataEntity propertyMetadata;
-    private GroupedPropMetaEntity groupedPropMeta;
+    private Float order;
+    private PropertyMetaEntity propertyMetadata;
+    private GroupedMetaEntity groupedMeta;
 
     @Column(name = "order_", nullable = false)
-    public float getOrder() {
+    public Float getOrder() {
         return order;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_meta_id", nullable = false)
-    public PropertyMetadataEntity getPropertyMetadata() {
+    public PropertyMetaEntity getPropertyMetadata() {
         return propertyMetadata;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grouped_prop_meta_id", nullable = false)
-    public GroupedPropMetaEntity getGroupedPropMeta() {
-        return groupedPropMeta;
+    @JoinColumn(name = "grouped_meta_id", nullable = false)
+    public GroupedMetaEntity getGroupedMeta() {
+        return groupedMeta;
     }
 
-    public void setOrder(float order) {
+
+    public void setOrder(Float order) {
         this.order = order;
     }
 
-    public void setPropertyMetadata(PropertyMetadataEntity propertyMetadata) {
+    public void setPropertyMetadata(PropertyMetaEntity propertyMetadata) {
         this.propertyMetadata = propertyMetadata;
     }
 
-    public void setGroupedPropMeta(GroupedPropMetaEntity groupedPropMeta) {
-        this.groupedPropMeta = groupedPropMeta;
+    public void setGroupedMeta(GroupedMetaEntity groupedMeta) {
+        this.groupedMeta = groupedMeta;
     }
 }

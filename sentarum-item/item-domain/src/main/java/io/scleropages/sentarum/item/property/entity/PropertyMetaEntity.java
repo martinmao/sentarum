@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.item.property.entity;
 
-import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -30,15 +29,15 @@ import javax.persistence.UniqueConstraint;
 import java.util.List;
 
 /**
- * {@link PropertyMetadataModel}'s entity.
+ * 参考模型: {@link io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel}.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prop_property_meta",
+@Table(name = "pt_property_meta",
         uniqueConstraints = @UniqueConstraint(columnNames = {"name_"}))
-@SequenceGenerator(name = "prop_property_meta_id", sequenceName = "seq_prop_property_meta", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class PropertyMetadataEntity extends IdEntity {
+@SequenceGenerator(name = "pt_property_meta_id", sequenceName = "seq_pt_property_meta", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class PropertyMetaEntity extends IdEntity {
 
     private String name;
     private String tag;
@@ -56,11 +55,11 @@ public class PropertyMetadataEntity extends IdEntity {
     /**
      * {@link io.scleropages.sentarum.item.property.model.Input.InputType}
      */
-    private Integer inputType;
+    private Integer input;
 
-    private List<SourceValueEntity> sourceValues;
+    private ValuesSourceEntity valuesSource;
     private List<ConstraintEntity> constraints;
-    private PropertyMetadataEntity referencedPropertyMetadata;
+    private PropertyMetaEntity referencedPropertyMetadata;
 
 
     @Column(name = "name_", nullable = false)
@@ -98,24 +97,25 @@ public class PropertyMetadataEntity extends IdEntity {
         return structureType;
     }
 
-    @Column(name = "input_type", nullable = false)
-    public Integer getInputType() {
-        return inputType;
+    @Column(name = "input_", nullable = false)
+    public Integer getInput() {
+        return input;
     }
 
-    @OneToMany(mappedBy = "propertyMetadata")
-    public List<SourceValueEntity> getSourceValues() {
-        return sourceValues;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "values_source_id", nullable = false)
+    public ValuesSourceEntity getValuesSource() {
+        return valuesSource;
     }
 
-    @OneToMany(mappedBy = "propertyMetadata")
+    @OneToMany(mappedBy = "propertyMeta")
     public List<ConstraintEntity> getConstraints() {
         return constraints;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ref_property_meta_id", nullable = false)
-    public PropertyMetadataEntity getReferencedPropertyMetadata() {
+    public PropertyMetaEntity getReferencedPropertyMetadata() {
         return referencedPropertyMetadata;
     }
 
@@ -147,19 +147,19 @@ public class PropertyMetadataEntity extends IdEntity {
         this.structureType = structureType;
     }
 
-    public void setInputType(Integer inputType) {
-        this.inputType = inputType;
+    public void setInput(Integer input) {
+        this.input = input;
     }
 
-    public void setSourceValues(List<SourceValueEntity> sourceValues) {
-        this.sourceValues = sourceValues;
+    public void setValuesSource(ValuesSourceEntity valuesSource) {
+        this.valuesSource = valuesSource;
     }
 
     public void setConstraints(List<ConstraintEntity> constraints) {
         this.constraints = constraints;
     }
 
-    public void setReferencedPropertyMetadata(PropertyMetadataEntity referencedPropertyMetadata) {
+    public void setReferencedPropertyMetadata(PropertyMetaEntity referencedPropertyMetadata) {
         this.referencedPropertyMetadata = referencedPropertyMetadata;
     }
 }

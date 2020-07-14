@@ -15,33 +15,33 @@
  */
 package io.scleropages.sentarum.item.property.entity;
 
-import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * 参考模型： {@link SourceValueModel}
+ * 参考模型： {@link io.scleropages.sentarum.item.property.model.impl.SourceValueModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prop_source_value")
-@SequenceGenerator(name = "prop_source_value_id", sequenceName = "seq_prop_source_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "pt_source_value", indexes = @Index(columnList = "ref_source_value_id"))
+@SequenceGenerator(name = "pt_source_value_id", sequenceName = "seq_pt_source_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class SourceValueEntity extends IdEntity {
 
     private Long value;
     private String valueTag;
-    private String bizPayload;
+    private String attributes;
 
-    private SourceValueEntity referencedSourceValue;
-    private PropertyMetadataEntity propertyMetadata;
+    private Long refId;
+    private ValuesSourceEntity valuesSource;
 
 
     @Column(name = "value_", nullable = false)
@@ -54,21 +54,20 @@ public class SourceValueEntity extends IdEntity {
         return valueTag;
     }
 
-    @Column(name = "biz_payload")
-    public String getBizPayload() {
-        return bizPayload;
+    @Column(name = "attrs_payload")
+    public String getAttributes() {
+        return attributes;
+    }
+
+    @Column(name = "ref_source_value_id")
+    public Long getRefId() {
+        return refId;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ref_source_id", nullable = false)
-    public SourceValueEntity getReferencedSourceValue() {
-        return referencedSourceValue;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_meta_id", nullable = false)
-    public PropertyMetadataEntity getPropertyMetadata() {
-        return propertyMetadata;
+    @JoinColumn(name = "values_source_id", nullable = false)
+    public ValuesSourceEntity getValuesSource() {
+        return valuesSource;
     }
 
     public void setValue(Long value) {
@@ -79,15 +78,15 @@ public class SourceValueEntity extends IdEntity {
         this.valueTag = valueTag;
     }
 
-    public void setBizPayload(String bizPayload) {
-        this.bizPayload = bizPayload;
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
     }
 
-    public void setReferencedSourceValue(SourceValueEntity referencedSourceValue) {
-        this.referencedSourceValue = referencedSourceValue;
+    public void setValuesSource(ValuesSourceEntity valuesSource) {
+        this.valuesSource = valuesSource;
     }
 
-    public void setPropertyMetadata(PropertyMetadataEntity propertyMetadata) {
-        this.propertyMetadata = propertyMetadata;
+    public void setRefId(Long refId) {
+        this.refId = refId;
     }
 }

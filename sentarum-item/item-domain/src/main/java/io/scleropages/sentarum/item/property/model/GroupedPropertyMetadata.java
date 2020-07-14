@@ -26,24 +26,41 @@ import java.util.List;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GroupedPropertyMetadata extends PropertyMetadata {
+public interface GroupedPropertyMetadata {
 
-    @Override
-    default Boolean keyed() {//组合属性不可能是键类型的（能被检索的），组合属性无法直接存储
-        return false;
-    }
+    /**
+     * 标识
+     *
+     * @return
+     */
+    Long id();
 
-    @Override
-    default PropertyStructureType structureType() {//组合属性不支持层级关系
-        return PropertyStructureType.FLAT_PROPERTY;
-    }
+    /**
+     * 属性名称
+     *
+     * @return
+     */
+    String name();
 
-    @Override
-    default PropertyValueType valueType() {//组合属性没有值
-        throw new IllegalStateException("unsupported operation.");
-    }
+    /**
+     * 属性标题
+     *
+     * @return
+     */
+    String tag();
 
-    @Override
+    /**
+     * 属性描述
+     *
+     * @return
+     */
+    String description();
+
+
+    /**
+     * 输入
+     * @return
+     */
     default Input input() {
         ComplexInput complexInput = new ComplexInput();
         orderedPropertiesMetadata().forEach(orderedPropertyMetadata -> {
@@ -59,14 +76,6 @@ public interface GroupedPropertyMetadata extends PropertyMetadata {
      * @return
      */
     List<OrderedPropertyMetadata> orderedPropertiesMetadata();
-
-
-    /**
-     * 添加一个 property metadata
-     *
-     * @param propertyMetadata
-     */
-    void addPropertyMetadata(PropertyMetadata propertyMetadata);
 
 
     /**

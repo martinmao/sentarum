@@ -15,16 +15,16 @@
  */
 package io.scleropages.sentarum.item.property.repo;
 
-import io.scleropages.sentarum.item.property.entity.PropertyMetadataEntity;
-import io.scleropages.sentarum.jooq.tables.PropPropertyMeta;
-import io.scleropages.sentarum.jooq.tables.records.PropPropertyMetaRecord;
+import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
+import io.scleropages.sentarum.jooq.tables.PtPropertyMeta;
+import io.scleropages.sentarum.jooq.tables.records.PtPropertyMetaRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PropertyMetadataRepository extends GenericRepository<PropertyMetadataEntity, Long>,
-        JooqRepository<PropPropertyMeta, PropPropertyMetaRecord, PropertyMetadataEntity> {
+public interface PropertyMetaRepository extends GenericRepository<PropertyMetaEntity, Long>,
+        JooqRepository<PtPropertyMeta, PtPropertyMetaRecord, PropertyMetaEntity> {
 
 }

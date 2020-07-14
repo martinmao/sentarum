@@ -15,6 +15,13 @@
  */
 package io.scleropages.sentarum.item.property.model;
 
+import io.scleropages.sentarum.item.property.model.input.ComplexInput;
+import io.scleropages.sentarum.item.property.model.input.InputText;
+import io.scleropages.sentarum.item.property.model.input.MultiCheck;
+import io.scleropages.sentarum.item.property.model.input.MultiComplexInput;
+import io.scleropages.sentarum.item.property.model.input.MultiInputText;
+import io.scleropages.sentarum.item.property.model.input.SingleCheck;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,28 +38,28 @@ public interface Input {
         /**
          * 单值文本输入型.
          */
-        TEXT(1, "单值文本输入型"),
+        TEXT(1, "单值文本输入型", InputText.class),
         /**
          * 多值文本输入型.
          */
-        MULTI_TEXT(2, "多值文本输入型"),
+        MULTI_TEXT(2, "多值文本输入型", MultiInputText.class),
         /**
          * 单选（单值).
          */
-        SINGLE_CHECK(3, "单选(单值)"),
+        SINGLE_CHECK(3, "单选(单值)", SingleCheck.class),
         /**
          * 多选（多值).
          */
-        MULTI_CHECK(4, "多选(多值)"),
+        MULTI_CHECK(4, "多选(多值)", MultiCheck.class),
         /**
          * 复合输入类型, 适用于 {@link GroupedPropertyMetadata}. 其中，元素类型只能是以上定义的基本输入类型（如: text,multiText,singleCheck,multiCheck.）
          * 举例：country，province，city三个 singleCheck合并定义为一个名为address的complex类型.
          */
-        COMPLEX(5, "复合输入类型"),
+        COMPLEX(5, "复合输入类型", ComplexInput.class),
         /**
          * 多复合输入类型, 适用于 {@link GroupedPropertyMetadata}.其中.元素类型只能是 complex（复合类型）.
          */
-        MULTI_COMPLEX(6, "多复合输入类型");
+        MULTI_COMPLEX(6, "多复合输入类型", MultiComplexInput.class);
 
         /**
          * 显示指定 ordinal,避免定义顺序被意外变更.
@@ -63,9 +70,15 @@ public interface Input {
          */
         private final String tag;
 
-        InputType(int ordinal, String tag) {
+        /**
+         * input 类
+         */
+        private final Class inputClass;
+
+        InputType(int ordinal, String tag, Class inputClass) {
             this.ordinal = ordinal;
             this.tag = tag;
+            this.inputClass = inputClass;
         }
 
         private static final Map<String, InputType> nameMappings = new HashMap<>(12);
@@ -104,6 +117,15 @@ public interface Input {
          */
         public String getTag() {
             return tag;
+        }
+
+        /**
+         * return input class.
+         *
+         * @return
+         */
+        public Class getInputClass() {
+            return inputClass;
         }
     }
 

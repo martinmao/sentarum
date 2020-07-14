@@ -15,12 +15,20 @@
  */
 package io.scleropages.sentarum.item.property.model;
 
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.property.model.constraint.ConstraintDepends;
 import io.scleropages.sentarum.item.property.model.constraint.NotEmpty;
 import io.scleropages.sentarum.item.property.model.constraint.NotNull;
 import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
+import org.scleropages.core.util.ClassPathScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
+import org.springframework.util.ClassUtils;
+
+import javax.validation.constraints.Null;
+import java.util.Map;
 
 /**
  * 描述属性约束
@@ -28,6 +36,35 @@ import org.springframework.core.Ordered;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public abstract class Constraint implements Ordered {
+
+    protected static final Logger LOGGER = LoggerFactory.getLogger(Constraint.class);
+
+    private static final Map<String, Class> constraintImplClass = Maps.newHashMap();
+
+    private Long id;
+
+    static {
+        String constraintImplPackage = NotNull.class.getPackage().getName();
+        try {
+            ClassPathScanner.scanClasses(constraintImplPackage, metadataReader -> {
+                try {
+                    Class<?> clazz = ClassUtils.forName(metadataReader.getClassMetadata().getClassName(), Constraint.class.getClassLoader());
+                    if (ClassUtils.isAssignable(Constraint.class, clazz))
+                        constraintImplClass.put(clazz.getSimpleName(), clazz);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalStateException(e);
+                }
+            }, Constraint.class, false);
+        } catch (Exception e) {
+            LOGGER.warn("failure to scanning constraint implementations.", e);
+        }
+        LOGGER.info("successfully scanning constraint implementations: {}", ClassUtils.classNamesToString(constraintImplClass.values().toArray(new Class[constraintImplClass.size()])));
+    }
+
+    public static final Class getConstraintImplementationClass(String name) {
+        return constraintImplClass.get(name);
+    }
+
 
     private String message;
 
@@ -73,6 +110,7 @@ public abstract class Constraint implements Ordered {
     /**
      * 返回约束名称，实际返回的是约束的类名(不含包名).在进行持久化时，不会存储包信息
      * 这要求实现类必须确保统一实现在 {@link io.scleropages.sentarum.item.property.model.constraint}包下.
+     * see {@link #getConstraintImplementationClass(String)}
      *
      * @return
      */
@@ -93,5 +131,21 @@ public abstract class Constraint implements Ordered {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Null(groups = Create.class)
+    @javax.validation.constraints.NotNull(groups = Update.class)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

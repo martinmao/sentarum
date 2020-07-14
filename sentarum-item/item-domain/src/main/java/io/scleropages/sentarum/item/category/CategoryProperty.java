@@ -69,6 +69,19 @@ public interface CategoryProperty {
      */
     boolean visible();
 
+    /**
+     * 必填属性
+     *
+     * @return
+     */
+    boolean required();
+
+    /**
+     * 顺序
+     * @return
+     */
+    float order();
+
 
     /**
      * 目标属性定义,可能的类型为：{@link PropertyMetadata},{@link GroupedPropertyMetadata}

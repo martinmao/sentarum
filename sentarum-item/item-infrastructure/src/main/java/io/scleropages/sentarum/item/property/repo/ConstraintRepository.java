@@ -16,8 +16,8 @@
 package io.scleropages.sentarum.item.property.repo;
 
 import io.scleropages.sentarum.item.property.entity.ConstraintEntity;
-import io.scleropages.sentarum.jooq.tables.PropConstraint;
-import io.scleropages.sentarum.jooq.tables.records.PropConstraintRecord;
+import io.scleropages.sentarum.jooq.tables.PtConstraint;
+import io.scleropages.sentarum.jooq.tables.records.PtConstraintRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
@@ -25,6 +25,5 @@ import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface ConstraintRepository extends GenericRepository<ConstraintEntity, Long>,
-        JooqRepository<PropConstraint, PropConstraintRecord, ConstraintEntity> {
-
+        JooqRepository<PtConstraint, PtConstraintRecord, ConstraintEntity> {
 }

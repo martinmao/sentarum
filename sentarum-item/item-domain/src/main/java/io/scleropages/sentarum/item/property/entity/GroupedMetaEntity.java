@@ -25,19 +25,19 @@ import javax.persistence.Table;
 import java.util.List;
 
 /**
- * 参考模型: {@link io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata}
+ * 参考模型: {@link io.scleropages.sentarum.item.property.model.impl.GroupedPropertyMetadataModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prop_grouped_prop_meta")
-@SequenceGenerator(name = "prop_grouped_prop_meta_id", sequenceName = "seq_prop_grouped_prop_meta", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class GroupedPropMetaEntity extends IdEntity {
+@Table(name = "pt_grouped_meta")
+@SequenceGenerator(name = "pt_grouped_meta_id", sequenceName = "seq_pt_grouped_meta", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class GroupedMetaEntity extends IdEntity {
 
     private String name;
     private String tag;
     private String description;
-    private List<GroupedPropMetaEntryEntity> entries;
+    private List<GroupedMetaEntryEntity> entries;
 
     @Column(name = "name_", nullable = false)
     public String getName() {
@@ -49,13 +49,13 @@ public class GroupedPropMetaEntity extends IdEntity {
         return tag;
     }
 
-    @Column(name = "description_", nullable = false)
+    @Column(name = "desc_", nullable = false)
     public String getDescription() {
         return description;
     }
 
-    @OneToMany(mappedBy = "groupedPropMeta")
-    public List<GroupedPropMetaEntryEntity> getEntries() {
+    @OneToMany(mappedBy = "groupedMeta")
+    public List<GroupedMetaEntryEntity> getEntries() {
         return entries;
     }
 
@@ -71,7 +71,7 @@ public class GroupedPropMetaEntity extends IdEntity {
         this.description = description;
     }
 
-    public void setEntries(List<GroupedPropMetaEntryEntity> entries) {
+    public void setEntries(List<GroupedMetaEntryEntity> entries) {
         this.entries = entries;
     }
 }

@@ -29,10 +29,10 @@ import static io.scleropages.sentarum.item.property.entity.AbstractPropertyValue
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prop_property_value",
+@Table(name = "pt_property_value",
         indexes = @Index(columnList = PROPERTY_META_ID_COLUMN),
         uniqueConstraints = @UniqueConstraint(columnNames = {BIZ_TYPE_COLUMN, BIZ_ID_COLUMN, NAME_COLUMN}))
-@SequenceGenerator(name = "prop_property_value_id", sequenceName = "seq_prop_property_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@SequenceGenerator(name = "pt_property_value_id", sequenceName = "seq_pt_property_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class PropertyValueEntity extends AbstractPropertyValueEntity {
 
 }

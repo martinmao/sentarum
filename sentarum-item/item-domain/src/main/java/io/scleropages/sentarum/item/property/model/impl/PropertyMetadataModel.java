@@ -20,8 +20,12 @@ import io.scleropages.sentarum.item.property.model.Input;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
+import io.scleropages.sentarum.item.property.model.vs.GenericValuesSource;
 import org.springframework.core.OrderComparator;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
@@ -40,9 +44,120 @@ public class PropertyMetadataModel implements PropertyMetadata {
     private PropertyValueType valueType;
     private PropertyStructureType structureType;
     private Input input;
-    private ValuesSourceModel valuesSource;
+    private ValuesSource valuesSource;
     private List<Constraint> constraints;
     private Long refId;
+
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
+    public Long getId() {
+        return id;
+    }
+
+    @NotBlank(groups = Create.class)
+    public String getName() {
+        return name;
+    }
+
+    @NotBlank(groups = Create.class)
+    public String getTag() {
+        return tag;
+    }
+
+    @NotBlank(groups = Create.class)
+    public String getDescription() {
+        return description;
+    }
+
+    @NotNull(groups = Create.class)
+    public Boolean getKeyed() {
+        return keyed;
+    }
+
+    @NotNull(groups = Create.class)
+    public Integer getBizType() {
+        return bizType;
+    }
+
+    @NotNull(groups = Create.class)
+    public PropertyValueType getValueType() {
+        return valueType;
+    }
+
+    @NotNull(groups = Create.class)
+    public PropertyStructureType getStructureType() {
+        return structureType;
+    }
+
+    @NotNull(groups = Create.class)
+    public Input getInput() {
+        return input;
+    }
+
+    @Null
+    public ValuesSource getValuesSource() {
+        return valuesSource;
+    }
+
+    @Null
+    public List<Constraint> getConstraints() {
+        if (null != constraints && constraints.size() > 0)
+            OrderComparator.sort(constraints);
+        return constraints;
+    }
+
+    public Long getRefId() {
+        return refId;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setKeyed(Boolean keyed) {
+        this.keyed = keyed;
+    }
+
+    public void setBizType(Integer bizType) {
+        this.bizType = bizType;
+    }
+
+    public void setValueType(PropertyValueType valueType) {
+        this.valueType = valueType;
+    }
+
+    public void setStructureType(PropertyStructureType structureType) {
+        this.structureType = structureType;
+    }
+
+    public void setInput(Input input) {
+        this.input = input;
+    }
+
+    public void setValuesSource(GenericValuesSource valuesSource) {
+        this.valuesSource = valuesSource;
+    }
+
+    public void setConstraints(List<Constraint> constraints) {
+        this.constraints = constraints;
+    }
+
+    public void setRefId(Long refId) {
+        this.refId = refId;
+    }
+
 
     @Override
     public Long id() {
@@ -106,101 +221,9 @@ public class PropertyMetadataModel implements PropertyMetadata {
     }
 
 
-    public Long getId() {
-        return id;
+    public interface Create {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Boolean getKeyed() {
-        return keyed;
-    }
-
-    public Integer getBizType() {
-        return bizType;
-    }
-
-    public PropertyValueType getValueType() {
-        return valueType;
-    }
-
-    public PropertyStructureType getStructureType() {
-        return structureType;
-    }
-
-    public Input getInput() {
-        return input;
-    }
-
-    public ValuesSourceModel getValuesSource() {
-        return valuesSource;
-    }
-
-    public List<Constraint> getConstraints() {
-        if (null != constraints && constraints.size() > 0)
-            OrderComparator.sort(constraints);
-        return constraints;
-    }
-
-    public Long getRefId() {
-        return refId;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setKeyed(Boolean keyed) {
-        this.keyed = keyed;
-    }
-
-    public void setBizType(Integer bizType) {
-        this.bizType = bizType;
-    }
-
-    public void setValueType(PropertyValueType valueType) {
-        this.valueType = valueType;
-    }
-
-    public void setStructureType(PropertyStructureType structureType) {
-        this.structureType = structureType;
-    }
-
-    public void setInput(Input input) {
-        this.input = input;
-    }
-
-    public void setValuesSource(ValuesSourceModel valuesSource) {
-        this.valuesSource = valuesSource;
-    }
-
-    public void setConstraints(List<Constraint> constraints) {
-        this.constraints = constraints;
-    }
-
-    public void setRefId(Long refId) {
-        this.refId = refId;
+    public interface Update {
     }
 }

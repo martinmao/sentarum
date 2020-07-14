@@ -17,7 +17,9 @@ package io.scleropages.sentarum.item.property.model.impl;
 
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.Map;
 
 /**
@@ -31,7 +33,7 @@ public class SourceValueModel implements ValuesSource.SourceValue {
     private Long value;
     private String valueTag;
     private Long refId;
-    private Map<String, Object> additionalAttributes;
+    private Map<String, Object> attributes;
 
     public SourceValueModel() {
     }
@@ -49,22 +51,26 @@ public class SourceValueModel implements ValuesSource.SourceValue {
         this.refId = refId;
     }
 
-    public SourceValueModel(Long id, Long value, String valueTag, Long refId, Map<String, Object> additionalAttributes) {
+    public SourceValueModel(Long id, Long value, String valueTag, Long refId, Map<String, Object> attributes) {
         this.id = id;
         this.value = value;
         this.valueTag = valueTag;
         this.refId = refId;
-        this.additionalAttributes = additionalAttributes;
+        this.attributes = attributes;
     }
 
+    @NotNull(groups = Update.class)
+    @Null(groups = Create.class)
     public Long getId() {
         return id;
     }
 
-    public Serializable getValue() {
+    @NotNull(groups = Create.class)
+    public Long getValue() {
         return value;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getValueTag() {
         return valueTag;
     }
@@ -73,10 +79,9 @@ public class SourceValueModel implements ValuesSource.SourceValue {
         return refId;
     }
 
-    public Map<String, Object> getAdditionalAttributes() {
-        return additionalAttributes;
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -94,32 +99,38 @@ public class SourceValueModel implements ValuesSource.SourceValue {
         this.refId = refId;
     }
 
-    public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
-        this.additionalAttributes = additionalAttributes;
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
     }
 
     @Override
     public Long id() {
-        return id;
+        return getId();
     }
 
     @Override
     public Long value() {
-        return value;
+        return getValue();
     }
 
     @Override
     public String valueTag() {
-        return valueTag;
+        return getValueTag();
     }
 
     @Override
     public Long refId() {
-        return refId;
+        return getRefId();
     }
 
     @Override
     public Map<String, Object> additionalAttributes() {
-        return additionalAttributes;
+        return getAttributes();
+    }
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

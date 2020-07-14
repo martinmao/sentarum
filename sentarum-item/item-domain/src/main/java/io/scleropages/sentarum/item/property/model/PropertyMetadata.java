@@ -15,7 +15,9 @@
  */
 package io.scleropages.sentarum.item.property.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 属性定义，用于描述一个属性元数据定义.
@@ -36,7 +38,7 @@ public interface PropertyMetadata {
         /**
          * 存在层级的属性,root节点,其属性值会关联一组其他属性（ {@link #HIERARCHY_NODE_PROPERTY} 或 {@link #HIERARCHY_LEAF_PROPERTY} ）
          * 这种属性结构的划分是为了更好的进行属性分类，导航。避免属性过多而无法穷举筛选的情况.
-         * 例如品牌，系列，型号这三种属性就存在层次关系(品牌确定系列，系列确定型号)
+         * 例如品牌，系列，型号这三种属性就存在层次关系(品牌确定系列，系列确定型号)，类似还有款式-尺码-颜色同样存在类似约束
          */
         HIERARCHY_ROOT_PROPERTY,
         /**
@@ -46,7 +48,26 @@ public interface PropertyMetadata {
         /**
          * 存在层级的属性，leaf节点，其属性值作为整个层次的最终叶子节点.
          */
-        HIERARCHY_LEAF_PROPERTY
+        HIERARCHY_LEAF_PROPERTY;
+
+        private static final Map<String, PropertyStructureType> nameMappings = new HashMap<>();
+        private static final Map<Integer, PropertyStructureType> ordinalMappings = new HashMap<>();
+
+        static {
+            for (PropertyStructureType structureType : PropertyStructureType.values()) {
+                nameMappings.put(structureType.name(), structureType);
+                ordinalMappings.put(structureType.ordinal(), structureType);
+            }
+        }
+
+        public static PropertyStructureType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static PropertyStructureType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
+
     }
 
     /**
@@ -85,7 +106,7 @@ public interface PropertyMetadata {
     Boolean keyed();
 
     /**
-     * 属性业务类型:关键属性，销售属性，产品属性，商品属性....
+     * 属性业务类型:以及业务分类，在属性挂靠之前设置，例如类目属性，SPU属性，SKU属性,商品属性，其他业务属性....
      *
      * @return
      */
@@ -128,7 +149,7 @@ public interface PropertyMetadata {
 
 
     /**
-     * 当 {@link #structureType()}为层级型属性(node,leaf)时，返回他的上级属性id.
+     * 当 {@link #structureType()}为层级型属性(node,leaf)时，返回他的上级属性id. root除外.
      *
      * @return
      */

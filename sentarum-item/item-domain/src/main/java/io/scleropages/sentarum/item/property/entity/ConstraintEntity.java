@@ -32,15 +32,15 @@ import javax.persistence.Table;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prop_constraint")
-@SequenceGenerator(name = "prop_constraint_id", sequenceName = "seq_prop_constraint", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "pt_constraint")
+@SequenceGenerator(name = "pt_constraint_id", sequenceName = "seq_pt_constraint", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ConstraintEntity extends IdEntity {
 
     private String name;
 
     private String rule;
 
-    private PropertyMetadataEntity propertyMetadata;
+    private PropertyMetaEntity propertyMeta;
 
     @Column(name = "name_", nullable = false)
     public String getName() {
@@ -54,10 +54,10 @@ public class ConstraintEntity extends IdEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_meta_id", nullable = false)
-    public PropertyMetadataEntity getPropertyMetadata() {
-        return propertyMetadata;
+    public PropertyMetaEntity getPropertyMeta() {
+        return propertyMeta;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -66,7 +66,7 @@ public class ConstraintEntity extends IdEntity {
         this.rule = rule;
     }
 
-    public void setPropertyMetadata(PropertyMetadataEntity propertyMetadata) {
-        this.propertyMetadata = propertyMetadata;
+    public void setPropertyMeta(PropertyMetaEntity propertyMeta) {
+        this.propertyMeta = propertyMeta;
     }
 }
