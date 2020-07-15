@@ -21,9 +21,13 @@ import io.scleropages.sentarum.jooq.tables.records.PtConstraintRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
+import java.util.List;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface ConstraintRepository extends GenericRepository<ConstraintEntity, Long>,
         JooqRepository<PtConstraint, PtConstraintRecord, ConstraintEntity> {
+
+    List<ConstraintEntity> findAllByPropertyMeta_Id(Long propertyMetaId);
 }

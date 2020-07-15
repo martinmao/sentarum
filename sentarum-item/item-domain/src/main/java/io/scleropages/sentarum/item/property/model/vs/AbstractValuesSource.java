@@ -16,9 +16,6 @@
 package io.scleropages.sentarum.item.property.model.vs;
 
 import io.scleropages.sentarum.item.property.model.ValuesSource;
-import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -27,39 +24,23 @@ public abstract class AbstractValuesSource implements ValuesSource {
 
     private Long id;
 
-    private List<SourceValueModel> sourceValues;
-
     public AbstractValuesSource() {
     }
 
-    public AbstractValuesSource(Long id, List<SourceValueModel> sourceValues) {
+    public AbstractValuesSource(Long id) {
         this.id = id;
-        this.sourceValues = sourceValues;
     }
 
     public Long getId() {
         return id;
     }
 
-    public List<SourceValueModel> getSourceValues() {
-        return sourceValues;
-    }
-
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setSourceValues(List<SourceValueModel> sourceValues) {
-        this.sourceValues = sourceValues;
     }
 
     @Override
     public Long id() {
         return getId();
-    }
-
-    @Override
-    public List<? extends SourceValue> values() {
-        return getSourceValues();
     }
 }

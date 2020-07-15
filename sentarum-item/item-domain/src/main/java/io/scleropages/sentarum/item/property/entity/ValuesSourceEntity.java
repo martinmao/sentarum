@@ -26,8 +26,7 @@ import javax.persistence.Table;
 /**
  * 参考兼容模型:
  * <pre>
- *     {@link io.scleropages.sentarum.item.property.model.vs.GenericValuesSource}
- *     {@link io.scleropages.sentarum.item.property.model.vs.DataValuesSource}
+ *     {@link io.scleropages.sentarum.item.property.model.vs.NativeValuesSource}
  *     {@link io.scleropages.sentarum.item.property.model.vs.SqlQueryValuesSource}
  *     {@link io.scleropages.sentarum.item.property.model.vs.HttpGetValuesSource}
  * </pre>
@@ -40,46 +39,23 @@ import javax.persistence.Table;
 public class ValuesSourceEntity extends IdEntity {
 
     private Integer valuesSourceType;
+    private String configure;
 
-    private Integer fetchSize;
-
-    private String command;
-
-    private String parametersPayLoad;
-
-    @Column(name = "values_source_type", nullable = false)
+    @Column(name = "vs_type", nullable = false)
     public Integer getValuesSourceType() {
         return valuesSourceType;
     }
 
-    @Column(name = "fetch_size")
-    public Integer getFetchSize() {
-        return fetchSize;
-    }
-
-    @Column(name = "cmd_")
-    public String getCommand() {
-        return command;
-    }
-
-    @Column(name = "parameters_payload")
-    public String getParametersPayLoad() {
-        return parametersPayLoad;
+    @Column(name = "conf_")
+    public String getConfigure() {
+        return configure;
     }
 
     public void setValuesSourceType(Integer valuesSourceType) {
         this.valuesSourceType = valuesSourceType;
     }
 
-    public void setFetchSize(Integer fetchSize) {
-        this.fetchSize = fetchSize;
-    }
-
-    public void setCommand(String command) {
-        this.command = command;
-    }
-
-    public void setParametersPayLoad(String parametersPayLoad) {
-        this.parametersPayLoad = parametersPayLoad;
+    public void setConfigure(String configure) {
+        this.configure = configure;
     }
 }

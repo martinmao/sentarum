@@ -15,13 +15,13 @@
  */
 package io.scleropages.sentarum.item.property.model;
 
-import io.scleropages.sentarum.item.property.model.vs.DataValuesSource;
-import io.scleropages.sentarum.item.property.model.vs.GenericValuesSource;
 import io.scleropages.sentarum.item.property.model.vs.HttpGetValuesSource;
+import io.scleropages.sentarum.item.property.model.vs.NativeValuesSource;
 import io.scleropages.sentarum.item.property.model.vs.SqlQueryValuesSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,10 +35,9 @@ public interface ValuesSource {
     enum ValuesSourceType {
 
 
-        ENUM_VALUES(1, "枚举值", "少量候选值，数据维护在本地，返回所有数据项. 适用于下拉列表", GenericValuesSource.class),
-        DATA_VALUES(2, "数据行", "大量候选值，数据维护在本地，分批返回. 适用于从表格中选择.", DataValuesSource.class),
-        SQL_QUERY_VALUES(3, "SQL检索结果集", "大量候选值，数据维护在目标表，分批返回. 适用于从表格中选择.", SqlQueryValuesSource.class),
-        HTTP_GET_VALUES(4, "HTTP-GET检索", "大量候选值，数据维护提供端，分批返回. 适用于从表格中选择.", HttpGetValuesSource.class);
+        NATIVE_VALUES_SOURCE(1, "本地值集", "数据维护在本地，分批返回. 适用于从列表中选择.", NativeValuesSource.class),
+        SQL_QUERY_VALUES_SOURCE(2, "SQL检索", "大量候选值，数据维护在目标表，分批返回. 适用于从列表中选择.", SqlQueryValuesSource.class),
+        HTTP_GET_VALUES_SOURCE(3, "HTTP-GET检索", "大量候选值，数据维护提供端，分批返回. 适用于从列表中选择.", HttpGetValuesSource.class);
 
         /**
          * 显式指定 ordinal,避免定义顺序被意外变更.
@@ -53,6 +52,9 @@ public interface ValuesSource {
          */
         private final String description;
 
+        /**
+         * 实现类.
+         */
         private final Class implementationClass;
 
         ValuesSourceType(int ordinal, String tag, String description, Class implementationClass) {
@@ -155,6 +157,13 @@ public interface ValuesSource {
         Long refId();
 
         /**
+         * 归属的 {@link ValuesSource#id()}
+         *
+         * @return
+         */
+        Long valuesSourceId();
+
+        /**
          * 值的其他描述项，例如属性值的来源是其他表(主键)，可将其他需要显示字段统一解析为 map结构.
          *
          * @return
@@ -177,10 +186,13 @@ public interface ValuesSource {
      */
     ValuesSourceType valuesSourceType();
 
+
     /**
      * return source values.
      *
+     * @param search
+     * @param pageable
      * @return
      */
-    List<? extends SourceValue> values();
+    Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable);
 }

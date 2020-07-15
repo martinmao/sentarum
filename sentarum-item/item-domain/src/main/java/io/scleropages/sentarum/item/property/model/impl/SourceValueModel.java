@@ -34,6 +34,8 @@ public class SourceValueModel implements ValuesSource.SourceValue {
     private String valueTag;
     private Long refId;
     private Map<String, Object> attributes;
+    private Long valuesSourceId;
+
 
     public SourceValueModel() {
     }
@@ -79,8 +81,14 @@ public class SourceValueModel implements ValuesSource.SourceValue {
         return refId;
     }
 
+    @Null(groups = Query.class)
     public Map<String, Object> getAttributes() {
         return attributes;
+    }
+
+    @NotNull(groups = {Create.class, Query.class})
+    public Long getValuesSourceId() {
+        return valuesSourceId;
     }
 
     public void setId(Long id) {
@@ -101,6 +109,10 @@ public class SourceValueModel implements ValuesSource.SourceValue {
 
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
+    }
+
+    public void setValuesSourceId(Long valuesSourceId) {
+        this.valuesSourceId = valuesSourceId;
     }
 
     @Override
@@ -124,6 +136,11 @@ public class SourceValueModel implements ValuesSource.SourceValue {
     }
 
     @Override
+    public Long valuesSourceId() {
+        return getValuesSourceId();
+    }
+
+    @Override
     public Map<String, Object> additionalAttributes() {
         return getAttributes();
     }
@@ -132,5 +149,8 @@ public class SourceValueModel implements ValuesSource.SourceValue {
     }
 
     public interface Update {
+    }
+
+    public interface Query {
     }
 }

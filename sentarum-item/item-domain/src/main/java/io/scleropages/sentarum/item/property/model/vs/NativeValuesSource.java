@@ -15,27 +15,25 @@
  */
 package io.scleropages.sentarum.item.property.model.vs;
 
-import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
+import org.scleropages.crud.FrameworkContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
-import java.util.List;
 
 /**
- * 使用本地存储值集(少量枚举值集),持久层需要基于既定的 {@link io.scleropages.sentarum.item.property.model.ValuesSource.SourceValue} 统一存储结构.
+ * 使用本地表存储值集
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class GenericValuesSource extends AbstractValuesSource {
+public class NativeValuesSource extends AbstractValuesSource {
 
 
-    public GenericValuesSource() {
-        super();
+    public interface NativeSourceValueLoader {
+        Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable);
     }
 
-    public GenericValuesSource(Long id, List<SourceValueModel> sourceValues) {
-        super(id, sourceValues);
-    }
 
     @Override
     @Null(groups = Create.class)
@@ -44,15 +42,15 @@ public class GenericValuesSource extends AbstractValuesSource {
         return super.getId();
     }
 
-    @Override
-    @Null
-    public List<SourceValueModel> getSourceValues() {
-        return super.getSourceValues();
-    }
 
     @Override
     public ValuesSourceType valuesSourceType() {
-        return ValuesSourceType.ENUM_VALUES;
+        return ValuesSourceType.NATIVE_VALUES_SOURCE;
+    }
+
+    @Override
+    public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
+        return FrameworkContext.getBean(NativeSourceValueLoader.class).readValues(search, pageable);
     }
 
 

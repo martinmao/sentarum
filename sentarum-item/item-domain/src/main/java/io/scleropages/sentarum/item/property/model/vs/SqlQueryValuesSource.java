@@ -15,19 +15,19 @@
  */
 package io.scleropages.sentarum.item.property.model.vs;
 
-import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
-import java.util.List;
 
 /**
- * 基于Sql查询产生的结果集，本地不进行缓存，但数据源与本地数据源一致。该接口不应该跨数据源集成，其他存储系统的数据.
+ * 基于Sql查询产生的结果集，本地不进行缓存，数据源与本地数据源同源。该接口不应该跨数据源集成其他存储系统的数据.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SqlQueryValuesSource extends DataValuesSource {
+public class SqlQueryValuesSource extends AbstractValuesSource {
 
     private String query;
 
@@ -38,16 +38,16 @@ public class SqlQueryValuesSource extends DataValuesSource {
         return super.getId();
     }
 
+
     @Override
-    @Null
-    public List<SourceValueModel> getSourceValues() {
-        return super.getSourceValues();
+    public ValuesSourceType valuesSourceType() {
+        return ValuesSourceType.SQL_QUERY_VALUES_SOURCE;
     }
 
 
     @Override
-    public ValuesSourceType valuesSourceType() {
-        return ValuesSourceType.SQL_QUERY_VALUES;
+    public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
+        return null;
     }
 
     /**
@@ -68,6 +68,7 @@ public class SqlQueryValuesSource extends DataValuesSource {
     public void setQuery(String query) {
         this.query = query;
     }
+
 
     public interface Create {
     }

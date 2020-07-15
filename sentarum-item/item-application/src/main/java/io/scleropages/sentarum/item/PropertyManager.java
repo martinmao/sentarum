@@ -25,14 +25,15 @@ import io.scleropages.sentarum.item.property.entity.mapper.GroupedMetaEntityMapp
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyMetaEntityMapper;
 import io.scleropages.sentarum.item.property.entity.mapper.SourceValueEntityMapper;
 import io.scleropages.sentarum.item.property.model.Constraint;
+import io.scleropages.sentarum.item.property.model.Input;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.impl.GroupedPropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import io.scleropages.sentarum.item.property.model.vs.AbstractValuesSource;
-import io.scleropages.sentarum.item.property.model.vs.DataValuesSource;
-import io.scleropages.sentarum.item.property.model.vs.GenericValuesSource;
 import io.scleropages.sentarum.item.property.model.vs.HttpGetValuesSource;
+import io.scleropages.sentarum.item.property.model.vs.NativeValuesSource;
 import io.scleropages.sentarum.item.property.model.vs.SqlQueryValuesSource;
 import io.scleropages.sentarum.item.property.repo.ConstraintRepository;
 import io.scleropages.sentarum.item.property.repo.GroupedMetaEntryRepository;
@@ -42,18 +43,24 @@ import io.scleropages.sentarum.item.property.repo.SourceValueRepository;
 import io.scleropages.sentarum.item.property.repo.ValuesSourceRepository;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.GenericManager;
+import org.scleropages.crud.dao.orm.SearchFilter;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
- * 属性元数据({@link io.scleropages.sentarum.item.property.model.PropertyMetadata}) 通用能力管理器.
+ * 属性元数据({@link io.scleropages.sentarum.item.property.model.PropertyMetadata}) 通用（原子）能力管理器.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -89,17 +96,10 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         propertyMetaRepository.save(propertyMetaEntity);
     }
 
-    @Validated({GenericValuesSource.Create.class})
-    @Transactional
-    @BizError("03")
-    public void createValuesSource(Long propertyMetaId, @Valid GenericValuesSource valuesSource) {
-        createValuesSourceInternal(propertyMetaId, valuesSource);
-    }
-
-    @Validated({DataValuesSource.Create.class})
+    @Validated({NativeValuesSource.Create.class})
     @Transactional
     @BizError("04")
-    public void createValuesSource(Long propertyMetaId, @Valid DataValuesSource valuesSource) {
+    public void createValuesSource(Long propertyMetaId, @Valid NativeValuesSource valuesSource) {
         createValuesSourceInternal(propertyMetaId, valuesSource);
     }
 
@@ -117,17 +117,11 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         createValuesSourceInternal(propertyMetaId, valuesSource);
     }
 
-    @Validated({GenericValuesSource.Update.class})
-    @Transactional
-    @BizError("07")
-    public void saveValuesSource(@Valid GenericValuesSource valuesSource) {
-        saveValuesSourceInternal(valuesSource);
-    }
 
-    @Validated({DataValuesSource.Update.class})
+    @Validated({NativeValuesSource.Update.class})
     @Transactional
     @BizError("08")
-    public void saveValuesSource(@Valid DataValuesSource valuesSource) {
+    public void saveValuesSource(@Valid NativeValuesSource valuesSource) {
         saveValuesSourceInternal(valuesSource);
     }
 
@@ -149,9 +143,8 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @Validated({SourceValueModel.Create.class})
     @Transactional
     @BizError("11")
-    public void createSourceValue(Long valuesSourceId, SourceValueModel sourceValueModel) {
-        Assert.notNull(valuesSourceId, "ValuesSource id must not be null.");
-        ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(valuesSourceId).orElseThrow(() -> new IllegalArgumentException("no values source found: " + valuesSourceId));
+    public void createSourceValue(@Valid SourceValueModel sourceValueModel) {
+        ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(sourceValueModel.getValuesSourceId()).orElseThrow(() -> new IllegalArgumentException("no values source found: " + sourceValueModel.getValuesSourceId()));
         SourceValueEntity sourceValueEntity = getModelMapper(SourceValueEntityMapper.class).mapForSave(sourceValueModel);
         sourceValueEntity.setValuesSource(valuesSourceEntity);
         sourceValueRepository.save(sourceValueEntity);
@@ -160,7 +153,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @Validated({SourceValueModel.Update.class})
     @Transactional
     @BizError("12")
-    public void saveSourceValue(SourceValueModel sourceValueModel) {
+    public void saveSourceValue(@Valid SourceValueModel sourceValueModel) {
         SourceValueEntity sourceValueEntity = sourceValueRepository.get(sourceValueModel.getId()).orElseThrow(() -> new IllegalArgumentException("no source value found: " + sourceValueModel.getId()));
         getModelMapper(SourceValueEntityMapper.class).mapForUpdate(sourceValueModel, sourceValueEntity);
     }
@@ -247,25 +240,61 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     }
 
 
+    @Transactional(readOnly = true)
+    @BizError("50")
+    public Page<PropertyMetadata> findPropertyMetadataPage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
+        return propertyMetaRepository.findPage(searchFilters, pageable).map(propertyMetaEntity -> getModelMapper().mapForRead(propertyMetaEntity));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("51")
+    public PropertyMetadata getPropertyMetadata(Long propertyMetadataId) {
+        Assert.notNull(propertyMetadataId, "propertyMetadataId must not be null.");
+        PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.get(propertyMetadataId).orElseThrow(() -> new IllegalArgumentException("no property meta data found: " + propertyMetadataId));
+        if (Input.InputType.isCheckInput(propertyMetaEntity.getInput())) {//如果属性的input 为check类型，加载其关联 ValuesSource
+            propertyMetaEntity.getValuesSource();
+        }
+        PropertyMetadataModel propertyMetadataModel = getModelMapper().mapForRead(propertyMetaEntity);
+        return propertyMetadataModel;
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("52")
+    public List<Constraint> findAllConstraintByPropertyMeta(Long propertyMetaId) {
+        Assert.notNull(propertyMetaId, "propertyMetaId must not be null.");
+        return constraintRepository.findAllByPropertyMeta_Id(propertyMetaId).stream().map(constraintEntity -> getModelMapper().toConstraint(constraintEntity)).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("53")
+    public ValuesSource getValuesSource(Long valuesSourceId) {
+        Assert.notNull(valuesSourceId, "valuesSourceId must not be null.");
+        ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(valuesSourceId).orElseThrow(() -> new IllegalArgumentException("no ValuesSource found: " + valuesSourceId));
+        return getModelMapper().toValuesSource(valuesSourceEntity);
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("54")
+    public Page<? extends ValuesSource.SourceValue> findSourceValuePage(SourceValueModel searchModel, Pageable pageable) {
+        ValuesSource valuesSource = getValuesSource(searchModel.getValuesSourceId());
+        return valuesSource.readValues(searchModel, pageable);
+    }
+
+
     protected void createValuesSourceInternal(Long propertyMetaId, ValuesSource valuesSource) {
         Assert.notNull(propertyMetaId, "property metadata id must not be null.");
         PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.get(propertyMetaId).orElseThrow(() -> new IllegalArgumentException("no property meta data found: " + propertyMetaId));
+        Assert.isTrue(Input.InputType.isCheckInput(propertyMetaEntity.getInput()), "not support values source for this property metadata (make sure it's a check input.): " + propertyMetaId);
         ValuesSourceEntity valuesSourceEntity = getModelMapper().toValuesSourceEntity(valuesSource);
         valuesSourceRepository.save(valuesSourceEntity);
         propertyMetaEntity.setValuesSource(valuesSourceEntity);
-        propertyMetaRepository.save(propertyMetaEntity);
     }
 
     protected void saveValuesSourceInternal(AbstractValuesSource valuesSource) {
         ValuesSourceEntity update = valuesSourceRepository.get(valuesSource.getId()).orElseThrow(() -> new IllegalArgumentException("no values source found: " + valuesSource.getId()));
         Assert.isTrue(Objects.equals(valuesSource.valuesSourceType().getOrdinal(), update.getValuesSourceType()), "values source type not allowed change.");
         ValuesSourceEntity changed = getModelMapper().toValuesSourceEntity(valuesSource);
-        if (null != changed.getCommand())
-            update.setCommand(changed.getCommand());
-        if (null != changed.getFetchSize())
-            update.setFetchSize(changed.getFetchSize());
-        if (null != changed.getParametersPayLoad())
-            update.setParametersPayLoad(changed.getParametersPayLoad());
+        update.setConfigure(changed.getConfigure());
     }
 
 

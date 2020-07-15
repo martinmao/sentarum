@@ -20,7 +20,6 @@ import io.scleropages.sentarum.item.property.model.Input;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
-import io.scleropages.sentarum.item.property.model.vs.GenericValuesSource;
 import org.springframework.core.OrderComparator;
 
 import javax.validation.constraints.NotBlank;
@@ -146,7 +145,7 @@ public class PropertyMetadataModel implements PropertyMetadata {
         this.input = input;
     }
 
-    public void setValuesSource(GenericValuesSource valuesSource) {
+    public void setValuesSource(ValuesSource valuesSource) {
         this.valuesSource = valuesSource;
     }
 

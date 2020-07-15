@@ -24,10 +24,6 @@ import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
-import io.scleropages.sentarum.item.property.model.vs.AbstractValuesSource;
-import io.scleropages.sentarum.item.property.model.vs.DataValuesSource;
-import io.scleropages.sentarum.item.property.model.vs.HttpGetValuesSource;
-import io.scleropages.sentarum.item.property.model.vs.SqlQueryValuesSource;
 import org.mapstruct.Mapper;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.ModelMapper;
@@ -91,47 +87,14 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
         ValuesSource.ValuesSourceType sourceType = ValuesSource.ValuesSourceType.getByOrdinal(valuesSourceType);
         Assert.notNull(sourceType, "no ValuesSourceType found by ordinal: " + valuesSourceType);
         Class implementationClass = sourceType.getImplementationClass();
-        sourceType.getImplementationClass();
-        AbstractValuesSource valuesSource;
-        try {
-            valuesSource = (AbstractValuesSource) implementationClass.newInstance();
-        } catch (Exception e) {
-            throw new IllegalStateException("failure to create ValuesSource of :" + implementationClass, e);
-        }
-        valuesSource.setId(valuesSourceEntity.getId());
-        if (valuesSource instanceof DataValuesSource) {
-            DataValuesSource dataValuesSource = (DataValuesSource) valuesSource;
-            dataValuesSource.setFetchSize(valuesSourceEntity.getFetchSize());
-        }
-        if (valuesSource instanceof SqlQueryValuesSource) {
-            SqlQueryValuesSource sqlQueryValuesSource = (SqlQueryValuesSource) valuesSource;
-            sqlQueryValuesSource.setQuery(valuesSourceEntity.getCommand());
-        }
-        if (valuesSource instanceof HttpGetValuesSource) {
-            HttpGetValuesSource httpGetValuesSource = (HttpGetValuesSource) valuesSource;
-            httpGetValuesSource.setUrl(valuesSourceEntity.getCommand());
-            httpGetValuesSource.setHttpHeaders(JsonMapper2.fromJson(valuesSourceEntity.getParametersPayLoad()));
-        }
-        return valuesSource;
+        return JsonMapper2.fromJson(valuesSourceEntity.getConfigure(), implementationClass);
     }
+
 
     default ValuesSourceEntity toValuesSourceEntity(ValuesSource valuesSource) {
         ValuesSourceEntity valuesSourceEntity = new ValuesSourceEntity();
         valuesSourceEntity.setValuesSourceType(valuesSource.valuesSourceType().getOrdinal());
-        if (valuesSource instanceof DataValuesSource) {
-            valuesSourceEntity.setFetchSize(((DataValuesSource) valuesSource).getFetchSize());
-        }
-        if (valuesSource instanceof SqlQueryValuesSource) {
-            String query = ((SqlQueryValuesSource) valuesSource).getQuery();
-            Assert.hasText(query, "query must not empty.");
-            valuesSourceEntity.setCommand(query);
-        }
-        if (valuesSource instanceof HttpGetValuesSource) {
-            String url = ((HttpGetValuesSource) valuesSource).getUrl();
-            Assert.hasText(url, "url must not empty.");
-            valuesSourceEntity.setCommand(url);
-            valuesSourceEntity.setParametersPayLoad(JsonMapper2.toJson(((HttpGetValuesSource) valuesSource).getHttpHeaders()));
-        }
+        valuesSourceEntity.setConfigure(JsonMapper2.toJson(valuesSource));
         return valuesSourceEntity;
     }
 }

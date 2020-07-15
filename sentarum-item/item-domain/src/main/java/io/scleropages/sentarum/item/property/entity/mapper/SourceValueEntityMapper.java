@@ -35,6 +35,8 @@ public interface SourceValueEntityMapper extends ModelMapper<SourceValueEntity, 
     }
 
     default Map<String, Object> payloadToAttributes(String payload) {
+        if (null == payload)
+            return null;
         return JsonMapper2.fromJson(payload);
     }
 }

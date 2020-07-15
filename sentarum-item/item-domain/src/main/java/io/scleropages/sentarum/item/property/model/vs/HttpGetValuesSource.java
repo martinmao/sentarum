@@ -15,12 +15,12 @@
  */
 package io.scleropages.sentarum.item.property.model.vs;
 
-import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class HttpGetValuesSource extends DataValuesSource {
+public class HttpGetValuesSource extends AbstractValuesSource {
 
     private String url;
 
@@ -42,16 +42,16 @@ public class HttpGetValuesSource extends DataValuesSource {
         return super.getId();
     }
 
-    @Override
-    @Null
-    public List<SourceValueModel> getSourceValues() {
-        return super.getSourceValues();
-    }
 
 
     @Override
     public ValuesSourceType valuesSourceType() {
-        return ValuesSourceType.HTTP_GET_VALUES;
+        return ValuesSourceType.HTTP_GET_VALUES_SOURCE;
+    }
+
+    @Override
+    public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
+        return null;
     }
 
     /**

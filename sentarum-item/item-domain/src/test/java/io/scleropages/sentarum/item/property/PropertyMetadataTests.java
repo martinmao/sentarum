@@ -29,10 +29,15 @@ import io.scleropages.sentarum.item.property.model.constraint.NotNull;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import io.scleropages.sentarum.item.property.model.input.InputText;
-import io.scleropages.sentarum.item.property.model.vs.GenericValuesSource;
+import io.scleropages.sentarum.item.property.model.vs.AbstractValuesSource;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.scleropages.core.mapper.JsonMapper2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.support.PageableExecutionUtils;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -130,8 +135,24 @@ public class PropertyMetadataTests extends TestCase {
         brand.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_ROOT_PROPERTY);
         brand.setValueType(PropertyValueType.LONG);
 
-        brand.setValuesSource(new GenericValuesSource(1L, Lists.newArrayList(new SourceValueModel(1L, 1L, "Apple"), new SourceValueModel(2L, 2L, "IBM"))));
+        brand.setValuesSource(new AbstractValuesSource(1L) {
 
+            private List<SourceValue> values = Lists.newArrayList(new SourceValueModel(1L, 1L, "Apple"), new SourceValueModel(2L, 2L, "IBM"));
+
+            @Override
+            public ValuesSourceType valuesSourceType() {
+                return ValuesSourceType.NATIVE_VALUES_SOURCE;
+            }
+
+            @Override
+            public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
+                return PageableExecutionUtils.getPage(values, pageable, () -> values.size());
+            }
+
+            public List<SourceValue> getValues() {
+                return values;
+            }
+        });
 
         PropertyMetadataModel series = new PropertyMetadataModel();
         series.setId(2L);
@@ -141,7 +162,25 @@ public class PropertyMetadataTests extends TestCase {
         series.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_NODE_PROPERTY);
         series.setValueType(PropertyValueType.PROPERTY_REF);
         series.setRefId(1L);
-        series.setValuesSource(new GenericValuesSource(2L, Lists.newArrayList(new SourceValueModel(3L, 1L, "Mac", 1L), new SourceValueModel(4L, 1L, "iPhone", 1L), new SourceValueModel(5L, 2L, "InfoSphere", 2L))));
+        series.setValuesSource(new AbstractValuesSource(2L) {
+
+            private List<SourceValue> values = Lists.newArrayList(new SourceValueModel(3L, 1L, "Mac", 1L), new SourceValueModel(4L, 1L, "iPhone", 1L), new SourceValueModel(5L, 2L, "InfoSphere", 2L));
+
+
+            @Override
+            public ValuesSourceType valuesSourceType() {
+                return ValuesSourceType.NATIVE_VALUES_SOURCE;
+            }
+
+            @Override
+            public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
+                return PageableExecutionUtils.getPage(values, pageable, () -> values.size());
+            }
+
+            public List<SourceValue> getValues() {
+                return values;
+            }
+        });
 
 
         PropertyMetadataModel model = new PropertyMetadataModel();
@@ -152,16 +191,28 @@ public class PropertyMetadataTests extends TestCase {
         model.setStructureType(PropertyMetadata.PropertyStructureType.HIERARCHY_LEAF_PROPERTY);
         model.setValueType(PropertyValueType.PROPERTY_REF);
         model.setRefId(2L);
-        model.setValuesSource(new GenericValuesSource(3L, Lists.newArrayList(new SourceValueModel(6L, 1L, "MacBookPro-13-inch", 3L), new SourceValueModel(7L, 1L, "iPhoneX", 4L), new SourceValueModel(8L, 2L, "InfoSphere Application Server", 5L))));
+        model.setValuesSource(new AbstractValuesSource(3L) {
+
+            private List<SourceValue> values = Lists.newArrayList(new SourceValueModel(6L, 1L, "MacBookPro-13-inch", 3L), new SourceValueModel(7L, 1L, "iPhoneX", 4L), new SourceValueModel(8L, 2L, "InfoSphere Application Server", 5L));
+
+            @Override
+            public ValuesSourceType valuesSourceType() {
+                return ValuesSourceType.NATIVE_VALUES_SOURCE;
+            }
+
+            @Override
+            public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
+                return PageableExecutionUtils.getPage(values, pageable, () -> values.size());
+            }
+
+            public List<SourceValue> getValues() {
+                return values;
+            }
+        });
 
         System.out.println(JsonMapper2.toJson(brand));
         System.out.println(JsonMapper2.toJson(series));
         System.out.println(JsonMapper2.toJson(model));
-
-        PropertyMetadataModel x = JsonMapper2.fromJson(JsonMapper2.toJson(model), PropertyMetadataModel.class);
-        System.out.println(JsonMapper2.toJson(x));
-
-
     }
 
 }
