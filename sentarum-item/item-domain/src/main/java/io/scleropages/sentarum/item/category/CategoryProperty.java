@@ -27,6 +27,50 @@ import io.scleropages.sentarum.item.property.model.PropertyValue;
 public interface CategoryProperty {
 
     /**
+     * 只读属性，不可变，品类上设置过值的属性，子品类以及叶子品类（包括，SPU，商品，SKU都不允许覆盖该值）.
+     *
+     * @return
+     */
+    boolean readOnly();
+
+    /**
+     * 控制下级(下级品类，SPU....)是否可见，例如某些统一设置，只读且不可见，这样下级类目SPU都不会感知到该属性
+     *
+     * @return
+     */
+    boolean visible();
+
+    /**
+     * 必填属性
+     *
+     * @return
+     */
+    boolean required();
+
+    /**
+     * 顺序
+     *
+     * @return
+     */
+    float order();
+
+
+    /**
+     * 目标属性定义,可能的类型为：{@link PropertyMetadata},{@link GroupedPropertyMetadata}
+     *
+     * @return
+     */
+    PropertyMetadata propertyMetadata();
+
+    /**
+     * 默认属性值
+     *
+     * @return
+     */
+    PropertyValue defaultValue();
+
+
+    /**
      * 品类属性业务类型
      */
     enum CategoryPropertyBizType {
@@ -54,46 +98,4 @@ public interface CategoryProperty {
      * @return
      */
     CategoryPropertyBizType categoryPropertyBizType();
-
-    /**
-     * 只读属性，不可变，品类上设置过值的属性，子品类以及叶子品类（包括，SPU，商品，SKU都不允许覆盖该值）.
-     *
-     * @return
-     */
-    boolean readOnly();
-
-    /**
-     * 控制下级(下级品类，SPU....)是否可见，例如某些统一设置，只读且不可见，这样下级类目SPU都不会感知到该属性
-     *
-     * @return
-     */
-    boolean visible();
-
-    /**
-     * 必填属性
-     *
-     * @return
-     */
-    boolean required();
-
-    /**
-     * 顺序
-     * @return
-     */
-    float order();
-
-
-    /**
-     * 目标属性定义,可能的类型为：{@link PropertyMetadata},{@link GroupedPropertyMetadata}
-     *
-     * @return
-     */
-    PropertyMetadata propertyMetadata();
-
-    /**
-     * 默认属性值
-     *
-     * @return
-     */
-    PropertyValue defaultValue();
 }
