@@ -19,6 +19,7 @@ import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
+import org.springframework.util.Assert;
 
 /**
  * 约束规则非常复杂，难以通过默认的约束描述，需要将这些提示显示给前端用户人工确保约束成立，或一些警告信息.例如改价这种风险性较高的操作.
@@ -60,5 +61,10 @@ public class Tip extends Constraint {
     @Override
     protected String internalMessage() {
         return "系统提示";
+    }
+
+    @Override
+    public void assertValid() {
+        Assert.hasText(tips, "tips is required for: " + getName());
     }
 }

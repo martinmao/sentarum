@@ -38,28 +38,38 @@ public class SourceValueModel implements ValuesSource.SourceValue {
 
 
     public SourceValueModel() {
+
     }
 
-    public SourceValueModel(Long id, Long value, String valueTag) {
-        this.id = id;
+    public SourceValueModel(Long value, String valueTag, Long valuesSourceId) {
         this.value = value;
         this.valueTag = valueTag;
+        this.valuesSourceId = valuesSourceId;
     }
 
-    public SourceValueModel(Long id, Long value, String valueTag, Long refId) {
-        this.id = id;
+    public SourceValueModel(Long value, String valueTag, Long valuesSourceId, Long refId) {
         this.value = value;
         this.valueTag = valueTag;
+        this.valuesSourceId = valuesSourceId;
         this.refId = refId;
     }
 
-    public SourceValueModel(Long id, Long value, String valueTag, Long refId, Map<String, Object> attributes) {
+
+    public SourceValueModel(Long id, Long value, String valueTag, Long valuesSourceId) {
         this.id = id;
         this.value = value;
         this.valueTag = valueTag;
-        this.refId = refId;
-        this.attributes = attributes;
+        this.valuesSourceId = valuesSourceId;
     }
+
+    public SourceValueModel(Long id, Long value, String valueTag, Long valuesSourceId, Long refId) {
+        this.id = id;
+        this.value = value;
+        this.valueTag = valueTag;
+        this.valuesSourceId = valuesSourceId;
+        this.refId = refId;
+    }
+
 
     @NotNull(groups = Update.class)
     @Null(groups = Create.class)

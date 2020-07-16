@@ -19,6 +19,7 @@ import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
+import org.springframework.util.Assert;
 
 import java.util.regex.Pattern;
 
@@ -54,5 +55,10 @@ public class Regex extends Constraint {
     @Override
     protected String internalMessage() {
         return "内容格式不合法";
+    }
+
+    @Override
+    public void assertValid() {
+        Assert.hasText(regex, "regex is required for: " + getName());
     }
 }

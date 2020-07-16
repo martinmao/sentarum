@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.property.model.PropertyInputValidators;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
+import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.constraint.ConstraintDepends;
 import io.scleropages.sentarum.item.property.model.constraint.Max;
 import io.scleropages.sentarum.item.property.model.constraint.MaxLength;
@@ -137,7 +138,7 @@ public class PropertyMetadataTests extends TestCase {
 
         brand.setValuesSource(new AbstractValuesSource(1L) {
 
-            private List<SourceValue> values = Lists.newArrayList(new SourceValueModel(1L, 1L, "Apple"), new SourceValueModel(2L, 2L, "IBM"));
+            private List<ValuesSource.SourceValue> values = Lists.newArrayList(new SourceValueModel(1L, 1L, "Apple", 1L), new SourceValueModel(2L, 2L, "IBM", 1L));
 
             @Override
             public ValuesSourceType valuesSourceType() {
@@ -164,8 +165,7 @@ public class PropertyMetadataTests extends TestCase {
         series.setRefId(1L);
         series.setValuesSource(new AbstractValuesSource(2L) {
 
-            private List<SourceValue> values = Lists.newArrayList(new SourceValueModel(3L, 1L, "Mac", 1L), new SourceValueModel(4L, 1L, "iPhone", 1L), new SourceValueModel(5L, 2L, "InfoSphere", 2L));
-
+            private List<ValuesSource.SourceValue> values = Lists.newArrayList(new SourceValueModel(3L, 1L, "Mac", 1L, 1L), new SourceValueModel(4L, 1L, "iPhone", 1L, 1L), new SourceValueModel(5L, 2L, "InfoSphere", 1L, 2L));
 
             @Override
             public ValuesSourceType valuesSourceType() {
@@ -193,7 +193,7 @@ public class PropertyMetadataTests extends TestCase {
         model.setRefId(2L);
         model.setValuesSource(new AbstractValuesSource(3L) {
 
-            private List<SourceValue> values = Lists.newArrayList(new SourceValueModel(6L, 1L, "MacBookPro-13-inch", 3L), new SourceValueModel(7L, 1L, "iPhoneX", 4L), new SourceValueModel(8L, 2L, "InfoSphere Application Server", 5L));
+            private List<ValuesSource.SourceValue> values = Lists.newArrayList(new SourceValueModel(6L, 1L, "MacBookPro-13-inch", 1L, 3L), new SourceValueModel(7L, 1L, "iPhoneX", 1L, 4L), new SourceValueModel(8L, 2L, "InfoSphere Application Server", 1L, 5L));
 
             @Override
             public ValuesSourceType valuesSourceType() {

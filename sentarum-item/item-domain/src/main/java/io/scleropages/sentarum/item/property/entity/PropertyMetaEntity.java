@@ -59,7 +59,8 @@ public class PropertyMetaEntity extends IdEntity {
 
     private ValuesSourceEntity valuesSource;
     private List<ConstraintEntity> constraints;
-    private PropertyMetaEntity referencedPropertyMetadata;
+
+    private Long refId;
 
 
     @Column(name = "name_", nullable = false)
@@ -103,7 +104,7 @@ public class PropertyMetaEntity extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "values_source_id", nullable = false)
+    @JoinColumn(name = "values_source_id")
     public ValuesSourceEntity getValuesSource() {
         return valuesSource;
     }
@@ -113,10 +114,9 @@ public class PropertyMetaEntity extends IdEntity {
         return constraints;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ref_property_meta_id", nullable = false)
-    public PropertyMetaEntity getReferencedPropertyMetadata() {
-        return referencedPropertyMetadata;
+    @Column(name = "property_meta_id")
+    public Long getRefId() {
+        return refId;
     }
 
     public void setName(String name) {
@@ -159,7 +159,7 @@ public class PropertyMetaEntity extends IdEntity {
         this.constraints = constraints;
     }
 
-    public void setReferencedPropertyMetadata(PropertyMetaEntity referencedPropertyMetadata) {
-        this.referencedPropertyMetadata = referencedPropertyMetadata;
+    public void setRefId(Long refId) {
+        this.refId = refId;
     }
 }

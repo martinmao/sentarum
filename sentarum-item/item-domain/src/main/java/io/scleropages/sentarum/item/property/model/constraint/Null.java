@@ -19,6 +19,7 @@ import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
+import org.springframework.util.Assert;
 
 /**
  * 空值约束，提供的值必须为空。例如只读属性
@@ -40,5 +41,9 @@ public class Null extends Constraint {
     @Override
     protected String internalMessage() {
         return "不允许设置";
+    }
+
+    @Override
+    public void assertValid() {
     }
 }

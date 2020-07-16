@@ -20,6 +20,7 @@ import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -101,5 +102,10 @@ public class Min extends Constraint {
     @Override
     protected String internalMessage() {
         return "超过最小值限定: " + min;
+    }
+
+    @Override
+    public void assertValid() {
+        Assert.notNull(min, "min is required for: " + getName());
     }
 }

@@ -143,6 +143,12 @@ public abstract class Constraint implements Ordered {
         this.id = id;
     }
 
+
+    /**
+     * assert required config is valid by implementation class.
+     */
+    abstract public void assertValid();
+
     public interface Create {
     }
 

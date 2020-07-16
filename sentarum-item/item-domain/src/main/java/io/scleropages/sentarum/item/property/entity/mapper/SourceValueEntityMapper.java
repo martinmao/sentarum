@@ -30,6 +30,8 @@ import java.util.Map;
 public interface SourceValueEntityMapper extends ModelMapper<SourceValueEntity, SourceValueModel> {
 
     default String attributesToPayload(Map<String, Object> attributes) {
+        if (null == attributes)
+            return null;
         return JsonMapper2.toJson(attributes);
 
     }

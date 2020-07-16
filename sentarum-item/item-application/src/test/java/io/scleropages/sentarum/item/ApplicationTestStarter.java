@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.property.repo;
+package io.scleropages.sentarum.item;
 
-import io.scleropages.sentarum.item.property.entity.GroupedMetaEntity;
-import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GroupedMetaRepository extends GenericRepository<GroupedMetaEntity, Long> {
+@SpringBootApplication
+public class ApplicationTestStarter {
 
-    @EntityGraph(attributePaths = "entries")
-    GroupedMetaEntity getById(Long id);
+    public static void main(String[] args) {
+        SpringApplication springApplication = new SpringApplication(ApplicationTestStarter.class);
+        springApplication.run(args);
+    }
+
 }

@@ -19,6 +19,7 @@ import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -77,5 +78,10 @@ public class Max extends Constraint {
     @Override
     protected String internalMessage() {
         return "超过最大值限定: " + max;
+    }
+
+    @Override
+    public void assertValid() {
+        Assert.notNull(max, "max is required for: " + getName());
     }
 }

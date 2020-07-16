@@ -47,4 +47,8 @@ public class NotEmpty extends Constraint {
     public int getOrder() {
         return Integer.MIN_VALUE - 1;
     }
+
+    @Override
+    public void assertValid() {
+    }
 }

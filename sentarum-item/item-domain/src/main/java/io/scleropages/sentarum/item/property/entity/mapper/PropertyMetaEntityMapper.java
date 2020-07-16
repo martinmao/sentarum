@@ -24,10 +24,10 @@ import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
+import io.scleropages.sentarum.item.property.model.vs.AbstractValuesSource;
 import org.mapstruct.Mapper;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.ModelMapper;
-import org.springframework.util.Assert;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -83,15 +83,19 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
 
 
     default ValuesSource toValuesSource(ValuesSourceEntity valuesSourceEntity) {
-        Integer valuesSourceType = valuesSourceEntity.getValuesSourceType();
-        ValuesSource.ValuesSourceType sourceType = ValuesSource.ValuesSourceType.getByOrdinal(valuesSourceType);
-        Assert.notNull(sourceType, "no ValuesSourceType found by ordinal: " + valuesSourceType);
+        if (null == valuesSourceEntity)
+            return null;
+        ValuesSource.ValuesSourceType sourceType = ValuesSource.ValuesSourceType.getByOrdinal(valuesSourceEntity.getValuesSourceType());
         Class implementationClass = sourceType.getImplementationClass();
-        return JsonMapper2.fromJson(valuesSourceEntity.getConfigure(), implementationClass);
+        AbstractValuesSource valuesSource = JsonMapper2.fromJson(valuesSourceEntity.getConfigure(), implementationClass);
+        valuesSource.setId(valuesSourceEntity.getId());
+        return valuesSource;
     }
 
 
     default ValuesSourceEntity toValuesSourceEntity(ValuesSource valuesSource) {
+        if (null == valuesSource)
+            return null;
         ValuesSourceEntity valuesSourceEntity = new ValuesSourceEntity();
         valuesSourceEntity.setValuesSourceType(valuesSource.valuesSourceType().getOrdinal());
         valuesSourceEntity.setConfigure(JsonMapper2.toJson(valuesSource));

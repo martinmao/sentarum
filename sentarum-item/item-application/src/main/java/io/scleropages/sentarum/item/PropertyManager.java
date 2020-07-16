@@ -25,6 +25,7 @@ import io.scleropages.sentarum.item.property.entity.mapper.GroupedMetaEntityMapp
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyMetaEntityMapper;
 import io.scleropages.sentarum.item.property.entity.mapper.SourceValueEntityMapper;
 import io.scleropages.sentarum.item.property.model.Constraint;
+import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.Input;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
@@ -41,6 +42,7 @@ import io.scleropages.sentarum.item.property.repo.GroupedMetaRepository;
 import io.scleropages.sentarum.item.property.repo.PropertyMetaRepository;
 import io.scleropages.sentarum.item.property.repo.SourceValueRepository;
 import io.scleropages.sentarum.item.property.repo.ValuesSourceRepository;
+import org.apache.commons.collections.ComparatorUtils;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.dao.orm.SearchFilter;
@@ -60,7 +62,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * 属性元数据({@link io.scleropages.sentarum.item.property.model.PropertyMetadata}) 通用（原子）能力管理器.
+ * 属性元数据({@link io.scleropages.sentarum.item.property.model.PropertyMetadata}) 通用（原子）功能管理器.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -170,6 +172,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @BizError("14")
     public void createConstraint(Long propertyMetaId, @Valid Constraint constraint) {
         Assert.notNull(propertyMetaId, "property metadata id must not be null.");
+        constraint.assertValid();
         PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.get(propertyMetaId).orElseThrow(() -> new IllegalArgumentException("no property meta data found: " + propertyMetaId));
         ConstraintEntity constraintEntity = new ConstraintEntity();
         constraintEntity.setName(constraint.getName());
@@ -255,6 +258,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
             propertyMetaEntity.getValuesSource();
         }
         PropertyMetadataModel propertyMetadataModel = getModelMapper().mapForRead(propertyMetaEntity);
+        propertyMetadataModel.setConstraints(findAllConstraintByPropertyMeta(propertyMetadataModel.id()));
         return propertyMetadataModel;
     }
 
@@ -278,6 +282,28 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     public Page<? extends ValuesSource.SourceValue> findSourceValuePage(SourceValueModel searchModel, Pageable pageable) {
         ValuesSource valuesSource = getValuesSource(searchModel.getValuesSourceId());
         return valuesSource.readValues(searchModel, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("55")
+    public Page<GroupedPropertyMetadata> findGroupedPropertyMetadataPage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
+        return groupedMetaRepository.findPage(searchFilters, pageable).map(entity -> getModelMapper(GroupedMetaEntityMapper.class).mapForRead(entity));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("56")
+    public GroupedPropertyMetadata getGroupedPropertyMetadata(Long id) {
+        return getModelMapper(GroupedMetaEntityMapper.class).mapForRead(groupedMetaRepository.get(id).orElseThrow(() -> new IllegalArgumentException("not grouped property metadata found: " + id)));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("55")
+    public List<? extends PropertyMetadata> findAllPropertyMetadataInGroup(Long groupId) {
+        GroupedMetaEntity groupEntity = groupedMetaRepository.getById(groupId);
+        Assert.notNull(groupEntity, "not grouped property metadata found: " + groupId);
+        List<GroupedMetaEntryEntity> entries = groupEntity.getEntries();
+        List<PropertyMetaEntity> collect = entries.stream().sorted((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.getOrder(), o2.getOrder())).map(entryEntity -> entryEntity.getPropertyMetadata()).collect(Collectors.toList());
+        return (List<? extends PropertyMetadata>) getModelMapper().mapForReads(collect);
     }
 
 

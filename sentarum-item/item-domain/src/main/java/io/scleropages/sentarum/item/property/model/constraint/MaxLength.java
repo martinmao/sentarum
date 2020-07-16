@@ -19,6 +19,7 @@ import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -64,6 +65,12 @@ public class MaxLength extends Constraint {
 
     @Override
     protected String internalMessage() {
-        return "超过长度限定: "+length;
+        return "超过长度限定: " + length;
+    }
+
+
+    @Override
+    public void assertValid() {
+        Assert.notNull(length, "length is required for: " + getName());
     }
 }

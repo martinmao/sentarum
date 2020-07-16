@@ -46,4 +46,8 @@ public class NotNull extends Constraint {
     public int getOrder() {
         return Integer.MIN_VALUE;
     }
+
+    @Override
+    public void assertValid() {
+    }
 }
