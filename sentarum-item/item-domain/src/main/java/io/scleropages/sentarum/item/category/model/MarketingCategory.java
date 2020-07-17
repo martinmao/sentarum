@@ -13,30 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.category;
+package io.scleropages.sentarum.item.category.model;
+
+import java.util.List;
 
 /**
- * 该类目设计是出于商品（产品）层次化（物理分类）管理的需求定义的, 属于管理类目范畴.其经常不易被变动。
- *
- * <pre>
- *
- * </pre>
+ * 营销类目（前台类目），与营销（销售渠道，季节，促销）相关.
+ * 类目结构经常根据运营需求进行灵活调整，其会映射到多个管理类目 {@link StandardCategory}，通过管理类目间接关联商品（产品）
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StandardCategory extends Category {
+public interface MarketingCategory extends Category {
 
     /**
-     * 路径分隔符
-     */
-    String PATH_NAME_SEPARATOR = "/";
-
-
-    /**
-     * 类目路径名，包含上下级层次关系（用于商品导航名称）.
+     * 营销类目直接关联的管理类目（硬链接).
      *
      * @return
      */
-    String pathName();
+    List<StandardCategory> directCategories();
+
+
+    /**
+     * 营销类目基于条件链接到管理类目 (软连接).
+     *
+     * @return
+     */
+    List<CategoryLink> categoryLinks();
 
 }

@@ -67,7 +67,6 @@ public interface PropertyMetadata {
         public static PropertyStructureType getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
         }
-
     }
 
     /**
@@ -78,7 +77,19 @@ public interface PropertyMetadata {
     Long id();
 
     /**
-     * 属性名称
+     * 属性名称格式规范：
+     * 采用snack_case命名写法： 所有字母小写，单词之间用'_'分隔。
+     * 在实际应用过程中，建议通过"."作为属性名字分隔符，例如：
+     * <pre>
+     *
+     *     food_security.product_date_start:开始生产日期
+     *     food_security.product_date_end：结束生产日期
+     *     food_security.stock_date_start：进货开始日期
+     *     food_security.stock_date_end：进货结束日期
+     *     food_security.health_product_no：卫食健字号
+     *     将food_security定义为属性组 食品安全，该组下所有属性命名都带上组前缀，
+     *     系统不会做这步操作，这些约定均由用户定义.
+     * </pre>
      *
      * @return
      */

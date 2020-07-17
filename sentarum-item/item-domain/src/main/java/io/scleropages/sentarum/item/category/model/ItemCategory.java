@@ -13,31 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.category;
-
-import java.util.List;
+package io.scleropages.sentarum.item.category.model;
 
 /**
- * 营销类目（前台类目），与营销（销售渠道，季节，促销）相关.
- * 类目结构经常根据运营需求进行灵活调整，其会映射到多个管理类目 {@link StandardCategory}，通过管理类目间接关联商品（产品）
+ * 商家自定义的商品类目,例如店铺商品类目.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface MarketingCategory extends Category {
-
-    /**
-     * 营销类目直接关联的管理类目（硬链接).
-     *
-     * @return
-     */
-    List<StandardCategory> directCategories();
+public interface ItemCategory extends Category {
 
 
-    /**
-     * 营销类目基于条件链接到管理类目 (软连接).
-     *
-     * @return
-     */
-    List<CategoryLink> categoryLinks();
+
 
 }

@@ -13,62 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.category;
+package io.scleropages.sentarum.item.category.model;
 
 import java.util.List;
 
 /**
- * 描述品类（类目）业务模型.
+ * 该类目设计是出于商品（产品）层次化（物理分类）管理的需求定义的, 属于管理类目范畴.其经常不易被变动。
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Category {
+public interface StandardCategory extends Category {
 
     /**
-     * 唯一标识
-     *
-     * @return
+     * 路径分隔符
      */
-    Long id();
-
-    /**
-     * 类目名称
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * 类目显示名
-     *
-     * @return
-     */
-    String tag();
-
-    /**
-     * 类目描述
-     *
-     * @return
-     */
-    String description();
+    String PATH_NAME_SEPARATOR = "/";
 
 
     /**
-     * 上级类目
+     * 类目路径名，包含上下级层次关系（用于商品导航名称）.
      *
      * @return
      */
-    Long parentId();
+    String pathName();
+
 
     /**
      * 关联的一组类目属性.
      */
     List<CategoryProperty> categoryProperties();
-
-    /**
-     * 关联的一组子类目
-     *
-     * @return
-     */
-    List<Category> childCategories();
 }

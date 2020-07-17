@@ -1,0 +1,102 @@
+/**
+ * Copyright 2001-2005 The Apache Software Foundation.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.scleropages.sentarum.item.model;
+
+import io.scleropages.sentarum.item.ge.model.Media;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * SKU（最小库存单位），其与商品相关联（间接关联SPU），即具体可销售的SKU由商品确定（即卖家确定）。<br>
+ * 当商品和具体的销售属性值（规格属性值）确定后，即成为一个最小的可销售实体（SKU）。<br>
+ * 在生成策略上参考类目销售属性 {@link io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType#SALES_PROPERTY}。
+ *
+ * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
+ */
+public interface Sku {
+
+
+    /**
+     * 唯一标识
+     *
+     * @return
+     */
+    Long id();
+
+    /**
+     * 商品id
+     *
+     * @return
+     */
+    Long itemId();
+
+    /**
+     * 外部编码（商家自己的sku编码）
+     *
+     * @return
+     */
+    String outerId();
+
+    /**
+     * 状态
+     *
+     * @return
+     */
+    Status status();
+
+    /**
+     * 售价
+     *
+     * @return
+     */
+    BigDecimal salesPrice();
+
+    /**
+     * 库存量, 少于等于 {@link Item#num()}
+     *
+     * @return
+     */
+    Integer quantity();
+
+    /**
+     * SKU关键属性
+     *
+     * @return
+     */
+    List<PropertyValue> keyProperties();
+
+
+    /**
+     * 销售属性
+     *
+     * @return
+     */
+    List<PropertyValue> salesProperties();
+
+    /**
+     * 媒体列表，图片，视频等.
+     *
+     * @return
+     */
+    List<Media> mediaList();
+
+
+    enum Status {
+
+    }
+}

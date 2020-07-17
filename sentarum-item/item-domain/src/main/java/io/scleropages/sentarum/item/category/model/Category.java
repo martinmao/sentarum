@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.property.model;
+package io.scleropages.sentarum.item.category.model;
 
+import java.util.List;
+import java.util.Map;
 
 /**
- * 属性值
+ * 描述品类（类目）业务模型.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PropertyValue {
+public interface Category {
+
+
+    enum Status {
+        ON_LINE, OFF_LINE, VALID, INVALID
+    }
 
     /**
      * 唯一标识
@@ -31,39 +38,56 @@ public interface PropertyValue {
     Long id();
 
     /**
-     * 属性名称
+     * 类目名称
      *
      * @return
      */
     String name();
 
     /**
-     * 业务类型
+     * 类目显示名
      *
      * @return
      */
-    Integer bizType();
+    String tag();
+
+    /**
+     * 类目描述
+     *
+     * @return
+     */
+    String description();
 
 
     /**
-     * 业务标识
+     * 状态
      *
      * @return
      */
-    Long bizId();
+    Status status();
 
 
     /**
-     * 属性元数据id {@link PropertyMetadata#id()}
+     * 上级类目标识
      *
      * @return
      */
-    Long metaId();
+    Long parentId();
+
 
     /**
-     * 属性值
+     * 关联的一组子类目
      *
      * @return
      */
-    Object value();
+    List<? extends Category> childCategories();
+
+
+    /**
+     * 扩展属性
+     *
+     * @return
+     */
+    Map<String, Object> additionalAttributes();
+
 }
