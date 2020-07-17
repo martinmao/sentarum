@@ -34,7 +34,7 @@ public class GroupedPropertyMetadataModel implements GroupedPropertyMetadata {
     private String name;
     private String tag;
     private String description;
-    private List<OrderedPropertyMetadata> propertiesMetadata;
+    private List<OrderedPropertyMetadata> entries;
     private AtomicBoolean sorted = new AtomicBoolean(false);
 
     @Null(groups = Create.class)
@@ -59,8 +59,8 @@ public class GroupedPropertyMetadataModel implements GroupedPropertyMetadata {
     }
 
     @Null
-    public List<OrderedPropertyMetadata> getPropertiesMetadata() {
-        return propertiesMetadata;
+    public List<OrderedPropertyMetadata> getEntries() {
+        return entries;
     }
 
     public void setId(Long id) {
@@ -79,8 +79,8 @@ public class GroupedPropertyMetadataModel implements GroupedPropertyMetadata {
         this.description = description;
     }
 
-    public void setPropertiesMetadata(List<OrderedPropertyMetadata> propertiesMetadata) {
-        this.propertiesMetadata = propertiesMetadata;
+    public void setEntries(List<OrderedPropertyMetadata> entries) {
+        this.entries = entries;
     }
 
     @Override
@@ -106,11 +106,11 @@ public class GroupedPropertyMetadataModel implements GroupedPropertyMetadata {
     @Override
     public List<OrderedPropertyMetadata> orderedPropertiesMetadata() {
         if (sorted.compareAndSet(false, true)) {
-            List<OrderedPropertyMetadata> propertiesMetadata = getPropertiesMetadata();
+            List<OrderedPropertyMetadata> propertiesMetadata = getEntries();
             if (!CollectionUtils.isEmpty(propertiesMetadata))
                 Collections.sort(propertiesMetadata);
         }
-        return getPropertiesMetadata();
+        return getEntries();
     }
 
     public interface Create {

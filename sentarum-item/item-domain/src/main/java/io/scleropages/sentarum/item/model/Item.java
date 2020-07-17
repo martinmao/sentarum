@@ -22,9 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 商品，将SPU关联到商家维度的信息结构，淘宝称为item，京东称为product<br>
- * 在商家上架一个商品时，其需先选择一个标准的SPU进行挂靠。
- * 可以理解为商品为SPU的具象化。
+ * 商品，将SPU关联到商家维度的信息化结构. <br>
+ * 在商家上架一个商品时，需先选择一个标准的SPU进行挂靠, 商品为SPU的具象化。
  * 在生成策略上，参考 {@link io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType#ITEM_PROPERTY}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -190,10 +189,44 @@ public interface Item {
 
     enum ItemType {
 
+        ITEM(1, "单品", "单SKU商品，从商品下SKU列表中选取一个SKU进行买卖,其价格在sku上. 关联关系"),
 
+        COMBINE_SKU_ITEM(2, "组合SKU商品", "购买的商品包含其内所有的sku. 聚合关系");
+
+        /**
+         * 显示指定 ordinal,避免定义顺序被意外变更.
+         */
+        private final int ordinal;
+        /**
+         * 显示名.
+         */
+        private final String tag;
+        /**
+         * 描述
+         */
+        private final String desc;
+
+        ItemType(int ordinal, String tag, String desc) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+            this.desc = desc;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
     }
 
     enum Status {
+
     }
 
     enum SellerType {

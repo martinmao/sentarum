@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.category.model;
+package io.scleropages.sentarum.item.model.impl;
 
 /**
- * 商家自定义的商品类目,例如店铺商品类目.
+ *
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemCategory extends Category {
-
+public class SkuModel {
 }

@@ -16,14 +16,37 @@
 package io.scleropages.sentarum.item.property.entity.mapper;
 
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntity;
+import io.scleropages.sentarum.item.property.entity.GroupedMetaEntryEntity;
+import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
+import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.impl.GroupedPropertyMetadataModel;
+import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
+import org.scleropages.crud.ModelMapperRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface GroupedMetaEntityMapper extends ModelMapper<GroupedMetaEntity, GroupedPropertyMetadataModel> {
+
+
+    default GroupedMetaEntryEntity toGroupedMetaEntryEntity(GroupedPropertyMetadata.OrderedPropertyMetadata model) {
+        PropertyMetaEntityMapper mapper = (PropertyMetaEntityMapper) ModelMapperRepository.getRequiredModelMapper(PropertyMetaEntityMapper.class);
+        PropertyMetaEntity propertyMetaEntity = mapper.mapForSave((PropertyMetadataModel) model.getPropertyMetadata());
+        GroupedMetaEntryEntity groupedMetaEntryEntity = new GroupedMetaEntryEntity();
+        groupedMetaEntryEntity.setOrder(model.getOrder());
+        groupedMetaEntryEntity.setPropertyMetadata(propertyMetaEntity);
+        return groupedMetaEntryEntity;
+    }
+
+
+    default GroupedPropertyMetadata.OrderedPropertyMetadata toOrderedPropertyMetadata(GroupedMetaEntryEntity entity) {
+        PropertyMetaEntityMapper mapper = (PropertyMetaEntityMapper) ModelMapperRepository.getRequiredModelMapper(PropertyMetaEntityMapper.class);
+        GroupedPropertyMetadata.OrderedPropertyMetadata model = new GroupedPropertyMetadata.OrderedPropertyMetadata(entity.getOrder(), mapper.mapForRead(entity.getPropertyMetadata()));
+        return model;
+    }
+
 
 }

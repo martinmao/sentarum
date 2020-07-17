@@ -13,13 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.category.model;
+package io.scleropages.sentarum.item.model;
+
+import java.util.List;
 
 /**
- * 商家自定义的商品类目,例如店铺商品类目.
+ * SKU逻辑组，基于售卖需求，将一组sku打包为一个sku
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemCategory extends Category {
+public interface CombineSku extends Sku {
 
+    /**
+     * 唯一标识
+     *
+     * @return
+     */
+    Long id();
+
+    /**
+     * 包含的一组 sku 条目.
+     *
+     * @return
+     */
+    List<CombineSkuEntry> entries();
 }
