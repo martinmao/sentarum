@@ -26,6 +26,7 @@ import javax.persistence.Table;
 /**
  * 参考兼容模型:
  * <pre>
+ *     {@link io.scleropages.sentarum.item.property.model.vs.AbstractValuesSource}
  *     {@link io.scleropages.sentarum.item.property.model.vs.NativeValuesSource}
  *     {@link io.scleropages.sentarum.item.property.model.vs.SqlQueryValuesSource}
  *     {@link io.scleropages.sentarum.item.property.model.vs.HttpGetValuesSource}
@@ -38,8 +39,21 @@ import javax.persistence.Table;
 @SequenceGenerator(name = "pt_values_source_id", sequenceName = "seq_pt_values_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ValuesSourceEntity extends IdEntity {
 
+
+    private String name;
+    private String tag;
     private Integer valuesSourceType;
-    private String configure;
+    private String payload;
+
+    @Column(name = "name_", unique = true)
+    public String getName() {
+        return name;
+    }
+
+    @Column(name = "tag_", nullable = false)
+    public String getTag() {
+        return tag;
+    }
 
     @Column(name = "vs_type", nullable = false)
     public Integer getValuesSourceType() {
@@ -47,15 +61,24 @@ public class ValuesSourceEntity extends IdEntity {
     }
 
     @Column(name = "conf_")
-    public String getConfigure() {
-        return configure;
+    public String getPayload() {
+        return payload;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public void setValuesSourceType(Integer valuesSourceType) {
         this.valuesSourceType = valuesSourceType;
     }
 
-    public void setConfigure(String configure) {
-        this.configure = configure;
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 }

@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.category.model;
+package io.scleropages.sentarum.item.category.model.impl;
 
-import org.scleropages.crud.dao.orm.SearchFilter;
+import io.scleropages.sentarum.item.category.model.CategoryProperty;
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 
 import java.util.List;
 
 /**
- * 类目连接，描述多种类目体系的连接描述. 例如某种检索条件连接。一种更加灵活的挂靠方式.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CategoryLink {
+public class StandardCategoryModel extends CategoryModel implements StandardCategory {
 
-    /**
-     * 返回一组 {@link SearchFilter} 作为检索条件，将检索到的类目关联到目标类目（软连接）.
-     *
-     * @return
-     */
-    List<SearchFilter> conditions();
+    private List<CategoryProperty> categoryProperties;
 
 
-    /**
-     * @return
-     */
-    Category source();
+    public List<CategoryProperty> getCategoryProperties() {
+        return categoryProperties;
+    }
+
+    public void setCategoryProperties(List<CategoryProperty> categoryProperties) {
+        this.categoryProperties = categoryProperties;
+    }
+
+    @Override
+    public List<? extends CategoryProperty> categoryProperties() {
+        return getCategoryProperties();
+    }
 }

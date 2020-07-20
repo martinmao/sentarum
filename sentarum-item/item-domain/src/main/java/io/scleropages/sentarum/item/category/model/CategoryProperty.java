@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.item.category.model;
 
-import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
@@ -27,6 +26,13 @@ import java.util.Map;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface CategoryProperty {
+
+    /**
+     * 唯一标识
+     *
+     * @return
+     */
+    Long id();
 
     /**
      * 只读属性(不可变)，品类上设置过值的属性，子品类以及叶子品类（包括，SPU，商品，SKU都不允许覆盖该值）.
@@ -58,7 +64,7 @@ public interface CategoryProperty {
 
 
     /**
-     * 目标属性定义,可能的类型为：{@link PropertyMetadata},{@link GroupedPropertyMetadata}
+     * 目标属性定义,可能的类型为：{@link PropertyMetadata}
      *
      * @return
      */
@@ -107,6 +113,15 @@ public interface CategoryProperty {
      * @return
      */
     CategoryPropertyBizType categoryPropertyBizType();
+
+
+    /**
+     * 挂靠的类目
+     *
+     * @return
+     */
+    Category category();
+
 
     /**
      * 扩展属性

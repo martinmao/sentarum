@@ -179,6 +179,28 @@ public interface ValuesSource {
      */
     Long id();
 
+
+    /**
+     * return name of this values source.
+     *
+     * @return
+     */
+    String name();
+
+    /**
+     * return tag of this values source.
+     *
+     * @return
+     */
+    String tag();
+
+    /**
+     * return description of this values source.
+     *
+     * @return
+     */
+    String description();
+
     /**
      * return values-source type.
      *
@@ -195,4 +217,11 @@ public interface ValuesSource {
      * @return
      */
     Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable);
+
+
+    interface Create {
+    }
+
+    interface Update {
+    }
 }

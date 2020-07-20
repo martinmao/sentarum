@@ -79,13 +79,6 @@ public interface Sku {
      */
     Integer quantity();
 
-    /**
-     * SKU关键属性
-     *
-     * @return
-     */
-    List<PropertyValue> keyProperties();
-
 
     /**
      * 销售属性

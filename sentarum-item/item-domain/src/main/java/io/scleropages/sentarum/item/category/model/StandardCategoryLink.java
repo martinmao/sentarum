@@ -15,20 +15,15 @@
  */
 package io.scleropages.sentarum.item.category.model;
 
-import java.util.List;
-import java.util.Map;
+import org.scleropages.crud.dao.orm.SearchFilter;
 
 /**
- * 描述品类（类目）业务模型.
+ * 管理类目链接，提供关系链接供其他渠道类目引用，例如 {@link MarketingCategory}使用。
+ * 实际使用中需要限制连接的条数，建议不要超过3条。
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Category {
-
-
-    enum Status {
-        ON_LINE, OFF_LINE, VALID, INVALID
-    }
+public interface StandardCategoryLink {
 
     /**
      * 唯一标识
@@ -38,56 +33,56 @@ public interface Category {
     Long id();
 
     /**
-     * 类目名称
+     * 连接类型
      *
      * @return
      */
-    String name();
+    LinkType linkType();
 
     /**
-     * 类目显示名
+     * 连接状态
      *
      * @return
      */
-    String tag();
+    LinkStatus status();
 
     /**
-     * 类目描述
+     * 关联的营销类目.属于 source 一方
      *
      * @return
      */
-    String description();
-
-
-    /**
-     * 状态
-     *
-     * @return
-     */
-    Status status();
+    MarketingCategory marketingCategory();
 
 
     /**
-     * 上级类目
+     * 关联的管理类目，{@link #linkType()}=={@link LinkType#DIRECT}时有效. 属于target一方.
      *
      * @return
      */
-    Category parentCategory();
+    StandardCategory standardCategory();
 
 
     /**
-     * 关联的一组子类目
+     * 检索条件，{@link #linkType()}=={@link LinkType#SOFT}时有效.
      *
      * @return
      */
-    List<? extends Category> childCategories();
+    SearchFilter searchFilter();
 
 
-    /**
-     * 扩展属性
-     *
-     * @return
-     */
-    Map<String, Object> additionalAttributes();
+    enum LinkStatus {
+        VALID, INVALID
+    }
+
+    enum LinkType {
+        /**
+         * 直接连接，通过关联关系确定连接
+         */
+        DIRECT,
+        /**
+         * 软连接，基于条件确定连接
+         */
+        SOFT
+    }
 
 }

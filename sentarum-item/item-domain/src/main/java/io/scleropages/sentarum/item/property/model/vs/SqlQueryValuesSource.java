@@ -19,8 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 /**
  * 基于Sql查询产生的结果集，本地不进行缓存，数据源与本地数据源同源。该接口不应该跨数据源集成其他存储系统的数据.
@@ -29,15 +27,18 @@ import javax.validation.constraints.Null;
  */
 public class SqlQueryValuesSource extends AbstractValuesSource {
 
-    private String query;
-
-    @Override
-    @Null(groups = Create.class)
-    @NotNull(groups = Update.class)
-    public Long getId() {
-        return super.getId();
+    public SqlQueryValuesSource() {
     }
 
+    public SqlQueryValuesSource(Long id) {
+        super(id);
+    }
+
+    public SqlQueryValuesSource(String name, String tag, String desc) {
+        super(name, tag, desc);
+    }
+
+    private String query;
 
     @Override
     public ValuesSourceType valuesSourceType() {
@@ -67,12 +68,5 @@ public class SqlQueryValuesSource extends AbstractValuesSource {
      */
     public void setQuery(String query) {
         this.query = query;
-    }
-
-
-    public interface Create {
-    }
-
-    public interface Update {
     }
 }

@@ -101,24 +101,34 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @Validated({NativeValuesSource.Create.class})
     @Transactional
     @BizError("04")
-    public void createValuesSource(Long propertyMetaId, @Valid NativeValuesSource valuesSource) {
-        createValuesSourceInternal(propertyMetaId, valuesSource);
+    public void createValuesSource(@Valid NativeValuesSource valuesSource) {
+        createValuesSourceInternal(valuesSource);
     }
 
     @Validated({SqlQueryValuesSource.Create.class})
     @Transactional
     @BizError("05")
-    public void createValuesSource(Long propertyMetaId, @Valid SqlQueryValuesSource valuesSource) {
-        createValuesSourceInternal(propertyMetaId, valuesSource);
+    public void createValuesSource(@Valid SqlQueryValuesSource valuesSource) {
+        createValuesSourceInternal(valuesSource);
     }
 
     @Validated({HttpGetValuesSource.Create.class})
     @Transactional
     @BizError("06")
-    public void createValuesSource(Long propertyMetaId, @Valid HttpGetValuesSource valuesSource) {
-        createValuesSourceInternal(propertyMetaId, valuesSource);
+    public void createValuesSource(@Valid HttpGetValuesSource valuesSource) {
+        createValuesSourceInternal(valuesSource);
     }
 
+    @Transactional
+    @BizError("07")
+    public void bindValuesSourceToPropertyMetadata(Long valueSourceId, Long propertyMetaId) {
+        Assert.notNull(valueSourceId, "valueSourceId must not be null.");
+        Assert.notNull(propertyMetaId, "propertyMetaId must not be null.");
+        PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.get(propertyMetaId).orElseThrow(() -> new IllegalArgumentException("no property meta data found: " + propertyMetaId));
+        Assert.isTrue(Input.InputType.isCheckInput(propertyMetaEntity.getInput()), "not support values source for this property metadata (make sure it's a check input.): " + propertyMetaId);
+        ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(valueSourceId).orElseThrow(() -> new IllegalArgumentException("no values source found: " + valueSourceId));
+        propertyMetaEntity.setValuesSource(valuesSourceEntity);
+    }
 
     @Validated({NativeValuesSource.Update.class})
     @Transactional
@@ -264,13 +274,19 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
 
     @Transactional(readOnly = true)
     @BizError("52")
+    public Page<ValuesSource> findValuesSourcePage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
+        return valuesSourceRepository.findPage(searchFilters, pageable).map(entity -> getModelMapper().toValuesSource(entity));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("53")
     public List<Constraint> findAllConstraintByPropertyMeta(Long propertyMetaId) {
         Assert.notNull(propertyMetaId, "propertyMetaId must not be null.");
         return constraintRepository.findAllByPropertyMeta_Id(propertyMetaId).stream().map(constraintEntity -> getModelMapper().toConstraint(constraintEntity)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    @BizError("53")
+    @BizError("54")
     public ValuesSource getValuesSource(Long valuesSourceId) {
         Assert.notNull(valuesSourceId, "valuesSourceId must not be null.");
         ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(valuesSourceId).orElseThrow(() -> new IllegalArgumentException("no ValuesSource found: " + valuesSourceId));
@@ -278,26 +294,26 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     }
 
     @Transactional(readOnly = true)
-    @BizError("54")
+    @BizError("55")
     public Page<? extends ValuesSource.SourceValue> findSourceValuePage(SourceValueModel searchModel, Pageable pageable) {
         ValuesSource valuesSource = getValuesSource(searchModel.getValuesSourceId());
         return valuesSource.readValues(searchModel, pageable);
     }
 
     @Transactional(readOnly = true)
-    @BizError("55")
+    @BizError("56")
     public Page<GroupedPropertyMetadata> findGroupedPropertyMetadataPage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
         return groupedMetaRepository.findPage(searchFilters, pageable).map(entity -> getModelMapper(GroupedMetaEntityMapper.class).mapForRead(entity));
     }
 
     @Transactional(readOnly = true)
-    @BizError("56")
+    @BizError("57")
     public GroupedPropertyMetadata getGroupedPropertyMetadata(Long id) {
         return getModelMapper(GroupedMetaEntityMapper.class).mapForRead(groupedMetaRepository.get(id).orElseThrow(() -> new IllegalArgumentException("not grouped property metadata found: " + id)));
     }
 
     @Transactional(readOnly = true)
-    @BizError("55")
+    @BizError("58")
     public List<? extends PropertyMetadata> findAllPropertyMetadataInGroup(Long groupId) {
         GroupedMetaEntity groupEntity = groupedMetaRepository.getById(groupId);
         Assert.notNull(groupEntity, "not grouped property metadata found: " + groupId);
@@ -307,20 +323,16 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     }
 
 
-    protected void createValuesSourceInternal(Long propertyMetaId, ValuesSource valuesSource) {
-        Assert.notNull(propertyMetaId, "property metadata id must not be null.");
-        PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.get(propertyMetaId).orElseThrow(() -> new IllegalArgumentException("no property meta data found: " + propertyMetaId));
-        Assert.isTrue(Input.InputType.isCheckInput(propertyMetaEntity.getInput()), "not support values source for this property metadata (make sure it's a check input.): " + propertyMetaId);
+    protected void createValuesSourceInternal(ValuesSource valuesSource) {
         ValuesSourceEntity valuesSourceEntity = getModelMapper().toValuesSourceEntity(valuesSource);
         valuesSourceRepository.save(valuesSourceEntity);
-        propertyMetaEntity.setValuesSource(valuesSourceEntity);
     }
 
     protected void saveValuesSourceInternal(AbstractValuesSource valuesSource) {
         ValuesSourceEntity update = valuesSourceRepository.get(valuesSource.getId()).orElseThrow(() -> new IllegalArgumentException("no values source found: " + valuesSource.getId()));
         Assert.isTrue(Objects.equals(valuesSource.valuesSourceType().getOrdinal(), update.getValuesSourceType()), "values source type not allowed change.");
         ValuesSourceEntity changed = getModelMapper().toValuesSourceEntity(valuesSource);
-        update.setConfigure(changed.getConfigure());
+        update.setPayload(changed.getPayload());
     }
 
 

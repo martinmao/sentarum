@@ -32,6 +32,7 @@ import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import io.scleropages.sentarum.item.property.model.input.InputText;
 import io.scleropages.sentarum.item.property.model.input.SingleCheck;
 import io.scleropages.sentarum.item.property.model.vs.NativeValuesSource;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.scleropages.core.mapper.JsonMapper2;
@@ -142,13 +143,21 @@ public class PropertyManagerTestcase {
 
         PropertyMetadata brandPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
 
-        propertyManager.createValuesSource(brandPropertyMeta.id(), new NativeValuesSource());
+        Assert.assertNotNull(brandPropertyMeta);
 
-        brandPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
+        propertyManager.createValuesSource(new NativeValuesSource("brand.values", "品牌", "品牌列表"));
+
+        Map<String, Object> valuesSourceSearch = Maps.newHashMap();
+        valuesSourceSearch.put("name", "brand.values");
+        ValuesSource brandValuesSource = propertyManager.findValuesSourcePage(SearchFilter.SearchFilterBuilder.build(valuesSourceSearch), Pageable.unpaged()).iterator().next();
+
+        propertyManager.bindValuesSourceToPropertyMetadata(brandValuesSource.id(),brandPropertyMeta.id());
+
+        brandPropertyMeta = propertyManager.getPropertyMetadata(brandPropertyMeta.id());
         System.out.println(JsonMapper2.toJson(brandPropertyMeta));
 
-        propertyManager.createSourceValue(new SourceValueModel(1L, "Apple", brandPropertyMeta.valuesSource().id()));
-        propertyManager.createSourceValue(new SourceValueModel(2L, "IBM", brandPropertyMeta.valuesSource().id()));
+        propertyManager.createSourceValue(new SourceValueModel(1L, "Apple", brandValuesSource.id()));
+        propertyManager.createSourceValue(new SourceValueModel(2L, "IBM", brandValuesSource.id()));
 
         SourceValueModel valuesSearch = new SourceValueModel();
         valuesSearch.setValuesSourceId(brandPropertyMeta.valuesSource().id());
@@ -173,9 +182,17 @@ public class PropertyManagerTestcase {
 
         PropertyMetadata seriesPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
 
-        propertyManager.createValuesSource(seriesPropertyMeta.id(), new NativeValuesSource());
+        Assert.assertNotNull(seriesPropertyMeta);
 
-        seriesPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
+        propertyManager.createValuesSource(new NativeValuesSource("series.values", "系列", "系列列表"));
+
+        valuesSourceSearch.put("name", "series.values");
+        ValuesSource seriesValuesSource = propertyManager.findValuesSourcePage(SearchFilter.SearchFilterBuilder.build(valuesSourceSearch), Pageable.unpaged()).iterator().next();
+
+        propertyManager.bindValuesSourceToPropertyMetadata(seriesValuesSource.id(),seriesPropertyMeta.id());
+
+        seriesPropertyMeta = propertyManager.getPropertyMetadata(seriesPropertyMeta.id());
+
         System.out.println(JsonMapper2.toJson(seriesPropertyMeta));
 
 
@@ -210,9 +227,17 @@ public class PropertyManagerTestcase {
 
         PropertyMetadata modelPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
 
-        propertyManager.createValuesSource(modelPropertyMeta.id(), new NativeValuesSource());
+        Assert.assertNotNull(modelPropertyMeta);
+        propertyManager.createValuesSource(new NativeValuesSource("model.values", "型号", "型号列表"));
 
-        modelPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
+
+        valuesSourceSearch.put("name", "model.values");
+        ValuesSource modelValuesSource = propertyManager.findValuesSourcePage(SearchFilter.SearchFilterBuilder.build(valuesSourceSearch), Pageable.unpaged()).iterator().next();
+
+        propertyManager.bindValuesSourceToPropertyMetadata(modelValuesSource.id(),modelPropertyMeta.id());
+
+        modelPropertyMeta = propertyManager.getPropertyMetadata(modelPropertyMeta.id());
+
         System.out.println(JsonMapper2.toJson(modelPropertyMeta));
 
 
@@ -230,14 +255,14 @@ public class PropertyManagerTestcase {
 
         GroupedPropertyMetadataModel groupedPropertyMetadataModel = new GroupedPropertyMetadataModel();
 
-        groupedPropertyMetadataModel.setName("bsm");
+        groupedPropertyMetadataModel.setName("brand_series_model");
         groupedPropertyMetadataModel.setTag("品牌系列型号");
         groupedPropertyMetadataModel.setDescription("品牌系列型号描述");
 
         propertyManager.createGroupedPropertyMetadata(groupedPropertyMetadataModel);
 
         Map<String, Object> groupSearch = Maps.newHashMap();
-        groupSearch.put("name", "bsm");
+        groupSearch.put("name", "brand_series_model");
         GroupedPropertyMetadata groupedPropertyMetadata = propertyManager.findGroupedPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(groupSearch), Pageable.unpaged()).iterator().next();
 
         propertyManager.addPropertyMetadataToGroup(groupedPropertyMetadata.id(), brandPropertyMeta.id(), 0.1f);

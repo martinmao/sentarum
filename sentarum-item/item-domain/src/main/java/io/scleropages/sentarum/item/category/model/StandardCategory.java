@@ -25,21 +25,7 @@ import java.util.List;
 public interface StandardCategory extends Category {
 
     /**
-     * 路径分隔符
-     */
-    String PATH_NAME_SEPARATOR = "/";
-
-
-    /**
-     * 类目路径名，包含上下级层次关系（用于商品导航名称）.
-     *
-     * @return
-     */
-    String pathName();
-
-
-    /**
      * 关联的一组类目属性.
      */
-    List<CategoryProperty> categoryProperties();
+    List<? extends CategoryProperty> categoryProperties();
 }

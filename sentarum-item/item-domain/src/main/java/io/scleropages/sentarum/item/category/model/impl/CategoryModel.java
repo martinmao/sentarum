@@ -13,59 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.property.model.vs;
+package io.scleropages.sentarum.item.category.model.impl;
 
-import io.scleropages.sentarum.item.property.model.ValuesSource;
+import io.scleropages.sentarum.item.category.model.Category;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class AbstractValuesSource implements ValuesSource {
+public class CategoryModel implements Category {
 
     private Long id;
-
     private String name;
-
     private String tag;
-
     private String description;
+    private Status status;
+    private Category parentCategory;
+    private List<? extends Category> childCategories;
+    private Map<String, Object> additionalAttributes;
 
-    public AbstractValuesSource() {
-    }
-
-    public AbstractValuesSource(Long id) {
-        this.id = id;
-    }
-
-    public AbstractValuesSource(String name, String tag, String desc) {
-        this.name = name;
-        this.tag = tag;
-        this.description = desc;
-    }
-
-    @Null(groups = Create.class)
-    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
-    @NotEmpty(groups = Create.class)
     public String getName() {
         return name;
     }
 
-    @NotEmpty(groups = Create.class)
     public String getTag() {
         return tag;
     }
 
-    @NotEmpty(groups = Create.class)
     public String getDescription() {
         return description;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public Category getParentCategory() {
+        return parentCategory;
+    }
+
+    public List<? extends Category> getChildCategories() {
+        return childCategories;
+    }
+
+    public Map<String, Object> getAdditionalAttributes() {
+        return additionalAttributes;
     }
 
     public void setId(Long id) {
@@ -82,6 +80,22 @@ public abstract class AbstractValuesSource implements ValuesSource {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setParentCategory(Category parentCategory) {
+        this.parentCategory = parentCategory;
+    }
+
+    public void setChildCategories(List<? extends Category> childCategories) {
+        this.childCategories = childCategories;
+    }
+
+    public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
     }
 
     @Override
@@ -102,5 +116,25 @@ public abstract class AbstractValuesSource implements ValuesSource {
     @Override
     public String description() {
         return getDescription();
+    }
+
+    @Override
+    public Status status() {
+        return getStatus();
+    }
+
+    @Override
+    public Category parentCategory() {
+        return getParentCategory();
+    }
+
+    @Override
+    public List<? extends Category> childCategories() {
+        return getChildCategories();
+    }
+
+    @Override
+    public Map<String, Object> additionalAttributes() {
+        return getAdditionalAttributes();
     }
 }

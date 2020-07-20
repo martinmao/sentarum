@@ -19,9 +19,6 @@ import org.scleropages.crud.FrameworkContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-
 /**
  * 使用本地表存储值集
  *
@@ -30,16 +27,29 @@ import javax.validation.constraints.Null;
 public class NativeValuesSource extends AbstractValuesSource {
 
 
-    public interface NativeSourceValueLoader {
-        Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable);
+    public NativeValuesSource() {
     }
 
+    public NativeValuesSource(Long id) {
+        super(id);
+    }
 
-    @Override
-    @Null(groups = Create.class)
-    @NotNull(groups = Update.class)
-    public Long getId() {
-        return super.getId();
+    public NativeValuesSource(String name, String tag, String desc) {
+        super(name, tag, desc);
+    }
+
+    /**
+     * SPI interface: any repository provide implementations.
+     */
+    public interface NativeSourceValueLoader {
+        /**
+         * return page of {@link io.scleropages.sentarum.item.property.model.ValuesSource.SourceValue}.
+         *
+         * @param search   search condition.
+         * @param pageable page request.
+         * @return
+         */
+        Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable);
     }
 
 
@@ -51,12 +61,5 @@ public class NativeValuesSource extends AbstractValuesSource {
     @Override
     public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
         return FrameworkContext.getBean(NativeSourceValueLoader.class).readValues(search, pageable);
-    }
-
-
-    public interface Create {
-    }
-
-    public interface Update {
     }
 }

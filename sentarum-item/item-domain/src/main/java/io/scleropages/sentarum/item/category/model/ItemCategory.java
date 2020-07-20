@@ -16,7 +16,10 @@
 package io.scleropages.sentarum.item.category.model;
 
 /**
- * 商家自定义的商品类目,例如店铺商品类目.
+ * 直接关联到商品的类目，例如：
+ * <pre>
+ *     商家自定义的商品类目,例如店铺商品类目
+ * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

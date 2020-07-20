@@ -87,7 +87,7 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
             return null;
         ValuesSource.ValuesSourceType sourceType = ValuesSource.ValuesSourceType.getByOrdinal(valuesSourceEntity.getValuesSourceType());
         Class implementationClass = sourceType.getImplementationClass();
-        AbstractValuesSource valuesSource = JsonMapper2.fromJson(valuesSourceEntity.getConfigure(), implementationClass);
+        AbstractValuesSource valuesSource = JsonMapper2.fromJson(valuesSourceEntity.getPayload(), implementationClass);
         valuesSource.setId(valuesSourceEntity.getId());
         return valuesSource;
     }
@@ -97,8 +97,10 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
         if (null == valuesSource)
             return null;
         ValuesSourceEntity valuesSourceEntity = new ValuesSourceEntity();
+        valuesSourceEntity.setName(valuesSource.name());
+        valuesSourceEntity.setTag(valuesSource.tag());
         valuesSourceEntity.setValuesSourceType(valuesSource.valuesSourceType().getOrdinal());
-        valuesSourceEntity.setConfigure(JsonMapper2.toJson(valuesSource));
+        valuesSourceEntity.setPayload(JsonMapper2.toJson(valuesSource));
         return valuesSourceEntity;
     }
 }

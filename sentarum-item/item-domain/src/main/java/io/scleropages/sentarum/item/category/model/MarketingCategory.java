@@ -19,25 +19,21 @@ import java.util.List;
 
 /**
  * 营销类目（前台类目），与营销（销售渠道，季节，促销）相关.
- * 类目结构经常根据运营需求进行灵活调整，其会映射到多个管理类目 {@link StandardCategory}，通过管理类目间接关联商品（产品）
+ * 类目结构经常根据运营需求进行灵活调整，其会映射到多个管理类目 {@link StandardCategory}，通过管理类目间接关联商品（产品）.
+ * 目前提供两种映射方式：
+ * <pre>
+ *  直接关联，通过关联关系将管理类目挂靠到营销类目 {@link io.scleropages.sentarum.item.category.model.StandardCategoryLink.LinkType#DIRECT}
+ *  软关联，通过对 {@link StandardCategory} 设置检索条件，根据检索条件运行时动态确认关联关系。{@link io.scleropages.sentarum.item.category.model.StandardCategoryLink.LinkType#SOFT}
+ * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface MarketingCategory extends Category {
 
-    /**
-     * 营销类目直接关联的管理类目（硬链接).
-     *
-     * @return
-     */
-    List<StandardCategory> directCategories();
-
 
     /**
-     * 营销类目基于条件链接到管理类目 (软连接).
-     *
+     * 关联的一组管理类目链接.
      * @return
      */
-    List<CategoryLink> categoryLinks();
-
+    List<StandardCategoryLink> standardCategoryLinks();
 }

@@ -19,8 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Map;
 
 /**
@@ -30,18 +28,20 @@ import java.util.Map;
  */
 public class HttpGetValuesSource extends AbstractValuesSource {
 
+    public HttpGetValuesSource() {
+    }
+
+    public HttpGetValuesSource(Long id) {
+        super(id);
+    }
+
+    public HttpGetValuesSource(String name, String tag, String desc) {
+        super(name, tag, desc);
+    }
+
     private String url;
 
     private Map<String, Object> httpHeaders;
-
-
-    @Override
-    @Null(groups = Create.class)
-    @NotNull(groups = Update.class)
-    public Long getId() {
-        return super.getId();
-    }
-
 
 
     @Override
@@ -90,12 +90,5 @@ public class HttpGetValuesSource extends AbstractValuesSource {
      */
     public void setHttpHeaders(Map<String, Object> httpHeaders) {
         this.httpHeaders = httpHeaders;
-    }
-
-
-    public interface Create {
-    }
-
-    public interface Update {
     }
 }

@@ -150,6 +150,21 @@ public class PropertyMetadataTests extends TestCase {
                 return PageableExecutionUtils.getPage(values, pageable, () -> values.size());
             }
 
+            @Override
+            public String getName() {
+                return "brand.values";
+            }
+
+            @Override
+            public String getTag() {
+                return "品牌列表";
+            }
+
+            @Override
+            public String getDescription() {
+                return "品牌列表";
+            }
+
             public List<SourceValue> getValues() {
                 return values;
             }
@@ -175,6 +190,21 @@ public class PropertyMetadataTests extends TestCase {
             @Override
             public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
                 return PageableExecutionUtils.getPage(values, pageable, () -> values.size());
+            }
+
+            @Override
+            public String getName() {
+                return "series.values";
+            }
+
+            @Override
+            public String getTag() {
+                return "系列列表";
+            }
+
+            @Override
+            public String getDescription() {
+                return "系列列表";
             }
 
             public List<SourceValue> getValues() {
@@ -203,6 +233,21 @@ public class PropertyMetadataTests extends TestCase {
             @Override
             public Page<? extends SourceValue> readValues(SourceValue search, Pageable pageable) {
                 return PageableExecutionUtils.getPage(values, pageable, () -> values.size());
+            }
+
+            @Override
+            public String getName() {
+                return "model.values";
+            }
+
+            @Override
+            public String getTag() {
+                return "型号列表";
+            }
+
+            @Override
+            public String getDescription() {
+                return "型号列表";
             }
 
             public List<SourceValue> getValues() {
