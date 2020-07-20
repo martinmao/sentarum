@@ -13,29 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.property.entity.mapper;
+package io.scleropages.sentarum.item.category.entity.mapper;
 
-import io.scleropages.sentarum.item.property.entity.SourceValueEntity;
-import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
-import org.mapstruct.Mapper;
+import io.scleropages.sentarum.item.category.model.Category;
 import org.scleropages.core.mapper.JsonMapper2;
-import org.scleropages.crud.ModelMapper;
 
 import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Mapper(config = ModelMapper.DefaultConfig.class)
-public interface SourceValueEntityMapper extends ModelMapper<SourceValueEntity, SourceValueModel> {
+public interface AbstractCategoryEntityMapper {
 
-    default String attributesToPayload(Map<String, Object> attributes) {
-        if (null == attributes)
-            return null;
-        return JsonMapper2.toJson(attributes);
+
+    default Category.Status ordinalToStatus(Integer ordinal) {
+        return Category.Status.getByOrdinal(ordinal);
     }
 
-    default Map<String, Object> payloadToAttributes(String payload) {
+    default Integer toOrdinal(Category.Status status) {
+        return status.ordinal();
+    }
+
+
+    default String additionalAttributesToPayload(Map<String, Object> additionalAttributes) {
+        if (null == additionalAttributes)
+            return null;
+        return JsonMapper2.toJson(additionalAttributes);
+    }
+
+    default Map<String, Object> payloadToAdditionalAttributes(String payload) {
         if (null == payload)
             return null;
         return JsonMapper2.fromJson(payload);

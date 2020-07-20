@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item.category.model;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -104,7 +105,25 @@ public interface CategoryProperty {
         /**
          * SKU销售属性(销售属性，规格属性)
          */
-        SALES_PROPERTY
+        SALES_PROPERTY;
+
+        private static final Map<String, CategoryPropertyBizType> nameMappings = new HashMap<>();
+        private static final Map<Integer, CategoryPropertyBizType> ordinalMappings = new HashMap<>();
+
+        static {
+            for (CategoryPropertyBizType bizType : CategoryPropertyBizType.values()) {
+                nameMappings.put(bizType.name(), bizType);
+                ordinalMappings.put(bizType.ordinal(), bizType);
+            }
+        }
+
+        public static CategoryPropertyBizType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static CategoryPropertyBizType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
     }
 
     /**
@@ -116,11 +135,11 @@ public interface CategoryProperty {
 
 
     /**
-     * 挂靠的类目
+     * 挂靠的管理类目
      *
      * @return
      */
-    Category category();
+    StandardCategory category();
 
 
     /**

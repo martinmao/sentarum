@@ -17,6 +17,7 @@ package io.scleropages.sentarum.item.category.model.impl;
 
 import io.scleropages.sentarum.item.category.model.Category;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
@@ -32,10 +33,10 @@ public class CategoryPropertyModel implements CategoryProperty {
     private Boolean visible;
     private Boolean required;
     private Float order;
+    private StandardCategory category;
     private PropertyMetadata propertyMetadata;
     private PropertyValue defaultValue;
     private CategoryPropertyBizType categoryPropertyBizType;
-    private Category category;
     private Map<String, Object> additionalAttributes;
 
     public Long getId() {
@@ -58,6 +59,10 @@ public class CategoryPropertyModel implements CategoryProperty {
         return order;
     }
 
+    public StandardCategory getCategory() {
+        return category;
+    }
+
     public PropertyMetadata getPropertyMetadata() {
         return propertyMetadata;
     }
@@ -68,10 +73,6 @@ public class CategoryPropertyModel implements CategoryProperty {
 
     public CategoryPropertyBizType getCategoryPropertyBizType() {
         return categoryPropertyBizType;
-    }
-
-    public Category getCategory() {
-        return category;
     }
 
     public Map<String, Object> getAdditionalAttributes() {
@@ -98,6 +99,10 @@ public class CategoryPropertyModel implements CategoryProperty {
         this.order = order;
     }
 
+    public void setCategory(StandardCategory category) {
+        this.category = category;
+    }
+
     public void setPropertyMetadata(PropertyMetadata propertyMetadata) {
         this.propertyMetadata = propertyMetadata;
     }
@@ -108,10 +113,6 @@ public class CategoryPropertyModel implements CategoryProperty {
 
     public void setCategoryPropertyBizType(CategoryPropertyBizType categoryPropertyBizType) {
         this.categoryPropertyBizType = categoryPropertyBizType;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
@@ -159,7 +160,7 @@ public class CategoryPropertyModel implements CategoryProperty {
     }
 
     @Override
-    public Category category() {
+    public StandardCategory category() {
         return getCategory();
     }
 

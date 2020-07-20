@@ -27,7 +27,6 @@ public class StandardCategoryModel extends CategoryModel implements StandardCate
 
     private List<CategoryProperty> categoryProperties;
 
-
     public List<CategoryProperty> getCategoryProperties() {
         return categoryProperties;
     }

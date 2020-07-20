@@ -17,6 +17,9 @@ package io.scleropages.sentarum.item.category.model.impl;
 
 import io.scleropages.sentarum.item.category.model.Category;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Map;
 
@@ -34,33 +37,42 @@ public class CategoryModel implements Category {
     private List<? extends Category> childCategories;
     private Map<String, Object> additionalAttributes;
 
+    @NotNull(groups = Update.class)
+    @Null(groups = Create.class)
     public Long getId() {
         return id;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getName() {
         return name;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getTag() {
         return tag;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getDescription() {
         return description;
     }
 
+    @NotNull(groups = Create.class)
     public Status getStatus() {
         return status;
     }
 
+    @Null
     public Category getParentCategory() {
         return parentCategory;
     }
 
+    @Null
     public List<? extends Category> getChildCategories() {
         return childCategories;
     }
+
 
     public Map<String, Object> getAdditionalAttributes() {
         return additionalAttributes;
@@ -137,4 +149,5 @@ public class CategoryModel implements Category {
     public Map<String, Object> additionalAttributes() {
         return getAdditionalAttributes();
     }
+
 }

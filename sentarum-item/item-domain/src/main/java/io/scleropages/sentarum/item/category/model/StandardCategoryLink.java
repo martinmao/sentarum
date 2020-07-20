@@ -17,6 +17,9 @@ package io.scleropages.sentarum.item.category.model;
 
 import org.scleropages.crud.dao.orm.SearchFilter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 管理类目链接，提供关系链接供其他渠道类目引用，例如 {@link MarketingCategory}使用。
  * 实际使用中需要限制连接的条数，建议不要超过3条。
@@ -71,7 +74,25 @@ public interface StandardCategoryLink {
 
 
     enum LinkStatus {
-        VALID, INVALID
+        VALID, INVALID;
+
+        private static final Map<String, LinkStatus> nameMappings = new HashMap<>();
+        private static final Map<Integer, LinkStatus> ordinalMappings = new HashMap<>();
+
+        static {
+            for (LinkStatus linkStatus : LinkStatus.values()) {
+                nameMappings.put(linkStatus.name(), linkStatus);
+                ordinalMappings.put(linkStatus.ordinal(), linkStatus);
+            }
+        }
+
+        public static LinkStatus getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static LinkStatus getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
     }
 
     enum LinkType {
@@ -82,7 +103,25 @@ public interface StandardCategoryLink {
         /**
          * 软连接，基于条件确定连接
          */
-        SOFT
+        SOFT;
+
+        private static final Map<String, LinkType> nameMappings = new HashMap<>();
+        private static final Map<Integer, LinkType> ordinalMappings = new HashMap<>();
+
+        static {
+            for (LinkType linkType : LinkType.values()) {
+                nameMappings.put(linkType.name(), linkType);
+                ordinalMappings.put(linkType.ordinal(), linkType);
+            }
+        }
+
+        public static LinkType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static LinkType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
     }
 
 }

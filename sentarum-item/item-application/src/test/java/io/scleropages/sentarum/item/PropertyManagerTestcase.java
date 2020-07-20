@@ -151,7 +151,7 @@ public class PropertyManagerTestcase {
         valuesSourceSearch.put("name", "brand.values");
         ValuesSource brandValuesSource = propertyManager.findValuesSourcePage(SearchFilter.SearchFilterBuilder.build(valuesSourceSearch), Pageable.unpaged()).iterator().next();
 
-        propertyManager.bindValuesSourceToPropertyMetadata(brandValuesSource.id(),brandPropertyMeta.id());
+        propertyManager.bindValuesSourceToPropertyMetadata(brandValuesSource.id(), brandPropertyMeta.id());
 
         brandPropertyMeta = propertyManager.getPropertyMetadata(brandPropertyMeta.id());
         System.out.println(JsonMapper2.toJson(brandPropertyMeta));
@@ -189,7 +189,7 @@ public class PropertyManagerTestcase {
         valuesSourceSearch.put("name", "series.values");
         ValuesSource seriesValuesSource = propertyManager.findValuesSourcePage(SearchFilter.SearchFilterBuilder.build(valuesSourceSearch), Pageable.unpaged()).iterator().next();
 
-        propertyManager.bindValuesSourceToPropertyMetadata(seriesValuesSource.id(),seriesPropertyMeta.id());
+        propertyManager.bindValuesSourceToPropertyMetadata(seriesValuesSource.id(), seriesPropertyMeta.id());
 
         seriesPropertyMeta = propertyManager.getPropertyMetadata(seriesPropertyMeta.id());
 
@@ -234,7 +234,7 @@ public class PropertyManagerTestcase {
         valuesSourceSearch.put("name", "model.values");
         ValuesSource modelValuesSource = propertyManager.findValuesSourcePage(SearchFilter.SearchFilterBuilder.build(valuesSourceSearch), Pageable.unpaged()).iterator().next();
 
-        propertyManager.bindValuesSourceToPropertyMetadata(modelValuesSource.id(),modelPropertyMeta.id());
+        propertyManager.bindValuesSourceToPropertyMetadata(modelValuesSource.id(), modelPropertyMeta.id());
 
         modelPropertyMeta = propertyManager.getPropertyMetadata(modelPropertyMeta.id());
 

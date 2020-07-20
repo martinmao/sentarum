@@ -32,8 +32,8 @@ import javax.persistence.UniqueConstraint;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "pt_grpd_meta_entry", uniqueConstraints = @UniqueConstraint(columnNames = {"grpd_meta_id", "property_meta_id"}))
-@SequenceGenerator(name = "pt_grpd_meta_entry_id", sequenceName = "seq_pt_grpd_meta_entry", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "pt_grp_prop_meta_entry", uniqueConstraints = @UniqueConstraint(columnNames = {"grp_prop_meta_id", "property_meta_id"}))
+@SequenceGenerator(name = "pt_grp_prop_meta_entry_id", sequenceName = "seq_pt_grp_prop_meta_entry", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class GroupedMetaEntryEntity extends IdEntity {
 
     private Float order;
@@ -52,7 +52,7 @@ public class GroupedMetaEntryEntity extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grpd_meta_id", nullable = false)
+    @JoinColumn(name = "grp_prop_meta_id", nullable = false)
     public GroupedMetaEntity getGroupedMeta() {
         return groupedMeta;
     }

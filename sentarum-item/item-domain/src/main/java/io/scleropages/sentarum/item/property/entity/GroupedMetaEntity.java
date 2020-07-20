@@ -30,8 +30,8 @@ import java.util.List;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "pt_grpd_meta")
-@SequenceGenerator(name = "pt_grpd_meta_id", sequenceName = "seq_pt_grpd_meta", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "pt_grp_prop_meta")
+@SequenceGenerator(name = "pt_grp_prop_meta_id", sequenceName = "seq_pt_grp_prop_meta", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class GroupedMetaEntity extends IdEntity {
 
     private String name;

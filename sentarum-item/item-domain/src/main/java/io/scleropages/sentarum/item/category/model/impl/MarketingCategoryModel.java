@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item.category.model.impl;
 import io.scleropages.sentarum.item.category.model.MarketingCategory;
 import io.scleropages.sentarum.item.category.model.StandardCategoryLink;
 
+import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
@@ -34,6 +35,12 @@ public class MarketingCategoryModel extends CategoryModel implements MarketingCa
 
     public void setStandardCategoryLinks(List<StandardCategoryLink> standardCategoryLinks) {
         this.standardCategoryLinks = standardCategoryLinks;
+    }
+
+    @Override
+    @Null
+    public MarketingCategoryModel getParentCategory() {
+        return (MarketingCategoryModel) super.getParentCategory();
     }
 
     @Override

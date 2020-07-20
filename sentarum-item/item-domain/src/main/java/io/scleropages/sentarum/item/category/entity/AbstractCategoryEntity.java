@@ -61,6 +61,7 @@ public class AbstractCategoryEntity extends IdEntity {
         return parent;
     }
 
+
     @Column(name = "attrs_payload")
     public String getAdditionalAttributes() {
         return additionalAttributes;
