@@ -22,10 +22,8 @@ import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.category.model.impl.CategoryPropertyModel;
 import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
-import io.scleropages.sentarum.item.property.entity.PropertyValueEntity;
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyMetaEntityMapper;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import org.mapstruct.Mapper;
 import org.scleropages.core.mapper.JsonMapper2;
@@ -61,14 +59,6 @@ public interface CategoryPropertyEntityMapper extends ModelMapper<CategoryProper
         return categoryPropertyBizType.ordinal();
     }
 
-    default PropertyValue toPropertyValue(PropertyValueEntity entity) {
-        return null;
-    }
-
-    default PropertyValueEntity toPropertyValueEntity(PropertyValue model) {
-        return null;
-    }
-
     default PropertyMetadata toPropertyMetadata(PropertyMetaEntity entity) {
         PropertyMetaEntityMapper mapper = (PropertyMetaEntityMapper) ModelMapperRepository.getRequiredModelMapper(PropertyMetaEntityMapper.class);
         return mapper.mapForRead(entity);
@@ -88,4 +78,17 @@ public interface CategoryPropertyEntityMapper extends ModelMapper<CategoryProper
         StandardCategoryEntityMapper mapper = (StandardCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class);
         return mapper.mapForRead(entity);
     }
+
+    default String toDefaultValuesPayload(CategoryProperty.DefaultValues defaultValues) {
+        if (null == defaultValues)
+            return null;
+        return JsonMapper2.toJson(defaultValues);
+    }
+
+    default CategoryProperty.DefaultValues toDefaultValues(String payload) {
+        if (null == payload)
+            return null;
+        return JsonMapper2.fromJson(payload, CategoryProperty.DefaultValues.class);
+    }
+
 }

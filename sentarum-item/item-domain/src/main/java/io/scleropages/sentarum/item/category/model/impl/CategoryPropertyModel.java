@@ -15,11 +15,9 @@
  */
 package io.scleropages.sentarum.item.category.model.impl;
 
-import io.scleropages.sentarum.item.category.model.Category;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import java.util.Map;
 
@@ -35,7 +33,7 @@ public class CategoryPropertyModel implements CategoryProperty {
     private Float order;
     private StandardCategory category;
     private PropertyMetadata propertyMetadata;
-    private PropertyValue defaultValue;
+    private DefaultValues defaultValues;
     private CategoryPropertyBizType categoryPropertyBizType;
     private Map<String, Object> additionalAttributes;
 
@@ -67,8 +65,8 @@ public class CategoryPropertyModel implements CategoryProperty {
         return propertyMetadata;
     }
 
-    public PropertyValue getDefaultValue() {
-        return defaultValue;
+    public DefaultValues getDefaultValues() {
+        return defaultValues;
     }
 
     public CategoryPropertyBizType getCategoryPropertyBizType() {
@@ -107,8 +105,8 @@ public class CategoryPropertyModel implements CategoryProperty {
         this.propertyMetadata = propertyMetadata;
     }
 
-    public void setDefaultValue(PropertyValue defaultValue) {
-        this.defaultValue = defaultValue;
+    public void setDefaultValues(DefaultValues defaultValues) {
+        this.defaultValues = defaultValues;
     }
 
     public void setCategoryPropertyBizType(CategoryPropertyBizType categoryPropertyBizType) {
@@ -150,8 +148,8 @@ public class CategoryPropertyModel implements CategoryProperty {
     }
 
     @Override
-    public PropertyValue defaultValue() {
-        return getDefaultValue();
+    public DefaultValues defaultValues() {
+        return getDefaultValues();
     }
 
     @Override

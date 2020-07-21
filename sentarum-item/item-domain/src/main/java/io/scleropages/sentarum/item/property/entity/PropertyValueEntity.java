@@ -21,18 +21,18 @@ import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import static io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity.*;
 
 /**
+ * 键属性实体,能够通过名称与值的匹配进行检索的属性值.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
 @Table(name = "pt_property_value",
-        indexes = @Index(columnList = PROPERTY_META_ID_COLUMN),
-        uniqueConstraints = @UniqueConstraint(columnNames = {BIZ_TYPE_COLUMN, BIZ_ID_COLUMN, NAME_COLUMN}))
+        // 允许 name重复，多选 uniqueConstraints = @UniqueConstraint(columnNames = {BIZ_TYPE_COLUMN, BIZ_ID_COLUMN, NAME_COLUMN}),
+        indexes = {
+                @Index(columnList = "biz_type,name_,int_,text_,bool_,date_,long_,decimal_")
+        })
 @SequenceGenerator(name = "pt_property_value_id", sequenceName = "seq_pt_property_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class PropertyValueEntity extends AbstractPropertyValueEntity {
-
 }

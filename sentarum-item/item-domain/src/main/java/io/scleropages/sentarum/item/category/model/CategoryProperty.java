@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.item.category.model;
 
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValue;
+import io.scleropages.sentarum.item.property.model.PropertyValueType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,12 +71,37 @@ public interface CategoryProperty {
      */
     PropertyMetadata propertyMetadata();
 
+
     /**
-     * 默认属性值
+     * 默认属性值列表
      *
      * @return
      */
-    PropertyValue defaultValue();
+    DefaultValues defaultValues();
+
+
+    /**
+     * 属性业务类型，对于品类来说，属性包括（关键属性，SPU属性，销售属性等）
+     *
+     * @return
+     */
+    CategoryPropertyBizType categoryPropertyBizType();
+
+
+    /**
+     * 挂靠的管理类目
+     *
+     * @return
+     */
+    StandardCategory category();
+
+
+    /**
+     * 扩展属性
+     *
+     * @return
+     */
+    Map<String, Object> additionalAttributes();
 
 
     /**
@@ -126,26 +151,33 @@ public interface CategoryProperty {
         }
     }
 
-    /**
-     * 属性业务类型，对于品类来说，属性包括（关键属性，SPU属性，销售属性等）
-     *
-     * @return
-     */
-    CategoryPropertyBizType categoryPropertyBizType();
 
+    class DefaultValues {
+        private PropertyValueType propertyValueType;
+        private Object[] values;
 
-    /**
-     * 挂靠的管理类目
-     *
-     * @return
-     */
-    StandardCategory category();
+        public DefaultValues() {
+        }
 
+        public DefaultValues(PropertyValueType propertyValueType, Object[] values) {
+            this.propertyValueType = propertyValueType;
+            this.values = values;
+        }
 
-    /**
-     * 扩展属性
-     *
-     * @return
-     */
-    Map<String, Object> additionalAttributes();
+        public PropertyValueType getPropertyValueType() {
+            return propertyValueType;
+        }
+
+        public void setPropertyValueType(PropertyValueType propertyValueType) {
+            this.propertyValueType = propertyValueType;
+        }
+
+        public Object[] getValues() {
+            return values;
+        }
+
+        public void setValues(Object[] values) {
+            this.values = values;
+        }
+    }
 }

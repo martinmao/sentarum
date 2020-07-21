@@ -16,7 +16,6 @@
 package io.scleropages.sentarum.item.category.entity;
 
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
-import io.scleropages.sentarum.item.property.entity.PropertyValueEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -44,7 +43,7 @@ public class CategoryPropertyEntity extends IdEntity {
     private Float order;
     private StandardCategoryEntity category;
     private PropertyMetaEntity propertyMetadata;
-    private PropertyValueEntity defaultValue;
+    private String defaultValues;
     private Integer categoryPropertyBizType;
     private String additionalAttributes;
 
@@ -80,11 +79,11 @@ public class CategoryPropertyEntity extends IdEntity {
         return propertyMetadata;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_value_id")
-    public PropertyValueEntity getDefaultValue() {
-        return defaultValue;
+    @Column(name = "default_values")
+    public String getDefaultValues() {
+        return defaultValues;
     }
+
 
     @Column(name = "biz_type", nullable = false)
     public Integer getCategoryPropertyBizType() {
@@ -121,8 +120,8 @@ public class CategoryPropertyEntity extends IdEntity {
         this.propertyMetadata = propertyMetadata;
     }
 
-    public void setDefaultValue(PropertyValueEntity defaultValue) {
-        this.defaultValue = defaultValue;
+    public void setDefaultValues(String defaultValues) {
+        this.defaultValues = defaultValues;
     }
 
     public void setCategoryPropertyBizType(Integer categoryPropertyBizType) {
