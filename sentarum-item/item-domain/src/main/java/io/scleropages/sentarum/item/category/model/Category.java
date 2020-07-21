@@ -28,7 +28,7 @@ public interface Category {
 
 
     enum Status {
-        ON_LINE, OFF_LINE, VALID, INVALID;
+        VALID, INVALID;
 
         private static final Map<String, Status> nameMappings = new HashMap<>();
         private static final Map<Integer, Status> ordinalMappings = new HashMap<>();
@@ -47,8 +47,6 @@ public interface Category {
         public static Status getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
         }
-
-
     }
 
     /**

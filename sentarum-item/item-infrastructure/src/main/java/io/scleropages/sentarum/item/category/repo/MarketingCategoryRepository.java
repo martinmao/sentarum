@@ -18,11 +18,24 @@ package io.scleropages.sentarum.item.category.repo;
 import io.scleropages.sentarum.item.category.entity.MarketingCategoryEntity;
 import io.scleropages.sentarum.jooq.tables.ClMktCategory;
 import io.scleropages.sentarum.jooq.tables.records.ClMktCategoryRecord;
-import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface MarketingCategoryRepository extends GenericRepository<MarketingCategoryEntity, Long>, JooqRepository<ClMktCategory, ClMktCategoryRecord, MarketingCategoryEntity> {
+public interface MarketingCategoryRepository extends AbstractCategoryRepository<MarketingCategoryEntity, ClMktCategory, ClMktCategoryRecord> {
+
+
+    /**
+     * get by id with standard category links.
+     */
+    default Optional<MarketingCategoryEntity> getByIdWithStandardCategoryLinks(Long id) {
+        Specification specification = (Specification) (root, query, builder) -> {
+            root.fetch("standardCategoryLinks").fetch("standardCategory");
+            return builder.equal(root.get("id"), id);
+        };
+        return get(specification);
+    }
 }

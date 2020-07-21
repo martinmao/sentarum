@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface AbstractCategoryEntityMapper {
+public interface AbstractCategoryEntityMapper{
 
 
     default Category.Status ordinalToStatus(Integer ordinal) {

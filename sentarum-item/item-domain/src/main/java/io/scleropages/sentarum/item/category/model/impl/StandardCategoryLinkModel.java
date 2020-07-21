@@ -20,6 +20,9 @@ import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.category.model.StandardCategoryLink;
 import org.scleropages.crud.dao.orm.SearchFilter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -32,22 +35,29 @@ public class StandardCategoryLinkModel implements StandardCategoryLink {
     private StandardCategory standardCategory;
     private SearchFilter searchFilter;
 
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
     public LinkType getLinkType() {
         return linkType;
     }
 
+    @NotNull(groups = Create.class)
     public LinkStatus getLinkStatus() {
         return linkStatus;
     }
 
+    @Null
     public MarketingCategory getMarketingCategory() {
         return marketingCategory;
     }
 
+    @Null
     public StandardCategory getStandardCategory() {
         return standardCategory;
     }
@@ -108,5 +118,12 @@ public class StandardCategoryLinkModel implements StandardCategoryLink {
     @Override
     public SearchFilter searchFilter() {
         return getSearchFilter();
+    }
+
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

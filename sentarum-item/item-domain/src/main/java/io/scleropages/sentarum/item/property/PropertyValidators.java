@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.property.model;
+package io.scleropages.sentarum.item.property;
 
 import com.google.common.collect.Maps;
+import io.scleropages.sentarum.item.property.model.Constraint;
+import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
+import io.scleropages.sentarum.item.property.model.Input;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.constraint.ConstraintDepends;
 import org.springframework.util.Assert;
 
@@ -27,7 +31,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class PropertyInputValidators {
+public abstract class PropertyValidators {
 
     /**
      * validate given property metadata ({@link Input} already binding to metadata).

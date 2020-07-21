@@ -18,11 +18,25 @@ package io.scleropages.sentarum.item.category.repo;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.jooq.tables.ClStdCategory;
 import io.scleropages.sentarum.jooq.tables.records.ClStdCategoryLinkRecord;
-import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StandardCategoryRepository extends GenericRepository<StandardCategoryEntity, Long>, JooqRepository<ClStdCategory, ClStdCategoryLinkRecord, StandardCategoryEntity> {
+public interface StandardCategoryRepository extends AbstractCategoryRepository<StandardCategoryEntity, ClStdCategory, ClStdCategoryLinkRecord> {
+
+
+    /**
+     * get by id with category properties.
+     */
+    default Optional<StandardCategoryEntity> getByIdWithCategoryProperties(Long id) {
+        Specification specification = (Specification) (root, query, builder) -> {
+            root.fetch("categoryProperties").fetch("propertyMetadata");
+            return builder.equal(root.get("id"), id);
+        };
+        return get(specification);
+    }
+    
 }

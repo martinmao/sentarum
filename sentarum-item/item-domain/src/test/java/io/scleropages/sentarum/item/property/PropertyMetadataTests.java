@@ -17,7 +17,6 @@ package io.scleropages.sentarum.item.property;
 
 
 import com.google.common.collect.Lists;
-import io.scleropages.sentarum.item.property.model.PropertyInputValidators;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
@@ -62,20 +61,20 @@ public class PropertyMetadataTests extends TestCase {
         address.setInput(new InputText());
         System.out.println(JsonMapper2.toJson(address));
 
-        assertSame(NotNull.class, PropertyInputValidators.validate(address).getClass());
+        assertSame(NotNull.class, PropertyValidators.validate(address).getClass());
 
         InputText addressInput = (InputText) address.getInput();
         addressInput.setValue("印度尼西亚-加里曼丹");
 
-        assertSame(MinLength.class, PropertyInputValidators.validate(address).getClass());
+        assertSame(MinLength.class, PropertyValidators.validate(address).getClass());
 
         addressInput.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场");
 
-        assertNull(PropertyInputValidators.validate(address));
+        assertNull(PropertyValidators.validate(address));
 
         addressInput.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场1");
 
-        assertNotNull(PropertyInputValidators.validate(address));
+        assertNotNull(PropertyValidators.validate(address));
 
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -102,27 +101,27 @@ public class PropertyMetadataTests extends TestCase {
         InputText priceInput = (InputText) price.getInput();
         priceInput.setValue(null);
 
-        assertSame(NotNull.class, PropertyInputValidators.validate(price).getClass());
+        assertSame(NotNull.class, PropertyValidators.validate(price).getClass());
 
         addressInput.setValue(null);
 
-        assertNull(PropertyInputValidators.validate(address, price));
+        assertNull(PropertyValidators.validate(address, price));
 
         addressInput.setValue("印度尼西亚-加里曼丹-卡普瓦斯河上游-圣塔伦大湖-龙哥龙鱼繁殖场");
 
-        assertSame(NotNull.class, PropertyInputValidators.validate(address, price).getClass());
+        assertSame(NotNull.class, PropertyValidators.validate(address, price).getClass());
 
         priceInput.setValue("-0.01");
-        assertSame(Min.class, PropertyInputValidators.validate(address, price).getClass());
+        assertSame(Min.class, PropertyValidators.validate(address, price).getClass());
 
         priceInput.setValue("-0.00");
-        assertNull(PropertyInputValidators.validate(address, price));
+        assertNull(PropertyValidators.validate(address, price));
 
         priceInput.setValue("9999.01");
-        assertSame(Max.class, PropertyInputValidators.validate(address, price).getClass());
+        assertSame(Max.class, PropertyValidators.validate(address, price).getClass());
 
         priceInput.setValue("9999.00");
-        assertNull(PropertyInputValidators.validate(address, price));
+        assertNull(PropertyValidators.validate(address, price));
     }
 
 

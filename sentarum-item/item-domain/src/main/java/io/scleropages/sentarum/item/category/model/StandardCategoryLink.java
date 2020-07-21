@@ -66,7 +66,7 @@ public interface StandardCategoryLink {
 
 
     /**
-     * 检索条件，{@link #linkType()}=={@link LinkType#SOFT}时有效.
+     * 检索条件，{@link #linkType()}=={@link LinkType#SOFT}时有效.检索条件对应的目标模型为SPU.
      *
      * @return
      */

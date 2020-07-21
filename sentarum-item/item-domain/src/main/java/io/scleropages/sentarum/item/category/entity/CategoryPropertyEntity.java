@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.category.entity;
 
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
+import org.scleropages.crud.dao.orm.jpa.entity.EntityAware;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -35,7 +36,8 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "cl_property", uniqueConstraints = @UniqueConstraint(columnNames = {"std_category_id", "property_meta_id"}))
 @SequenceGenerator(name = "cl_property_id", sequenceName = "seq_cl_property", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class CategoryPropertyEntity extends IdEntity {
+public class CategoryPropertyEntity extends IdEntity implements EntityAware<PropertyMetaEntity> {
+
 
     private Boolean readOnly;
     private Boolean visible;
@@ -130,5 +132,10 @@ public class CategoryPropertyEntity extends IdEntity {
 
     public void setAdditionalAttributes(String additionalAttributes) {
         this.additionalAttributes = additionalAttributes;
+    }
+
+    @Override
+    public void setEntity(PropertyMetaEntity entity) {
+        setPropertyMetadata(entity);
     }
 }

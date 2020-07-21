@@ -20,11 +20,9 @@ import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.category.model.impl.CategoryPropertyModel;
-import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyMetaEntityMapper;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import org.mapstruct.Mapper;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.ModelMapper;
@@ -65,18 +63,21 @@ public interface CategoryPropertyEntityMapper extends ModelMapper<CategoryProper
     }
 
     default PropertyMetaEntity toPropertyMetaEntity(PropertyMetadata model) {
-        PropertyMetaEntityMapper mapper = (PropertyMetaEntityMapper) ModelMapperRepository.getRequiredModelMapper(PropertyMetaEntityMapper.class);
-        return mapper.mapForSave((PropertyMetadataModel) model);
+//        PropertyMetaEntityMapper mapper = (PropertyMetaEntityMapper) ModelMapperRepository.getRequiredModelMapper(PropertyMetaEntityMapper.class);
+//        return mapper.mapForSave((PropertyMetadataModel) model);
+        return null;
     }
 
     default StandardCategoryEntity toStandardCategoryEntity(StandardCategory model) {
-        StandardCategoryEntityMapper mapper = (StandardCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class);
-        return mapper.mapForSave((StandardCategoryModel) model);
+//        StandardCategoryEntityMapper mapper = (StandardCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class);
+//        return mapper.mapForSave((StandardCategoryModel) model);
+        return null;
     }
 
     default StandardCategory toStandardCategory(StandardCategoryEntity entity) {
-        StandardCategoryEntityMapper mapper = (StandardCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class);
-        return mapper.mapForRead(entity);
+//        StandardCategoryEntityMapper mapper = (StandardCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class);
+//        return mapper.mapForRead(entity);
+        return null;
     }
 
     default String toDefaultValuesPayload(CategoryProperty.DefaultValues defaultValues) {

@@ -25,6 +25,7 @@ import io.scleropages.sentarum.item.category.model.impl.StandardCategoryLinkMode
 import org.mapstruct.Mapper;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.ModelMapper;
+import org.scleropages.crud.ModelMapperRepository;
 import org.scleropages.crud.dao.orm.SearchFilter;
 
 /**
@@ -35,7 +36,8 @@ public interface StandardCategoryLinkEntityMapper extends ModelMapper<StandardCa
 
 
     default MarketingCategory toMarketingCategory(MarketingCategoryEntity entity) {
-        return null;
+        MarketingCategoryEntityMapper mapper = (MarketingCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(MarketingCategoryEntityMapper.class);
+        return mapper.mapForRead(entity);
     }
 
     default MarketingCategoryEntity toMarketingCategoryEntity(MarketingCategory model) {
@@ -43,7 +45,8 @@ public interface StandardCategoryLinkEntityMapper extends ModelMapper<StandardCa
     }
 
     default StandardCategory toStandardCategory(StandardCategoryEntity entity) {
-        return null;
+        StandardCategoryEntityMapper mapper = (StandardCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class);
+        return mapper.mapForRead(entity);
     }
 
     default StandardCategoryEntity toStandardCategoryEntity(StandardCategory model) {

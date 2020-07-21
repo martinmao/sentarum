@@ -17,11 +17,11 @@ package io.scleropages.sentarum.item.category.entity.mapper;
 
 import io.scleropages.sentarum.item.category.entity.CategoryPropertyEntity;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
-import io.scleropages.sentarum.item.category.model.Category;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
+import org.scleropages.crud.ModelMapperRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -29,19 +29,9 @@ import org.scleropages.crud.ModelMapper;
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface StandardCategoryEntityMapper extends AbstractCategoryEntityMapper, ModelMapper<StandardCategoryEntity, StandardCategoryModel> {
 
-
-    default Category toCategory(StandardCategoryEntity entity) {
-        return mapForRead(entity);
-    }
-
-
-    default StandardCategoryEntity toStandardCategoryEntity(Category model) {
-        return null;
-    }
-
-
     default CategoryProperty toCategoryProperty(CategoryPropertyEntity entity) {
-        return null;
+        CategoryPropertyEntityMapper mapper = (CategoryPropertyEntityMapper) ModelMapperRepository.getRequiredModelMapper(CategoryPropertyEntityMapper.class);
+        return mapper.mapForRead(entity);
     }
 
     default CategoryPropertyEntity toCategoryPropertyEntity(CategoryProperty model) {

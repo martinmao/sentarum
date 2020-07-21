@@ -21,6 +21,7 @@ import io.scleropages.sentarum.item.category.model.StandardCategoryLink;
 import io.scleropages.sentarum.item.category.model.impl.MarketingCategoryModel;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
+import org.scleropages.crud.ModelMapperRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -33,6 +34,7 @@ public interface MarketingCategoryEntityMapper extends AbstractCategoryEntityMap
     }
 
     default StandardCategoryLink toStandardCategoryLink(StandardCategoryLinkEntity entity) {
-        return null;
+        StandardCategoryLinkEntityMapper mapper = (StandardCategoryLinkEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryLinkEntityMapper.class);
+        return mapper.mapForRead(entity);
     }
 }

@@ -19,6 +19,8 @@ import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.Map;
 
 /**
@@ -37,30 +39,38 @@ public class CategoryPropertyModel implements CategoryProperty {
     private CategoryPropertyBizType categoryPropertyBizType;
     private Map<String, Object> additionalAttributes;
 
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
+    @NotNull(groups = Create.class)
     public Boolean getReadOnly() {
         return readOnly;
     }
 
+    @NotNull(groups = Create.class)
     public Boolean getVisible() {
         return visible;
     }
 
+    @NotNull(groups = Create.class)
     public Boolean getRequired() {
         return required;
     }
 
+    @NotNull(groups = Create.class)
     public Float getOrder() {
         return order;
     }
 
+    @Null
     public StandardCategory getCategory() {
         return category;
     }
 
+    @Null
     public PropertyMetadata getPropertyMetadata() {
         return propertyMetadata;
     }
@@ -69,6 +79,7 @@ public class CategoryPropertyModel implements CategoryProperty {
         return defaultValues;
     }
 
+    @NotNull(groups = Create.class)
     public CategoryPropertyBizType getCategoryPropertyBizType() {
         return categoryPropertyBizType;
     }
@@ -165,5 +176,12 @@ public class CategoryPropertyModel implements CategoryProperty {
     @Override
     public Map<String, Object> additionalAttributes() {
         return getAdditionalAttributes();
+    }
+
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

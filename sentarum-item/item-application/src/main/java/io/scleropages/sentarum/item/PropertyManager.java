@@ -46,6 +46,7 @@ import org.apache.commons.collections.ComparatorUtils;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.dao.orm.SearchFilter;
+import org.scleropages.crud.dao.orm.jpa.entity.EntityAware;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -320,6 +321,10 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         List<GroupedMetaEntryEntity> entries = groupEntity.getEntries();
         List<PropertyMetaEntity> collect = entries.stream().sorted((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.getOrder(), o2.getOrder())).map(entryEntity -> entryEntity.getPropertyMetadata()).collect(Collectors.toList());
         return (List<? extends PropertyMetadata>) getModelMapper().mapForReads(collect);
+    }
+
+    public void awarePropertyMetaEntity(Long id, EntityAware entityAware) {
+        entityAware.setEntity(propertyMetaRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no property meta found: " + id)));
     }
 
 

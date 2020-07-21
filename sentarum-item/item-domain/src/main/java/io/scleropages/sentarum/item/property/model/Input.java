@@ -19,8 +19,10 @@ import io.scleropages.sentarum.item.property.model.input.ComplexInput;
 import io.scleropages.sentarum.item.property.model.input.InputText;
 import io.scleropages.sentarum.item.property.model.input.MultiCheck;
 import io.scleropages.sentarum.item.property.model.input.MultiComplexInput;
+import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.MultiInputText;
 import io.scleropages.sentarum.item.property.model.input.SingleCheck;
+import io.scleropages.sentarum.item.property.model.input.SingleInput;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
@@ -35,6 +37,9 @@ import java.util.Map;
 public interface Input {
 
 
+    /**
+     * enumerate all input types.
+     */
     enum InputType {
         /**
          * 单值文本输入型.
@@ -129,15 +134,24 @@ public interface Input {
             return inputClass;
         }
 
-
         /**
-         * return true if given input is check input(single or multi)
+         * return true if given input is multi input.
          *
          * @param input
          * @return
          */
-        public static boolean isCheckInput(Input input) {
-            return input.getType() == SINGLE_CHECK || input.getType() == MULTI_CHECK;
+        public static boolean isMultiInput(Input input) {
+            return input instanceof MultiInput;
+        }
+
+        /**
+         * return true if given input is single input.
+         *
+         * @param input
+         * @return
+         */
+        public static boolean isSingleInput(Input input) {
+            return input instanceof SingleInput;
         }
 
         /**
@@ -151,6 +165,18 @@ public interface Input {
             Assert.notNull(inputType, "no inputType found by given ordinal: " + ordinal);
             return inputType == SINGLE_CHECK || inputType == MULTI_CHECK;
         }
+
+
+        /**
+         * return true if given input is check input(single or multi)
+         *
+         * @param input
+         * @return
+         */
+        public static boolean isCheckInput(Input input) {
+            return input.getType() == SINGLE_CHECK || input.getType() == MULTI_CHECK;
+        }
+
     }
 
     /**
