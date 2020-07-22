@@ -18,7 +18,10 @@ package io.scleropages.sentarum.item;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.category.model.Category;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
+import io.scleropages.sentarum.item.category.model.StandardCategoryLink;
 import io.scleropages.sentarum.item.category.model.impl.CategoryPropertyModel;
+import io.scleropages.sentarum.item.category.model.impl.MarketingCategoryModel;
+import io.scleropages.sentarum.item.category.model.impl.StandardCategoryLinkModel;
 import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
 import io.scleropages.sentarum.item.mgmt.CategoryManager;
 import io.scleropages.sentarum.item.mgmt.PropertyManager;
@@ -99,7 +102,7 @@ public class CategoryManagerTestcase {
         testStdPropertyMeta.setKeyed(true);
         testStdPropertyMeta.setBizType(1);
         testStdPropertyMeta.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
-        testStdPropertyMeta.setValueType(PropertyValueType.TEXT);
+        testStdPropertyMeta.setValueType(PropertyValueType.INTEGER);
 
         propertyManager.createPropertyMetadata(testStdPropertyMeta);
 
@@ -116,5 +119,24 @@ public class CategoryManagerTestcase {
         categoryProperty.setVisible(true);
         categoryProperty.setDefaultValues(new CategoryProperty.DefaultValues(new Object[]{1, 2, 3}));
         categoryManager.createCategoryProperty(categoryProperty, standardCategory.id(), testStdPropertyMeta.id());
+
+        MarketingCategoryModel marketingCategory = new MarketingCategoryModel();
+
+        marketingCategory.setName("test_mkt_cl");
+        marketingCategory.setTag("测试前台类目");
+        marketingCategory.setDescription("测试前台类目");
+        marketingCategory.setStatus(Category.Status.VALID);
+        marketingCategory.setAdditionalAttributes(EXAMPLE_ATTRIBUTES);
+        categoryManager.createMarketingCategory(marketingCategory, null);
+
+        stdCategorySearch.put("name", "test_mkt_cl");
+        marketingCategory = (MarketingCategoryModel) categoryManager.findMarketingCategoryPage(SearchFilter.SearchFilterBuilder.build(stdCategorySearch), Pageable.unpaged()).iterator().next();
+
+        StandardCategoryLinkModel link = new StandardCategoryLinkModel();
+        link.setLinkStatus(StandardCategoryLink.LinkStatus.VALID);
+        link.setLinkType(StandardCategoryLink.LinkType.DIRECT);
+
+        categoryManager.createStandardCategoryLink(link, marketingCategory.id(), standardCategory.id());
+
     }
 }

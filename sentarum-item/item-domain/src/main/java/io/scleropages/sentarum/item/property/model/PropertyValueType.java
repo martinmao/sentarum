@@ -89,12 +89,9 @@ public enum PropertyValueType {
      * @return
      */
     public static boolean isCheckValueType(PropertyValueType valueType) {
-        return valueType == INTEGER || valueType == LONG;
+        return valueType == PROPERTY_REF || valueType == INTEGER || valueType == LONG;
     }
 
-    /**
-     * 显示指定 ordinal,避免定义顺序被意外变更.
-     */
     private final int ordinal;
     /**
      * 匹配的java类型

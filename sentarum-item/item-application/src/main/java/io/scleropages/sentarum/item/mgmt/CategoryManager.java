@@ -192,7 +192,9 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
             StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.get(standardCategoryId).orElseThrow(() -> new IllegalArgumentException("no category found: " + standardCategoryId));
             toSave.setStandardCategory(standardCategoryEntity);
         }
-        Assert.isTrue(model.getLinkType() == StandardCategoryLink.LinkType.SOFT && null != model.getSearchFilter(), "search filter is required for soft link.");
+        if (model.getLinkType() == StandardCategoryLink.LinkType.SOFT) {
+            Assert.isTrue(null != model.getSearchFilter(), "search filter is required for soft link.");
+        }
         standardCategoryLinkRepository.save(toSave);
     }
 

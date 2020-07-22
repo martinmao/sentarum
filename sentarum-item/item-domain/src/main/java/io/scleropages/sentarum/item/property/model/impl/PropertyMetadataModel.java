@@ -223,7 +223,7 @@ public class PropertyMetadataModel implements PropertyMetadata {
 
     public void assertModelValid(){
         if (Input.InputType.isCheckInput(getInput())) {
-            Assert.isTrue(!PropertyValueType.isCheckValueType(getValueType()),"invalid property value type. incompatible input type");
+            Assert.isTrue(PropertyValueType.isCheckValueType(getValueType()),"invalid property value type. incompatible input type");
         }
     }
 
