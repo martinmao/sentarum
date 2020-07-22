@@ -23,4 +23,5 @@ import org.scleropages.crud.dao.orm.jpa.GenericRepository;
  */
 public interface ValuesSourceRepository extends GenericRepository<ValuesSourceEntity, Long> {
 
+    ValuesSourceEntity getByName(String name);
 }

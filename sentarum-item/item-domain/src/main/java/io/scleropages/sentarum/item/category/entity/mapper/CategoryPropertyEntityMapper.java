@@ -54,7 +54,7 @@ public interface CategoryPropertyEntityMapper extends ModelMapper<CategoryProper
     }
 
     default Integer toOrdinal(CategoryProperty.CategoryPropertyBizType categoryPropertyBizType) {
-        return categoryPropertyBizType.ordinal();
+        return categoryPropertyBizType.getOrdinal();
     }
 
     default PropertyMetadata toPropertyMetadata(PropertyMetaEntity entity) {

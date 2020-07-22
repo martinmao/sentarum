@@ -55,7 +55,7 @@ public interface StandardCategoryLinkEntityMapper extends ModelMapper<StandardCa
 
 
     default Integer toOrdinal(StandardCategoryLink.LinkType linkType) {
-        return linkType.ordinal();
+        return linkType.getOrdinal();
     }
 
     default StandardCategoryLink.LinkType toLinkType(Integer ordinal) {
@@ -63,7 +63,7 @@ public interface StandardCategoryLinkEntityMapper extends ModelMapper<StandardCa
     }
 
     default Integer toOrdinal(StandardCategoryLink.LinkStatus linkStatus) {
-        return linkStatus.ordinal();
+        return linkStatus.getOrdinal();
     }
 
     default StandardCategoryLink.LinkStatus toLinkStatus(Integer ordinal) {

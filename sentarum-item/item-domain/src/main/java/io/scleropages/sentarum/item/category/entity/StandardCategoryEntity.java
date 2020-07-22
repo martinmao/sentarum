@@ -46,7 +46,7 @@ public class StandardCategoryEntity extends AbstractCategoryEntity {
 
     @Override
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = StandardCategoryEntity.class)
-    @JoinColumn(name = "parent_std_category_id", nullable = false)
+    @JoinColumn(name = "parent_std_category_id")
     public StandardCategoryEntity getParent() {
         return (StandardCategoryEntity) super.getParent();
     }

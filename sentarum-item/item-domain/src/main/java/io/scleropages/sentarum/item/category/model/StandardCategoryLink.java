@@ -74,7 +74,15 @@ public interface StandardCategoryLink {
 
 
     enum LinkStatus {
-        VALID, INVALID;
+        VALID(1, "有效"), INVALID(2, "无效");
+
+        private final int ordinal;
+        private final String tag;
+
+        LinkStatus(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
 
         private static final Map<String, LinkStatus> nameMappings = new HashMap<>();
         private static final Map<Integer, LinkStatus> ordinalMappings = new HashMap<>();
@@ -82,8 +90,16 @@ public interface StandardCategoryLink {
         static {
             for (LinkStatus linkStatus : LinkStatus.values()) {
                 nameMappings.put(linkStatus.name(), linkStatus);
-                ordinalMappings.put(linkStatus.ordinal(), linkStatus);
+                ordinalMappings.put(linkStatus.getOrdinal(), linkStatus);
             }
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
         }
 
         public static LinkStatus getByName(String name) {
@@ -99,11 +115,27 @@ public interface StandardCategoryLink {
         /**
          * 直接连接，通过关联关系确定连接
          */
-        DIRECT,
+        DIRECT(1, "直接关联"),
         /**
          * 软连接，基于条件确定连接
          */
-        SOFT;
+        SOFT(2, "软连接");
+
+        private final int ordinal;
+        private final String tag;
+
+        LinkType(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
 
         private static final Map<String, LinkType> nameMappings = new HashMap<>();
         private static final Map<Integer, LinkType> ordinalMappings = new HashMap<>();
@@ -111,7 +143,7 @@ public interface StandardCategoryLink {
         static {
             for (LinkType linkType : LinkType.values()) {
                 nameMappings.put(linkType.name(), linkType);
-                ordinalMappings.put(linkType.ordinal(), linkType);
+                ordinalMappings.put(linkType.getOrdinal(), linkType);
             }
         }
 

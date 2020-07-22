@@ -28,7 +28,24 @@ public interface Category {
 
 
     enum Status {
-        VALID, INVALID;
+        VALID(1, "可用"), INVALID(2, "不可用");
+
+        private final int ordinal;
+        private final String tag;
+
+        Status(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
 
         private static final Map<String, Status> nameMappings = new HashMap<>();
         private static final Map<Integer, Status> ordinalMappings = new HashMap<>();
@@ -36,9 +53,11 @@ public interface Category {
         static {
             for (Status status : Status.values()) {
                 nameMappings.put(status.name(), status);
-                ordinalMappings.put(status.ordinal(), status);
+                ordinalMappings.put(status.getOrdinal(), status);
             }
         }
+
+
 
         public static Status getByName(String name) {
             return (name != null ? nameMappings.get(name) : null);

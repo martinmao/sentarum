@@ -25,7 +25,8 @@ import java.util.List;
 public interface StandardCategory extends Category {
 
     /**
-     * 关联的一组类目属性.
+     * 关联的一组类目属性.<BR>
+     * NOTE: 不直接关联属性组，在前端界面选择属性组时，还是按单个属性进行保存。
      */
     List<? extends CategoryProperty> categoryProperties();
 }

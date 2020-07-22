@@ -46,7 +46,7 @@ public class MarketingCategoryEntity extends AbstractCategoryEntity {
 
     @Override
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = MarketingCategoryEntity.class)
-    @JoinColumn(name = "parent_mkt_category_id", nullable = false)
+    @JoinColumn(name = "parent_mkt_category_id")
     public MarketingCategoryEntity getParent() {
         return (MarketingCategoryEntity) super.getParent();
     }

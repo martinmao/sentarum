@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item;
+package io.scleropages.sentarum.item.mgmt;
 
 import io.scleropages.sentarum.item.property.entity.ConstraintEntity;
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntity;
@@ -85,6 +85,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @Transactional
     @BizError("01")
     public void createPropertyMetadata(@Valid PropertyMetadataModel propertyMetadataModel) {
+        propertyMetadataModel.assertModelValid();
         PropertyMetaEntity propertyMetadataEntity = getModelMapper().mapForSave(propertyMetadataModel);
         propertyMetaRepository.save(propertyMetadataEntity);
     }
@@ -93,6 +94,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @Transactional
     @BizError("02")
     public void savePropertyMetadata(@Valid PropertyMetadataModel propertyMetadataModel) {
+        propertyMetadataModel.assertModelValid();
         Long id = propertyMetadataModel.getId();
         PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no property meta data found: " + id));
         getModelMapper().mapForUpdate(propertyMetadataModel, propertyMetaEntity);
@@ -129,6 +131,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         Assert.isTrue(Input.InputType.isCheckInput(propertyMetaEntity.getInput()), "not support values source for this property metadata (make sure it's a check input.): " + propertyMetaId);
         ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(valueSourceId).orElseThrow(() -> new IllegalArgumentException("no values source found: " + valueSourceId));
         propertyMetaEntity.setValuesSource(valuesSourceEntity);
+        propertyMetaRepository.save(propertyMetaEntity);
     }
 
     @Validated({NativeValuesSource.Update.class})
@@ -169,6 +172,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     public void saveSourceValue(@Valid SourceValueModel sourceValueModel) {
         SourceValueEntity sourceValueEntity = sourceValueRepository.get(sourceValueModel.getId()).orElseThrow(() -> new IllegalArgumentException("no source value found: " + sourceValueModel.getId()));
         getModelMapper(SourceValueEntityMapper.class).mapForUpdate(sourceValueModel, sourceValueEntity);
+        sourceValueRepository.save(sourceValueEntity);
     }
 
     @Transactional
@@ -199,6 +203,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         ConstraintEntity constraintEntity = constraintRepository.get(constraint.getId()).orElseThrow(() -> new IllegalArgumentException("no constraint found: " + constraint.getId()));
         Assert.isTrue(Objects.equals(constraintEntity.getName(), constraint.getName()), "constraint name(type) not allowed change.");
         constraintEntity.setRule(JsonMapper2.toJson(constraint));
+        constraintRepository.save(constraintEntity);
     }
 
     @Transactional
@@ -261,33 +266,39 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     }
 
     @Transactional(readOnly = true)
-    @BizError("51")
+    @BizError("55")
     public PropertyMetadata getPropertyMetadata(Long propertyMetadataId) {
         Assert.notNull(propertyMetadataId, "propertyMetadataId must not be null.");
         PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.get(propertyMetadataId).orElseThrow(() -> new IllegalArgumentException("no property meta data found: " + propertyMetadataId));
-        if (Input.InputType.isCheckInput(propertyMetaEntity.getInput())) {//如果属性的input 为check类型，加载其关联 ValuesSource
-            propertyMetaEntity.getValuesSource();
-        }
-        PropertyMetadataModel propertyMetadataModel = getModelMapper().mapForRead(propertyMetaEntity);
-        propertyMetadataModel.setConstraints(findAllConstraintByPropertyMeta(propertyMetadataModel.id()));
-        return propertyMetadataModel;
+        return createPropertyMetadataFromEntity(propertyMetaEntity);
     }
 
     @Transactional(readOnly = true)
-    @BizError("52")
+    @BizError("56")
+    public PropertyMetadata getPropertyMetadataByName(String name) {
+        Assert.hasText(name, "name must not be empty text.");
+        PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.getByName(name);
+        if (null == propertyMetaEntity)
+            return null;
+        return createPropertyMetadataFromEntity(propertyMetaEntity);
+
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("60")
     public Page<ValuesSource> findValuesSourcePage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
         return valuesSourceRepository.findPage(searchFilters, pageable).map(entity -> getModelMapper().toValuesSource(entity));
     }
 
     @Transactional(readOnly = true)
-    @BizError("53")
+    @BizError("65")
     public List<Constraint> findAllConstraintByPropertyMeta(Long propertyMetaId) {
         Assert.notNull(propertyMetaId, "propertyMetaId must not be null.");
         return constraintRepository.findAllByPropertyMeta_Id(propertyMetaId).stream().map(constraintEntity -> getModelMapper().toConstraint(constraintEntity)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    @BizError("54")
+    @BizError("70")
     public ValuesSource getValuesSource(Long valuesSourceId) {
         Assert.notNull(valuesSourceId, "valuesSourceId must not be null.");
         ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(valuesSourceId).orElseThrow(() -> new IllegalArgumentException("no ValuesSource found: " + valuesSourceId));
@@ -295,26 +306,33 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     }
 
     @Transactional(readOnly = true)
-    @BizError("55")
+    @BizError("71")
+    public ValuesSource getValuesSourceByName(String name) {
+        Assert.hasText(name, "name must not be empty text.");
+        return getModelMapper().toValuesSource(valuesSourceRepository.getByName(name));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("75")
     public Page<? extends ValuesSource.SourceValue> findSourceValuePage(SourceValueModel searchModel, Pageable pageable) {
         ValuesSource valuesSource = getValuesSource(searchModel.getValuesSourceId());
         return valuesSource.readValues(searchModel, pageable);
     }
 
     @Transactional(readOnly = true)
-    @BizError("56")
+    @BizError("80")
     public Page<GroupedPropertyMetadata> findGroupedPropertyMetadataPage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
         return groupedMetaRepository.findPage(searchFilters, pageable).map(entity -> getModelMapper(GroupedMetaEntityMapper.class).mapForRead(entity));
     }
 
     @Transactional(readOnly = true)
-    @BizError("57")
+    @BizError("85")
     public GroupedPropertyMetadata getGroupedPropertyMetadata(Long id) {
         return getModelMapper(GroupedMetaEntityMapper.class).mapForRead(groupedMetaRepository.get(id).orElseThrow(() -> new IllegalArgumentException("not grouped property metadata found: " + id)));
     }
 
     @Transactional(readOnly = true)
-    @BizError("58")
+    @BizError("90")
     public List<? extends PropertyMetadata> findAllPropertyMetadataInGroup(Long groupId) {
         GroupedMetaEntity groupEntity = groupedMetaRepository.getById(groupId);
         Assert.notNull(groupEntity, "not grouped property metadata found: " + groupId);
@@ -338,6 +356,15 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         Assert.isTrue(Objects.equals(valuesSource.valuesSourceType().getOrdinal(), update.getValuesSourceType()), "values source type not allowed change.");
         ValuesSourceEntity changed = getModelMapper().toValuesSourceEntity(valuesSource);
         update.setPayload(changed.getPayload());
+    }
+
+    protected PropertyMetadata createPropertyMetadataFromEntity(PropertyMetaEntity propertyMetaEntity) {
+        if (Input.InputType.isCheckInput(propertyMetaEntity.getInput())) {//如果属性的input 为check类型，加载其关联 ValuesSource
+            propertyMetaEntity.getValuesSource();
+        }
+        PropertyMetadataModel propertyMetadataModel = getModelMapper().mapForRead(propertyMetaEntity);
+        propertyMetadataModel.setConstraints(findAllConstraintByPropertyMeta(propertyMetadataModel.id()));
+        return propertyMetadataModel;
     }
 
 

@@ -21,6 +21,7 @@ import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import org.springframework.core.OrderComparator;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -217,6 +218,13 @@ public class PropertyMetadataModel implements PropertyMetadata {
     @Override
     public Long refId() {
         return refId;
+    }
+
+
+    public void assertModelValid(){
+        if (Input.InputType.isCheckInput(getInput())) {
+            Assert.isTrue(!PropertyValueType.isCheckValueType(getValueType()),"invalid property value type. incompatible input type");
+        }
     }
 
 

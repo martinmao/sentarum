@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item;
 
 import com.google.common.collect.Maps;
+import io.scleropages.sentarum.item.mgmt.PropertyManager;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;

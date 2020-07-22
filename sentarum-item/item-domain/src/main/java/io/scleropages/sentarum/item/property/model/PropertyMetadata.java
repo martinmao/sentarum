@@ -33,22 +33,38 @@ public interface PropertyMetadata {
         /**
          * 扁平的属性，每个属性各自作为一个维度与其他属性是平行的.
          */
-        FLAT_PROPERTY,
+        FLAT_PROPERTY(1, "扁平属性"),
 
         /**
          * 存在层级的属性,root节点,其属性值会关联一组其他属性（ {@link #HIERARCHY_NODE_PROPERTY} 或 {@link #HIERARCHY_LEAF_PROPERTY} ）
          * 这种属性结构的划分是为了更好的进行属性分类，导航。避免属性过多而无法穷举筛选的情况.
          * 例如品牌，系列，型号这三种属性就存在层次关系(品牌确定系列，系列确定型号)，类似还有款式-尺码-颜色同样存在类似约束
          */
-        HIERARCHY_ROOT_PROPERTY,
+        HIERARCHY_ROOT_PROPERTY(2, "层级属性-根"),
         /**
          * 存在层级的属性，node节点，其属性值会关联一组其他属性 （ {@link #HIERARCHY_NODE_PROPERTY} 或 {@link #HIERARCHY_LEAF_PROPERTY} ）.
          */
-        HIERARCHY_NODE_PROPERTY,
+        HIERARCHY_NODE_PROPERTY(3, "层级属性-节点"),
         /**
          * 存在层级的属性，leaf节点，其属性值作为整个层次的最终叶子节点.
          */
-        HIERARCHY_LEAF_PROPERTY;
+        HIERARCHY_LEAF_PROPERTY(4, "层级属性-叶");
+
+        private final int ordinal;
+        private final String tag;
+
+        PropertyStructureType(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
 
         private static final Map<String, PropertyStructureType> nameMappings = new HashMap<>();
         private static final Map<Integer, PropertyStructureType> ordinalMappings = new HashMap<>();
@@ -56,7 +72,7 @@ public interface PropertyMetadata {
         static {
             for (PropertyStructureType structureType : PropertyStructureType.values()) {
                 nameMappings.put(structureType.name(), structureType);
-                ordinalMappings.put(structureType.ordinal(), structureType);
+                ordinalMappings.put(structureType.getOrdinal(), structureType);
             }
         }
 

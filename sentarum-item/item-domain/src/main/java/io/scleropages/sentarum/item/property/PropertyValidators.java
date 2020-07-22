@@ -20,7 +20,9 @@ import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.Input;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.constraint.ConstraintDepends;
+import io.scleropages.sentarum.item.property.model.constraint.SourceValueExists;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -117,6 +119,12 @@ public abstract class PropertyValidators {
     private static Constraint validateInternal(PropertyMetadata propertyMetadata, Input input) {
         Assert.notNull(input, "input must not be null.");
         List<Constraint> constraints = propertyMetadata.constraints();
+        ValuesSource valuesSource = propertyMetadata.valuesSource();
+        if (null != valuesSource) {//值来源不为空，则从值来源中检查存在
+            SourceValueExists sourceValueExists = new SourceValueExists();
+            if (!sourceValueExists.validate(propertyMetadata, input))
+                return sourceValueExists;
+        }
         if (null == constraints || constraints.size() == 0) {
             return null;
         }

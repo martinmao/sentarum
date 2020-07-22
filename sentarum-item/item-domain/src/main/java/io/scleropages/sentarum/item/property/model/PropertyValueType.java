@@ -83,6 +83,16 @@ public enum PropertyValueType {
     }
 
     /**
+     * return true if given valueType is check value.
+     *
+     * @param valueType
+     * @return
+     */
+    public static boolean isCheckValueType(PropertyValueType valueType) {
+        return valueType == INTEGER || valueType == LONG;
+    }
+
+    /**
      * 显示指定 ordinal,避免定义顺序被意外变更.
      */
     private final int ordinal;

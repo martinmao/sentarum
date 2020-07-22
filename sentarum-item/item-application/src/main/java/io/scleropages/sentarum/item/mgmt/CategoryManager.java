@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item;
+package io.scleropages.sentarum.item.mgmt;
 
 import io.scleropages.sentarum.item.category.entity.CategoryPropertyEntity;
 import io.scleropages.sentarum.item.category.entity.MarketingCategoryEntity;
@@ -119,7 +119,10 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     public void createCategoryProperty(@Valid CategoryPropertyModel model, Long stdCategoryId, Long propertyMetaId) {
         Assert.notNull(stdCategoryId, "stdCategoryId must not be null.");
         Assert.notNull(propertyMetaId, "propertyMetaId must not be null.");
+
         CategoryPropertyEntity toSave = getModelMapper(CategoryPropertyEntityMapper.class).mapForSave(model);
+        propertyManager.awarePropertyMetaEntity(propertyMetaId, toSave);
+        StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.get(stdCategoryId).orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
 
         CategoryProperty.DefaultValues defaultValues = model.getDefaultValues();
         if (null != defaultValues) {
@@ -127,8 +130,6 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
             Inputs.addValues(propertyMetadata.input(), defaultValues.getValues());
             PropertyValidators.assertInputValid(propertyMetadata);
         }
-        propertyManager.awarePropertyMetaEntity(propertyMetaId, toSave);
-        StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.get(stdCategoryId).orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
         toSave.setCategory(standardCategoryEntity);
         categoryPropertyRepository.save(toSave);
     }
@@ -217,31 +218,32 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     }
 
     @Transactional(readOnly = true)
-    @BizError("51")
+    @BizError("55")
     public List<StandardCategory> findAllStandardCategory(Integer status) {
         return standardCategoryRepository.findAllByStatusEquals(status).stream().map(entity -> getModelMapper().mapForRead(entity)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    @BizError("52")
+    @BizError("60")
     public StandardCategory getStandardCategory(Long id) {
         return getModelMapper().mapForRead(standardCategoryRepository.getByIdWithCategoryProperties(id).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
     }
 
+
     @Transactional(readOnly = true)
-    @BizError("53")
+    @BizError("65")
     public Page<MarketingCategory> findMarketingCategoryPage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
         return marketingCategoryRepository.findPage(searchFilters, pageable).map(entity -> getModelMapper(MarketingCategoryEntityMapper.class).mapForRead(entity));
     }
 
     @Transactional(readOnly = true)
-    @BizError("54")
+    @BizError("70")
     public List<MarketingCategory> findAllMarketingCategory(Integer status) {
         return marketingCategoryRepository.findAllByStatusEquals(status).stream().map(entity -> getModelMapper(MarketingCategoryEntityMapper.class).mapForRead(entity)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    @BizError("55")
+    @BizError("75")
     public MarketingCategory getMarketingCategory(Long id) {
         return getModelMapper(MarketingCategoryEntityMapper.class).mapForRead(marketingCategoryRepository.getByIdWithStandardCategoryLinks(id).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
     }

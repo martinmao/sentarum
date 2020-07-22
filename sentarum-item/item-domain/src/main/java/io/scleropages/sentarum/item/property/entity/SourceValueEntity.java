@@ -25,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * 参考模型： {@link io.scleropages.sentarum.item.property.model.impl.SourceValueModel}
@@ -32,7 +33,7 @@ import javax.persistence.Table;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "pt_source_value", indexes = @Index(columnList = "ref_source_value_id"))
+@Table(name = "pt_source_value", uniqueConstraints = @UniqueConstraint(columnNames = {"values_source_id", "value_"}), indexes = @Index(columnList = "ref_source_value_id"))
 @SequenceGenerator(name = "pt_source_value_id", sequenceName = "seq_pt_source_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class SourceValueEntity extends IdEntity {
 

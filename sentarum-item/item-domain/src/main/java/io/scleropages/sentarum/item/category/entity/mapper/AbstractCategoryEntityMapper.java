@@ -31,7 +31,7 @@ public interface AbstractCategoryEntityMapper{
     }
 
     default Integer toOrdinal(Category.Status status) {
-        return status.ordinal();
+        return status.getOrdinal();
     }
 
 

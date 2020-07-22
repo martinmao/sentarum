@@ -21,12 +21,14 @@ import org.jooq.Table;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
+@NoRepositoryBean
 public interface AbstractCategoryRepository<E extends AbstractCategoryEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
 
     /**

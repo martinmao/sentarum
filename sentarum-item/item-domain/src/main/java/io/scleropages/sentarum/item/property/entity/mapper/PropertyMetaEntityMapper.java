@@ -45,7 +45,7 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
 
 
     default Integer toOrdinal(PropertyMetadata.PropertyStructureType propertyStructureType) {
-        return propertyStructureType.ordinal();
+        return propertyStructureType.getOrdinal();
     }
 
     default PropertyMetadata.PropertyStructureType toPropertyStructureType(Integer ordinal) {

@@ -16,7 +16,6 @@
 package io.scleropages.sentarum.item.category.model;
 
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValueType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,21 +115,37 @@ public interface CategoryProperty {
          * 为满足检索需要，在SPU定义时，就需要将规格属性所有的值绑定到SPU上（全选），此时前端基于属性的检索，才能通过规格匹配到具体的SPU。
          * 而这些值会向下继承到商品，也能满足商品的导航检索。在进行SKU设置时，需要从中确定特定的（多选变单选）规格值。
          */
-        KEY_PROPERTY,
+        KEY_PROPERTY(1, "关键属性"),
         /**
          * SPU属性(非关键属性)
          */
-        SPU_PROPERTY,
+        SPU_PROPERTY(2, "SPU属性"),
 
         /**
          * 商品属性，与商家相关（例如，运费模板，运费，是否全新，生产日期等。。）
          */
-        ITEM_PROPERTY,
+        ITEM_PROPERTY(3, "商品属性"),
 
         /**
          * SKU销售属性(销售属性，规格属性)
          */
-        SALES_PROPERTY;
+        SALES_PROPERTY(4, "销售属性");
+
+        CategoryPropertyBizType(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+        private final int ordinal;
+        private final String tag;
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
 
         private static final Map<String, CategoryPropertyBizType> nameMappings = new HashMap<>();
         private static final Map<Integer, CategoryPropertyBizType> ordinalMappings = new HashMap<>();
@@ -138,7 +153,7 @@ public interface CategoryProperty {
         static {
             for (CategoryPropertyBizType bizType : CategoryPropertyBizType.values()) {
                 nameMappings.put(bizType.name(), bizType);
-                ordinalMappings.put(bizType.ordinal(), bizType);
+                ordinalMappings.put(bizType.getOrdinal(), bizType);
             }
         }
 
@@ -153,23 +168,13 @@ public interface CategoryProperty {
 
 
     class DefaultValues {
-        private PropertyValueType propertyValueType;
         private Object[] values;
 
         public DefaultValues() {
         }
 
-        public DefaultValues(PropertyValueType propertyValueType, Object[] values) {
-            this.propertyValueType = propertyValueType;
+        public DefaultValues(Object[] values) {
             this.values = values;
-        }
-
-        public PropertyValueType getPropertyValueType() {
-            return propertyValueType;
-        }
-
-        public void setPropertyValueType(PropertyValueType propertyValueType) {
-            this.propertyValueType = propertyValueType;
         }
 
         public Object[] getValues() {

@@ -27,4 +27,5 @@ import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 public interface PropertyMetaRepository extends GenericRepository<PropertyMetaEntity, Long>,
         JooqRepository<PtPropertyMeta, PtPropertyMetaRecord, PropertyMetaEntity> {
 
+    PropertyMetaEntity getByName(String name);
 }

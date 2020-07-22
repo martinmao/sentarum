@@ -72,7 +72,7 @@ public interface ValuesSource {
         static {
             for (ValuesSourceType valuesSourceType : ValuesSourceType.values()) {
                 nameMappings.put(valuesSourceType.name(), valuesSourceType);
-                ordinalMappings.put(valuesSourceType.ordinal, valuesSourceType);
+                ordinalMappings.put(valuesSourceType.getOrdinal(), valuesSourceType);
             }
         }
 
@@ -208,6 +208,51 @@ public interface ValuesSource {
      */
     ValuesSourceType valuesSourceType();
 
+
+    /**
+     * return source by by values source id and value.
+     *
+     * @param valuesSourceId
+     * @param value
+     * @return
+     */
+    default SourceValue readValue(Long valuesSourceId, Long value) {
+        Page<? extends SourceValue> sourceValues = readValues(new SourceValue() {
+            @Override
+            public Long id() {
+                return null;
+            }
+
+            @Override
+            public Long value() {
+                return value;
+            }
+
+            @Override
+            public String valueTag() {
+                return null;
+            }
+
+            @Override
+            public Long refId() {
+                return null;
+            }
+
+            @Override
+            public Long valuesSourceId() {
+                return valuesSourceId;
+            }
+
+            @Override
+            public Map<String, Object> additionalAttributes() {
+                return null;
+            }
+        }, Pageable.unpaged());
+
+        if (sourceValues.isEmpty())
+            return null;
+        return sourceValues.iterator().next();
+    }
 
     /**
      * return source values.
