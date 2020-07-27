@@ -15,8 +15,10 @@
  */
 package io.scleropages.sentarum.item.category.model;
 
+import io.scleropages.sentarum.item.model.Item;
+
 /**
- * 直接关联到商品的类目，例如：
+ * 与商家相关的商品的类目，例如：
  * <pre>
  *     商家自定义的商品类目,例如店铺商品类目
  * </pre>
@@ -24,5 +26,26 @@ package io.scleropages.sentarum.item.category.model;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface ItemCategory extends Category {
+
+    /**
+     * 商家类型
+     *
+     * @return
+     */
+    Item.SellerType sellerType();
+
+    /**
+     * 商家唯一标识（商业综合体标识）
+     *
+     * @return
+     */
+    Long sellerUnionId();
+
+    /**
+     * 商家唯一标识 (商业综合体内具体销售场所，例如店铺)
+     *
+     * @return
+     */
+    Long sellerId();
 
 }

@@ -36,6 +36,8 @@ public interface StandardCategoryLinkEntityMapper extends ModelMapper<StandardCa
 
 
     default MarketingCategory toMarketingCategory(MarketingCategoryEntity entity) {
+        if (!isEntityInitialized(entity))
+            return null;
         MarketingCategoryEntityMapper mapper = (MarketingCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(MarketingCategoryEntityMapper.class);
         return mapper.mapForRead(entity);
     }
@@ -45,6 +47,8 @@ public interface StandardCategoryLinkEntityMapper extends ModelMapper<StandardCa
     }
 
     default StandardCategory toStandardCategory(StandardCategoryEntity entity) {
+        if (!isEntityInitialized(entity))
+            return null;
         StandardCategoryEntityMapper mapper = (StandardCategoryEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class);
         return mapper.mapForRead(entity);
     }

@@ -31,10 +31,12 @@ import io.scleropages.sentarum.item.category.model.impl.CategoryPropertyModel;
 import io.scleropages.sentarum.item.category.model.impl.MarketingCategoryModel;
 import io.scleropages.sentarum.item.category.model.impl.StandardCategoryLinkModel;
 import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
+import io.scleropages.sentarum.item.category.repo.CategoryEntityGraph;
 import io.scleropages.sentarum.item.category.repo.CategoryPropertyRepository;
 import io.scleropages.sentarum.item.category.repo.MarketingCategoryRepository;
 import io.scleropages.sentarum.item.category.repo.StandardCategoryLinkRepository;
 import io.scleropages.sentarum.item.category.repo.StandardCategoryRepository;
+import io.scleropages.sentarum.item.mgmt.impl.CategoryNavigatorImpl;
 import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
@@ -250,6 +252,12 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         return getModelMapper(MarketingCategoryEntityMapper.class).mapForRead(marketingCategoryRepository.getByIdWithStandardCategoryLinks(id).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
     }
 
+    @Transactional(readOnly = true)
+    @BizError("80")
+    public CategoryNavigator getStandardCategoryNavigator() {
+        CategoryEntityGraph<StandardCategoryEntity> graph = standardCategoryRepository.getFullStandardCategoryGraph();
+        return new CategoryNavigatorImpl(graph);
+    }
 
     @Autowired
     public void setCategoryPropertyRepository(CategoryPropertyRepository categoryPropertyRepository) {

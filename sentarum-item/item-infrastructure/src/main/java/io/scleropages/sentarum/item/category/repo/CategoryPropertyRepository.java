@@ -26,4 +26,12 @@ import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
  */
 public interface CategoryPropertyRepository extends GenericRepository<CategoryPropertyEntity, Long>, JooqRepository<ClProperty, ClPropertyRecord, CategoryPropertyEntity> {
 
+    /**
+     * return true if given category already bind to property metadata.
+     *
+     * @param categoryId
+     * @param propertyMetaId
+     * @return
+     */
+    boolean existsByCategory_IdAndPropertyMetadata_Id(Long categoryId, Long propertyMetaId);
 }

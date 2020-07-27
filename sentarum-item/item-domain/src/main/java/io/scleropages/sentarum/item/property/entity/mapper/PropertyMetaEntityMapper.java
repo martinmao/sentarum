@@ -29,6 +29,9 @@ import org.mapstruct.Mapper;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.ModelMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -73,6 +76,8 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
     }
 
     default Constraint toConstraint(ConstraintEntity constraintEntity) {
+        if (!isEntityInitialized(constraintEntity))
+            return null;
         String name = constraintEntity.getName();
         try {
             return JsonMapper2.fromJson(constraintEntity.getRule(), Constraint.getConstraintImplementationClass(name));
@@ -83,7 +88,7 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
 
 
     default ValuesSource toValuesSource(ValuesSourceEntity valuesSourceEntity) {
-        if (null == valuesSourceEntity)
+        if (!isEntityInitialized(valuesSourceEntity))
             return null;
         ValuesSource.ValuesSourceType sourceType = ValuesSource.ValuesSourceType.getByOrdinal(valuesSourceEntity.getValuesSourceType());
         Class implementationClass = sourceType.getImplementationClass();
@@ -102,5 +107,17 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
         valuesSourceEntity.setValuesSourceType(valuesSource.valuesSourceType().getOrdinal());
         valuesSourceEntity.setPayload(JsonMapper2.toJson(valuesSource));
         return valuesSourceEntity;
+    }
+
+
+    default List<Constraint> constraintEntityListToConstraintList(List<ConstraintEntity> list) {
+        if (!isEntityInitialized(list))
+            return null;
+        List<Constraint> list1 = new ArrayList<Constraint>(list.size());
+        for (ConstraintEntity constraintEntity : list) {
+            list1.add(toConstraint(constraintEntity));
+        }
+
+        return list1;
     }
 }

@@ -27,37 +27,47 @@ public class Media {
     private ContentType contentType;
     private Float order;
     private Status status;
+    private Map<String,Object> additionalAttributes;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public ContentType getContentType() {
         return contentType;
     }
 
-    public void setContentType(ContentType contentType) {
-        this.contentType = contentType;
-    }
-
     public Float getOrder() {
         return order;
-    }
-
-    public void setOrder(Float order) {
-        this.order = order;
     }
 
     public Status getStatus() {
         return status;
     }
 
+    public Map<String, Object> getAdditionalAttributes() {
+        return additionalAttributes;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
+    }
+
+    public void setOrder(Float order) {
+        this.order = order;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
     }
 
     enum ContentType {
@@ -138,6 +148,4 @@ public class Media {
             return ordinalMappings.get(ordinal);
         }
     }
-
-
 }

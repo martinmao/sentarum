@@ -23,18 +23,34 @@ import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 import org.scleropages.crud.ModelMapperRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface MarketingCategoryEntityMapper extends AbstractCategoryEntityMapper, ModelMapper<MarketingCategoryEntity, MarketingCategoryModel> {
+public interface MarketingCategoryEntityMapper extends AbstractCategoryEntityMapper<MarketingCategoryEntity, MarketingCategoryModel> {
 
     default StandardCategoryLinkEntity toStandardCategoryLinkEntity(StandardCategoryLink model) {
         return null;
     }
 
     default StandardCategoryLink toStandardCategoryLink(StandardCategoryLinkEntity entity) {
+        if (!isEntityInitialized(entity))
+            return null;
         StandardCategoryLinkEntityMapper mapper = (StandardCategoryLinkEntityMapper) ModelMapperRepository.getRequiredModelMapper(StandardCategoryLinkEntityMapper.class);
         return mapper.mapForRead(entity);
+    }
+
+    default List<StandardCategoryLink> standardCategoryLinkEntityListToStandardCategoryLinkList(List<StandardCategoryLinkEntity> list) {
+        if (!isEntityInitialized(list))
+            return null;
+        List<StandardCategoryLink> list1 = new ArrayList<StandardCategoryLink>(list.size());
+        for (StandardCategoryLinkEntity standardCategoryLinkEntity : list) {
+            list1.add(toStandardCategoryLink(standardCategoryLinkEntity));
+        }
+
+        return list1;
     }
 }

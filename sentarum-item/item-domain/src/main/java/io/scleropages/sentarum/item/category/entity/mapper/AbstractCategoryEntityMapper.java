@@ -15,15 +15,19 @@
  */
 package io.scleropages.sentarum.item.category.entity.mapper;
 
+import io.scleropages.sentarum.item.category.entity.AbstractCategoryEntity;
 import io.scleropages.sentarum.item.category.model.Category;
+import io.scleropages.sentarum.item.category.model.impl.CategoryModel;
 import org.scleropages.core.mapper.JsonMapper2;
+import org.scleropages.crud.ModelMapper;
 
 import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface AbstractCategoryEntityMapper{
+
+public interface AbstractCategoryEntityMapper<T extends AbstractCategoryEntity, M extends CategoryModel> extends ModelMapper<T, M> {
 
 
     default Category.Status ordinalToStatus(Integer ordinal) {

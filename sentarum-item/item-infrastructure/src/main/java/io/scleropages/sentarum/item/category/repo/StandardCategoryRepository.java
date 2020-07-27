@@ -18,8 +18,10 @@ package io.scleropages.sentarum.item.category.repo;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.jooq.tables.ClStdCategory;
 import io.scleropages.sentarum.jooq.tables.records.ClStdCategoryLinkRecord;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.JoinType;
 import java.util.Optional;
 
 /**
@@ -33,10 +35,25 @@ public interface StandardCategoryRepository extends AbstractCategoryRepository<S
      */
     default Optional<StandardCategoryEntity> getByIdWithCategoryProperties(Long id) {
         Specification specification = (Specification) (root, query, builder) -> {
-            root.fetch("categoryProperties").fetch("propertyMetadata");
+            root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata");
             return builder.equal(root.get("id"), id);
         };
         return get(specification);
     }
-    
+
+    /**
+     * return full graph for all {@link StandardCategoryEntity}s
+     *
+     * @return
+     */
+    @Cacheable
+    default CategoryEntityGraph<StandardCategoryEntity> getFullStandardCategoryGraph() {
+        Specification specification = (Specification) (root, query, builder) -> {
+            root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata", JoinType.LEFT);
+            root.fetch("parent", JoinType.LEFT);
+            return builder.conjunction();
+        };
+        return createGraph(specification);
+    }
+
 }

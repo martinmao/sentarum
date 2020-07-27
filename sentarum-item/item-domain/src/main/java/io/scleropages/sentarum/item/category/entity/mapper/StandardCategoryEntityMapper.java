@@ -23,18 +23,35 @@ import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 import org.scleropages.crud.ModelMapperRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface StandardCategoryEntityMapper extends AbstractCategoryEntityMapper, ModelMapper<StandardCategoryEntity, StandardCategoryModel> {
+public interface StandardCategoryEntityMapper extends AbstractCategoryEntityMapper<StandardCategoryEntity, StandardCategoryModel> {
 
     default CategoryProperty toCategoryProperty(CategoryPropertyEntity entity) {
+        if (!isEntityInitialized(entity))
+            return null;
         CategoryPropertyEntityMapper mapper = (CategoryPropertyEntityMapper) ModelMapperRepository.getRequiredModelMapper(CategoryPropertyEntityMapper.class);
         return mapper.mapForRead(entity);
     }
 
     default CategoryPropertyEntity toCategoryPropertyEntity(CategoryProperty model) {
         return null;
+    }
+
+
+    default List<CategoryProperty> categoryPropertyEntityListToCategoryPropertyList(List<CategoryPropertyEntity> list) {
+        if (!isEntityInitialized(list))
+            return null;
+        List<CategoryProperty> list1 = new ArrayList<CategoryProperty>(list.size());
+        for (CategoryPropertyEntity categoryPropertyEntity : list) {
+            list1.add(toCategoryProperty(categoryPropertyEntity));
+        }
+
+        return list1;
     }
 }

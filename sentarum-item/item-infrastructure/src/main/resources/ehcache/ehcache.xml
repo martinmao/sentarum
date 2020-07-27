@@ -7,6 +7,16 @@
 
     <persistence directory="${java.io.tmpdir}/ehcache"></persistence>
 
+
+
+    <cache alias="io.scleropages.sentarum.item.category.repo.StandardCategoryRepository.getFullStandardCategoryGraph">
+        <expiry>
+            <ttl unit="minutes">10</ttl>
+        </expiry>
+        <heap>1</heap> <!--a single instance. ensure it can keep all entries from sec_acl_permission in heap memory-->
+    </cache>
+
+
     <cache-template name="heap-cache">
         <expiry>
             <ttl unit="minutes">30</ttl>

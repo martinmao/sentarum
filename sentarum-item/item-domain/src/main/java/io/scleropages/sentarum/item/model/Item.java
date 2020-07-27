@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item.model;
 import io.scleropages.sentarum.item.ge.model.Media;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,6 @@ import java.util.Map;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface Item {
-
 
     /**
      * 唯一标识
@@ -79,13 +79,6 @@ public interface Item {
      * @return
      */
     String outerId();
-
-    /**
-     * 名称
-     *
-     * @return
-     */
-    String name();
 
     /**
      * 标题
@@ -140,44 +133,6 @@ public interface Item {
      */
     List<Media> mediaList();
 
-    ////////////////// 可定义为商品属性，暂时列举如下 /////////////////////////
-
-    /**
-     * 运费模板id
-     *
-     * @return
-     */
-    Long postageId();
-
-    /**
-     * 平邮费用
-     *
-     * @return
-     */
-    BigDecimal postFee();
-
-
-    /**
-     * 快递费用
-     *
-     * @return
-     */
-    BigDecimal expressFee();
-
-    /**
-     * ems费用
-     *
-     * @return
-     */
-    BigDecimal emsFee();
-
-
-    /**
-     * 运费承担人，卖家，卖家，平台....
-     *
-     * @return
-     */
-    Integer freightPayer();
 
     /**
      * 扩展属性
@@ -186,6 +141,45 @@ public interface Item {
      */
     Map<String, Object> additionalAttributes();
 
+    ////////////////// 可定义为商品属性，暂时列举如下 /////////////////////////
+
+//    /**
+//     * 运费模板id
+//     *
+//     * @return
+//     */
+//    Long postageId();
+//
+//    /**
+//     * 平邮费用
+//     *
+//     * @return
+//     */
+//    BigDecimal postFee();
+//
+//
+//    /**
+//     * 快递费用
+//     *
+//     * @return
+//     */
+//    BigDecimal expressFee();
+//
+//    /**
+//     * ems费用
+//     *
+//     * @return
+//     */
+//    BigDecimal emsFee();
+//
+//
+//    /**
+//     * 运费承担人，卖家，卖家，平台....
+//     *
+//     * @return
+//     */
+//    Integer freightPayer();
+
 
     enum ItemType {
 
@@ -193,9 +187,7 @@ public interface Item {
 
         COMBINE_SKU_ITEM(2, "组合SKU商品", "购买的商品包含其内所有的sku. 聚合关系");
 
-        /**
-         * 显示指定 ordinal,避免定义顺序被意外变更.
-         */
+
         private final int ordinal;
         /**
          * 显示名.
@@ -222,6 +214,26 @@ public interface Item {
 
         public String getDesc() {
             return desc;
+        }
+
+
+        private static final Map<String, ItemType> nameMappings = new HashMap<>();
+        private static final Map<Integer, ItemType> ordinalMappings = new HashMap<>();
+
+        static {
+            for (ItemType itemType : ItemType.values()) {
+                nameMappings.put(itemType.name(), itemType);
+                ordinalMappings.put(itemType.getOrdinal(), itemType);
+            }
+        }
+
+
+        public static ItemType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static ItemType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
         }
     }
 
@@ -256,6 +268,26 @@ public interface Item {
 
         public String getDesc() {
             return desc;
+        }
+
+
+        private static final Map<String, SellerType> nameMappings = new HashMap<>();
+        private static final Map<Integer, SellerType> ordinalMappings = new HashMap<>();
+
+        static {
+            for (SellerType sellerType : SellerType.values()) {
+                nameMappings.put(sellerType.name(), sellerType);
+                ordinalMappings.put(sellerType.getOrdinal(), sellerType);
+            }
+        }
+
+
+        public static SellerType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static SellerType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
         }
     }
 }

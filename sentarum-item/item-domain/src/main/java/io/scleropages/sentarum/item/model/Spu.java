@@ -20,6 +20,7 @@ import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,15 +33,50 @@ import java.util.Map;
  * </pre>
  * 继承的含义为其具备这些属性项，以及属性值。这些属性值有的直接源于类目（只读，不可变），有的需要在创建过程中填写。
  * 如果为了检索需求，将规格属性（例如，淘宝京东可以直接对商品规格进行检索，尺码，颜色等）也定义为关键属性。
- * 所以在设计属性规则时，可以将 {@link io.scleropages.sentarum.item.property.model.Input}预先设定为多选类型。即SPU支持的规格列表，
- * 而在SKU进行规则选择时，其变为单选。
+ * 所以在设计属性规则时，可以将 {@link io.scleropages.sentarum.item.property.model.Input}设定为多选类型支持检索, 即SPU支持的所有规格列表。
+ * 而在SKU进行规则选择时，再新建一个同样的属性，但其为单选。
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface Spu {
 
     enum Status {
-        VALID, INVALID
+        VALID(1, "有效"), INVALID(2, "无效");
+        private final int ordinal;
+        private final String tag;
+
+        Status(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        private static final Map<String, Status> nameMappings = new HashMap<>();
+        private static final Map<Integer, Status> ordinalMappings = new HashMap<>();
+
+        static {
+            for (Status status : Status.values()) {
+                nameMappings.put(status.name(), status);
+                ordinalMappings.put(status.getOrdinal(), status);
+            }
+        }
+
+
+        public static Status getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static Status getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
     }
 
     /**

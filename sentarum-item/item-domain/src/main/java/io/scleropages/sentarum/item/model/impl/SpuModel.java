@@ -13,32 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.category.model.impl;
+package io.scleropages.sentarum.item.model.impl;
 
-import io.scleropages.sentarum.item.category.model.Category;
+import io.scleropages.sentarum.item.category.model.StandardCategory;
+import io.scleropages.sentarum.item.model.Spu;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CategoryModel implements Category {
+public class SpuModel implements Spu {
 
     private Long id;
     private String name;
     private String tag;
-    private String description;
     private Status status;
-    private Category parentCategory;
-    private List<? extends Category> childCategories;
+    private List<PropertyValue> keyProperties;
+    private List<PropertyValue> properties;
+    private BigDecimal marketPrice;
+    private StandardCategory category;
+    private Date marketTime;
     private Map<String, Object> additionalAttributes;
 
-    @NotNull(groups = Update.class)
+
     @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
@@ -54,25 +61,34 @@ public class CategoryModel implements Category {
     }
 
     @NotEmpty(groups = Create.class)
-    public String getDescription() {
-        return description;
-    }
-
-    @NotNull(groups = Create.class)
     public Status getStatus() {
         return status;
     }
 
     @Null
-    public Category getParentCategory() {
-        return parentCategory;
+    public List<PropertyValue> getKeyProperties() {
+        return keyProperties;
     }
 
     @Null
-    public List<? extends Category> getChildCategories() {
-        return childCategories;
+    public List<PropertyValue> getProperties() {
+        return properties;
     }
 
+    @NotNull(groups = Create.class)
+    public BigDecimal getMarketPrice() {
+        return marketPrice;
+    }
+
+    @Null
+    public StandardCategory getCategory() {
+        return category;
+    }
+
+    @NotNull(groups = Create.class)
+    public Date getMarketTime() {
+        return marketTime;
+    }
 
     public Map<String, Object> getAdditionalAttributes() {
         return additionalAttributes;
@@ -90,20 +106,28 @@ public class CategoryModel implements Category {
         this.tag = tag;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    public void setParentCategory(Category parentCategory) {
-        this.parentCategory = parentCategory;
+    public void setKeyProperties(List<PropertyValue> keyProperties) {
+        this.keyProperties = keyProperties;
     }
 
-    public void setChildCategories(List<? extends Category> childCategories) {
-        this.childCategories = childCategories;
+    public void setProperties(List<PropertyValue> properties) {
+        this.properties = properties;
+    }
+
+    public void setMarketPrice(BigDecimal marketPrice) {
+        this.marketPrice = marketPrice;
+    }
+
+    public void setCategory(StandardCategory category) {
+        this.category = category;
+    }
+
+    public void setMarketTime(Date marketTime) {
+        this.marketTime = marketTime;
     }
 
     public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
@@ -126,23 +150,33 @@ public class CategoryModel implements Category {
     }
 
     @Override
-    public String description() {
-        return getDescription();
-    }
-
-    @Override
     public Status status() {
         return getStatus();
     }
 
     @Override
-    public Category parentCategory() {
-        return getParentCategory();
+    public List<PropertyValue> keyProperties() {
+        return getKeyProperties();
     }
 
     @Override
-    public List<? extends Category> childCategories() {
-        return getChildCategories();
+    public List<PropertyValue> properties() {
+        return getProperties();
+    }
+
+    @Override
+    public BigDecimal marketPrice() {
+        return getMarketPrice();
+    }
+
+    @Override
+    public StandardCategory category() {
+        return getCategory();
+    }
+
+    @Override
+    public Date marketTime() {
+        return getMarketTime();
     }
 
     @Override
@@ -151,17 +185,9 @@ public class CategoryModel implements Category {
     }
 
 
-    @Override
-    public String toString() {
-        return "CategoryModel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", tag='" + tag + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", parentCategory=" + parentCategory +
-                ", childCategories=" + childCategories +
-                ", additionalAttributes=" + additionalAttributes +
-                '}';
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }
