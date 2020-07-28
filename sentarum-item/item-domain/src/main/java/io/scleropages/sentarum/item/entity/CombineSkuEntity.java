@@ -32,8 +32,8 @@ import java.util.List;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "item_sku")
-@SequenceGenerator(name = "item_sku_id", sequenceName = "seq_item_sku", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "item_combine_sku")
+@SequenceGenerator(name = "item_combine_sku_id", sequenceName = "seq_item_combine_sku", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class CombineSkuEntity extends AbstractSkuEntity {
 
     private List<CombineSkuEntryEntity> entries;

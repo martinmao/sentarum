@@ -78,7 +78,7 @@ public class AbstractSkuEntity extends IdEntity {
     }
 
     @OneToMany
-    @JoinTable(name = "sku_media", joinColumns = {@JoinColumn(name = "sku_id")}, inverseJoinColumns = {@JoinColumn(name = "media_id")})
+    @JoinTable(name = "item_sku_media", joinColumns = {@JoinColumn(name = "sku_id")}, inverseJoinColumns = {@JoinColumn(name = "media_id")})
     public List<MediaEntity> getMediaList() {
         return mediaList;
     }
