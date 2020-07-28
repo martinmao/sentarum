@@ -246,8 +246,46 @@ public interface Item {
         }
     }
 
+
     enum Status {
 
+        VALID(1, "有效"), INVALID(2, "无效");
+
+
+        Status(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+        private final int ordinal;
+        private final String tag;
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        private static final Map<String, Status> nameMappings = new HashMap<>();
+        private static final Map<Integer, Status> ordinalMappings = new HashMap<>();
+
+        static {
+            for (Status status : Status.values()) {
+                nameMappings.put(status.name(), status);
+                ordinalMappings.put(status.getOrdinal(), status);
+            }
+        }
+
+
+        public static Status getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static Status getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
     }
 
     enum SellerType {

@@ -56,7 +56,7 @@ public class StructureText {
         this.mediaType = mediaType;
     }
 
-    enum MediaType {
+    public enum MediaType {
 
         JSON(1, "JSON"), XML(2, "XML"), CSV(3, "CSV, comma delimited text");
 
