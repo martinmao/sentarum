@@ -22,6 +22,7 @@ import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * SKU（最小库存单位），其与商品相关联（间接关联SPU），即具体可销售的SKU由商品确定（即卖家确定）。<br>
@@ -93,6 +94,13 @@ public interface Sku {
      * @return
      */
     List<Media> mediaList();
+
+    /**
+     * 扩展属性
+     *
+     * @return
+     */
+    Map<String, Object> additionalAttributes();
 
 
     enum SkuType {

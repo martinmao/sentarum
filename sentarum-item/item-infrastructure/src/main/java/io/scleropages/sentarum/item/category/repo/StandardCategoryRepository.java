@@ -42,6 +42,20 @@ public interface StandardCategoryRepository extends AbstractCategoryRepository<S
     }
 
     /**
+     * get by id and parent entity is not null with category properties.
+     *
+     * @param id
+     * @return
+     */
+    default Optional<StandardCategoryEntity> getByIdAndParentIsNotNullWithCategoryProperties(Long id) {
+        Specification specification = (Specification) (root, query, builder) -> {
+            root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata");
+            return builder.and(builder.equal(root.get("id"), id), builder.isNotNull(root.get("parent")));
+        };
+        return get(specification);
+    }
+
+    /**
      * return full graph for all {@link StandardCategoryEntity}s
      *
      * @return

@@ -39,6 +39,7 @@ import io.scleropages.sentarum.item.category.repo.StandardCategoryRepository;
 import io.scleropages.sentarum.item.mgmt.impl.CategoryNavigatorImpl;
 import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
+import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.dao.orm.SearchFilter;
@@ -57,6 +58,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -126,6 +128,8 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         propertyManager.awarePropertyMetaEntity(propertyMetaId, toSave);
         StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.get(stdCategoryId).orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
 
+        assertPropertyMetaUniqueForCategoryHierarchy(standardCategoryEntity.getId(), propertyMetaId);
+
         CategoryProperty.DefaultValues defaultValues = model.getDefaultValues();
         if (null != defaultValues) {
             PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadata(propertyMetaId);
@@ -135,6 +139,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         toSave.setCategory(standardCategoryEntity);
         categoryPropertyRepository.save(toSave);
     }
+
 
     @Transactional
     @BizError("05")
@@ -258,6 +263,27 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         CategoryEntityGraph<StandardCategoryEntity> graph = standardCategoryRepository.getFullStandardCategoryGraph();
         return new CategoryNavigatorImpl(graph);
     }
+
+
+    /**
+     * 断言 {@link PropertyMetadata} 在整个 {@link io.scleropages.sentarum.item.category.model.Category} 是唯一的
+     *
+     * @param categoryId
+     * @param propertyMetaId
+     */
+    protected void assertPropertyMetaUniqueForCategoryHierarchy(Long categoryId, Long propertyMetaId) {
+        Optional<StandardCategoryEntity> toCheck = standardCategoryRepository.getByIdAndParentIsNotNullWithCategoryProperties(categoryId);
+        if (toCheck.isPresent()) {
+            StandardCategoryEntity standardCategoryEntity = toCheck.get();
+            for (CategoryPropertyEntity categoryProperty : standardCategoryEntity.getCategoryProperties()) {
+                PropertyMetaEntity propertyMetadata = categoryProperty.getPropertyMetadata();
+                if (Objects.equals(propertyMetadata.getId(), propertyMetaId))
+                    throw new IllegalArgumentException("parent category [" + standardCategoryEntity.getName() + "] already bind given property meta: " + propertyMetadata.getName());
+            }
+            assertPropertyMetaUniqueForCategoryHierarchy(standardCategoryEntity.getId(), propertyMetaId);
+        }
+    }
+
 
     @Autowired
     public void setCategoryPropertyRepository(CategoryPropertyRepository categoryPropertyRepository) {

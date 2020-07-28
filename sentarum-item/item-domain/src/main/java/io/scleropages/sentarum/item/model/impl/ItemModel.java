@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item.model.impl;
 import io.scleropages.sentarum.item.ge.model.Media;
 import io.scleropages.sentarum.item.model.Item;
 import io.scleropages.sentarum.item.model.Spu;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -44,6 +45,7 @@ public class ItemModel implements Item {
     private Spu spu;
     private BigDecimal salesPrice;
     private Integer num;
+    private List<PropertyValue> properties;
     private List<Media> mediaList;
     private Map<String, Object> additionalAttributes;
 
@@ -107,6 +109,10 @@ public class ItemModel implements Item {
         return num;
     }
 
+    public List<PropertyValue> getProperties() {
+        return properties;
+    }
+
     public List<Media> getMediaList() {
         return mediaList;
     }
@@ -165,6 +171,10 @@ public class ItemModel implements Item {
 
     public void setNum(Integer num) {
         this.num = num;
+    }
+
+    public void setProperties(List<PropertyValue> properties) {
+        this.properties = properties;
     }
 
     public void setMediaList(List<Media> mediaList) {
@@ -238,6 +248,11 @@ public class ItemModel implements Item {
     @Override
     public Integer num() {
         return getNum();
+    }
+
+    @Override
+    public List<PropertyValue> properties() {
+        return getProperties();
     }
 
     @Override

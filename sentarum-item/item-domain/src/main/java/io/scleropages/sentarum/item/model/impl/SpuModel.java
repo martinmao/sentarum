@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.model.impl;
 
 import io.scleropages.sentarum.item.category.model.StandardCategory;
+import io.scleropages.sentarum.item.ge.model.Media;
 import io.scleropages.sentarum.item.model.Spu;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
@@ -41,6 +42,7 @@ public class SpuModel implements Spu {
     private BigDecimal marketPrice;
     private StandardCategory category;
     private Date marketTime;
+    private List<Media> mediaList;
     private Map<String, Object> additionalAttributes;
 
 
@@ -90,6 +92,10 @@ public class SpuModel implements Spu {
         return marketTime;
     }
 
+    public List<Media> getMediaList() {
+        return mediaList;
+    }
+
     public Map<String, Object> getAdditionalAttributes() {
         return additionalAttributes;
     }
@@ -128,6 +134,10 @@ public class SpuModel implements Spu {
 
     public void setMarketTime(Date marketTime) {
         this.marketTime = marketTime;
+    }
+
+    public void setMediaList(List<Media> mediaList) {
+        this.mediaList = mediaList;
     }
 
     public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
@@ -177,6 +187,11 @@ public class SpuModel implements Spu {
     @Override
     public Date marketTime() {
         return getMarketTime();
+    }
+
+    @Override
+    public List<Media> mediaList() {
+        return getMediaList();
     }
 
     @Override

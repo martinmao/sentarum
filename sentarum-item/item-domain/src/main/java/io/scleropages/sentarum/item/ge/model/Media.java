@@ -15,19 +15,24 @@
  */
 package io.scleropages.sentarum.item.ge.model;
 
+import com.google.common.net.MediaType;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 媒体资源，视频，图片等信息化结构定义
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class Media {
 
     private Long id;
     private ContentType contentType;
+    private BizType bizType;
     private Float order;
     private Status status;
-    private Map<String,Object> additionalAttributes;
+    private Map<String, Object> additionalAttributes;
 
     public Long getId() {
         return id;
@@ -35,6 +40,10 @@ public class Media {
 
     public ContentType getContentType() {
         return contentType;
+    }
+
+    public BizType getBizType() {
+        return bizType;
     }
 
     public Float getOrder() {
@@ -58,6 +67,10 @@ public class Media {
         this.contentType = contentType;
     }
 
+    public void setBizType(BizType bizType) {
+        this.bizType = bizType;
+    }
+
     public void setOrder(Float order) {
         this.order = order;
     }
@@ -70,14 +83,14 @@ public class Media {
         this.additionalAttributes = additionalAttributes;
     }
 
-    enum ContentType {
+    public enum BizType {
 
-        HEADER_IMAGE(1, "头图"), IMAGE(2, "图片"), HEADER_VIDEO(3, "头视频"), VIDEO(4, "视频");
+        MAJOR(1, "主图(主视频)"), HEADER(2, "头图(头视频)");
 
         private final int ordinal;
         private final String tag;
 
-        ContentType(int ordinal, String tag) {
+        BizType(int ordinal, String tag) {
             this.ordinal = ordinal;
             this.tag = tag;
         }
@@ -90,26 +103,26 @@ public class Media {
             return tag;
         }
 
-        private static final Map<String, ContentType> nameMappings = new HashMap<>();
-        private static final Map<Integer, ContentType> ordinalMappings = new HashMap<>();
+        private static final Map<String, BizType> nameMappings = new HashMap<>();
+        private static final Map<Integer, BizType> ordinalMappings = new HashMap<>();
 
         static {
-            for (ContentType contentType : ContentType.values()) {
-                nameMappings.put(contentType.name(), contentType);
-                ordinalMappings.put(contentType.getOrdinal(), contentType);
+            for (BizType bizType : BizType.values()) {
+                nameMappings.put(bizType.name(), bizType);
+                ordinalMappings.put(bizType.getOrdinal(), bizType);
             }
         }
 
-        public static ContentType getByName(String name) {
+        public static BizType getByName(String name) {
             return (name != null ? nameMappings.get(name) : null);
         }
 
-        public static ContentType getByOrdinal(int ordinal) {
+        public static BizType getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
         }
     }
 
-    enum Status {
+    public enum Status {
 
         VALID(1, "有效"), INVALID(2, "无效");
 
@@ -140,12 +153,70 @@ public class Media {
             }
         }
 
+
         public static Status getByName(String name) {
             return (name != null ? nameMappings.get(name) : null);
         }
 
         public static Status getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
+        }
+    }
+
+
+    public enum ContentType {
+
+        JPEG(1, "jpeg图片", MediaType.JPEG),
+        PNG(2, "png图片", MediaType.PNG),
+        MP4_AUDIO(3, "mp4音频", MediaType.MP4_AUDIO),
+        MP4_VIDEO(4, "mp4视频", MediaType.MP4_VIDEO);
+
+        private final int ordinal;
+        private final String tag;
+        private final MediaType mediaType;
+
+        ContentType(int ordinal, String tag, MediaType mediaType) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+            this.mediaType = mediaType;
+        }
+
+        private static final Map<String, ContentType> nameMappings = new HashMap<>();
+        private static final Map<Integer, ContentType> ordinalMappings = new HashMap<>();
+        private static final Map<String, ContentType> mimeTypeMappings = new HashMap<>();
+
+        static {
+            for (ContentType contentType : ContentType.values()) {
+                nameMappings.put(contentType.name(), contentType);
+                ordinalMappings.put(contentType.getOrdinal(), contentType);
+                mimeTypeMappings.put(contentType.getMediaType().toString(), contentType);
+            }
+        }
+
+
+        public static ContentType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static ContentType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
+
+        public static ContentType getByMimeType(String mimeType) {
+            return mimeTypeMappings.get(mimeType);
+        }
+
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        public MediaType getMediaType() {
+            return mediaType;
         }
     }
 }

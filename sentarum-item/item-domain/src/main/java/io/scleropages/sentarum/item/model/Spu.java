@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.model;
 
 import io.scleropages.sentarum.item.category.model.StandardCategory;
+import io.scleropages.sentarum.item.ge.model.Media;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import java.math.BigDecimal;
@@ -40,44 +41,6 @@ import java.util.Map;
  */
 public interface Spu {
 
-    enum Status {
-        VALID(1, "有效"), INVALID(2, "无效");
-        private final int ordinal;
-        private final String tag;
-
-        Status(int ordinal, String tag) {
-            this.ordinal = ordinal;
-            this.tag = tag;
-        }
-
-
-        public int getOrdinal() {
-            return ordinal;
-        }
-
-        public String getTag() {
-            return tag;
-        }
-
-        private static final Map<String, Status> nameMappings = new HashMap<>();
-        private static final Map<Integer, Status> ordinalMappings = new HashMap<>();
-
-        static {
-            for (Status status : Status.values()) {
-                nameMappings.put(status.name(), status);
-                ordinalMappings.put(status.getOrdinal(), status);
-            }
-        }
-
-
-        public static Status getByName(String name) {
-            return (name != null ? nameMappings.get(name) : null);
-        }
-
-        public static Status getByOrdinal(int ordinal) {
-            return ordinalMappings.get(ordinal);
-        }
-    }
 
     /**
      * 唯一标识
@@ -144,10 +107,59 @@ public interface Spu {
      */
     Date marketTime();
 
+
+    /**
+     * 媒体列表，图片，视频等.
+     *
+     * @return
+     */
+    List<Media> mediaList();
+
+
     /**
      * 扩展属性
      *
      * @return
      */
     Map<String, Object> additionalAttributes();
+
+
+    enum Status {
+        VALID(1, "有效"), INVALID(2, "无效");
+        private final int ordinal;
+        private final String tag;
+
+        Status(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        private static final Map<String, Status> nameMappings = new HashMap<>();
+        private static final Map<Integer, Status> ordinalMappings = new HashMap<>();
+
+        static {
+            for (Status status : Status.values()) {
+                nameMappings.put(status.name(), status);
+                ordinalMappings.put(status.getOrdinal(), status);
+            }
+        }
+
+
+        public static Status getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static Status getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
+    }
 }

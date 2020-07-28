@@ -13,44 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.ge.entity;
+package io.scleropages.sentarum.item.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
- * Referenced model: {@link io.scleropages.sentarum.item.ge.model.StructureText}
+ * referenced model:
+ * <pre>
+ * {@link io.scleropages.sentarum.item.model.impl.CombineSkuModel}
+ * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "ge_struct_text")
-@SequenceGenerator(name = "ge_struct_text_id", sequenceName = "seq_ge_struct_text", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class StructureTextEntity extends IdEntity {
+@Table(name = "item_sku")
+@SequenceGenerator(name = "item_sku_id", sequenceName = "seq_item_sku", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class CombineSkuEntity extends AbstractSkuEntity {
 
-    private Integer mediaType;
+    private List<CombineSkuEntryEntity> entries;
 
-    private String text;
-
-    @Column(name = "media_type", nullable = false)
-    public Integer getMediaType() {
-        return mediaType;
+    @OneToMany(mappedBy = "combineSku")
+    public List<CombineSkuEntryEntity> getEntries() {
+        return entries;
     }
 
-    @Column(name = "text_", nullable = false)
-    public String getText() {
-        return text;
-    }
-
-    public void setMediaType(Integer mediaType) {
-        this.mediaType = mediaType;
-    }
-
-    public void setText(String text) {
-        this.text = text;
+    public void setEntries(List<CombineSkuEntryEntity> entries) {
+        this.entries = entries;
     }
 }

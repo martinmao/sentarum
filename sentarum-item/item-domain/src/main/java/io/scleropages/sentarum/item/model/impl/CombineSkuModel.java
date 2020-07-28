@@ -15,10 +15,29 @@
  */
 package io.scleropages.sentarum.item.model.impl;
 
+import io.scleropages.sentarum.item.model.CombineSku;
+import io.scleropages.sentarum.item.model.CombineSkuEntry;
+
+import java.util.List;
+
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CombineSkuModel {
+public class CombineSkuModel extends SkuModel implements CombineSku {
+
+
+    private List<CombineSkuEntry> entries;
+
+    public List<CombineSkuEntry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(List<CombineSkuEntry> entries) {
+        this.entries = entries;
+    }
+
+    @Override
+    public List<CombineSkuEntry> entries() {
+        return getEntries();
+    }
 }

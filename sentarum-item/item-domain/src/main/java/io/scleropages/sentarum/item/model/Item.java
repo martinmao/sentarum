@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.model;
 
 import io.scleropages.sentarum.item.ge.model.Media;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -124,6 +125,14 @@ public interface Item {
      * @return
      */
     Integer num();
+
+
+    /**
+     * item属性值集（商品属性）
+     *
+     * @return
+     */
+    List<PropertyValue> properties();
 
 
     /**
@@ -246,7 +255,8 @@ public interface Item {
         SUPPLIER(1, "供应商", "位于供应链上游"),
         VENDOR(2, "厂商(品牌商)", "售卖产品或服务"),
         RETAIL(3, "零售商", "其往往是一个商业综合体，包含多家门店"),
-        STORE(4, "门店", "终端场所销售");
+        STORE(4, "门店", "终端场所销售"),
+        PLATFORM(5, "平台", "美柠自营");
 
         private final int ordinal;
         private final String tag;

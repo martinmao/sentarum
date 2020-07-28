@@ -15,10 +15,144 @@
  */
 package io.scleropages.sentarum.item.model.impl;
 
+import io.scleropages.sentarum.item.ge.model.Media;
+import io.scleropages.sentarum.item.model.Item;
+import io.scleropages.sentarum.item.model.Sku;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SkuModel {
+public class SkuModel implements Sku {
+
+    private Long id;
+    private Item item;
+    private String outerId;
+    private Status status;
+    private BigDecimal salesPrice;
+    private Integer quantity;
+    private List<PropertyValue> salesProperties;
+    private List<Media> mediaList;
+    private Map<String, Object> additionalAttributes;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public String getOuterId() {
+        return outerId;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public BigDecimal getSalesPrice() {
+        return salesPrice;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public List<PropertyValue> getSalesProperties() {
+        return salesProperties;
+    }
+
+    public List<Media> getMediaList() {
+        return mediaList;
+    }
+
+    public Map<String, Object> getAdditionalAttributes() {
+        return additionalAttributes;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public void setOuterId(String outerId) {
+        this.outerId = outerId;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setSalesPrice(BigDecimal salesPrice) {
+        this.salesPrice = salesPrice;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setSalesProperties(List<PropertyValue> salesProperties) {
+        this.salesProperties = salesProperties;
+    }
+
+    public void setMediaList(List<Media> mediaList) {
+        this.mediaList = mediaList;
+    }
+
+    public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
+    }
+
+    @Override
+    public Long id() {
+        return getId();
+    }
+
+    @Override
+    public Item item() {
+        return getItem();
+    }
+
+    @Override
+    public String outerId() {
+        return getOuterId();
+    }
+
+    @Override
+    public Status status() {
+        return getStatus();
+    }
+
+    @Override
+    public BigDecimal salesPrice() {
+        return getSalesPrice();
+    }
+
+    @Override
+    public Integer quantity() {
+        return getQuantity();
+    }
+
+    @Override
+    public List<PropertyValue> salesProperties() {
+        return getSalesProperties();
+    }
+
+    @Override
+    public List<Media> mediaList() {
+        return getMediaList();
+    }
+
+    @Override
+    public Map<String, Object> additionalAttributes() {
+        return getAdditionalAttributes();
+    }
 }

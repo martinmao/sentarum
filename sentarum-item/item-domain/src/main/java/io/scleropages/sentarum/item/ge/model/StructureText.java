@@ -15,10 +15,87 @@
  */
 package io.scleropages.sentarum.item.ge.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- *
+ * 结构化文本
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class StructureText {
+
+    private Long id;
+
+    private String text;
+
+    private MediaType mediaType;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public MediaType getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(MediaType mediaType) {
+        this.mediaType = mediaType;
+    }
+
+    enum MediaType {
+
+        JSON(1, "JSON"), XML(2, "XML"), CSV(3, "CSV, comma delimited text");
+
+
+        private final int ordinal;
+        private final String tag;
+
+        MediaType(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        private static final Map<String, MediaType> nameMappings = new HashMap<>();
+        private static final Map<Integer, MediaType> ordinalMappings = new HashMap<>();
+
+        static {
+            for (MediaType mediaType : MediaType.values()) {
+                nameMappings.put(mediaType.name(), mediaType);
+                ordinalMappings.put(mediaType.getOrdinal(), mediaType);
+            }
+        }
+
+
+        public static MediaType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static MediaType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
+
+    }
 }
