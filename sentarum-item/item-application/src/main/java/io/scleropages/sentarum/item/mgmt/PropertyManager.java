@@ -84,7 +84,6 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     private ConstraintRepository constraintRepository;
     private GroupedMetaRepository groupedMetaRepository;
     private GroupedMetaEntryRepository groupedMetaEntryRepository;
-    private PropertyValueRepository propertyValueRepository;
 
 
     @Validated({PropertyMetadataModel.Create.class})
@@ -264,51 +263,6 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         groupedMetaEntryRepository.deleteByGroupedMeta_IdAndPropertyMetadata_Id(groupedPropertyMetadataId, propertyMetadataId);
     }
 
-    @Transactional
-    @BizError("22")
-    @Validated({PropertyValueModel.Create.class})
-    public void createPropertyValue(@Valid PropertyValueModel model, Long propertyMetaId) {
-        PropertyMetadata propertyMetadata = getPropertyMetadataDetail(propertyMetaId);
-        PropertyValueEntity propertyValueEntity = getModelMapper(PropertyValueEntityMapper.class).mapForSave(model);
-        propertyValueEntity.setValue(model.value(), propertyMetadata);
-        propertyValueEntity.setPropertyMetaId(propertyMetaId);
-        propertyValueRepository.save(propertyValueEntity);
-    }
-
-    @Transactional
-    @BizError("23")
-    @Validated({PropertyValueModel.Update.class})
-    public void savePropertyValue(@Valid PropertyValueModel model) {
-        PropertyValueEntity entity = propertyValueRepository.get(model.id()).orElseThrow(() -> new IllegalArgumentException("no property value found: " + model.id()));
-        getModelMapper(PropertyValueEntityMapper.class).mapForUpdate(model, entity);
-        PropertyMetadata propertyMetadata = getPropertyMetadataDetail(entity.getPropertyMetaId());
-        entity.setValue(model.value(), propertyMetadata);
-        propertyValueRepository.save(entity);
-    }
-
-    @Transactional
-    @BizError("24")
-    public void deletePropertyValue(Long propertyId) {
-        Assert.notNull(propertyId, "property id must not be null.");
-        propertyValueRepository.deleteById(propertyId);
-    }
-
-    @Transactional
-    @BizError("25")
-    @Validated({PropertyValueModel.Create.class})
-    public void createPropertyValues(@Valid List<PropertyValueModel> models, Long propertyMetaId) {
-        Assert.notEmpty(models, "property values must not be null.");
-        PropertyMetadata propertyMetadata = getPropertyMetadataDetail(propertyMetaId);
-        List<PropertyValueEntity> entities = Lists.newArrayList();
-        models.forEach(model -> {
-            PropertyValueEntity propertyValueEntity = getModelMapper(PropertyValueEntityMapper.class).mapForSave(model);
-            propertyValueEntity.setValue(model.value(), propertyMetadata);
-            propertyValueEntity.setPropertyMetaId(propertyMetaId);
-            entities.add(propertyValueEntity);
-        });
-        propertyValueRepository.batchSave(entities);
-    }
-
 
     @Transactional(readOnly = true)
     @BizError("50")
@@ -456,8 +410,4 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         this.groupedMetaEntryRepository = groupedMetaEntryRepository;
     }
 
-    @Autowired
-    public void setPropertyValueRepository(PropertyValueRepository propertyValueRepository) {
-        this.propertyValueRepository = propertyValueRepository;
-    }
 }
