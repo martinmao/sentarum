@@ -16,6 +16,12 @@
         <heap>1</heap> <!--a single instance. ensure it can keep all entries from sec_acl_permission in heap memory-->
     </cache>
 
+    <cache alias="io.scleropages.sentarum.item.property.repo.PropertyMetaRepository.getByIdFromCache">
+        <expiry>
+            <ttl unit="minutes">10</ttl>
+        </expiry>
+        <heap>1000</heap> <!--a single instance. ensure it can keep all entries from sec_acl_permission in heap memory-->
+    </cache>
 
     <cache-template name="heap-cache">
         <expiry>

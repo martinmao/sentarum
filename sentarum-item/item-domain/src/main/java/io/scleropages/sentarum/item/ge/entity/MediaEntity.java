@@ -32,13 +32,18 @@ import javax.persistence.Table;
 @SequenceGenerator(name = "ge_media_id", sequenceName = "seq_ge_media", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class MediaEntity extends IdEntity {
 
-
+    private String outerId;
     private Integer contentType;
     private Integer bizType;
     private Float order;
     private Integer status;
     private String additionalAttributes;
 
+
+    @Column(name = "outer_id", nullable = false)
+    public String getOuterId() {
+        return outerId;
+    }
 
     @Column(name = "content_type", nullable = false)
     public Integer getContentType() {
@@ -63,6 +68,10 @@ public class MediaEntity extends IdEntity {
     @Column(name = "attrs_payload")
     public String getAdditionalAttributes() {
         return additionalAttributes;
+    }
+
+    public void setOuterId(String outerId) {
+        this.outerId = outerId;
     }
 
     public void setContentType(Integer contentType) {

@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item.entity;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
 import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
+import org.scleropages.crud.dao.orm.jpa.entity.EntityAware;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -41,7 +42,7 @@ import java.util.List;
 @Entity
 @Table(name = "item_spu")
 @SequenceGenerator(name = "item_spu_id", sequenceName = "seq_item_spu", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class SpuEntity extends IdEntity {
+public class SpuEntity extends IdEntity implements EntityAware<StandardCategoryEntity> {
 
     private String name;
     private String tag;
@@ -136,5 +137,10 @@ public class SpuEntity extends IdEntity {
 
     public void setAdditionalAttributes(String additionalAttributes) {
         this.additionalAttributes = additionalAttributes;
+    }
+
+    @Override
+    public void setEntity(StandardCategoryEntity entity) {
+        setCategory(entity);
     }
 }

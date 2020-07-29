@@ -17,6 +17,8 @@ package io.scleropages.sentarum.item.ge.model;
 
 import com.google.common.net.MediaType;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,29 +29,43 @@ import java.util.Map;
  */
 public class Media {
 
-    private Long id;
-    private ContentType contentType;
-    private BizType bizType;
-    private Float order;
-    private Status status;
+    private Long id;//唯一标识
+    private String outerId;//外部唯一标识,如oss服务文件唯一标识码
+    private ContentType contentType;//内容类型
+    private BizType bizType;//业务类型
+    private Float order;//顺序
+    private Status status;//状态
     private Map<String, Object> additionalAttributes;
 
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public String getOuterId() {
+        return outerId;
+    }
+
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
     public ContentType getContentType() {
         return contentType;
     }
 
+    @NotNull(groups = Create.class)
     public BizType getBizType() {
         return bizType;
     }
 
+    @NotNull(groups = Create.class)
     public Float getOrder() {
         return order;
     }
 
+    @NotNull(groups = Create.class)
     public Status getStatus() {
         return status;
     }
@@ -61,6 +77,10 @@ public class Media {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setOuterId(String outerId) {
+        this.outerId = outerId;
     }
 
     public void setContentType(ContentType contentType) {
@@ -218,5 +238,11 @@ public class Media {
         public MediaType getMediaType() {
             return mediaType;
         }
+    }
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

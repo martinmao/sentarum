@@ -164,6 +164,21 @@ public interface CategoryProperty {
         public static CategoryPropertyBizType getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
         }
+
+
+        public static Integer[] toOrdinals(CategoryPropertyBizType... bizTypes) {
+            if (null == bizTypes)
+                return null;
+            Integer[] ordinals = new Integer[bizTypes.length];
+            for (int i = 0; i < bizTypes.length; i++) {
+                ordinals[i] = bizTypes[i].getOrdinal();
+            }
+            return ordinals;
+        }
+
+        public boolean isKeyProperty() {
+            return this == CategoryPropertyBizType.KEY_PROPERTY;
+        }
     }
 
 

@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.category.entity.CategoryPropertyEntity;
 import io.scleropages.sentarum.item.category.entity.MarketingCategoryEntity;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
@@ -43,6 +44,7 @@ import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.dao.orm.SearchFilter;
+import org.scleropages.crud.dao.orm.jpa.entity.EntityAware;
 import org.scleropages.crud.exception.BizError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +134,10 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
 
         CategoryProperty.DefaultValues defaultValues = model.getDefaultValues();
         if (null != defaultValues) {
+            if (model.required()) {
+                throw new IllegalArgumentException("required property must not has default value.");
+            }
+            Assert.notEmpty(defaultValues.getValues(),"values must not be null (or empty).");
             PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadata(propertyMetaId);
             Inputs.addValues(propertyMetadata.input(), defaultValues.getValues());
             PropertyValidators.assertInputValid(propertyMetadata);
@@ -235,7 +241,42 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     @Transactional(readOnly = true)
     @BizError("60")
     public StandardCategory getStandardCategory(Long id) {
-        return getModelMapper().mapForRead(standardCategoryRepository.getByIdWithCategoryProperties(id).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
+        return getModelMapper().mapForRead(standardCategoryRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("61")
+    public StandardCategory getStandardCategoryWithParent(Long id) {
+        return getModelMapper().mapForRead(standardCategoryRepository.getById(id));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("62")
+    public StandardCategory getStandardCategoryWithProperties(Long id, CategoryProperty.CategoryPropertyBizType... bizType) {
+        return getModelMapper().mapForRead(standardCategoryRepository.getByIdWithCategoryProperties(id, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("63")
+    public List<CategoryProperty> getAllCategoryProperties(Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
+        StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.getByIdWithCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)).orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
+        List<CategoryProperty> properties = Lists.newArrayList();
+        for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
+            properties.add(categoryPropertyModel);
+        }
+        addCategoryPropertyFromParent(properties, standardCategoryEntity.getId(), bizType);
+        return properties;
+    }
+
+    protected void addCategoryPropertyFromParent(List<CategoryProperty> properties, Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
+        Optional<StandardCategoryEntity> optional = standardCategoryRepository.getByIdAndParentIsNotNullWithCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType));
+        if (optional.isPresent()) {
+            StandardCategoryEntity standardCategoryEntity = optional.get();
+            for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
+                properties.add(categoryPropertyModel);
+            }
+            addCategoryPropertyFromParent(properties, stdCategoryId, bizType);
+        }
     }
 
 
@@ -266,13 +307,13 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
 
 
     /**
-     * 断言 {@link PropertyMetadata} 在整个 {@link io.scleropages.sentarum.item.category.model.Category} 是唯一的
+     * 断言 {@link PropertyMetadata} 在整个 {@link io.scleropages.sentarum.item.category.model.Category} 层次中是唯一的
      *
      * @param categoryId
      * @param propertyMetaId
      */
     protected void assertPropertyMetaUniqueForCategoryHierarchy(Long categoryId, Long propertyMetaId) {
-        Optional<StandardCategoryEntity> toCheck = standardCategoryRepository.getByIdAndParentIsNotNullWithCategoryProperties(categoryId);
+        Optional<StandardCategoryEntity> toCheck = standardCategoryRepository.getByIdAndParentIsNotNullWithCategoryProperties(categoryId, null);
         if (toCheck.isPresent()) {
             StandardCategoryEntity standardCategoryEntity = toCheck.get();
             for (CategoryPropertyEntity categoryProperty : standardCategoryEntity.getCategoryProperties()) {
@@ -282,6 +323,10 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
             }
             assertPropertyMetaUniqueForCategoryHierarchy(standardCategoryEntity.getId(), propertyMetaId);
         }
+    }
+
+    protected void awareStandardCategoryEntity(Long id, EntityAware entityAware) {
+        entityAware.setEntity(standardCategoryRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no std category found: " + id)));
     }
 
 

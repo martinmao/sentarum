@@ -35,6 +35,20 @@ import java.util.Map;
  */
 public abstract class PropertyValidators {
 
+    private static final InheritableThreadLocal<PropertyMetadata> violatePropertyMetadata =
+            new InheritableThreadLocal<>();
+
+
+    public static PropertyMetadata resetAndGetViolatePropertyMetadata() {
+        PropertyMetadata propertyMetadata = violatePropertyMetadata.get();
+        violatePropertyMetadata.remove();
+        return propertyMetadata;
+    }
+
+    public static void setViolatePropertyMetadata(PropertyMetadata propertyMetadata) {
+        violatePropertyMetadata.set(propertyMetadata);
+    }
+
     /**
      * validate given property metadata ({@link Input} already binding to metadata).
      *
@@ -95,8 +109,10 @@ public abstract class PropertyValidators {
                 if (null != constraintDepends && !constraintDepends.isEmpty()) {
                     if (constraintDepends.matches(name -> namedPropertiesMetadata.get(name))) {
                         Constraint validate = validate(property);
-                        if (null != validate)
+                        if (null != validate) {
+                            setViolatePropertyMetadata(property);
                             return validate;
+                        }
                     }
                 }
             }

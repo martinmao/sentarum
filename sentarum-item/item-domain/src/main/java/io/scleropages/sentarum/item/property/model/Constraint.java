@@ -36,6 +36,7 @@ import java.util.Map;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public abstract class Constraint implements Ordered {
+    
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(Constraint.class);
 

@@ -281,8 +281,15 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         if (null == propertyMetaEntity)
             return null;
         return createPropertyMetadataFromEntity(propertyMetaEntity);
-
     }
+
+    @Transactional(readOnly = true)
+    @BizError("56")
+    public PropertyMetadata getPropertyMetadataFromCache(Long propertyMetadataId) {
+        Assert.notNull(propertyMetadataId, "propertyMetadataId must not be null.");
+        return propertyMetaRepository.getByIdFromCache(propertyMetadataId);
+    }
+
 
     @Transactional(readOnly = true)
     @BizError("60")
@@ -341,7 +348,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         return (List<? extends PropertyMetadata>) getModelMapper().mapForReads(collect);
     }
 
-    public void awarePropertyMetaEntity(Long id, EntityAware entityAware) {
+    protected void awarePropertyMetaEntity(Long id, EntityAware entityAware) {
         entityAware.setEntity(propertyMetaRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no property meta found: " + id)));
     }
 

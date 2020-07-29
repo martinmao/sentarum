@@ -22,6 +22,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import java.util.Optional;
 
 /**
@@ -32,28 +33,43 @@ public interface StandardCategoryRepository extends AbstractCategoryRepository<S
 
     /**
      * get by id with category properties.
+     *
+     * @param id
+     * @param categoryPropertyBizType fetch by given bizType or null return all.
+     * @return
      */
-    default Optional<StandardCategoryEntity> getByIdWithCategoryProperties(Long id) {
+    default Optional<StandardCategoryEntity> getByIdWithCategoryProperties(Long id, Integer... categoryPropertyBizType) {
         Specification specification = (Specification) (root, query, builder) -> {
             root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata");
-            return builder.equal(root.get("id"), id);
+            Predicate and = builder.equal(root.get("id"), id);
+            if (null != categoryPropertyBizType) {
+                return builder.and(and, root.get("categoryProperties").get("categoryPropertyBizType").in(categoryPropertyBizType));
+            }
+            return and;
         };
         return get(specification);
     }
+
 
     /**
      * get by id and parent entity is not null with category properties.
      *
      * @param id
+     * @param categoryPropertyBizType fetch by given bizType or null return all.
      * @return
      */
-    default Optional<StandardCategoryEntity> getByIdAndParentIsNotNullWithCategoryProperties(Long id) {
+    default Optional<StandardCategoryEntity> getByIdAndParentIsNotNullWithCategoryProperties(Long id, Integer... categoryPropertyBizType) {
         Specification specification = (Specification) (root, query, builder) -> {
             root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata");
-            return builder.and(builder.equal(root.get("id"), id), builder.isNotNull(root.get("parent")));
+            Predicate and = builder.and(builder.equal(root.get("id"), id), builder.isNotNull(root.get("parent")));
+            if (null != categoryPropertyBizType) {
+                return builder.and(and, root.get("categoryProperties").get("categoryPropertyBizType").in(categoryPropertyBizType));
+            }
+            return and;
         };
         return get(specification);
     }
+
 
     /**
      * return full graph for all {@link StandardCategoryEntity}s

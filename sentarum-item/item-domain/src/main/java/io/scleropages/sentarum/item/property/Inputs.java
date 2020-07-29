@@ -30,8 +30,8 @@ public abstract class Inputs {
 
     public static final void addValues(Input input, Object... values) {
         Assert.notNull(input, "input must not be null.");
-        Assert.notEmpty(values, "values must not be null (or empty).");
-
+        if (null == values || values.length == 0)
+            return;
         if (input instanceof SingleInput) {
             if (values.length > 1)
                 throw new IllegalArgumentException("to much values for single input type: " + input.getType());

@@ -16,10 +16,19 @@
 package io.scleropages.sentarum.item.property.repo;
 
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
+import io.scleropages.sentarum.item.property.entity.mapper.PropertyMetaEntityMapper;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.jooq.tables.PtPropertyMeta;
 import io.scleropages.sentarum.jooq.tables.records.PtPropertyMetaRecord;
+import org.scleropages.crud.ModelMapperRepository;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.Assert;
+
+import javax.persistence.criteria.JoinType;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -28,4 +37,16 @@ public interface PropertyMetaRepository extends GenericRepository<PropertyMetaEn
         JooqRepository<PtPropertyMeta, PtPropertyMetaRecord, PropertyMetaEntity> {
 
     PropertyMetaEntity getByName(String name);
+
+    @Cacheable
+    default PropertyMetadata getByIdFromCache(Long id) {
+        Specification specification = (Specification) (root, query, builder) -> {
+            root.fetch("valuesSource", JoinType.LEFT);
+            root.fetch("constraints", JoinType.LEFT);
+            return builder.equal(root.get("id"), id);
+        };
+        Optional<PropertyMetaEntity> optional = get(specification);
+        Assert.isTrue(optional.isPresent(), "no property meta found: " + id);
+        return (PropertyMetadata) ModelMapperRepository.getRequiredModelMapper(PropertyMetaEntityMapper.class).mapForRead(optional.get());
+    }
 }

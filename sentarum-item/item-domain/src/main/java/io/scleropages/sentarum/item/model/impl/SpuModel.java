@@ -92,6 +92,7 @@ public class SpuModel implements Spu {
         return marketTime;
     }
 
+    @Null
     public List<Media> getMediaList() {
         return mediaList;
     }
