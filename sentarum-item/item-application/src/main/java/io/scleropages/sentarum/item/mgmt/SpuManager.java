@@ -74,6 +74,8 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
             if (categoryProperty.required()) {
                 Assert.notNull(value, () -> "missing required property value for: " + metaId);
             }
+            if (null != value && (categoryProperty.readOnly() || categoryProperty.invisible()))
+                throw new IllegalArgumentException("category property is read only or invisible for: " + metaId);
             categoryPropertiesMap.put(metaId, categoryProperty);
             validates[i] = propertyManager.getPropertyMetadataFromCache(metaId);
             Inputs.addValues(validates[i].input(), value);
@@ -90,8 +92,6 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
         values.forEach((metaId, value) -> {
             CategoryProperty categoryProperty = categoryPropertiesMap.get(metaId);
             Assert.notNull(categoryProperty, "no category property metadata found for: " + metaId);
-            if (categoryProperty.readOnly() || categoryProperty.visible())
-                throw new IllegalArgumentException("category property is read only or invisible for: " + metaId);
             if (categoryProperty.categoryPropertyBizType().isKeyProperty()) {
                 keyProperties.put(metaId, value);
             } else {
@@ -101,6 +101,7 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
 
         keyProperties.forEach((metaId, value) -> {
             SpuPropertyValueEntity propertyValueEntity = new SpuPropertyValueEntity();
+
         });
 
         spuRepository.save(spuEntity);

@@ -48,6 +48,11 @@ public interface CategoryProperty {
      */
     Boolean visible();
 
+
+    default Boolean invisible() {
+        return !visible();
+    }
+
     /**
      * 必填属性
      *
