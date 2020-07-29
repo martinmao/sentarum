@@ -15,17 +15,44 @@
  */
 package io.scleropages.sentarum.item.property.repo;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
 import org.jooq.Record;
 import org.jooq.Table;
+import org.jooq.TableRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @NoRepositoryBean
 public interface AbstractPropertyValueRepository<E extends AbstractPropertyValueEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
-    
+
+
+    default void batchSave(Iterable<E> entities) {
+        List<R> recordsToSave = Lists.newArrayList();
+        entities.forEach(entity -> {
+            R record = dslNewRecord();
+            record.set(dslField(AbstractPropertyValueEntity.BIZ_TYPE_COLUMN), entity.getBizType());
+            record.set(dslField(AbstractPropertyValueEntity.BIZ_ID_COLUMN), entity.getBizId());
+            record.set(dslField(AbstractPropertyValueEntity.NAME_COLUMN), entity.getName());
+            record.set(dslField(AbstractPropertyValueEntity.PROPERTY_META_ID_COLUMN), entity.getPropertyMetaId());
+            record.set(dslField(AbstractPropertyValueEntity.BOOL_VALUE_COLUMN), entity.getBooleanValue());
+            record.set(dslField(AbstractPropertyValueEntity.DECIMAL_VALUE_COLUMN), entity.getDecimalValue());
+            record.set(dslField(AbstractPropertyValueEntity.INT_VALUE_COLUMN), entity.getIntValue());
+            record.set(dslField(AbstractPropertyValueEntity.LONG_VALUE_COLUMN), entity.getLongValue());
+            record.set(dslField(AbstractPropertyValueEntity.TEXT_VALUE_COLUMN), entity.getTextValue());
+            if (null != entity.getDateValue()) {
+                record.set(dslField(AbstractPropertyValueEntity.DATE_VALUE_COLUMN), new Timestamp(entity.getDateValue().getTime()));
+            }
+            recordsToSave.add(record);
+        });
+        dslContext().batchInsert((Collection<? extends TableRecord<?>>) recordsToSave).execute();
+    }
 }

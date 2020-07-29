@@ -26,7 +26,4 @@ import io.scleropages.sentarum.jooq.tables.records.PtPropertyMetaRecord;
  */
 public interface PropertyValueRepository extends AbstractPropertyValueRepository<PropertyValueEntity, PtPropertyValue, PtPropertyMetaRecord> {
 
-
-
-    
 }

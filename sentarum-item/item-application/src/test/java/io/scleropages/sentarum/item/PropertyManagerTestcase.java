@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.mgmt.PropertyManager;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
@@ -29,6 +30,7 @@ import io.scleropages.sentarum.item.property.model.constraint.MinLength;
 import io.scleropages.sentarum.item.property.model.constraint.NotNull;
 import io.scleropages.sentarum.item.property.model.impl.GroupedPropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
+import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import io.scleropages.sentarum.item.property.model.input.InputText;
 import io.scleropages.sentarum.item.property.model.input.SingleCheck;
@@ -44,6 +46,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -272,5 +275,8 @@ public class PropertyManagerTestcase {
 
         propertyManager.findAllPropertyMetadataInGroup(groupedPropertyMetadata.id()).forEach(o -> System.out.println(JsonMapper2.toJson(o)));
     }
+
+
+
 
 }

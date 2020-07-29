@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.property.entity.ConstraintEntity;
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntity;
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntryEntity;
@@ -290,6 +291,22 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     public void deletePropertyValue(Long propertyId) {
         Assert.notNull(propertyId, "property id must not be null.");
         propertyValueRepository.deleteById(propertyId);
+    }
+
+    @Transactional
+    @BizError("25")
+    @Validated({PropertyValueModel.Create.class})
+    public void createPropertyValues(@Valid List<PropertyValueModel> models, Long propertyMetaId) {
+        Assert.notEmpty(models, "property values must not be null.");
+        PropertyMetadata propertyMetadata = getPropertyMetadataDetail(propertyMetaId);
+        List<PropertyValueEntity> entities = Lists.newArrayList();
+        models.forEach(model -> {
+            PropertyValueEntity propertyValueEntity = getModelMapper(PropertyValueEntityMapper.class).mapForSave(model);
+            propertyValueEntity.setValue(model.value(), propertyMetadata);
+            propertyValueEntity.setPropertyMetaId(propertyMetaId);
+            entities.add(propertyValueEntity);
+        });
+        propertyValueRepository.batchSave(entities);
     }
 
 
