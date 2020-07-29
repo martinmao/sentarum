@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.property.repo;
+package io.scleropages.sentarum.item.property.entity.mapper;
 
 import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
+import org.scleropages.crud.ModelMapper;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface AbstractPropertyValueRepository<E extends AbstractPropertyValueEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
-    
+public interface AbstractPropertyValueEntityMapper<T extends AbstractPropertyValueEntity, M extends PropertyValueModel> extends ModelMapper<T, M> {
+
 }

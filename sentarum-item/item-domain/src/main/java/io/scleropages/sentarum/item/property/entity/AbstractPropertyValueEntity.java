@@ -17,27 +17,38 @@ package io.scleropages.sentarum.item.property.entity;
 
 import io.scleropages.sentarum.item.ge.entity.ByteArrayEntity;
 import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import io.scleropages.sentarum.item.property.model.PropertyValueType;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+import org.springframework.util.Assert;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Date;
 
 /**
  * 参考模型:
  * <pre>
- * {@link io.scleropages.sentarum.item.property.model.PropertyValue}.属性值
- * {@link io.scleropages.sentarum.item.property.model.PropertyValueType}.属性值类型
+ * {@link io.scleropages.sentarum.item.property.model.impl.PropertyValueModel}
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
 public class AbstractPropertyValueEntity extends IdEntity {
+
+
+    private static final String[] SUPPORT_DATE_PATTERN = new String[]{
+            "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"
+    };
 
 
     public static final String BIZ_TYPE_COLUMN = "biz_type";
@@ -67,6 +78,7 @@ public class AbstractPropertyValueEntity extends IdEntity {
     private StructureTextEntity structureTextValue;
     private ByteArrayEntity byteArrayValue;
 
+
     @Column(name = BIZ_TYPE_COLUMN, nullable = false)
     public Integer getBizType() {
         return bizType;
@@ -81,6 +93,7 @@ public class AbstractPropertyValueEntity extends IdEntity {
     public Long getPropertyMetaId() {
         return propertyMetaId;
     }
+
 
     @Column(name = NAME_COLUMN, nullable = false)
     public String getName() {
@@ -176,5 +189,99 @@ public class AbstractPropertyValueEntity extends IdEntity {
 
     public void setByteArrayValue(ByteArrayEntity byteArrayValue) {
         this.byteArrayValue = byteArrayValue;
+    }
+
+    /**
+     * This method used for convert value object and mapped to specify value column by metadata.
+     * you must make sure the value already translated to target value type.
+     *
+     * @param value
+     * @param metadata
+     */
+    public void setValue(Object value, PropertyMetadata metadata) {
+        Assert.notNull(value, "value must not be null.");
+        Assert.notNull(metadata, "metadata must not be null.");
+        PropertyValueType propertyValueType = metadata.valueType();
+        Assert.notNull(propertyValueType, "propertyValueType must not be null.");
+
+        String s = String.valueOf(value);
+
+        switch (propertyValueType) {
+            case INTEGER:
+                if (value instanceof Integer)
+                    setIntValue((Integer) value);
+                else
+                    setIntValue(Integer.valueOf(s));
+                break;
+            case TEXT:
+                setTextValue(s);
+                break;
+            case BOOLEAN:
+                if (value instanceof Boolean)
+                    setBooleanValue((Boolean) value);
+                else
+                    setBooleanValue(BooleanUtils.toBoolean(s));
+                break;
+            case DATE:
+                if (value instanceof Date)
+                    setDateValue((Date) value);
+                else {
+                    try {
+                        setDateValue(DateUtils.parseDate(s, SUPPORT_DATE_PATTERN));
+                    } catch (ParseException e) {
+                        throw new IllegalStateException(e);
+                    }
+                }
+                break;
+            case LONG:
+                if (value instanceof Long)
+                    setLongValue((Long) value);
+                else
+                    setLongValue(Long.valueOf(s));
+                break;
+            case DECIMAL:
+                if (value instanceof BigDecimal)
+                    setDecimalValue((BigDecimal) value);
+                else
+                    setDecimalValue(new BigDecimal(s));
+                break;
+            case PROPERTY_REF:
+                if (value instanceof Long)
+                    setLongValue((Long) value);
+                else
+                    setLongValue(Long.valueOf(s));
+                break;
+            default:
+                throw new IllegalStateException("unsupported meta type: " + propertyValueType);
+        }
+    }
+
+    /**
+     * read value from current entity.
+     *
+     * @return
+     */
+    @Transient
+    //@java.beans.Transient
+    public Object getValue() {
+        Integer intValue = getIntValue();
+        if (null != intValue)
+            return intValue;
+        String textValue = getTextValue();
+        if (null != textValue)
+            return textValue;
+        Boolean booleanValue = getBooleanValue();
+        if (null != booleanValue)
+            return booleanValue;
+        Date dateValue = getDateValue();
+        if (null != dateValue)
+            return dateValue;
+        Long longValue = getLongValue();
+        if (null != longValue)
+            return longValue;
+        BigDecimal decimalValue = getDecimalValue();
+        if (null != decimalValue)
+            return decimalValue;
+        throw new IllegalStateException("unknown value type.");
     }
 }

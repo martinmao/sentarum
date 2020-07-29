@@ -15,17 +15,18 @@
  */
 package io.scleropages.sentarum.item.property.repo;
 
-import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.item.property.entity.PropertyValueEntity;
+import io.scleropages.sentarum.jooq.tables.PtPropertyValue;
+import io.scleropages.sentarum.jooq.tables.records.PtPropertyMetaRecord;
 
 /**
+ *
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface AbstractPropertyValueRepository<E extends AbstractPropertyValueEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
+public interface PropertyValueRepository extends AbstractPropertyValueRepository<PropertyValueEntity, PtPropertyValue, PtPropertyMetaRecord> {
+
+
+
     
 }

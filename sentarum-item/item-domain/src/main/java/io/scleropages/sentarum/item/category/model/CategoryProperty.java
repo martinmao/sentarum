@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.category.model;
 
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,6 +107,20 @@ public interface CategoryProperty {
      * @return
      */
     Map<String, Object> additionalAttributes();
+
+
+    /**
+     * 断言值规则
+     *
+     * @param value
+     */
+    default void assertsValueRule(Object value) {
+        if (required()) {
+            Assert.notNull(value, () -> "value is required for category property: " + id());
+        }
+        if (null != value && (readOnly() || invisible()))
+            throw new IllegalArgumentException("value must be null when category property is read only or invisible: " + id());
+    }
 
 
     /**

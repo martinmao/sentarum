@@ -16,11 +16,8 @@
 package io.scleropages.sentarum.item.property.repo;
 
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
-import io.scleropages.sentarum.item.property.entity.mapper.PropertyMetaEntityMapper;
-import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.jooq.tables.PtPropertyMeta;
 import io.scleropages.sentarum.jooq.tables.records.PtPropertyMetaRecord;
-import org.scleropages.crud.ModelMapperRepository;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,7 +36,7 @@ public interface PropertyMetaRepository extends GenericRepository<PropertyMetaEn
     PropertyMetaEntity getByName(String name);
 
     @Cacheable
-    default PropertyMetadata getByIdFromCache(Long id) {
+    default PropertyMetaEntity getDetailsById(Long id) {
         Specification specification = (Specification) (root, query, builder) -> {
             root.fetch("valuesSource", JoinType.LEFT);
             root.fetch("constraints", JoinType.LEFT);
@@ -47,6 +44,6 @@ public interface PropertyMetaRepository extends GenericRepository<PropertyMetaEn
         };
         Optional<PropertyMetaEntity> optional = get(specification);
         Assert.isTrue(optional.isPresent(), "no property meta found: " + id);
-        return (PropertyMetadata) ModelMapperRepository.getRequiredModelMapper(PropertyMetaEntityMapper.class).mapForRead(optional.get());
+        return optional.get();
     }
 }

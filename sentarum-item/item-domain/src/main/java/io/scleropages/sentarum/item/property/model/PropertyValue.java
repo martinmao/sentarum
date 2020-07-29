@@ -54,11 +54,11 @@ public interface PropertyValue {
 
 
     /**
-     * 属性元数据id {@link PropertyMetadata#id()}
+     * 属性元数据
      *
      * @return
      */
-    Long metaId();
+    PropertyMetadata propertyMetadata();
 
     /**
      * 属性值

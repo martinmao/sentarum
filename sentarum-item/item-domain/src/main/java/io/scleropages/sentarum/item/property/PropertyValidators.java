@@ -129,7 +129,19 @@ public abstract class PropertyValidators {
      */
     public static void assertInputValid(PropertyMetadata propertyMetadata) {
         Constraint validate = validate(propertyMetadata);
-        Assert.isNull(validate, () -> propertyMetadata.name() + "(" + propertyMetadata.tag() + ")" + validate.getMessage());
+        Assert.isNull(validate, () -> propertyMetadata.name() + "(" + propertyMetadata.tag() + ") " + validate.getMessage());
+    }
+
+    /**
+     * assert given property metadata(s) is valid
+     * @param propertyMetadata
+     */
+    public static void assertInputsValid(PropertyMetadata... propertyMetadata){
+        Constraint violate = validate(propertyMetadata);
+        if (null != violate) {
+            PropertyMetadata violateMeta = PropertyValidators.resetAndGetViolatePropertyMetadata();
+            throw new IllegalArgumentException(violateMeta.name() + "(" + violateMeta.tag() + ") " + violate.getMessage());
+        }
     }
 
     private static Constraint validateInternal(PropertyMetadata propertyMetadata, Input input) {

@@ -19,10 +19,12 @@ import io.scleropages.sentarum.item.property.entity.ConstraintEntity;
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntity;
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntryEntity;
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
+import io.scleropages.sentarum.item.property.entity.PropertyValueEntity;
 import io.scleropages.sentarum.item.property.entity.SourceValueEntity;
 import io.scleropages.sentarum.item.property.entity.ValuesSourceEntity;
 import io.scleropages.sentarum.item.property.entity.mapper.GroupedMetaEntityMapper;
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyMetaEntityMapper;
+import io.scleropages.sentarum.item.property.entity.mapper.PropertyValueEntityMapper;
 import io.scleropages.sentarum.item.property.entity.mapper.SourceValueEntityMapper;
 import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
@@ -31,6 +33,7 @@ import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.impl.GroupedPropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
+import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import io.scleropages.sentarum.item.property.model.vs.AbstractValuesSource;
 import io.scleropages.sentarum.item.property.model.vs.HttpGetValuesSource;
@@ -40,6 +43,7 @@ import io.scleropages.sentarum.item.property.repo.ConstraintRepository;
 import io.scleropages.sentarum.item.property.repo.GroupedMetaEntryRepository;
 import io.scleropages.sentarum.item.property.repo.GroupedMetaRepository;
 import io.scleropages.sentarum.item.property.repo.PropertyMetaRepository;
+import io.scleropages.sentarum.item.property.repo.PropertyValueRepository;
 import io.scleropages.sentarum.item.property.repo.SourceValueRepository;
 import io.scleropages.sentarum.item.property.repo.ValuesSourceRepository;
 import org.apache.commons.collections.ComparatorUtils;
@@ -79,6 +83,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     private ConstraintRepository constraintRepository;
     private GroupedMetaRepository groupedMetaRepository;
     private GroupedMetaEntryRepository groupedMetaEntryRepository;
+    private PropertyValueRepository propertyValueRepository;
 
 
     @Validated({PropertyMetadataModel.Create.class})
@@ -258,6 +263,35 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         groupedMetaEntryRepository.deleteByGroupedMeta_IdAndPropertyMetadata_Id(groupedPropertyMetadataId, propertyMetadataId);
     }
 
+    @Transactional
+    @BizError("22")
+    @Validated({PropertyValueModel.Create.class})
+    public void createPropertyValue(@Valid PropertyValueModel model, Long propertyMetaId) {
+        PropertyMetadata propertyMetadata = getPropertyMetadataDetail(propertyMetaId);
+        PropertyValueEntity propertyValueEntity = getModelMapper(PropertyValueEntityMapper.class).mapForSave(model);
+        propertyValueEntity.setValue(model.value(), propertyMetadata);
+        propertyValueEntity.setPropertyMetaId(propertyMetaId);
+        propertyValueRepository.save(propertyValueEntity);
+    }
+
+    @Transactional
+    @BizError("23")
+    @Validated({PropertyValueModel.Update.class})
+    public void savePropertyValue(@Valid PropertyValueModel model) {
+        PropertyValueEntity entity = propertyValueRepository.get(model.id()).orElseThrow(() -> new IllegalArgumentException("no property value found: " + model.id()));
+        getModelMapper(PropertyValueEntityMapper.class).mapForUpdate(model, entity);
+        PropertyMetadata propertyMetadata = getPropertyMetadataDetail(entity.getPropertyMetaId());
+        entity.setValue(model.value(), propertyMetadata);
+        propertyValueRepository.save(entity);
+    }
+
+    @Transactional
+    @BizError("24")
+    public void deletePropertyValue(Long propertyId) {
+        Assert.notNull(propertyId, "property id must not be null.");
+        propertyValueRepository.deleteById(propertyId);
+    }
+
 
     @Transactional(readOnly = true)
     @BizError("50")
@@ -285,9 +319,9 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
 
     @Transactional(readOnly = true)
     @BizError("56")
-    public PropertyMetadata getPropertyMetadataFromCache(Long propertyMetadataId) {
+    public PropertyMetadata getPropertyMetadataDetail(Long propertyMetadataId) {
         Assert.notNull(propertyMetadataId, "propertyMetadataId must not be null.");
-        return propertyMetaRepository.getByIdFromCache(propertyMetadataId);
+        return getModelMapper().mapForRead(propertyMetaRepository.getDetailsById(propertyMetadataId));
     }
 
 
@@ -403,5 +437,10 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @Autowired
     public void setGroupedMetaEntryRepository(GroupedMetaEntryRepository groupedMetaEntryRepository) {
         this.groupedMetaEntryRepository = groupedMetaEntryRepository;
+    }
+
+    @Autowired
+    public void setPropertyValueRepository(PropertyValueRepository propertyValueRepository) {
+        this.propertyValueRepository = propertyValueRepository;
     }
 }

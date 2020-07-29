@@ -15,10 +15,13 @@
  */
 package io.scleropages.sentarum.item.property;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.property.model.Input;
 import io.scleropages.sentarum.item.property.model.input.MultiInput;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * Utility class provider some common operations for {@link io.scleropages.sentarum.item.property.model.Input}
@@ -41,5 +44,16 @@ public abstract class Inputs {
                 ((MultiInput) input).addValue(String.valueOf(value));
             }
         }
+    }
+
+    public static final List<Object> readValues(Input input) {
+        Assert.notNull(input, "input must not be null.");
+        if (input instanceof SingleInput) {
+            return Lists.newArrayList(((SingleInput) input).getValue());
+        }
+        if (input instanceof MultiInput) {
+            return Lists.newArrayList(((MultiInput) input).values());
+        }
+        throw new IllegalArgumentException("unsupported input: " + input);
     }
 }

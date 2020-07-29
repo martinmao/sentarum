@@ -15,7 +15,11 @@
  */
 package io.scleropages.sentarum.item.property.model.impl;
 
+import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -27,29 +31,37 @@ public class PropertyValueModel implements PropertyValue {
     private String name;
     private Integer bizType;
     private Long bizId;
-    private Long metaId;
+    private PropertyMetadata propertyMetadata;
     private Object value;
 
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
+    @NotNull(groups = Create.class)
     public String getName() {
         return name;
     }
 
+    @NotNull(groups = Create.class)
     public Integer getBizType() {
         return bizType;
     }
 
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
     public Long getBizId() {
         return bizId;
     }
 
-    public Long getMetaId() {
-        return metaId;
+    @Null
+    public PropertyMetadata getPropertyMetadata() {
+        return propertyMetadata;
     }
 
+    @NotNull(groups = Create.class)
     public Object getValue() {
         return value;
     }
@@ -70,8 +82,8 @@ public class PropertyValueModel implements PropertyValue {
         this.bizId = bizId;
     }
 
-    public void setMetaId(Long metaId) {
-        this.metaId = metaId;
+    public void setPropertyMetadata(PropertyMetadata propertyMetadata) {
+        this.propertyMetadata = propertyMetadata;
     }
 
     public void setValue(Object value) {
@@ -99,12 +111,20 @@ public class PropertyValueModel implements PropertyValue {
     }
 
     @Override
-    public Long metaId() {
-        return getMetaId();
+    public PropertyMetadata propertyMetadata() {
+        return getPropertyMetadata();
     }
+
 
     @Override
     public Object value() {
         return getValue();
+    }
+
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }
