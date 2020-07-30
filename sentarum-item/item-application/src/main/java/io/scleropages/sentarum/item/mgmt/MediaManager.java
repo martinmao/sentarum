@@ -29,6 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 
 /**
+ * 媒体资源管理器（图片，视频。。。）
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Service

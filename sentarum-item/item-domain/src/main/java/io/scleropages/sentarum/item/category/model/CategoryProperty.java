@@ -199,6 +199,11 @@ public interface CategoryProperty {
         public boolean isKeyProperty() {
             return this == CategoryPropertyBizType.KEY_PROPERTY;
         }
+
+
+        public boolean isSpuProperty() {
+            return this == CategoryPropertyBizType.SPU_PROPERTY;
+        }
     }
 
 

@@ -15,17 +15,14 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
-import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.property.entity.ConstraintEntity;
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntity;
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntryEntity;
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
-import io.scleropages.sentarum.item.property.entity.PropertyValueEntity;
 import io.scleropages.sentarum.item.property.entity.SourceValueEntity;
 import io.scleropages.sentarum.item.property.entity.ValuesSourceEntity;
 import io.scleropages.sentarum.item.property.entity.mapper.GroupedMetaEntityMapper;
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyMetaEntityMapper;
-import io.scleropages.sentarum.item.property.entity.mapper.PropertyValueEntityMapper;
 import io.scleropages.sentarum.item.property.entity.mapper.SourceValueEntityMapper;
 import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
@@ -34,7 +31,6 @@ import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.impl.GroupedPropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
-import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import io.scleropages.sentarum.item.property.model.vs.AbstractValuesSource;
 import io.scleropages.sentarum.item.property.model.vs.HttpGetValuesSource;
@@ -44,7 +40,6 @@ import io.scleropages.sentarum.item.property.repo.ConstraintRepository;
 import io.scleropages.sentarum.item.property.repo.GroupedMetaEntryRepository;
 import io.scleropages.sentarum.item.property.repo.GroupedMetaRepository;
 import io.scleropages.sentarum.item.property.repo.PropertyMetaRepository;
-import io.scleropages.sentarum.item.property.repo.PropertyValueRepository;
 import io.scleropages.sentarum.item.property.repo.SourceValueRepository;
 import io.scleropages.sentarum.item.property.repo.ValuesSourceRepository;
 import org.apache.commons.collections.ComparatorUtils;

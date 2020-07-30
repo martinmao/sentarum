@@ -18,6 +18,8 @@ package io.scleropages.sentarum.item.mgmt;
 import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.entity.SpuPropertyValueEntity;
 import io.scleropages.sentarum.item.entity.mapper.SpuPropertyValueEntityMapper;
+import io.scleropages.sentarum.item.property.Inputs;
+import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
 import io.scleropages.sentarum.item.property.entity.PropertyValueEntity;
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyValueEntityMapper;
@@ -35,8 +37,11 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
+ * 属性值管理器
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Service
@@ -80,10 +85,10 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
     @Transactional
     @BizError("13")
     @Validated({PropertyValueModel.Create.class})
-    public void createPropertyValues(@Valid List<PropertyValueModel> models, Long propertyMetaId) {
-        Assert.notEmpty(models, "property values must not be null.");
+    public void createPropertyValues(@Valid Map<Long, PropertyValueModel> models) {
+        Assert.notEmpty(models, "property values must not be empty.");
         List<PropertyValueEntity> entities = Lists.newArrayList();
-        models.forEach(model -> {
+        models.forEach((propertyMetaId, model) -> {
             PropertyValueEntity propertyValueEntity = getModelMapper().mapForSave(model);
             beforeSave(propertyValueEntity, model, propertyMetaId);
             entities.add(propertyValueEntity);
@@ -122,10 +127,10 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
     @Transactional
     @BizError("24")
     @Validated({PropertyValueModel.Create.class})
-    public void createSpuPropertyValues(@Valid List<PropertyValueModel> models, Long propertyMetaId) {
+    public void createSpuPropertyValues(@Valid Map<Long, PropertyValueModel> models) {
         Assert.notEmpty(models, "property values must not be null.");
         List<SpuPropertyValueEntity> entities = Lists.newArrayList();
-        models.forEach(model -> {
+        models.forEach((propertyMetaId, model) -> {
             SpuPropertyValueEntity propertyValueEntity = getModelMapper(SpuPropertyValueEntityMapper.class).mapForSave(model);
             beforeSave(propertyValueEntity, model, propertyMetaId);
             entities.add(propertyValueEntity);
@@ -136,6 +141,8 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
 
     protected void beforeSave(AbstractPropertyValueEntity entity, PropertyValueModel model, Long propertyMetaId) {
         PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(propertyMetaId);
+        Inputs.addValues(propertyMetadata.input(), model.value());
+        PropertyValidators.assertInputValid(propertyMetadata);
         entity.setValue(model.value(), propertyMetadata);
         entity.setPropertyMetaId(propertyMetadata.id());
     }

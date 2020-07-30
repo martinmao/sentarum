@@ -15,17 +15,16 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.SpuEntityMapper;
-import io.scleropages.sentarum.item.ge.repo.MediaRepository;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
 import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
-import io.scleropages.sentarum.item.repo.SpuPropertyValueRepository;
 import io.scleropages.sentarum.item.repo.SpuRepository;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
@@ -40,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Spu管理器
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Service
@@ -48,10 +49,9 @@ import java.util.Map;
 public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMapper> {
 
     private SpuRepository spuRepository;
-    private MediaRepository mediaRepository;
-    private SpuPropertyValueRepository propertyValueRepository;
     private CategoryManager categoryManager;
     private PropertyManager propertyManager;
+    private PropertyValueManager propertyValueManager;
 
 
     @Validated({SpuModel.Create.class})
@@ -63,40 +63,39 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
         SpuEntity spuEntity = getModelMapper().mapForSave(model);
         categoryManager.awareStandardCategoryEntity(stdCategoryId, spuEntity);
         List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(stdCategoryId, CategoryPropertyBizType.KEY_PROPERTY, CategoryPropertyBizType.SPU_PROPERTY);
-        PropertyMetadata[] validates = new PropertyMetadata[values.size()];
+
+
+        List<PropertyMetadata> validates = Lists.newArrayList();
         for (int i = 0; i < categoryProperties.size(); i++) {
             CategoryProperty categoryProperty = categoryProperties.get(i);
             Long metaId = categoryProperty.propertyMetadata().id();
             Object value = values.get(metaId);
             categoryProperty.assertsValueRule(value);
             PropertyMetadata metaDetail = propertyManager.getPropertyMetadataDetail(metaId);
-            validates[i] = metaDetail;
+            validates.add(metaDetail);
             Inputs.addValues(metaDetail.input(), value);
             CategoryPropertyBizType bizType = categoryProperty.categoryPropertyBizType();
+
+            PropertyValueModel valueModel = new PropertyValueModel();
+            valueModel.setName(metaDetail.name());
+            valueModel.setBizType(bizType.getOrdinal());
+            valueModel.setPropertyMetadata(metaDetail);
+
             if (bizType.isKeyProperty()) {
-                PropertyValueModel valueModel = new PropertyValueModel();
-                valueModel.setName(metaDetail.name());
-                valueModel.setBizType(bizType.getOrdinal());
-                valueModel.setPropertyMetadata(metaDetail);
+
+            }
+            if (bizType.isSpuProperty()) {
+
             }
         }
-        PropertyValidators.assertInputsValid(validates);
+        PropertyValidators.assertInputsValid(validates.toArray(new PropertyMetadata[validates.size()]));
+
         Long spuId = spuRepository.save(spuEntity).getId();
     }
 
     @Autowired
     public void setSpuRepository(SpuRepository spuRepository) {
         this.spuRepository = spuRepository;
-    }
-
-    @Autowired
-    public void setMediaRepository(MediaRepository mediaRepository) {
-        this.mediaRepository = mediaRepository;
-    }
-
-    @Autowired
-    public void setPropertyValueRepository(SpuPropertyValueRepository propertyValueRepository) {
-        this.propertyValueRepository = propertyValueRepository;
     }
 
     @Autowired
@@ -107,5 +106,10 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     @Autowired
     public void setPropertyManager(PropertyManager propertyManager) {
         this.propertyManager = propertyManager;
+    }
+
+    @Autowired
+    public void setPropertyValueManager(PropertyValueManager propertyValueManager) {
+        this.propertyValueManager = propertyValueManager;
     }
 }
