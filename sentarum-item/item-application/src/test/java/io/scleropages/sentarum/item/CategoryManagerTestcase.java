@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Map;
@@ -48,7 +49,7 @@ import java.util.Map;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-//@Transactional
+@Transactional
 public class CategoryManagerTestcase {
 
     @Autowired
@@ -165,11 +166,9 @@ public class CategoryManagerTestcase {
         CategoryNavigator standardCategoryNavigator = categoryManager.getStandardCategoryNavigator();
 
 
-
         System.out.println(standardCategoryNavigator.connections(standardCategory));
 
         System.out.println(standardCategoryNavigator.reachableCategories(standardCategory));
-
 
 
         System.out.println(standardCategoryNavigator.predecessors(standardCategory));

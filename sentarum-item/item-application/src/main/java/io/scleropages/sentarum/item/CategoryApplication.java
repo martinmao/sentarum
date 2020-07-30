@@ -45,6 +45,10 @@ public class CategoryApplication {
         }
     }
 
+    public CategoryManager getCategoryManager() {
+        return categoryManager;
+    }
+
     @Autowired
     public void setCategoryManager(CategoryManager categoryManager) {
         this.categoryManager = categoryManager;

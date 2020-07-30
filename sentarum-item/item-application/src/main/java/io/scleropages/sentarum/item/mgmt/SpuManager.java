@@ -15,15 +15,13 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.SpuEntityMapper;
+import io.scleropages.sentarum.item.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
-import io.scleropages.sentarum.item.property.Inputs;
-import io.scleropages.sentarum.item.property.PropertyValidators;
-import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.repo.SpuRepository;
 import org.scleropages.crud.GenericManager;
@@ -50,7 +48,6 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
 
     private SpuRepository spuRepository;
     private CategoryManager categoryManager;
-    private PropertyManager propertyManager;
     private PropertyValueManager propertyValueManager;
 
 
@@ -64,33 +61,51 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
         categoryManager.awareStandardCategoryEntity(stdCategoryId, spuEntity);
         List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(stdCategoryId, CategoryPropertyBizType.KEY_PROPERTY, CategoryPropertyBizType.SPU_PROPERTY);
 
+        Map<Long, PropertyValueModel> propertiesValues = Maps.newHashMap();
 
-        List<PropertyMetadata> validates = Lists.newArrayList();
         for (int i = 0; i < categoryProperties.size(); i++) {
             CategoryProperty categoryProperty = categoryProperties.get(i);
             Long metaId = categoryProperty.propertyMetadata().id();
             Object value = values.get(metaId);
             categoryProperty.assertsValueRule(value);
-            PropertyMetadata metaDetail = propertyManager.getPropertyMetadataDetail(metaId);
-            validates.add(metaDetail);
-            Inputs.addValues(metaDetail.input(), value);
             CategoryPropertyBizType bizType = categoryProperty.categoryPropertyBizType();
-
-            PropertyValueModel valueModel = new PropertyValueModel();
-            valueModel.setName(metaDetail.name());
-            valueModel.setBizType(bizType.getOrdinal());
-            valueModel.setPropertyMetadata(metaDetail);
-
-            if (bizType.isKeyProperty()) {
-
-            }
-            if (bizType.isSpuProperty()) {
-
-            }
+            PropertyValueModel propertyValueModel = createPropertyValueModel(bizType, value);
+            propertiesValues.put(metaId, propertyValueModel);
         }
-        PropertyValidators.assertInputsValid(validates.toArray(new PropertyMetadata[validates.size()]));
 
+        values.keySet().forEach(valueKey -> {
+            if (!propertiesValues.containsKey(valueKey)) {
+                throw new IllegalArgumentException("unknown spu property metadata id: " + valueKey);
+            }
+        });
         Long spuId = spuRepository.save(spuEntity).getId();
+        updateBizId(propertiesValues, spuId);
+        propertyValueManager.createPropertyValues(propertiesValues);
+    }
+
+    @Validated({SpuModel.Update.class})
+    @Transactional
+    @BizError("11")
+    public void saveSpu(@Valid SpuModel model, Map<Long, Object> values) {
+
+    }
+
+
+    protected PropertyValueModel createPropertyValueModel(CategoryPropertyBizType bizType, Object value) {
+        PropertyValueModel valueModel;
+        if (bizType.isKeyProperty())
+            valueModel = new KeyPropertyValueModel();
+        else
+            valueModel = new PropertyValueModel();
+        valueModel.setBizType(bizType.getOrdinal());
+        valueModel.setValue(value);
+        return valueModel;
+    }
+
+    protected void updateBizId(Map<Long, PropertyValueModel> propertiesValues, Long bizId) {
+        for (PropertyValueModel value : propertiesValues.values()) {
+            value.setBizId(bizId);
+        }
     }
 
     @Autowired
@@ -101,11 +116,6 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     @Autowired
     public void setCategoryManager(CategoryManager categoryManager) {
         this.categoryManager = categoryManager;
-    }
-
-    @Autowired
-    public void setPropertyManager(PropertyManager propertyManager) {
-        this.propertyManager = propertyManager;
     }
 
     @Autowired

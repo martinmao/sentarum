@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.repo;
+package io.scleropages.sentarum.item.model.impl;
 
-import io.scleropages.sentarum.item.entity.SpuPropertyValueEntity;
-import io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository;
-import io.scleropages.sentarum.jooq.tables.ItemSpuPropertyValue;
-import io.scleropages.sentarum.jooq.tables.records.ItemSpuPropertyValueRecord;
+import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 
 /**
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface SpuPropertyValueRepository extends AbstractPropertyValueRepository<SpuPropertyValueEntity, ItemSpuPropertyValue, ItemSpuPropertyValueRecord> {
+public class KeyPropertyValueModel extends PropertyValueModel {
 
 }

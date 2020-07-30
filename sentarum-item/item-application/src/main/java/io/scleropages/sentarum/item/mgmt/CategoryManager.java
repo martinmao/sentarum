@@ -83,6 +83,12 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     private PropertyManager propertyManager;
 
 
+    /**
+     * 创建一个标准类目
+     *
+     * @param model               类目模型
+     * @param parentStdCategoryId 挂靠标准类目id
+     */
     @Validated({StandardCategoryModel.Create.class})
     @Transactional
     @BizError("01")
@@ -95,6 +101,11 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         standardCategoryRepository.save(standardCategoryEntity);
     }
 
+    /**
+     * 保存更新标准类目
+     *
+     * @param model
+     */
     @Validated({StandardCategoryModel.Update.class})
     @Transactional
     @BizError("02")
@@ -103,6 +114,12 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         getModelMapper().mapForUpdate(model, toSave);
     }
 
+    /**
+     * 将指定标准类目挂靠到目标标准类目下
+     *
+     * @param id
+     * @param targetStdCategoryId
+     */
     @Transactional
     @BizError("03")
     public void bindStandardCategoryToTargetParent(Long id, Long targetStdCategoryId) {
@@ -119,6 +136,13 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     }
 
 
+    /**
+     * 创建类目属性
+     *
+     * @param model          类目属性模型
+     * @param stdCategoryId  所属类目id
+     * @param propertyMetaId 属性元数据id
+     */
     @Validated({CategoryPropertyModel.Create.class})
     @Transactional
     @BizError("04")
@@ -137,7 +161,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
             if (model.required()) {
                 throw new IllegalArgumentException("required property must not has default value.");
             }
-            Assert.notEmpty(defaultValues.getValues(),"values must not be null (or empty).");
+            Assert.notEmpty(defaultValues.getValues(), "values must not be null (or empty).");
             PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadata(propertyMetaId);
             Inputs.addValues(propertyMetadata.input(), defaultValues.getValues());
             PropertyValidators.assertInputValid(propertyMetadata);
@@ -147,6 +171,11 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     }
 
 
+    /**
+     * 删除类目属性
+     *
+     * @param id 类目属性id
+     */
     @Transactional
     @BizError("05")
     public void deleteCategoryProperty(Long id) {
@@ -155,6 +184,12 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     }
 
 
+    /**
+     * 创建一个营销类目
+     *
+     * @param model               营销类目模型
+     * @param parentMktCategoryId 挂靠营销类目id
+     */
     @Validated({MarketingCategoryModel.Create.class})
     @Transactional
     @BizError("20")
@@ -167,6 +202,11 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         marketingCategoryRepository.save(marketingCategoryEntity);
     }
 
+    /**
+     * 更新保存营销类目
+     *
+     * @param model
+     */
     @Validated({MarketingCategoryModel.Update.class})
     @Transactional
     @BizError("21")
@@ -175,6 +215,12 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         getModelMapper(MarketingCategoryEntityMapper.class).mapForUpdate(model, toSave);
     }
 
+    /**
+     * 将制定营销类目挂靠到目标营销类目下
+     *
+     * @param id                  营销类目id
+     * @param targetMktCategoryId 目标营销类目id
+     */
     @Transactional
     @BizError("22")
     public void bindMarketingCategoryToTargetParent(Long id, Long targetMktCategoryId) {
@@ -191,6 +237,13 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         }
     }
 
+    /**
+     * 创建标准类目链接
+     *
+     * @param model               类目链接模型
+     * @param marketingCategoryId 营销类目id
+     * @param standardCategoryId  标准类目id
+     */
     @Validated({StandardCategoryLinkModel.Create.class})
     @Transactional
     @BizError("23")
@@ -211,6 +264,11 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         standardCategoryLinkRepository.save(toSave);
     }
 
+    /**
+     * 更新保存标准类目链接
+     *
+     * @param model
+     */
     @Validated({StandardCategoryLinkModel.Update.class})
     @Transactional
     @BizError("24")
@@ -219,43 +277,87 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         getModelMapper(StandardCategoryLinkEntityMapper.class).mapForUpdate(model, toSave);
     }
 
+    /**
+     * 删除标准类目链接
+     *
+     * @param stdCategoryLinkId 类目链接id
+     */
     @Transactional
     @BizError("25")
-    public void deleteStandardCategoryLink(Long stdCategoryId) {
-        standardCategoryLinkRepository.deleteById(stdCategoryId);
+    public void deleteStandardCategoryLink(Long stdCategoryLinkId) {
+        standardCategoryLinkRepository.deleteById(stdCategoryLinkId);
     }
 
 
+    /**
+     * 查询标准类目
+     *
+     * @param searchFilters 查询条件
+     * @param pageable      分页
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("50")
     public Page<StandardCategory> findStandardCategoryPage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
         return standardCategoryRepository.findPage(searchFilters, pageable).map(entity -> getModelMapper().mapForRead(entity));
     }
 
+    /**
+     * 基于状态查询所有标准类目
+     *
+     * @param status 状态标识
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("55")
-    public List<StandardCategory> findAllStandardCategory(Integer status) {
-        return standardCategoryRepository.findAllByStatusEquals(status).stream().map(entity -> getModelMapper().mapForRead(entity)).collect(Collectors.toList());
+    public List<StandardCategory> findAllStandardCategory(StandardCategory.Status status) {
+        return standardCategoryRepository.findAllByStatusEquals(status.getOrdinal()).stream().map(entity -> getModelMapper().mapForRead(entity)).collect(Collectors.toList());
     }
 
+    /**
+     * 获取标准类目
+     *
+     * @param id 类目id
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("60")
     public StandardCategory getStandardCategory(Long id) {
         return getModelMapper().mapForRead(standardCategoryRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
     }
 
+    /**
+     * 获取标准类目，包含其上级类目
+     *
+     * @param id 类目id
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("61")
     public StandardCategory getStandardCategoryWithParent(Long id) {
         return getModelMapper().mapForRead(standardCategoryRepository.getById(id));
     }
 
+    /**
+     * 获取标准类目，包含其所有类目属性
+     *
+     * @param id      类目id
+     * @param bizType 属性业务标识
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("62")
     public StandardCategory getStandardCategoryWithProperties(Long id, CategoryProperty.CategoryPropertyBizType... bizType) {
         return getModelMapper().mapForRead(standardCategoryRepository.getByIdWithCategoryProperties(id, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
     }
 
+    /**
+     * 获取标准类目所有类目属性（包含其上级类目属性）
+     *
+     * @param stdCategoryId 类目id
+     * @param bizType       属性业务标识
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("63")
     public List<CategoryProperty> getAllCategoryProperties(Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
@@ -268,36 +370,48 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         return properties;
     }
 
-    protected void addCategoryPropertyFromParent(List<CategoryProperty> properties, Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
-        Optional<StandardCategoryEntity> optional = standardCategoryRepository.getByIdAndParentIsNotNullWithCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType));
-        if (optional.isPresent()) {
-            StandardCategoryEntity standardCategoryEntity = optional.get();
-            for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
-                properties.add(categoryPropertyModel);
-            }
-            addCategoryPropertyFromParent(properties, stdCategoryId, bizType);
-        }
-    }
-
-
+    /**
+     * 查询营销类目
+     *
+     * @param searchFilters 查询条件
+     * @param pageable      分页
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("65")
     public Page<MarketingCategory> findMarketingCategoryPage(Map<String, SearchFilter> searchFilters, Pageable pageable) {
         return marketingCategoryRepository.findPage(searchFilters, pageable).map(entity -> getModelMapper(MarketingCategoryEntityMapper.class).mapForRead(entity));
     }
 
+    /**
+     * 基于状态查询所有营销类目
+     *
+     * @param status
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("70")
-    public List<MarketingCategory> findAllMarketingCategory(Integer status) {
-        return marketingCategoryRepository.findAllByStatusEquals(status).stream().map(entity -> getModelMapper(MarketingCategoryEntityMapper.class).mapForRead(entity)).collect(Collectors.toList());
+    public List<MarketingCategory> findAllMarketingCategory(MarketingCategory.Status status) {
+        return marketingCategoryRepository.findAllByStatusEquals(status.getOrdinal()).stream().map(entity -> getModelMapper(MarketingCategoryEntityMapper.class).mapForRead(entity)).collect(Collectors.toList());
     }
 
+    /**
+     * 获取营销类目
+     *
+     * @param id
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("75")
     public MarketingCategory getMarketingCategory(Long id) {
         return getModelMapper(MarketingCategoryEntityMapper.class).mapForRead(marketingCategoryRepository.getByIdWithStandardCategoryLinks(id).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
     }
 
+    /**
+     * 获取营销类目导航图
+     *
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("80")
     public CategoryNavigator getStandardCategoryNavigator() {
@@ -324,6 +438,25 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
             assertPropertyMetaUniqueForCategoryHierarchy(standardCategoryEntity.getId(), propertyMetaId);
         }
     }
+
+    /**
+     * 递归获取上级类目属性，并将其加入 参数 properties 中
+     *
+     * @param properties    属性容器
+     * @param stdCategoryId 标准类目id
+     * @param bizType       属性业务标识
+     */
+    protected void addCategoryPropertyFromParent(List<CategoryProperty> properties, Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
+        Optional<StandardCategoryEntity> optional = standardCategoryRepository.getByIdAndParentIsNotNullWithCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType));
+        if (optional.isPresent()) {
+            StandardCategoryEntity standardCategoryEntity = optional.get();
+            for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
+                properties.add(categoryPropertyModel);
+            }
+            addCategoryPropertyFromParent(properties, stdCategoryId, bizType);
+        }
+    }
+
 
     protected void awareStandardCategoryEntity(Long id, EntityAware entityAware) {
         entityAware.setEntity(standardCategoryRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no std category found: " + id)));

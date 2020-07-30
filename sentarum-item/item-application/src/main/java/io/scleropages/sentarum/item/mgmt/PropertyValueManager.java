@@ -16,17 +16,20 @@
 package io.scleropages.sentarum.item.mgmt;
 
 import com.google.common.collect.Lists;
-import io.scleropages.sentarum.item.entity.SpuPropertyValueEntity;
-import io.scleropages.sentarum.item.entity.mapper.SpuPropertyValueEntityMapper;
+import io.scleropages.sentarum.item.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
+import io.scleropages.sentarum.item.property.entity.KeyPropertyValueEntity;
 import io.scleropages.sentarum.item.property.entity.PropertyValueEntity;
+import io.scleropages.sentarum.item.property.entity.mapper.AbstractPropertyValueEntityMapper;
+import io.scleropages.sentarum.item.property.entity.mapper.KeyPropertyValueEntityMapper;
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyValueEntityMapper;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
+import io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository;
+import io.scleropages.sentarum.item.property.repo.KeyPropertyValueRepository;
 import io.scleropages.sentarum.item.property.repo.PropertyValueRepository;
-import io.scleropages.sentarum.item.repo.SpuPropertyValueRepository;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 属性值管理器
@@ -51,100 +55,132 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
 
     private PropertyValueRepository propertyValueRepository;
 
-    private SpuPropertyValueRepository spuPropertyValueRepository;
+    private KeyPropertyValueRepository keyPropertyValueRepository;
 
     private PropertyManager propertyManager;
 
+
+    /**
+     * 创建一个属性值
+     *
+     * @param model          属性模型
+     * @param propertyMetaId 元数据id
+     */
     @Transactional
     @BizError("10")
     @Validated({PropertyValueModel.Create.class})
     public void createPropertyValue(@Valid PropertyValueModel model, Long propertyMetaId) {
-        PropertyValueEntity propertyValueEntity = getModelMapper().mapForSave(model);
-        beforeSave(propertyValueEntity, model, propertyMetaId);
-        propertyValueRepository.save(propertyValueEntity);
+        AbstractPropertyValueEntity propertyValueEntity = (AbstractPropertyValueEntity) getMapper(model).mapForSave(model);
+        PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(propertyMetaId);
+        validate(model, propertyMetadata);
+        applyEntityBeforeSave(propertyValueEntity, model, propertyMetadata);
+        getRepository(model).save(propertyValueEntity);
     }
 
 
+    /**
+     * 更新保存属性值
+     *
+     * @param model
+     */
     @Transactional
     @BizError("11")
     @Validated({PropertyValueModel.Update.class})
     public void savePropertyValue(@Valid PropertyValueModel model) {
-        PropertyValueEntity entity = propertyValueRepository.get(model.id()).orElseThrow(() -> new IllegalArgumentException("no property value found: " + model.id()));
-        getModelMapper().mapForUpdate(model, entity);
-        beforeSave(entity, model, entity.getPropertyMetaId());
-        propertyValueRepository.save(entity);
+        Optional optional = getRepository(model).get(model.id());
+        Assert.isTrue(optional.isPresent(), "no property value found: " + model.id());
+        AbstractPropertyValueEntity entity = (AbstractPropertyValueEntity) optional.get();
+        getMapper(model).mapForUpdate(model, entity);
+        PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(entity.getPropertyMetaId());
+        validate(model, propertyMetadata);
+        applyEntityBeforeSave(entity, model, propertyMetadata);
+        getRepository(model).save(entity);
     }
 
+    /**
+     * 删除属性值
+     *
+     * @param propertyValueId
+     */
     @Transactional
     @BizError("12")
-    public void deletePropertyValue(Long propertyId) {
-        Assert.notNull(propertyId, "property id must not be null.");
-        propertyValueRepository.deleteById(propertyId);
+    public void deletePropertyValue(Long propertyValueId) {
+        Assert.notNull(propertyValueId, "property id must not be null.");
+        propertyValueRepository.deleteById(propertyValueId);
     }
 
+    /**
+     * 批量新增属性值，其中key为元数据，value为属性模型
+     *
+     * @param models
+     */
     @Transactional
     @BizError("13")
     @Validated({PropertyValueModel.Create.class})
     public void createPropertyValues(@Valid Map<Long, PropertyValueModel> models) {
         Assert.notEmpty(models, "property values must not be empty.");
-        List<PropertyValueEntity> entities = Lists.newArrayList();
+        List<KeyPropertyValueEntity> keyPropertyValueEntities = Lists.newArrayList();//key属性预存列表
+        List<PropertyValueEntity> propertyValueEntities = Lists.newArrayList();//普通属性预存列表
+        List<PropertyMetadata> validates = Lists.newArrayList();
         models.forEach((propertyMetaId, model) -> {
-            PropertyValueEntity propertyValueEntity = getModelMapper().mapForSave(model);
-            beforeSave(propertyValueEntity, model, propertyMetaId);
-            entities.add(propertyValueEntity);
+            AbstractPropertyValueEntity propertyValueEntity = (AbstractPropertyValueEntity) getMapper(model).mapForSave(model);
+            PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(propertyMetaId);
+            buildValidates(validates, propertyMetadata, model);
+            applyEntityBeforeSave(propertyValueEntity, model, propertyMetadata);
+            if (model instanceof KeyPropertyValueModel)
+                keyPropertyValueEntities.add((KeyPropertyValueEntity) propertyValueEntity);
+            else
+                propertyValueEntities.add((PropertyValueEntity) propertyValueEntity);
         });
-        propertyValueRepository.batchSave(entities);
+        assertValidates(validates);
+        keyPropertyValueRepository.batchSave(keyPropertyValueEntities);
+        propertyValueRepository.batchSave(propertyValueEntities);
     }
 
-
+    /**
+     * 删除关键属性
+     *
+     * @param propertyValueId
+     */
     @Transactional
-    @BizError("20")
-    @Validated({PropertyValueModel.Create.class})
-    public void createSpuPropertyValue(@Valid PropertyValueModel model, Long propertyMetaId) {
-        SpuPropertyValueEntity propertyValueEntity = getModelMapper(SpuPropertyValueEntityMapper.class).mapForSave(model);
-        beforeSave(propertyValueEntity, model, propertyMetaId);
-        spuPropertyValueRepository.save(propertyValueEntity);
+    @BizError("14")
+    public void deleteKeyPropertyValue(Long propertyValueId) {
+        Assert.notNull(propertyValueId, "property value id must not be null.");
+        keyPropertyValueRepository.deleteById(propertyValueId);
     }
 
 
-    @Transactional
-    @BizError("21")
-    @Validated({PropertyValueModel.Update.class})
-    public void saveSpuPropertyValue(@Valid PropertyValueModel model) {
-        SpuPropertyValueEntity entity = spuPropertyValueRepository.get(model.id()).orElseThrow(() -> new IllegalArgumentException("no property value found: " + model.id()));
-        getModelMapper(SpuPropertyValueEntityMapper.class).mapForUpdate(model, entity);
-        beforeSave(entity, model, entity.getPropertyMetaId());
-        spuPropertyValueRepository.save(entity);
-    }
-
-    @Transactional
-    @BizError("23")
-    public void deleteSpuPropertyValue(Long propertyId) {
-        Assert.notNull(propertyId, "property id must not be null.");
-        spuPropertyValueRepository.deleteById(propertyId);
-    }
-
-    @Transactional
-    @BizError("24")
-    @Validated({PropertyValueModel.Create.class})
-    public void createSpuPropertyValues(@Valid Map<Long, PropertyValueModel> models) {
-        Assert.notEmpty(models, "property values must not be null.");
-        List<SpuPropertyValueEntity> entities = Lists.newArrayList();
-        models.forEach((propertyMetaId, model) -> {
-            SpuPropertyValueEntity propertyValueEntity = getModelMapper(SpuPropertyValueEntityMapper.class).mapForSave(model);
-            beforeSave(propertyValueEntity, model, propertyMetaId);
-            entities.add(propertyValueEntity);
-        });
-        spuPropertyValueRepository.batchSave(entities);
-    }
-
-
-    protected void beforeSave(AbstractPropertyValueEntity entity, PropertyValueModel model, Long propertyMetaId) {
-        PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(propertyMetaId);
+    protected void validate(PropertyValueModel model, PropertyMetadata propertyMetadata) {
         Inputs.addValues(propertyMetadata.input(), model.value());
         PropertyValidators.assertInputValid(propertyMetadata);
-        entity.setValue(model.value(), propertyMetadata);
-        entity.setPropertyMetaId(propertyMetadata.id());
+    }
+
+    protected void buildValidates(List<PropertyMetadata> validates, PropertyMetadata propertyMetadata, PropertyValueModel model) {
+        Inputs.addValues(propertyMetadata.input(), model.getValue());
+        validates.add(propertyMetadata);
+    }
+
+    protected void applyEntityBeforeSave(AbstractPropertyValueEntity entity, PropertyValueModel model, PropertyMetadata metaDetail) {
+        entity.setValue(model.value(), metaDetail);
+        entity.setName(metaDetail.name());
+        entity.setPropertyMetaId(metaDetail.id());
+    }
+
+    protected void assertValidates(List<PropertyMetadata> validates) {
+        PropertyValidators.assertInputsValid(validates.toArray(new PropertyMetadata[validates.size()]));
+    }
+
+
+    protected AbstractPropertyValueEntityMapper getMapper(PropertyValueModel model) {
+        if (model instanceof KeyPropertyValueModel)
+            return getModelMapper(KeyPropertyValueEntityMapper.class);
+        return getModelMapper();
+    }
+
+    protected AbstractPropertyValueRepository getRepository(PropertyValueModel model) {
+        if (model instanceof KeyPropertyValueModel)
+            return keyPropertyValueRepository;
+        return propertyValueRepository;
     }
 
 
@@ -159,7 +195,7 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
     }
 
     @Autowired
-    public void setSpuPropertyValueRepository(SpuPropertyValueRepository spuPropertyValueRepository) {
-        this.spuPropertyValueRepository = spuPropertyValueRepository;
+    public void setkeyPropertyValueRepository(KeyPropertyValueRepository keyPropertyValueRepository) {
+        this.keyPropertyValueRepository = keyPropertyValueRepository;
     }
 }

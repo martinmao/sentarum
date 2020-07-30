@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity;
+package io.scleropages.sentarum.item.property.entity;
 
 import io.scleropages.sentarum.item.model.Spu;
+import io.scleropages.sentarum.item.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
@@ -25,17 +26,18 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * referenced model： {@link Spu#keyProperties()}，将spu关键属性独立存储，与 {@link io.scleropages.sentarum.item.model.Item}属性进行区分。
+ * referenced model： {@link KeyPropertyValueModel}
+ * {@link Spu#keyProperties()}，将spu关键属性独立存储，与其他属性进行区分。其数据检索存在存在属性值的比较。
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "item_spu_property_value",
+@Table(name = "pt_key_property_value",
         // 允许 name重复，多选 uniqueConstraints = @UniqueConstraint(columnNames = {BIZ_TYPE_COLUMN, BIZ_ID_COLUMN, NAME_COLUMN}),
         indexes = {
                 @Index(columnList = "biz_type,name_,int_,text_,bool_,date_,long_,decimal_")
         })
-@SequenceGenerator(name = "item_spu_property_value_id", sequenceName = "seq_item_spu_property_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class SpuPropertyValueEntity extends AbstractPropertyValueEntity {
+@SequenceGenerator(name = "pt_key_property_value_id", sequenceName = "seq_pt_key_property_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class KeyPropertyValueEntity extends AbstractPropertyValueEntity {
 
 }

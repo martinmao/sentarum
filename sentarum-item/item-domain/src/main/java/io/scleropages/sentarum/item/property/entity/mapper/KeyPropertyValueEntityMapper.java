@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.mapper;
+package io.scleropages.sentarum.item.property.entity.mapper;
 
-import io.scleropages.sentarum.item.entity.SpuPropertyValueEntity;
-import io.scleropages.sentarum.item.property.entity.mapper.AbstractPropertyValueEntityMapper;
-import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
+import io.scleropages.sentarum.item.model.impl.KeyPropertyValueModel;
+import io.scleropages.sentarum.item.property.entity.KeyPropertyValueEntity;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 
@@ -25,10 +24,5 @@ import org.scleropages.crud.ModelMapper;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface SpuPropertyValueEntityMapper extends AbstractPropertyValueEntityMapper<SpuPropertyValueEntity, PropertyValueModel> {
-
-
-
-
-
+public interface KeyPropertyValueEntityMapper extends AbstractPropertyValueEntityMapper<KeyPropertyValueEntity, KeyPropertyValueModel> {
 }

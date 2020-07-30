@@ -40,7 +40,7 @@ public class PropertyValueModel implements PropertyValue {
         return id;
     }
 
-    @NotNull(groups = Create.class)
+    @Null
     public String getName() {
         return name;
     }

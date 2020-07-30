@@ -193,7 +193,6 @@ public class AbstractPropertyValueEntity extends IdEntity {
 
     /**
      * This method used for convert value object and mapped to specify value column by metadata.
-     * you must make sure the value already translated to target value type.
      *
      * @param value
      * @param metadata
