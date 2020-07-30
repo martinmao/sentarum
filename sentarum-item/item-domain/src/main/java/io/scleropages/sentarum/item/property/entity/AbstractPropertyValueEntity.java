@@ -61,6 +61,7 @@ public class AbstractPropertyValueEntity extends IdEntity {
     public static final String DATE_VALUE_COLUMN = "date_";
     public static final String DECIMAL_VALUE_COLUMN = "decimal_";
     public static final String BOOL_VALUE_COLUMN = "bool_";
+    public static final String NULL_VALUE_COLUMN = "is_null";
 
 
     private Integer bizType;
@@ -77,6 +78,7 @@ public class AbstractPropertyValueEntity extends IdEntity {
     private Boolean booleanValue;
     private StructureTextEntity structureTextValue;
     private ByteArrayEntity byteArrayValue;
+    private Boolean nullValue;
 
 
     @Column(name = BIZ_TYPE_COLUMN, nullable = false)
@@ -131,17 +133,21 @@ public class AbstractPropertyValueEntity extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "struct_text_id", nullable = false)
+    @JoinColumn(name = "struct_text_id")
     public StructureTextEntity getStructureTextValue() {
         return structureTextValue;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "byte_array_id", nullable = false)
+    @JoinColumn(name = "byte_array_id")
     public ByteArrayEntity getByteArrayValue() {
         return byteArrayValue;
     }
 
+    @Column(name = NULL_VALUE_COLUMN, nullable = false)
+    public Boolean getNullValue() {
+        return nullValue;
+    }
 
     public void setBizType(Integer bizType) {
         this.bizType = bizType;
@@ -191,6 +197,10 @@ public class AbstractPropertyValueEntity extends IdEntity {
         this.byteArrayValue = byteArrayValue;
     }
 
+    public void setNullValue(Boolean nullValue) {
+        this.nullValue = nullValue;
+    }
+
     /**
      * This method used for convert value object and mapped to specify value column by metadata.
      *
@@ -198,7 +208,14 @@ public class AbstractPropertyValueEntity extends IdEntity {
      * @param metadata
      */
     public void setValue(Object value, PropertyMetadata metadata) {
-        Assert.notNull(value, "value must not be null.");
+
+        if (value == null) {
+            setNullValue(true);
+            return;
+        }
+
+        setNullValue(false);
+
         Assert.notNull(metadata, "metadata must not be null.");
         PropertyValueType propertyValueType = metadata.valueType();
         Assert.notNull(propertyValueType, "propertyValueType must not be null.");
@@ -263,6 +280,8 @@ public class AbstractPropertyValueEntity extends IdEntity {
     @Transient
     //@java.beans.Transient
     public Object getValue() {
+        if (getNullValue())
+            return null;
         Integer intValue = getIntValue();
         if (null != intValue)
             return intValue;
