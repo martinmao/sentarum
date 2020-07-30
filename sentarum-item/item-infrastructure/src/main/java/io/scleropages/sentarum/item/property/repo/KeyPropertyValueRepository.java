@@ -24,4 +24,9 @@ import io.scleropages.sentarum.jooq.tables.records.PtKeyPropertyValueRecord;
  */
 public interface KeyPropertyValueRepository extends AbstractPropertyValueRepository<KeyPropertyValueEntity, PtKeyPropertyValue, PtKeyPropertyValueRecord> {
 
+
+    @Override
+    default KeyPropertyValueEntity newPropertyValueEntity() {
+        return new KeyPropertyValueEntity();
+    }
 }

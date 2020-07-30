@@ -31,7 +31,8 @@ import javax.persistence.Table;
 @Table(name = "pt_property_value",
         // 允许 name重复，多选 uniqueConstraints = @UniqueConstraint(columnNames = {BIZ_TYPE_COLUMN, BIZ_ID_COLUMN, NAME_COLUMN}),
         indexes = {
-                @Index(columnList = "biz_type,biz_id")
+                @Index(columnList = "biz_type,biz_id"),
+                @Index(columnList = "property_meta_id")
         })
 @SequenceGenerator(name = "pt_property_value_id", sequenceName = "seq_pt_property_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class PropertyValueEntity extends AbstractPropertyValueEntity {

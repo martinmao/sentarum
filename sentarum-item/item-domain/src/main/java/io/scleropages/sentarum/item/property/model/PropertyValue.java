@@ -58,7 +58,7 @@ public interface PropertyValue {
      *
      * @return
      */
-    PropertyMetadata propertyMetadata();
+    Long propertyMetaId();
 
     /**
      * 属性值
@@ -66,4 +66,12 @@ public interface PropertyValue {
      * @return
      */
     Object value();
+
+
+    /**
+     * 修改属性值
+     *
+     * @param value
+     */
+    void changeValue(Object value);
 }

@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.item.property.entity.mapper;
 
-import io.scleropages.sentarum.item.model.impl.KeyPropertyValueModel;
+import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.entity.KeyPropertyValueEntity;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;

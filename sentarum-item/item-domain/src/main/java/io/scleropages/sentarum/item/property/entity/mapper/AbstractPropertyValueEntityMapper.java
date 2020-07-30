@@ -24,4 +24,6 @@ import org.scleropages.crud.ModelMapper;
  */
 public interface AbstractPropertyValueEntityMapper<T extends AbstractPropertyValueEntity, M extends PropertyValueModel> extends ModelMapper<T, M> {
 
+
+
 }

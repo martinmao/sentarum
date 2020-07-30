@@ -16,7 +16,6 @@
 package io.scleropages.sentarum.item.mgmt;
 
 import com.google.common.collect.Lists;
-import io.scleropages.sentarum.item.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
@@ -26,6 +25,8 @@ import io.scleropages.sentarum.item.property.entity.mapper.AbstractPropertyValue
 import io.scleropages.sentarum.item.property.entity.mapper.KeyPropertyValueEntityMapper;
 import io.scleropages.sentarum.item.property.entity.mapper.PropertyValueEntityMapper;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
+import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository;
 import io.scleropages.sentarum.item.property.repo.KeyPropertyValueRepository;
@@ -36,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -44,7 +46,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * 属性值管理器
+ * 属性值管理器,提供通用的原子的功能
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -110,6 +112,18 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
     }
 
     /**
+     * 删除关键属性
+     *
+     * @param propertyValueId
+     */
+    @Transactional
+    @BizError("14")
+    public void deleteKeyPropertyValue(Long propertyValueId) {
+        Assert.notNull(propertyValueId, "property value id must not be null.");
+        keyPropertyValueRepository.deleteById(propertyValueId);
+    }
+
+    /**
      * 批量新增属性值，其中key为元数据，value为属性模型
      *
      * @param models
@@ -137,16 +151,52 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
         propertyValueRepository.batchSave(propertyValueEntities);
     }
 
+
     /**
-     * 删除关键属性
+     * 批量更新保存属性值
      *
-     * @param propertyValueId
+     * @param models
      */
     @Transactional
     @BizError("14")
-    public void deleteKeyPropertyValue(Long propertyValueId) {
-        Assert.notNull(propertyValueId, "property value id must not be null.");
-        keyPropertyValueRepository.deleteById(propertyValueId);
+    @Validated({PropertyValueModel.Update.class})
+    public void savePropertyValues(@Valid List<PropertyValueModel> models) {
+        Assert.notEmpty(models, "property values must not be empty.");
+
+        List<KeyPropertyValueEntity> keyPropertyValueEntities = Lists.newArrayList();//key属性预存列表
+        List<PropertyValueEntity> propertyValueEntities = Lists.newArrayList();//普通属性预存列表
+        List<PropertyMetadata> validates = Lists.newArrayList();
+        models.forEach((model) -> {
+            AbstractPropertyValueEntity propertyValueEntity = (AbstractPropertyValueEntity) getMapper(model).mapForSave(model);
+            PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(model.getPropertyMetaId());
+            buildValidates(validates, propertyMetadata, model);
+            propertyValueEntity.setValue(model.value(), propertyMetadata);
+            if (model instanceof KeyPropertyValueModel)
+                keyPropertyValueEntities.add((KeyPropertyValueEntity) propertyValueEntity);
+            else
+                propertyValueEntities.add((PropertyValueEntity) propertyValueEntity);
+        });
+        assertValidates(validates);
+        keyPropertyValueRepository.batchUpdate(keyPropertyValueEntities);
+        propertyValueRepository.batchUpdate(propertyValueEntities);
+    }
+
+
+    /**
+     * 基于业务类型+业务标识获取所有属性值
+     *
+     * @param bizType    业务类型标识
+     * @param bizId      业务标识
+     * @param modelClazz 匹配的属性模型类型,例如：({@link PropertyValueModel},{@link KeyPropertyValueModel})
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("30")
+    public List<? extends PropertyValue> findAllPropertiesValue(Integer bizType, Long bizId, Class<? extends PropertyValueModel> modelClazz) {
+        Assert.notNull(bizType, "bizType must not be null.");
+        Assert.notNull(bizId, "bizId must not be null.");
+        Assert.notNull(modelClazz, "modelClazz must not be null.");
+        return (List<? extends PropertyValue>) getMapper(modelClazz).mapForReads(getRepository(modelClazz).findAllByBizTypeAndBizId(bizType, bizId));
     }
 
 
@@ -179,6 +229,19 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
 
     protected AbstractPropertyValueRepository getRepository(PropertyValueModel model) {
         if (model instanceof KeyPropertyValueModel)
+            return keyPropertyValueRepository;
+        return propertyValueRepository;
+    }
+
+
+    protected AbstractPropertyValueEntityMapper getMapper(Class<? extends PropertyValueModel> modelClazz) {
+        if (ClassUtils.isAssignable(KeyPropertyValueModel.class, modelClazz))
+            return getModelMapper(KeyPropertyValueEntityMapper.class);
+        return getModelMapper();
+    }
+
+    protected AbstractPropertyValueRepository getRepository(Class<? extends PropertyValueModel> modelClazz) {
+        if (ClassUtils.isAssignable(KeyPropertyValueModel.class, modelClazz))
             return keyPropertyValueRepository;
         return propertyValueRepository;
     }

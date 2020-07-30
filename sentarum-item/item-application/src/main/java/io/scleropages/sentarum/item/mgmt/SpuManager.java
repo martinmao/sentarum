@@ -15,13 +15,15 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.SpuEntityMapper;
-import io.scleropages.sentarum.item.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
+import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.repo.SpuRepository;
 import org.scleropages.crud.GenericManager;
@@ -36,8 +38,11 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
+import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.KEY_PROPERTY;
+import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.SPU_PROPERTY;
+
 /**
- * Spu管理器
+ * Spu管理器，提供spu相关通用原子管理功能
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -51,6 +56,13 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     private PropertyValueManager propertyValueManager;
 
 
+    /**
+     * 创建一个spu
+     *
+     * @param model         spu模型
+     * @param stdCategoryId 挂靠的标准类目id
+     * @param values        属性值集合（key为属性元数据id，value为属性值）
+     */
     @Validated({SpuModel.Create.class})
     @Transactional
     @BizError("10")
@@ -59,12 +71,11 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
         Assert.notEmpty(values, "values must not be empty.");
         SpuEntity spuEntity = getModelMapper().mapForSave(model);
         categoryManager.awareStandardCategoryEntity(stdCategoryId, spuEntity);
-        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(stdCategoryId, CategoryPropertyBizType.KEY_PROPERTY, CategoryPropertyBizType.SPU_PROPERTY);
+        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(stdCategoryId, KEY_PROPERTY, SPU_PROPERTY);
 
         Map<Long, PropertyValueModel> propertiesValues = Maps.newHashMap();
 
-        for (int i = 0; i < categoryProperties.size(); i++) {
-            CategoryProperty categoryProperty = categoryProperties.get(i);
+        for (CategoryProperty categoryProperty : categoryProperties) {
             Long metaId = categoryProperty.propertyMetadata().id();
             Object value = values.get(metaId);
             categoryProperty.assertsValueRule(value);
@@ -83,11 +94,48 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
         propertyValueManager.createPropertyValues(propertiesValues);
     }
 
+    /**
+     * 更新保存spu
+     *
+     * @param model     spu模型
+     * @param keyValues 关键属性值集合(key为属性值id，value为属性值)
+     * @param spuValues spu属性值集合(key为属性值id，value为属性值)
+     */
     @Validated({SpuModel.Update.class})
     @Transactional
     @BizError("11")
-    public void saveSpu(@Valid SpuModel model, Map<Long, Object> values) {
+    public void saveSpu(@Valid SpuModel model, Map<Long, Object> keyValues, Map<Long, Object> spuValues) {
+        Long spuId = model.id();
+        SpuEntity spuEntity = spuRepository.getById(spuId).orElseThrow(() -> new IllegalArgumentException("no spu found: " + spuId));
+        getModelMapper().mapForUpdate(model, spuEntity);
+        spuRepository.save(spuEntity);
 
+        Map<Long, PropertyValueModel> metaIdToPv = Maps.newHashMap();//mapping property meta id to property value.
+
+
+        propertyValueManager.findAllPropertiesValue(KEY_PROPERTY.getOrdinal(), spuId, KeyPropertyValueModel.class).forEach(o -> {
+            metaIdToPv.put(o.propertyMetaId(), (PropertyValueModel) o);
+            if (null == keyValues)
+                return;
+            if (keyValues.containsKey(o.id())) {
+                o.changeValue(keyValues.get(o.id()));
+            }
+        });
+        propertyValueManager.findAllPropertiesValue(SPU_PROPERTY.getOrdinal(), spuId, PropertyValueModel.class).forEach(o -> {
+            metaIdToPv.put(o.propertyMetaId(), (PropertyValueModel) o);
+            if (null != spuValues && spuValues.containsKey(o.id())) {
+                o.changeValue(spuValues.get(o.id()));
+            }
+        });
+
+        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(spuEntity.getCategory().getId(), KEY_PROPERTY, SPU_PROPERTY);
+
+        for (CategoryProperty categoryProperty : categoryProperties) {
+            PropertyValue propertyValue = metaIdToPv.get(categoryProperty.propertyMetadata().id());
+            categoryProperty.assertsValueRule(propertyValue.value());
+        }
+        List<PropertyValueModel> updates = Lists.newArrayList(metaIdToPv.values());
+        propertyValueManager.savePropertyValues(updates);
     }
 
 

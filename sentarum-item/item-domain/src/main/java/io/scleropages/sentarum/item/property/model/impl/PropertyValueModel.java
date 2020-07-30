@@ -15,23 +15,23 @@
  */
 package io.scleropages.sentarum.item.property.model.impl;
 
-import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
 /**
+ * 默认的属性值模型，其他属性值模型必须基于此类进行扩展，否则存在类型兼容问题
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class PropertyValueModel implements PropertyValue {
-
 
     private Long id;
     private String name;
     private Integer bizType;
     private Long bizId;
-    private PropertyMetadata propertyMetadata;
+    private Long propertyMetaId;
     private Object value;
 
     @Null(groups = Create.class)
@@ -46,6 +46,7 @@ public class PropertyValueModel implements PropertyValue {
     }
 
     @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
     public Integer getBizType() {
         return bizType;
     }
@@ -57,8 +58,8 @@ public class PropertyValueModel implements PropertyValue {
     }
 
     @Null
-    public PropertyMetadata getPropertyMetadata() {
-        return propertyMetadata;
+    public Long getPropertyMetaId() {
+        return propertyMetaId;
     }
 
     @NotNull(groups = Create.class)
@@ -82,8 +83,8 @@ public class PropertyValueModel implements PropertyValue {
         this.bizId = bizId;
     }
 
-    public void setPropertyMetadata(PropertyMetadata propertyMetadata) {
-        this.propertyMetadata = propertyMetadata;
+    public void setPropertyMetaId(Long propertyMetaId) {
+        this.propertyMetaId = propertyMetaId;
     }
 
     public void setValue(Object value) {
@@ -111,14 +112,19 @@ public class PropertyValueModel implements PropertyValue {
     }
 
     @Override
-    public PropertyMetadata propertyMetadata() {
-        return getPropertyMetadata();
+    public Long propertyMetaId() {
+        return getPropertyMetaId();
     }
 
 
     @Override
     public Object value() {
         return getValue();
+    }
+
+    @Override
+    public void changeValue(Object value) {
+        setValue(value);
     }
 
 

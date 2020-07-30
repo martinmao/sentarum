@@ -30,6 +30,7 @@ import javax.validation.Valid;
 
 /**
  * 媒体资源管理器（图片，视频。。。）
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Service
@@ -39,6 +40,11 @@ public class MediaManager implements GenericManager<Media, Long, MediaEntityMapp
 
     private MediaRepository mediaRepository;
 
+    /**
+     * 创建一个媒体资源
+     *
+     * @param media
+     */
     @Validated({Media.Create.class})
     @Transactional
     @BizError("10")
@@ -46,6 +52,11 @@ public class MediaManager implements GenericManager<Media, Long, MediaEntityMapp
         mediaRepository.save(getModelMapper().mapForSave(media));
     }
 
+    /**
+     * 更新保存媒体资源
+     *
+     * @param media
+     */
     @Validated({Media.Update.class})
     @Transactional
     @BizError("15")

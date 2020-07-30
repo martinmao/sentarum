@@ -16,8 +16,7 @@
 package io.scleropages.sentarum.item.property.entity;
 
 import io.scleropages.sentarum.item.model.Spu;
-import io.scleropages.sentarum.item.model.impl.KeyPropertyValueModel;
-import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
+import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
@@ -35,6 +34,8 @@ import javax.persistence.Table;
 @Table(name = "pt_key_property_value",
         // 允许 name重复，多选 uniqueConstraints = @UniqueConstraint(columnNames = {BIZ_TYPE_COLUMN, BIZ_ID_COLUMN, NAME_COLUMN}),
         indexes = {
+                @Index(columnList = "biz_type,biz_id"),
+                @Index(columnList = "property_meta_id"),
                 @Index(columnList = "biz_type,name_,int_,text_,bool_,date_,long_,decimal_")
         })
 @SequenceGenerator(name = "pt_key_property_value_id", sequenceName = "seq_pt_key_property_value", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)

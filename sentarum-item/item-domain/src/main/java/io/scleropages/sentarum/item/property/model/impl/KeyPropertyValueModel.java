@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.model.impl;
-
-import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
+package io.scleropages.sentarum.item.property.model.impl;
 
 /**
  *

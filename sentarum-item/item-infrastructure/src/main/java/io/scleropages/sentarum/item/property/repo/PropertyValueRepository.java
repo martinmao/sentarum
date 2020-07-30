@@ -20,10 +20,12 @@ import io.scleropages.sentarum.jooq.tables.PtPropertyValue;
 import io.scleropages.sentarum.jooq.tables.records.PtPropertyMetaRecord;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface PropertyValueRepository extends AbstractPropertyValueRepository<PropertyValueEntity, PtPropertyValue, PtPropertyMetaRecord> {
 
+    @Override
+    default PropertyValueEntity newPropertyValueEntity() {
+        return new PropertyValueEntity();
+    }
 }
