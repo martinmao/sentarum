@@ -43,6 +43,7 @@ import io.scleropages.sentarum.item.property.repo.PropertyMetaRepository;
 import io.scleropages.sentarum.item.property.repo.SourceValueRepository;
 import io.scleropages.sentarum.item.property.repo.ValuesSourceRepository;
 import org.apache.commons.collections.ComparatorUtils;
+import org.hibernate.Hibernate;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.dao.orm.SearchFilter;
@@ -131,7 +132,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         Assert.isTrue(Input.InputType.isCheckInput(propertyMetaEntity.getInput()), "not support values source for this property metadata (make sure it's a check input.): " + propertyMetaId);
         ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(valueSourceId).orElseThrow(() -> new IllegalArgumentException("no values source found: " + valueSourceId));
         propertyMetaEntity.setValuesSource(valuesSourceEntity);
-        propertyMetaRepository.save(propertyMetaEntity);
+        propertyMetaRepository.saveAndFlush(propertyMetaEntity);
     }
 
     @Validated({NativeValuesSource.Update.class})
@@ -247,7 +248,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         groupedMetaEntryEntity.setGroupedMeta(groupedMetaEntity);
         groupedMetaEntryEntity.setPropertyMetadata(propertyMetaEntity);
         groupedMetaEntryEntity.setOrder(order);
-        groupedMetaEntryRepository.save(groupedMetaEntryEntity);
+        groupedMetaEntryRepository.saveAndFlush(groupedMetaEntryEntity);
     }
 
     @Transactional
@@ -284,7 +285,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     }
 
     @Transactional(readOnly = true)
-    @BizError("56")
+    @BizError("57")
     public PropertyMetadata getPropertyMetadataDetail(Long propertyMetadataId) {
         Assert.notNull(propertyMetadataId, "propertyMetadataId must not be null.");
         return getModelMapper().mapForRead(propertyMetaRepository.getDetailsById(propertyMetadataId));
@@ -341,10 +342,10 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @Transactional(readOnly = true)
     @BizError("90")
     public List<? extends PropertyMetadata> findAllPropertyMetadataInGroup(Long groupId) {
-        GroupedMetaEntity groupEntity = groupedMetaRepository.getById(groupId);
-        Assert.notNull(groupEntity, "not grouped property metadata found: " + groupId);
-        List<GroupedMetaEntryEntity> entries = groupEntity.getEntries();
-        List<PropertyMetaEntity> collect = entries.stream().sorted((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.getOrder(), o2.getOrder())).map(entryEntity -> entryEntity.getPropertyMetadata()).collect(Collectors.toList());
+        List<GroupedMetaEntryEntity> entries = groupedMetaRepository.findAllEntriesById(groupId);
+        List<PropertyMetaEntity> collect = entries.stream()
+                .sorted((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.getOrder(), o2.getOrder()))
+                .map(entryEntity -> entryEntity.getPropertyMetadata()).collect(Collectors.toList());
         return (List<? extends PropertyMetadata>) getModelMapper().mapForReads(collect);
     }
 
@@ -367,10 +368,10 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
 
     protected PropertyMetadata createPropertyMetadataFromEntity(PropertyMetaEntity propertyMetaEntity) {
         if (Input.InputType.isCheckInput(propertyMetaEntity.getInput())) {//如果属性的input 为check类型，加载其关联 ValuesSource
-            propertyMetaEntity.getValuesSource();
+            Hibernate.initialize(propertyMetaEntity.getValuesSource());
         }
         PropertyMetadataModel propertyMetadataModel = getModelMapper().mapForRead(propertyMetaEntity);
-        propertyMetadataModel.setConstraints(findAllConstraintByPropertyMeta(propertyMetadataModel.id()));
+//        propertyMetadataModel.setConstraints(findAllConstraintByPropertyMeta(propertyMetadataModel.id()));
         return propertyMetadataModel;
     }
 

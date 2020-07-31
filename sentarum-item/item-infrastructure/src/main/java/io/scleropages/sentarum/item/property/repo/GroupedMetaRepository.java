@@ -16,14 +16,33 @@
 package io.scleropages.sentarum.item.property.repo;
 
 import io.scleropages.sentarum.item.property.entity.GroupedMetaEntity;
+import io.scleropages.sentarum.item.property.entity.GroupedMetaEntryEntity;
+import io.scleropages.sentarum.jooq.tables.PtGrpPropMeta;
+import io.scleropages.sentarum.jooq.tables.records.PtGrpPropMetaRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.springframework.data.jpa.repository.EntityGraph;
+import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.Assert;
+
+import javax.persistence.criteria.JoinType;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GroupedMetaRepository extends GenericRepository<GroupedMetaEntity, Long> {
+public interface GroupedMetaRepository extends GenericRepository<GroupedMetaEntity, Long>, JooqRepository<PtGrpPropMeta, PtGrpPropMetaRecord, GroupedMetaEntity> {
 
-    @EntityGraph(attributePaths = "entries")
-    GroupedMetaEntity getById(Long id);
+
+    default List<GroupedMetaEntryEntity> findAllEntriesById(Long id) {
+        Specification spec = (Specification) (root, query, builder) -> {
+            root.fetch("entries", JoinType.LEFT).fetch("propertyMetadata");
+            return builder.equal(root.get("id"), id);
+        };
+        Optional<GroupedMetaEntity> optional = get(spec);
+        Assert.isTrue(optional.isPresent(), "no grouped property meta found.");
+        List<GroupedMetaEntryEntity> entries = optional.get().getEntries();
+        return null != entries ? entries : Collections.emptyList();
+    }
 }

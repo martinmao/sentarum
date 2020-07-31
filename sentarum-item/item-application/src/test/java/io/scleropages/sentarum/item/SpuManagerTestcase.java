@@ -16,31 +16,26 @@
 package io.scleropages.sentarum.item;
 
 import com.google.common.collect.Maps;
+import io.scleropages.sentarum.item.category.model.Category;
+import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
+import io.scleropages.sentarum.item.mgmt.CategoryManager;
 import io.scleropages.sentarum.item.mgmt.PropertyManager;
+import io.scleropages.sentarum.item.mgmt.PropertyValueManager;
+import io.scleropages.sentarum.item.mgmt.SpuManager;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
-import io.scleropages.sentarum.item.property.model.constraint.ConstraintDepends;
-import io.scleropages.sentarum.item.property.model.constraint.Max;
-import io.scleropages.sentarum.item.property.model.constraint.MaxLength;
-import io.scleropages.sentarum.item.property.model.constraint.Min;
-import io.scleropages.sentarum.item.property.model.constraint.MinLength;
-import io.scleropages.sentarum.item.property.model.constraint.NotNull;
 import io.scleropages.sentarum.item.property.model.impl.GroupedPropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
-import io.scleropages.sentarum.item.property.model.input.InputText;
 import io.scleropages.sentarum.item.property.model.input.SingleCheck;
 import io.scleropages.sentarum.item.property.model.vs.NativeValuesSource;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.dao.orm.SearchFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,79 +50,38 @@ import java.util.Objects;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @Transactional
-public class PropertyManagerTestcase {
+public class SpuManagerTestcase {
 
     @Autowired
-    private PropertyManager propertyManager;
-
-    @Test
-    public void testFlatPropertyCreation() {
-        PropertyMetadataModel address = new PropertyMetadataModel();
-        address.setName("address");
-        address.setTag("地址");
-        address.setDescription("详细地址信息");
-        address.setKeyed(false);
-        address.setBizType(1);
-        address.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
-        address.setValueType(PropertyValueType.TEXT);
-        address.setInput(new InputText());
-        propertyManager.createPropertyMetadata(address);
-
-        Map<String, Object> search = Maps.newHashMap();
-        search.put("name", "address");
-        Page<PropertyMetadata> propertyMetadataPage = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(search), Pageable.unpaged());
-        PropertyMetadata next = propertyMetadataPage.toList().iterator().next();
-        System.out.println(JsonMapper2.toJson(next));
-        MinLength minLength = new MinLength(11);
-        MaxLength maxLength = new MaxLength(32);
-        NotNull notNull = new NotNull();
-
-        propertyManager.createConstraint(next.id(), minLength);
-        propertyManager.createConstraint(next.id(), maxLength);
-        propertyManager.createConstraint(next.id(), notNull);
-
-        PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(next.id());
-        System.out.println(JsonMapper2.toJson(propertyMetadata));
-
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
-        PropertyMetadataModel price = new PropertyMetadataModel();
-        price.setName("price");
-        price.setKeyed(false);
-        price.setBizType(1);
-        price.setTag("价格");
-        price.setDescription("商品价格");
-        price.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
-        price.setValueType(PropertyValueType.DECIMAL);
-        price.setInput(new InputText());
-        propertyManager.createPropertyMetadata(price);
-
-        search.put("name", "price");
-        propertyMetadataPage = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(search), Pageable.unpaged());
-        next = propertyMetadataPage.toList().iterator().next();
-        System.out.println(JsonMapper2.toJson(next));
-
-        NotNull priceNotNull = new NotNull();//设置依赖规则，address如果不为空，则price也不为空.
-        ConstraintDepends constraintDepends = new ConstraintDepends();
-        priceNotNull.setConstraintDepends(constraintDepends);
-        constraintDepends.setConjunction(ConstraintDepends.Conjunction.AND);
-        constraintDepends.addConstraintDepend(new ConstraintDepends.ConstraintDepend(address.getName(), ConstraintDepends.Operator.NOT_NULL));
+    protected PropertyValueManager propertyValueManager;
+    @Autowired
+    protected PropertyManager propertyManager;
+    @Autowired
+    protected CategoryManager categoryManager;
+    @Autowired
+    protected SpuManager spuManager;
 
 
-        Min min = new Min(0L);
-        Max max = new Max(9999L);
+    @Before
+    public void categorySetup() {
+        setupBSM();
 
-        propertyManager.createConstraint(next.id(), priceNotNull);
-        propertyManager.createConstraint(next.id(), min);
-        propertyManager.createConstraint(next.id(), max);
+        StandardCategoryModel shuma = new StandardCategoryModel();
+        shuma.setStatus(Category.Status.VALID);
+        shuma.setName("digital_products");
+        shuma.setTag("数码");
+        shuma.setDescription("数码产品");
 
-        propertyMetadata = propertyManager.getPropertyMetadata(next.id());
-        System.out.println(JsonMapper2.toJson(propertyMetadata));
+        categoryManager.createStandardCategory(shuma, null);
+
+
     }
 
 
-    @Test
-    public void testHierarchyCreation() {
+    /**
+     * 创建品牌，系列，型号属性组
+     */
+    protected void setupBSM() {
         PropertyMetadataModel brand = new PropertyMetadataModel();
         brand.setKeyed(false);
         brand.setBizType(1);
@@ -145,8 +99,6 @@ public class PropertyManagerTestcase {
 
         PropertyMetadata brandPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
 
-        Assert.assertNotNull(brandPropertyMeta);
-
         propertyManager.createValuesSource(new NativeValuesSource("brand.values", "品牌", "品牌列表"));
 
         Map<String, Object> valuesSourceSearch = Maps.newHashMap();
@@ -156,7 +108,6 @@ public class PropertyManagerTestcase {
         propertyManager.bindValuesSourceToPropertyMetadata(brandValuesSource.id(), brandPropertyMeta.id());
 
         brandPropertyMeta = propertyManager.getPropertyMetadata(brandPropertyMeta.id());
-        System.out.println(JsonMapper2.toJson(brandPropertyMeta));
 
         propertyManager.createSourceValue(new SourceValueModel(1L, "Apple", brandValuesSource.id()));
         propertyManager.createSourceValue(new SourceValueModel(2L, "IBM", brandValuesSource.id()));
@@ -184,8 +135,6 @@ public class PropertyManagerTestcase {
 
         PropertyMetadata seriesPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
 
-        Assert.assertNotNull(seriesPropertyMeta);
-
         propertyManager.createValuesSource(new NativeValuesSource("series.values", "系列", "系列列表"));
 
         valuesSourceSearch.put("name", "series.values");
@@ -194,9 +143,6 @@ public class PropertyManagerTestcase {
         propertyManager.bindValuesSourceToPropertyMetadata(seriesValuesSource.id(), seriesPropertyMeta.id());
 
         seriesPropertyMeta = propertyManager.getPropertyMetadata(seriesPropertyMeta.id());
-
-        System.out.println(JsonMapper2.toJson(seriesPropertyMeta));
-
 
         for (ValuesSource.SourceValue brandValue : brandValues) {
             if (Objects.equals(brandValue.value(), 1L)) {//apple
@@ -229,7 +175,6 @@ public class PropertyManagerTestcase {
 
         PropertyMetadata modelPropertyMeta = propertyManager.findPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(propertyMetaSearch), Pageable.unpaged()).toList().iterator().next();
 
-        Assert.assertNotNull(modelPropertyMeta);
         propertyManager.createValuesSource(new NativeValuesSource("model.values", "型号", "型号列表"));
 
 
@@ -239,9 +184,6 @@ public class PropertyManagerTestcase {
         propertyManager.bindValuesSourceToPropertyMetadata(modelValuesSource.id(), modelPropertyMeta.id());
 
         modelPropertyMeta = propertyManager.getPropertyMetadata(modelPropertyMeta.id());
-
-        System.out.println(JsonMapper2.toJson(modelPropertyMeta));
-
 
         for (ValuesSource.SourceValue seriesValue : seriesValues) {
             if (Objects.equals(seriesValue.value(), 1L)) {//Mac
@@ -270,9 +212,6 @@ public class PropertyManagerTestcase {
         propertyManager.addPropertyMetadataToGroup(groupedPropertyMetadata.id(), brandPropertyMeta.id(), 0.1f);
         propertyManager.addPropertyMetadataToGroup(groupedPropertyMetadata.id(), modelPropertyMeta.id(), 0.3f);
         propertyManager.addPropertyMetadataToGroup(groupedPropertyMetadata.id(), seriesPropertyMeta.id(), 0.2f);
-
-        propertyManager.findAllPropertyMetadataInGroup(groupedPropertyMetadata.id()).forEach(o -> System.out.println(JsonMapper2.toJson(o)));
     }
-
 
 }

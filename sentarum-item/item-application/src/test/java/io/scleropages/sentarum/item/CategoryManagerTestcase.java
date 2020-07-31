@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.category.model.Category;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.category.model.StandardCategoryLink;
 import io.scleropages.sentarum.item.category.model.impl.CategoryPropertyModel;
 import io.scleropages.sentarum.item.category.model.impl.MarketingCategoryModel;
@@ -117,7 +118,7 @@ public class CategoryManagerTestcase {
         categoryProperty.setCategoryPropertyBizType(CategoryProperty.CategoryPropertyBizType.KEY_PROPERTY);
         categoryProperty.setOrder(0.01F);
         categoryProperty.setReadOnly(false);
-        categoryProperty.setRequired(true);
+        categoryProperty.setRequired(false);
         categoryProperty.setVisible(true);
         categoryProperty.setDefaultValues(new CategoryProperty.DefaultValues(new Object[]{1, 2, 3}));
         categoryManager.createCategoryProperty(categoryProperty, standardCategory.id(), testStdPropertyMeta.id());
@@ -154,25 +155,57 @@ public class CategoryManagerTestcase {
     @Test
     public void testNavigator() {
 
+
         StandardCategoryModel standardCategory = new StandardCategoryModel();
-        standardCategory.setId(1l);
+        standardCategory.setName("x1");
+        standardCategory.setTag("测试后台类目1");
+        standardCategory.setDescription("测试后台类目1");
+        standardCategory.setStatus(Category.Status.VALID);
+        standardCategory.setAdditionalAttributes(EXAMPLE_ATTRIBUTES);
+        categoryManager.createStandardCategory(standardCategory, null);
 
-        System.out.println(categoryManager.getStandardCategoryNavigator().adjacentCategory(standardCategory));
+        Map<String,Object> search=Maps.newHashMap();
+        search.put("name","x1");
+        StandardCategory next = categoryManager.findStandardCategoryPage(SearchFilter.SearchFilterBuilder.build(search), Pageable.unpaged()).iterator().next();
 
-        System.out.println(categoryManager.getStandardCategoryNavigator().adjacentCategory(standardCategory));
+        StandardCategoryModel standardCategory2 = new StandardCategoryModel();
+        standardCategory2.setName("x2");
+        standardCategory2.setTag("测试后台类目2");
+        standardCategory2.setDescription("测试后台类目2");
+        standardCategory2.setStatus(Category.Status.VALID);
+        standardCategory2.setAdditionalAttributes(EXAMPLE_ATTRIBUTES);
+        categoryManager.createStandardCategory(standardCategory2, next.id());
 
-        System.out.println(categoryManager.getStandardCategoryNavigator().adjacentCategory(standardCategory));
+        search.put("name","x2");
+        next = categoryManager.findStandardCategoryPage(SearchFilter.SearchFilterBuilder.build(search), Pageable.unpaged()).iterator().next();
+
+        standardCategory2.setId(next.id());
+
+        StandardCategoryModel standardCategory3 = new StandardCategoryModel();
+        standardCategory3.setName("x3");
+        standardCategory3.setTag("测试后台类目3");
+        standardCategory3.setDescription("测试后台类目3");
+        standardCategory3.setStatus(Category.Status.VALID);
+        standardCategory3.setAdditionalAttributes(EXAMPLE_ATTRIBUTES);
+        categoryManager.createStandardCategory(standardCategory3, next.id());
+
+
+        System.out.println(categoryManager.getStandardCategoryNavigator().adjacentCategory(standardCategory2));
+
+        System.out.println(categoryManager.getStandardCategoryNavigator().adjacentCategory(standardCategory2));
+
+        System.out.println(categoryManager.getStandardCategoryNavigator().adjacentCategory(standardCategory2));
 
         CategoryNavigator standardCategoryNavigator = categoryManager.getStandardCategoryNavigator();
 
 
-        System.out.println(standardCategoryNavigator.connections(standardCategory));
+        System.out.println(standardCategoryNavigator.connections(standardCategory2));
 
-        System.out.println(standardCategoryNavigator.reachableCategories(standardCategory));
+        System.out.println(standardCategoryNavigator.reachableCategories(standardCategory2));
 
 
-        System.out.println(standardCategoryNavigator.predecessors(standardCategory));
+        System.out.println(standardCategoryNavigator.predecessors(standardCategory2));
 
-        System.out.println(standardCategoryNavigator.successors(standardCategory));
+        System.out.println(standardCategoryNavigator.successors(standardCategory2));
     }
 }

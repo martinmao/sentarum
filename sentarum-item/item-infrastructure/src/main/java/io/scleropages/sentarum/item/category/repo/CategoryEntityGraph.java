@@ -21,6 +21,7 @@ import com.google.common.graph.EndpointPair;
 import com.google.common.graph.Graphs;
 import com.google.common.graph.MutableGraph;
 import io.scleropages.sentarum.item.category.entity.AbstractCategoryEntity;
+import org.springframework.util.Assert;
 
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +45,7 @@ public class CategoryEntityGraph<E extends AbstractCategoryEntity> implements Mu
 
 
     public E getById(Long id) {
+        Assert.notNull(id, "id must not be null.");
         return (E) mappings.get(id);
     }
 
