@@ -20,9 +20,18 @@ import io.scleropages.sentarum.jooq.tables.Item;
 import io.scleropages.sentarum.jooq.tables.records.ItemRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.EntityGraph;
+
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface ItemRepository extends GenericRepository<ItemEntity, Long>, JooqRepository<Item, ItemRecord, ItemEntity> {
+
+
+    @EntityGraph(attributePaths = "spu")
+    @Cacheable
+    Optional<ItemEntity> getById(Long aLong);
 }

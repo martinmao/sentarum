@@ -105,26 +105,10 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
         getModelMapper().mapForUpdate(model, spuEntity);
         spuRepository.save(spuEntity);
 
-        Map<Long, PropertyValueModel> metaIdToPv = Maps.newHashMap();//mapping property meta id to property value.
-
-
-        if (null != keyValues) {
-            propertyValueManager.findAllPropertiesValue(KEY_PROPERTY.getOrdinal(), spuId, KeyPropertyValueModel.class).forEach(o -> {
-                metaIdToPv.put(o.propertyMetaId(), (PropertyValueModel) o);
-
-                if (keyValues.containsKey(o.id())) {
-                    o.changeValue(keyValues.get(o.id()));
-                }
-            });
-        }
-        if (null != spuValues) {
-            propertyValueManager.findAllPropertiesValue(SPU_PROPERTY.getOrdinal(), spuId, PropertyValueModel.class).forEach(o -> {
-                metaIdToPv.put(o.propertyMetaId(), (PropertyValueModel) o);
-                if (spuValues.containsKey(o.id())) {
-                    o.changeValue(spuValues.get(o.id()));
-                }
-            });
-        }
+        //mapping property meta id to property value.
+        Map<Long, PropertyValueModel> metaIdToPv = categoryManager.applyCategoryPropertyValuesChanges(spuId
+                , new CategoryManager.PropertyValueChange(KEY_PROPERTY, keyValues, KeyPropertyValueModel.class)
+                , new CategoryManager.PropertyValueChange(SPU_PROPERTY, spuValues, PropertyValueModel.class));
 
         List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(spuEntity.getCategory().getId(), KEY_PROPERTY, SPU_PROPERTY);
 
@@ -132,8 +116,7 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
             PropertyValue propertyValue = metaIdToPv.get(categoryProperty.propertyMetadata().id());
             categoryProperty.assertsValueRule(propertyValue.value());
         }
-        List<PropertyValueModel> updates = Lists.newArrayList(metaIdToPv.values());
-        propertyValueManager.savePropertyValues(updates);
+        propertyValueManager.savePropertyValues(Lists.newArrayList(metaIdToPv.values()));
     }
 
 
@@ -146,7 +129,21 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     @Transactional(readOnly = true)
     @BizError("20")
     public Spu getSpu(Long spuId) {
+        Assert.notNull(spuId, "spuId must not be null.");
         return getModelMapper().mapForRead(spuRepository.get(spuId).orElseThrow(() -> new IllegalArgumentException("no spu found: " + spuId)));
+    }
+
+    /**
+     * 获取spu详情
+     *
+     * @param spuId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("20")
+    public Spu getSpuDetail(Long spuId) {
+        Assert.notNull(spuId, "spuId must not be null.");
+        return getModelMapper().mapForRead(spuRepository.getById(spuId).orElseThrow(() -> new IllegalArgumentException("no spu found: " + spuId)));
     }
 
     /**

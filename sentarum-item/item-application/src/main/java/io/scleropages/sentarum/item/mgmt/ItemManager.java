@@ -15,11 +15,14 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
+import com.google.common.collect.Lists;
+import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.entity.ItemEntity;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.ItemEntityMapper;
 import io.scleropages.sentarum.item.model.impl.ItemModel;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.repo.ItemRepository;
 import io.scleropages.sentarum.item.repo.SpuRepository;
@@ -32,6 +35,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.ITEM_PROPERTY;
@@ -78,7 +82,24 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @Transactional
     @BizError("11")
     public void saveItem(@Valid ItemModel model, Map<Long, Object> itemValues) {
+        Long itemId = model.id();
+        ItemEntity itemEntity = itemRepository.getById(itemId).orElseThrow(() -> new IllegalArgumentException("no item found: " + itemId));
+        getModelMapper().mapForUpdate(model, itemEntity);
+        itemRepository.save(itemEntity);
 
+        //mapping property meta id to property value.
+        Map<Long, PropertyValueModel> metaIdToPv = categoryManager.applyCategoryPropertyValuesChanges(itemId
+                , new CategoryManager.PropertyValueChange(ITEM_PROPERTY, itemValues, PropertyValueModel.class));
+
+        SpuEntity spuEntity = spuRepository.getById(itemEntity.getSpu().getId()).get();
+
+        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(spuEntity.getCategory().getId(), ITEM_PROPERTY);
+
+        for (CategoryProperty categoryProperty : categoryProperties) {
+            PropertyValue propertyValue = metaIdToPv.get(categoryProperty.propertyMetadata().id());
+            categoryProperty.assertsValueRule(propertyValue.value());
+        }
+        propertyValueManager.savePropertyValues(Lists.newArrayList(metaIdToPv.values()));
     }
 
     @Autowired

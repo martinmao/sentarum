@@ -85,6 +85,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     private StandardCategoryLinkRepository standardCategoryLinkRepository;
 
     private PropertyManager propertyManager;
+    private PropertyValueManager propertyValueManager;
 
 
     /**
@@ -429,7 +430,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      *
      * @param stdCategoryId 类目id
      * @param values        属性值集合（key为属性元数据id，value为属性值）
-     * @param bizTypes      类目属性业务类型
+     * @param bizTypes      类目属性业务类型进行过滤
      * @return
      */
     @Transactional(readOnly = true)
@@ -455,6 +456,66 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
             }
         });
         return propertiesValues;
+    }
+
+    /**
+     * 根据业务实体id 批量修改其属性值， 修改内容定义在 {@link PropertyValueChange}，其包含三个要素：属性业务类型+要修改的属性值+具体的属性值模型 <br>
+     * 例如要修改某一SPU属性值列表，则需提供spuID,以及一组修改约束：属性业务类型（关键属性/产品属性）,属性值列表（属性值id+值）,目标属性来源（基于不同特性，属性值存储于不同的表）
+     * 注意：该方法仅在内存中进行值的修改，不会进行持久化操作，参考 {@link PropertyValueManager#savePropertyValues(List)}
+     *
+     * @param bizId
+     * @param propertyValueChanges
+     * @return 属性元数据id+属性值对象
+     */
+    @Transactional(readOnly = true)
+    @BizError("86")
+    public Map<Long, PropertyValueModel> applyCategoryPropertyValuesChanges(Long bizId, PropertyValueChange... propertyValueChanges) {
+        Map<Long, PropertyValueModel> metaIdToPv = Maps.newHashMap();//mapping property meta id to property value.
+
+        for (PropertyValueChange propertyValueChange : propertyValueChanges) {
+            Map<Long, Object> values = propertyValueChange.values;
+            if (null != values) {
+                propertyValueManager.findAllPropertiesValue(propertyValueChange.bizType.getOrdinal(), bizId, propertyValueChange.concreteModelClazz).
+                        forEach(o -> {
+                            metaIdToPv.put(o.propertyMetaId(), (PropertyValueModel) o);
+                            if (values.containsKey(o.id())) {
+                                o.changeValue(values.get(o.id()));
+                            }
+                        });
+            }
+        }
+        return metaIdToPv;
+    }
+
+
+    /**
+     * Represents category property biz type map to group of values
+     */
+    public static final class PropertyValueChange {
+        /**
+         * 类目属性业务类型
+         */
+        private final CategoryPropertyBizType bizType;
+        /**
+         * 该业务类型的一组属性值，key为属性值id，值为属性值
+         */
+        private final Map<Long, Object> values;
+
+        /**
+         * 实际的属性值模型
+         */
+        private final Class<? extends PropertyValueModel> concreteModelClazz;
+
+        /**
+         * @param bizType            属性业务类型
+         * @param values             key为属性值id，值为属性值
+         * @param concreteModelClazz 具体的属性值类型
+         */
+        public PropertyValueChange(CategoryPropertyBizType bizType, Map<Long, Object> values, Class<? extends PropertyValueModel> concreteModelClazz) {
+            this.bizType = bizType;
+            this.values = values;
+            this.concreteModelClazz = concreteModelClazz;
+        }
     }
 
 
@@ -548,5 +609,10 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     @Autowired
     public void setPropertyManager(PropertyManager propertyManager) {
         this.propertyManager = propertyManager;
+    }
+
+    @Autowired
+    public void setPropertyValueManager(PropertyValueManager propertyValueManager) {
+        this.propertyValueManager = propertyValueManager;
     }
 }
