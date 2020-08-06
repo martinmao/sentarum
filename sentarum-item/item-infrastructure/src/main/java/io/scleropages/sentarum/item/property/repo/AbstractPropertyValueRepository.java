@@ -16,22 +16,36 @@
 package io.scleropages.sentarum.item.property.repo;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import io.scleropages.sentarum.jooq.tables.PtKeyPropertyValue;
+import org.jooq.Condition;
+import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.SelectQuery;
 import org.jooq.Table;
 import org.jooq.TableRecord;
 import org.jooq.UpdatableRecord;
+import org.scleropages.crud.dao.orm.SearchFilter;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
+import org.scleropages.crud.dao.orm.jpa.JpaContexts;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.scleropages.crud.dao.orm.jpa.complement.JpaSupportJooqConditions;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.Assert;
 
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity.*;
+import static io.scleropages.sentarum.jooq.Tables.PT_KEY_PROPERTY_VALUE;
 import static io.scleropages.sentarum.jooq.Tables.PT_PROPERTY_META;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -93,8 +107,9 @@ public interface AbstractPropertyValueRepository<E extends AbstractPropertyValue
         record.set(dslField(INT_VALUE_COLUMN.toUpperCase()), entity.getIntValue());
         record.set(dslField(LONG_VALUE_COLUMN.toUpperCase()), entity.getLongValue());
         record.set(dslField(TEXT_VALUE_COLUMN.toUpperCase()), entity.getTextValue());
-        record.set(dslField(NULL_VALUE_COLUMN.toUpperCase()),entity.getNullValue());
+        record.set(dslField(NULL_VALUE_COLUMN.toUpperCase()), entity.getNullValue());
     }
+
 
     /**
      * 子类必须实现，返回明确的entity类型
@@ -102,5 +117,64 @@ public interface AbstractPropertyValueRepository<E extends AbstractPropertyValue
      * @return
      */
     abstract E newPropertyValueEntity();
+
+
+    abstract class PropertyConditionsAssembler {
+        /**
+         * apply property conditions to base query.
+         *
+         * @param bizType               business type id
+         * @param requiredBaseQuery     base query to apply
+         * @param propertySort          property sort
+         * @param propertySearchFilters property search filters
+         * @param bizEntityModel        entity model of business object.
+         */
+        public static void applyPropertyConditions(Integer bizType, Optional<SelectQuery<Record>> requiredBaseQuery, Sort propertySort, Map<PropertyMetadata, SearchFilter> propertySearchFilters, JpaContexts.ManagedTypeModel<?> bizEntityModel) {
+
+            SelectQuery<Record> baseQuery = requiredBaseQuery.get();
+
+            Table bizTable = dslNameToTable(bizEntityModel.table().toUpperCase());
+
+            Field bizIdField = dslNameToField(bizTable.getName(), bizEntityModel.getColumnOfId().toUpperCase());
+
+            List<Condition> propertyConditions = Lists.newArrayList();//use this to keep property conditions.
+
+            Map<String, Field> sortFields = Maps.newHashMap();// use this to process property sorting query.
+
+
+            propertySearchFilters.forEach((metadata, searchFilter) -> {// apply join to query. and build propertyConditions, sortFields
+                Assert.isTrue(searchFilter.fieldNames.length == 1, "not support multiple field names.");
+                String propertyName = searchFilter.fieldNames[0];
+
+                PtKeyPropertyValue joinAlias = PT_KEY_PROPERTY_VALUE.as(propertyName + "_" + searchFilter.hashCode());//alias of current PT_KEY_PROPERTY_VALUE to join
+
+                baseQuery.addJoin(joinAlias, joinAlias.BIZ_TYPE.eq(bizType).and(bizIdField.eq(joinAlias.BIZ_ID)));
+
+                Field valueField = dslNameToField(joinAlias.getName(), AbstractPropertyValueEntity.getColumnByMetaValueType(metadata.valueType()));
+
+                Condition eachPropertyCondition = joinAlias.NAME_.eq(propertyName).and(JpaSupportJooqConditions.bySearchFilter(valueField, searchFilter));
+                propertyConditions.add(eachPropertyCondition);
+                sortFields.put(propertyName, valueField);
+            });
+
+            baseQuery.addConditions(propertyConditions);
+
+            if (null != propertySort || propertySort.isSorted())
+                propertySort.forEach(order -> {// check sort variable must containing in variable condition.
+                    String property = order.getProperty();
+                    Field field = sortFields.get(property);
+                    Assert.notNull(field, "sorted property must as a query condition: " + property);
+                    baseQuery.addOrderBy(order.isAscending() ? field.asc() : field.desc());
+                });
+        }
+
+        private static Field dslNameToField(String... qualifiedNames) {
+            return field(name(qualifiedNames));
+        }
+
+        private static Table dslNameToTable(String... qualifiedNames) {
+            return table(name(qualifiedNames));
+        }
+    }
 
 }
