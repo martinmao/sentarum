@@ -62,6 +62,8 @@ public class AbstractPropertyValueEntity extends IdEntity {
     public static final String DECIMAL_VALUE_COLUMN = "decimal_";
     public static final String BOOL_VALUE_COLUMN = "bool_";
     public static final String NULL_VALUE_COLUMN = "is_null";
+    public static final String STRUCTURE_TEXT_VALUE = "struct_text_id";
+    public static final String BYTE_ARRAY_VALUE = "byte_array_id";
 
 
     private Integer bizType;
@@ -133,13 +135,13 @@ public class AbstractPropertyValueEntity extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "struct_text_id")
+    @JoinColumn(name = STRUCTURE_TEXT_VALUE)
     public StructureTextEntity getStructureTextValue() {
         return structureTextValue;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "byte_array_id")
+    @JoinColumn(name = BYTE_ARRAY_VALUE)
     public ByteArrayEntity getByteArrayValue() {
         return byteArrayValue;
     }
@@ -200,6 +202,9 @@ public class AbstractPropertyValueEntity extends IdEntity {
     public void setNullValue(Boolean nullValue) {
         this.nullValue = nullValue;
     }
+
+
+    ///////////////helper methods///////////////////////
 
 
     private Object preparedValue;
@@ -315,5 +320,38 @@ public class AbstractPropertyValueEntity extends IdEntity {
         if (null != decimalValue)
             return decimalValue;
         throw new IllegalStateException("unknown value type.");
+    }
+
+
+    /**
+     * return column name by given property meta value type .
+     *
+     * @param valueType
+     * @return
+     */
+    public static String getColumnByMetaValueType(PropertyValueType valueType) {
+        Assert.notNull(valueType, "value type must not be null.");
+        switch (valueType) {
+            case INTEGER:
+                return INT_VALUE_COLUMN;
+            case LONG:
+                return LONG_VALUE_COLUMN;
+            case TEXT:
+                return TEXT_VALUE_COLUMN;
+            case DATE:
+                return DATE_VALUE_COLUMN;
+            case DECIMAL:
+                return DECIMAL_VALUE_COLUMN;
+            case BOOLEAN:
+                return BOOL_VALUE_COLUMN;
+            case PROPERTY_REF:
+                return LONG_VALUE_COLUMN;
+            case STRUCTURE_TEXT:
+                return STRUCTURE_TEXT_VALUE;
+            case BYTE_ARRAY:
+                return BYTE_ARRAY_VALUE;
+            default:
+                throw new IllegalArgumentException("invalid value type: " + valueType);
+        }
     }
 }

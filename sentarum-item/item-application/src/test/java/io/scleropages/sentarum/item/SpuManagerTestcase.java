@@ -41,10 +41,13 @@ import io.scleropages.sentarum.item.property.model.vs.NativeValuesSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.dao.orm.SearchFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +66,7 @@ import static io.scleropages.sentarum.item.category.model.CategoryProperty.Categ
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-//@Transactional
+@Transactional
 public class SpuManagerTestcase {
 
     @Autowired
@@ -97,6 +100,8 @@ public class SpuManagerTestcase {
         Map<Long, Object> variables = Maps.newHashMap();
 
         List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(shuma.id(), KEY_PROPERTY, SPU_PROPERTY);
+
+
         categoryProperties.forEach(cp -> {
             SourceValueModel valueSearch = new SourceValueModel();
             if (cp.propertyMetadata().name().equals("brand")) {
@@ -122,6 +127,33 @@ public class SpuManagerTestcase {
             }
         });
         spuManager.createSpu(iPhoneX, shuma.id(), variables);
+
+        SourceValueModel valueSearch = new SourceValueModel();
+        valueSearch.setValuesSourceId(propertyManager.getValuesSourceByName("series.values").id());
+
+        valueSearch.setValueTag("iPhone");
+
+        Map<String, Object> spuSearch = Maps.newHashMap();
+        spuSearch.put("LT_marketPrice", 10000);
+
+
+        Map<String, Object> propertySearch = Maps.newHashMap();
+        propertySearch.put("series", propertyManager.findSourceValuePage(valueSearch, Pageable.unpaged()).iterator().next().value());
+
+        valueSearch.setValuesSourceId(propertyManager.getValuesSourceByName("model.values").id());
+
+        valueSearch.setValueTag("iPhoneX");
+
+        propertySearch.put("IN_model", propertyManager.findSourceValuePage(valueSearch, Pageable.unpaged()).iterator().next().value());
+
+        Page<Spu> spuPage = spuManager.findSpuPage(SearchFilter.SearchFilterBuilder.build(spuSearch), SearchFilter.SearchFilterBuilder.build(propertySearch), Pageable.unpaged(), Sort.unsorted());
+        System.out.println(JsonMapper2.toJson(spuPage));
+
+        spuPage.forEach(spu -> {
+            System.out.println(JsonMapper2.toJson(spuManager.getSpu(spu.id())));
+            System.out.println(JsonMapper2.toJson(spuManager.findAllKeyPropertyValues(spu.id())));
+            System.out.println(JsonMapper2.toJson(spuManager.findAllSpuPropertyValues(spu.id())));
+        });
     }
 
 
@@ -419,7 +451,7 @@ public class SpuManagerTestcase {
 
 
     private void flush() {
-//        entityManager.flush();
-//        entityManager.clear();
+        entityManager.flush();
+        entityManager.clear();
     }
 }

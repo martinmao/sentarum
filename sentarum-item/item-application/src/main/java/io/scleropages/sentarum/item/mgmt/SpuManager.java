@@ -21,17 +21,24 @@ import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.SpuEntityMapper;
+import io.scleropages.sentarum.item.model.Spu;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.repo.SpuRepository;
 import org.scleropages.crud.GenericManager;
+import org.scleropages.crud.dao.orm.SearchFilter;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -54,6 +61,7 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     private SpuRepository spuRepository;
     private CategoryManager categoryManager;
     private PropertyValueManager propertyValueManager;
+    private PropertyManager propertyManager;
 
 
     /**
@@ -140,6 +148,43 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     }
 
 
+    @Transactional(readOnly = true)
+    @BizError("20")
+    public Spu getSpu(Long spuId) {
+        return getModelMapper().mapForRead(spuRepository.get(spuId).orElseThrow(() -> new IllegalArgumentException("no spu found: " + spuId)));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("21")
+    public Page<Spu> findSpuPage(Map<String, SearchFilter> spuSearchFilters, Map<String, SearchFilter> keyPropertySearchFilters, Pageable pageable, Sort propertySort) {
+
+        Map<PropertyMetadata, SearchFilter> propertySearchFilter = Maps.newHashMap();
+
+        if (!CollectionUtils.isEmpty(keyPropertySearchFilters)) {
+            keyPropertySearchFilters.forEach((s, searchFilter) -> {
+                Assert.isTrue(searchFilter.fieldNames.length == 1, "not support multiple property names for single search filter.");
+                String propertyName = searchFilter.fieldNames[0];
+                PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataByName(propertyName);
+                Assert.notNull(propertyMetadata, "no property metadata found: " + propertyName);
+                propertySearchFilter.put(propertyMetadata, searchFilter);
+            });
+        }
+        return spuRepository.findSpuPage(spuSearchFilters, propertySearchFilter, pageable, propertySort).map(entity -> getModelMapper().mapForRead(entity));
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("30")
+    public List<? extends PropertyValue> findAllKeyPropertyValues(Long spuId) {
+        return propertyValueManager.findAllPropertiesValue(KEY_PROPERTY.getOrdinal(), spuId, KeyPropertyValueModel.class);
+    }
+
+    @Transactional(readOnly = true)
+    @BizError("31")
+    public List<? extends PropertyValue> findAllSpuPropertyValues(Long spuId) {
+        return propertyValueManager.findAllPropertiesValue(SPU_PROPERTY.getOrdinal(), spuId, PropertyValueModel.class);
+    }
+
+
     protected PropertyValueModel createPropertyValueModel(CategoryPropertyBizType bizType, Object value) {
         PropertyValueModel valueModel;
         if (bizType.isKeyProperty())
@@ -170,5 +215,10 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     @Autowired
     public void setPropertyValueManager(PropertyValueManager propertyValueManager) {
         this.propertyValueManager = propertyValueManager;
+    }
+
+    @Autowired
+    public void setPropertyManager(PropertyManager propertyManager) {
+        this.propertyManager = propertyManager;
     }
 }

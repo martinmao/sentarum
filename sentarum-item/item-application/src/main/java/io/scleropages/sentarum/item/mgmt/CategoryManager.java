@@ -158,10 +158,10 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         CategoryProperty.DefaultValues defaultValues = model.getDefaultValues();
         if (null != defaultValues) {
             if (model.required()) {
-                throw new IllegalArgumentException("required property must not has default value.");
+                throw new IllegalStateException("required property must not has default value.");
             }
             Assert.notEmpty(defaultValues.getValues(), "values must not be null (or empty).");
-            PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadata(propertyMetaId);
+            PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(propertyMetaId);
             Inputs.addValues(propertyMetadata.input(), defaultValues.getValues());
             PropertyValidators.assertInputValid(propertyMetadata);
         }
@@ -430,7 +430,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      */
     protected StandardCategoryEntity assertPropertyMetaUniqueForCategoryHierarchy(Long categoryId, Long propertyMetaId) {
         StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.getById(categoryId);
-        Assert.notNull(standardCategoryEntity,"no category found: "+categoryId);
+        Assert.notNull(standardCategoryEntity, "no category found: " + categoryId);
 //                .getByIdWithParentAndCategoryProperties(categoryId, null)
 //                .orElseThrow(() -> new IllegalArgumentException("no category found: " + categoryId));
 
@@ -457,11 +457,11 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      */
     protected void addCategoryPropertyFromParent(List<CategoryProperty> properties, Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
         StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.getById(stdCategoryId);
-        Assert.notNull(standardCategoryEntity,"no category found: "+stdCategoryId);
+        Assert.notNull(standardCategoryEntity, "no category found: " + stdCategoryId);
 //                .getByIdWithParentAndCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType))
 //                .orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
 
-        List<CategoryProperty> categoryProperties = getModelMapper().categoryPropertyEntityListToCategoryPropertyList(categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType) ));
+        List<CategoryProperty> categoryProperties = getModelMapper().categoryPropertyEntityListToCategoryPropertyList(categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)));
         properties.addAll(categoryProperties);
 //        for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
 //            properties.add(categoryPropertyModel);
