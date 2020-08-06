@@ -132,7 +132,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         Assert.isTrue(Input.InputType.isCheckInput(propertyMetaEntity.getInput()), "not support values source for this property metadata (make sure it's a check input.): " + propertyMetaId);
         ValuesSourceEntity valuesSourceEntity = valuesSourceRepository.get(valueSourceId).orElseThrow(() -> new IllegalArgumentException("no values source found: " + valueSourceId));
         propertyMetaEntity.setValuesSource(valuesSourceEntity);
-        propertyMetaRepository.saveAndFlush(propertyMetaEntity);
+        propertyMetaRepository.save(propertyMetaEntity);
     }
 
     @Validated({NativeValuesSource.Update.class})
@@ -248,7 +248,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
         groupedMetaEntryEntity.setGroupedMeta(groupedMetaEntity);
         groupedMetaEntryEntity.setPropertyMetadata(propertyMetaEntity);
         groupedMetaEntryEntity.setOrder(order);
-        groupedMetaEntryRepository.saveAndFlush(groupedMetaEntryEntity);
+        groupedMetaEntryRepository.save(groupedMetaEntryEntity);
     }
 
     @Transactional

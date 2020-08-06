@@ -44,13 +44,13 @@ public interface AbstractPropertyValueRepository<E extends AbstractPropertyValue
         List<R> recordsToSave = Lists.newArrayList();
         entities.forEach(entity -> {
             R record = dslNewRecord();
-            record.set(dslField(BIZ_TYPE_COLUMN), entity.getBizType());
-            record.set(dslField(BIZ_ID_COLUMN), entity.getBizId());
-            record.set(dslField(NAME_COLUMN), entity.getName());
-            record.set(dslField(PROPERTY_META_ID_COLUMN), entity.getPropertyMetaId());
+            record.set(dslField(BIZ_TYPE_COLUMN.toUpperCase()), entity.getBizType());
+            record.set(dslField(BIZ_ID_COLUMN.toUpperCase()), entity.getBizId());
+            record.set(dslField(NAME_COLUMN.toUpperCase()), entity.getName());
+            record.set(dslField(PROPERTY_META_ID_COLUMN.toUpperCase()), entity.getPropertyMetaId());
             applyValueToFieldColumn(entity, record);
             if (null != entity.getDateValue()) {
-                record.set(dslField(DATE_VALUE_COLUMN), new Timestamp(entity.getDateValue().getTime()));
+                record.set(dslField(DATE_VALUE_COLUMN.toUpperCase()), new Timestamp(entity.getDateValue().getTime()));
             }
             recordsToSave.add(record);
         });
@@ -88,11 +88,12 @@ public interface AbstractPropertyValueRepository<E extends AbstractPropertyValue
 
 
     default void applyValueToFieldColumn(E entity, R record) {
-        record.set(dslField(BOOL_VALUE_COLUMN), entity.getBooleanValue());
-        record.set(dslField(DECIMAL_VALUE_COLUMN), entity.getDecimalValue());
-        record.set(dslField(INT_VALUE_COLUMN), entity.getIntValue());
-        record.set(dslField(LONG_VALUE_COLUMN), entity.getLongValue());
-        record.set(dslField(TEXT_VALUE_COLUMN), entity.getTextValue());
+        record.set(dslField(BOOL_VALUE_COLUMN.toUpperCase()), entity.getBooleanValue());
+        record.set(dslField(DECIMAL_VALUE_COLUMN.toUpperCase()), entity.getDecimalValue());
+        record.set(dslField(INT_VALUE_COLUMN.toUpperCase()), entity.getIntValue());
+        record.set(dslField(LONG_VALUE_COLUMN.toUpperCase()), entity.getLongValue());
+        record.set(dslField(TEXT_VALUE_COLUMN.toUpperCase()), entity.getTextValue());
+        record.set(dslField(NULL_VALUE_COLUMN.toUpperCase()),entity.getNullValue());
     }
 
     /**

@@ -17,21 +17,29 @@ package io.scleropages.sentarum.item;
 
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.category.model.Category;
+import io.scleropages.sentarum.item.category.model.CategoryProperty;
+import io.scleropages.sentarum.item.category.model.impl.CategoryPropertyModel;
 import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
 import io.scleropages.sentarum.item.mgmt.CategoryManager;
 import io.scleropages.sentarum.item.mgmt.PropertyManager;
 import io.scleropages.sentarum.item.mgmt.PropertyValueManager;
 import io.scleropages.sentarum.item.mgmt.SpuManager;
+import io.scleropages.sentarum.item.model.Spu;
+import io.scleropages.sentarum.item.model.impl.SpuModel;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
+import io.scleropages.sentarum.item.property.model.constraint.Max;
+import io.scleropages.sentarum.item.property.model.constraint.Min;
 import io.scleropages.sentarum.item.property.model.impl.GroupedPropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
+import io.scleropages.sentarum.item.property.model.input.InputText;
 import io.scleropages.sentarum.item.property.model.input.SingleCheck;
 import io.scleropages.sentarum.item.property.model.vs.NativeValuesSource;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.scleropages.crud.dao.orm.SearchFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +48,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.KEY_PROPERTY;
+import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.SPU_PROPERTY;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 public class SpuManagerTestcase {
 
     @Autowired
@@ -60,11 +74,61 @@ public class SpuManagerTestcase {
     protected CategoryManager categoryManager;
     @Autowired
     protected SpuManager spuManager;
+    @Autowired
+    protected EntityManager entityManager;
+
+
+    @Test
+    public void createIphoneX() {
+        Map<String, Object> categorySearch = Maps.newHashMap();
+        categorySearch.put("name", "digital_phone");
+
+        StandardCategoryModel shuma = (StandardCategoryModel) categoryManager.findStandardCategoryPage(SearchFilter.SearchFilterBuilder.build(categorySearch), Pageable.unpaged()).iterator().next();
+
+
+        SpuModel iPhoneX = new SpuModel();
+        iPhoneX.setName("iphoneX");
+        iPhoneX.setTag("苹果 iPhone X 智能手机");
+        iPhoneX.setMarketPrice(BigDecimal.valueOf(8888L));
+        iPhoneX.setMarketTime(new Date());
+        iPhoneX.setStatus(Spu.Status.VALID);
+
+
+        Map<Long, Object> variables = Maps.newHashMap();
+
+        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(shuma.id(), KEY_PROPERTY, SPU_PROPERTY);
+        categoryProperties.forEach(cp -> {
+            SourceValueModel valueSearch = new SourceValueModel();
+            if (cp.propertyMetadata().name().equals("brand")) {
+                valueSearch.setValuesSourceId(propertyManager.getValuesSourceByName("brand.values").id());
+                valueSearch.setValueTag("Apple");
+                variables.put(cp.propertyMetadata().id(), propertyManager.findSourceValuePage(valueSearch, Pageable.unpaged()).iterator().next().value());
+            } else if (cp.propertyMetadata().name().equals("series")) {
+                valueSearch.setValuesSourceId(propertyManager.getValuesSourceByName("series.values").id());
+                valueSearch.setValueTag("iPhone");
+                variables.put(cp.propertyMetadata().id(), propertyManager.findSourceValuePage(valueSearch, Pageable.unpaged()).iterator().next().value());
+            } else if (cp.propertyMetadata().name().equals("model")) {
+                valueSearch.setValuesSourceId(propertyManager.getValuesSourceByName("model.values").id());
+                valueSearch.setValueTag("iPhoneX");
+                variables.put(cp.propertyMetadata().id(), propertyManager.findSourceValuePage(valueSearch, Pageable.unpaged()).iterator().next().value());
+            } else if (cp.propertyMetadata().name().equals("weight")) {
+                variables.put(cp.propertyMetadata().id(), "194");
+            } else if (cp.propertyMetadata().name().equals("width")) {
+                variables.put(cp.propertyMetadata().id(), "75.7");
+            } else if (cp.propertyMetadata().name().equals("height")) {
+                variables.put(cp.propertyMetadata().id(), "8.3");
+            } else if (cp.propertyMetadata().name().equals("length")) {
+                variables.put(cp.propertyMetadata().id(), "150.9");
+            }
+        });
+        spuManager.createSpu(iPhoneX, shuma.id(), variables);
+    }
 
 
     @Before
     public void categorySetup() {
         setupBSM();
+        setupBasic();
 
         StandardCategoryModel shuma = new StandardCategoryModel();
         shuma.setStatus(Category.Status.VALID);
@@ -75,13 +139,150 @@ public class SpuManagerTestcase {
         categoryManager.createStandardCategory(shuma, null);
 
 
+        Map<String, Object> categorySearch = Maps.newHashMap();
+        categorySearch.put("name", "digital_products");
+
+        shuma = (StandardCategoryModel) categoryManager.findStandardCategoryPage(SearchFilter.SearchFilterBuilder.build(categorySearch), Pageable.unpaged()).iterator().next();
+
+        Map<String, Object> bsmSearch = Maps.newHashMap();
+        bsmSearch.put("name", "brand_series_model");
+
+        List<? extends PropertyMetadata> bsm = propertyManager.findAllPropertyMetadataInGroup(propertyManager.findGroupedPropertyMetadataPage(SearchFilter.SearchFilterBuilder.build(bsmSearch), Pageable.unpaged()).iterator().next().id());
+
+
+        for (int i = 0; i < bsm.size(); i++) {
+            PropertyMetadata pm = bsm.get(i);
+            CategoryPropertyModel cp = new CategoryPropertyModel();
+            cp.setRequired(true);
+            cp.setVisible(true);
+            cp.setOrder(Float.valueOf(i + ""));
+            cp.setReadOnly(false);
+            cp.setCategoryPropertyBizType(KEY_PROPERTY);
+            categoryManager.createCategoryProperty(cp, shuma.id(), pm.id());
+        }
+
+        flush();
+
+
+        StandardCategoryModel phone = new StandardCategoryModel();
+        phone.setStatus(Category.Status.VALID);
+        phone.setName("digital_phone");
+        phone.setTag("手机");
+        phone.setDescription("手机，智能机，手提电话");
+
+        categoryManager.createStandardCategory(phone, shuma.id());
+
+        categorySearch.put("name", "digital_phone");
+
+        phone = (StandardCategoryModel) categoryManager.findStandardCategoryPage(SearchFilter.SearchFilterBuilder.build(categorySearch), Pageable.unpaged()).iterator().next();
+
+
+        Map<String, Object> basicSearch = Maps.newHashMap();
+        basicSearch.put("IN_name", "weight,width,height,length");
+
+        List<PropertyMetadata> basic = propertyManager.findPropertyMetadataPage(
+                SearchFilter.SearchFilterBuilder.build(basicSearch), Pageable.unpaged()).getContent();
+        for (int i = 0; i < basic.size(); i++) {
+            PropertyMetadata pm = basic.get(i);
+            CategoryPropertyModel cp = new CategoryPropertyModel();
+            cp.setRequired(false);
+            cp.setVisible(true);
+            cp.setOrder(Float.valueOf(i + ""));
+            cp.setReadOnly(false);
+            cp.setCategoryPropertyBizType(SPU_PROPERTY);
+            categoryManager.createCategoryProperty(cp, phone.id(), pm.id());
+//            entityManager.flush();//flush changes
+//            entityManager.clear();//clear persistence context
+//            categoryManager.createCategoryProperty(cp, phone.id(), pm.id());
+
+        }
+
+        for (int i = 0; i < bsm.size(); i++) {
+            PropertyMetadata pm = bsm.get(i);
+            CategoryPropertyModel cp = new CategoryPropertyModel();
+            cp.setRequired(true);
+            cp.setVisible(true);
+            cp.setOrder(Float.valueOf(i + ""));
+            cp.setReadOnly(false);
+            cp.setCategoryPropertyBizType(KEY_PROPERTY);
+//            try {
+//                categoryManager.createCategoryProperty(cp, phone.id(), pm.id());
+//            }catch (Exception e){
+//                System.err.println(e.getMessage());
+//            }
+        }
+
+
+        flush();
+    }
+
+
+    private void setupBasic() {
+        PropertyMetadataModel weight = new PropertyMetadataModel();
+        weight.setKeyed(false);
+        weight.setBizType(1);
+        weight.setName("weight");
+        weight.setTag("重量(g)");
+        weight.setDescription("重量属性，单位为克");
+        weight.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
+        weight.setValueType(PropertyValueType.DECIMAL);
+        weight.setInput(new InputText());
+        propertyManager.createPropertyMetadata(weight);
+
+        PropertyMetadataModel width = new PropertyMetadataModel();
+        width.setKeyed(false);
+        width.setBizType(1);
+        width.setName("width");
+        width.setTag("宽度(mm)");
+        width.setDescription("宽度属性，单位为毫米");
+        width.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
+        width.setValueType(PropertyValueType.DECIMAL);
+        width.setInput(new InputText());
+        propertyManager.createPropertyMetadata(width);
+
+
+        PropertyMetadataModel height = new PropertyMetadataModel();
+        height.setKeyed(false);
+        height.setBizType(1);
+        height.setName("height");
+        height.setTag("高度(mm)");
+        height.setDescription("高度属性，单位为毫米");
+        height.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
+        height.setValueType(PropertyValueType.DECIMAL);
+        height.setInput(new InputText());
+        propertyManager.createPropertyMetadata(height);
+
+        PropertyMetadataModel length = new PropertyMetadataModel();
+        length.setKeyed(false);
+        length.setBizType(1);
+        length.setName("length");
+        length.setTag("长度(mm)");
+        length.setDescription("长度属性，单位为毫米");
+        length.setStructureType(PropertyMetadata.PropertyStructureType.FLAT_PROPERTY);
+        length.setValueType(PropertyValueType.DECIMAL);
+        length.setInput(new InputText());
+        propertyManager.createPropertyMetadata(length);
+
+        Map<String, Object> propertySearch = Maps.newHashMap();
+        propertySearch.put("IN_name", "weight,width,height,length");
+
+
+        Min min = new Min(0L);
+        Max max = new Max(99999L);
+        propertyManager.findPropertyMetadataPage(
+                SearchFilter.SearchFilterBuilder.build(propertySearch), Pageable.unpaged()).getContent()
+                .forEach(propertyMetadata -> {
+                    propertyManager.createConstraint(propertyMetadata.id(), min);
+                    propertyManager.createConstraint(propertyMetadata.id(), max);
+                });
+        flush();
     }
 
 
     /**
      * 创建品牌，系列，型号属性组
      */
-    protected void setupBSM() {
+    private void setupBSM() {
         PropertyMetadataModel brand = new PropertyMetadataModel();
         brand.setKeyed(false);
         brand.setBizType(1);
@@ -212,6 +413,13 @@ public class SpuManagerTestcase {
         propertyManager.addPropertyMetadataToGroup(groupedPropertyMetadata.id(), brandPropertyMeta.id(), 0.1f);
         propertyManager.addPropertyMetadataToGroup(groupedPropertyMetadata.id(), modelPropertyMeta.id(), 0.3f);
         propertyManager.addPropertyMetadataToGroup(groupedPropertyMetadata.id(), seriesPropertyMeta.id(), 0.2f);
+
+        flush();
     }
 
+
+    private void flush() {
+//        entityManager.flush();
+//        entityManager.clear();
+    }
 }

@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item.category.repo;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.jooq.tables.ClStdCategory;
 import io.scleropages.sentarum.jooq.tables.records.ClStdCategoryLinkRecord;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -30,7 +31,6 @@ import java.util.Optional;
  */
 public interface StandardCategoryRepository extends AbstractCategoryRepository<StandardCategoryEntity, ClStdCategory, ClStdCategoryLinkRecord> {
 
-
     /**
      * get by id with category properties.
      *
@@ -40,32 +40,38 @@ public interface StandardCategoryRepository extends AbstractCategoryRepository<S
      */
     default Optional<StandardCategoryEntity> getByIdWithCategoryProperties(Long id, Integer... categoryPropertyBizType) {
         Specification specification = (Specification) (root, query, builder) -> {
-            root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata");
+            root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata", JoinType.LEFT);
             Predicate and = builder.equal(root.get("id"), id);
-            if (null != categoryPropertyBizType) {
-                return builder.and(and, root.get("categoryProperties").get("categoryPropertyBizType").in(categoryPropertyBizType));
+            if (ArrayUtils.isNotEmpty(categoryPropertyBizType)) {
+                and = builder.and(and, root.join("categoryProperties", JoinType.LEFT).get("categoryPropertyBizType").in(categoryPropertyBizType));
             }
-            return and;
+            query.distinct(true);
+            query.where(and);
+            return query.getRestriction();
         };
         return get(specification);
     }
 
 
     /**
-     * get by id and parent entity is not null with category properties.
+     * get by id with parent entity and category properties.
      *
      * @param id
      * @param categoryPropertyBizType fetch by given bizType or null return all.
      * @return
      */
-    default Optional<StandardCategoryEntity> getByIdAndParentIsNotNullWithCategoryProperties(Long id, Integer... categoryPropertyBizType) {
+    default Optional<StandardCategoryEntity> getByIdWithParentAndCategoryProperties(Long id, Integer... categoryPropertyBizType) {
         Specification specification = (Specification) (root, query, builder) -> {
-            root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata");
-            Predicate and = builder.and(builder.equal(root.get("id"), id), builder.isNotNull(root.get("parent")));
+            root.fetch("categoryProperties", JoinType.LEFT).fetch("propertyMetadata", JoinType.LEFT);
+            root.fetch("parent", JoinType.LEFT);
+            Predicate and = builder.and(builder.equal(root.get("id"), id));
             if (null != categoryPropertyBizType) {
-                return builder.and(and, root.get("categoryProperties").get("categoryPropertyBizType").in(categoryPropertyBizType));
+                and = builder.and(and, root.join("categoryProperties", JoinType.LEFT).get("categoryPropertyBizType").in(categoryPropertyBizType));
             }
-            return and;
+            query.distinct(true);
+
+            query.where(and);
+            return query.getRestriction();
         };
         return get(specification);
     }

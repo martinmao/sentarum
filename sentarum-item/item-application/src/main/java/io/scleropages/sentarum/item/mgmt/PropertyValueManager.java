@@ -147,6 +147,10 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
                 propertyValueEntities.add((PropertyValueEntity) propertyValueEntity);
         });
         assertValidates(validates);
+
+        keyPropertyValueEntities.forEach(AbstractPropertyValueEntity::applyValue);
+        propertyValueEntities.forEach(AbstractPropertyValueEntity::applyValue);
+
         keyPropertyValueRepository.batchSave(keyPropertyValueEntities);
         propertyValueRepository.batchSave(propertyValueEntities);
     }
@@ -177,6 +181,11 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
                 propertyValueEntities.add((PropertyValueEntity) propertyValueEntity);
         });
         assertValidates(validates);
+
+        keyPropertyValueEntities.forEach(AbstractPropertyValueEntity::applyValue);
+        propertyValueEntities.forEach(AbstractPropertyValueEntity::applyValue);
+
+
         keyPropertyValueRepository.batchUpdate(keyPropertyValueEntities);
         propertyValueRepository.batchUpdate(propertyValueEntities);
     }
@@ -211,7 +220,7 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
     }
 
     protected void applyEntityBeforeSave(AbstractPropertyValueEntity entity, PropertyValueModel model, PropertyMetadata metaDetail) {
-        entity.setValue(model.value(), metaDetail);
+        entity.prepareValue(model.value(), metaDetail);
         entity.setName(metaDetail.name());
         entity.setPropertyMetaId(metaDetail.id());
     }

@@ -201,6 +201,20 @@ public class AbstractPropertyValueEntity extends IdEntity {
         this.nullValue = nullValue;
     }
 
+
+    private Object preparedValue;
+    private PropertyMetadata preparedMetadata;
+
+    public void prepareValue(Object value, PropertyMetadata metadata) {
+        this.preparedValue = value;
+        this.preparedMetadata = metadata;
+    }
+
+    public void applyValue() {
+        setValue(preparedValue, preparedMetadata);
+    }
+
+
     /**
      * This method used for convert value object and mapped to specify value column by metadata.
      *

@@ -62,7 +62,7 @@ public class SpuModel implements Spu {
         return tag;
     }
 
-    @NotEmpty(groups = Create.class)
+    @NotNull(groups = Create.class)
     public Status getStatus() {
         return status;
     }

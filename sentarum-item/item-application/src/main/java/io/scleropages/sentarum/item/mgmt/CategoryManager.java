@@ -42,6 +42,7 @@ import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import org.apache.commons.collections.CollectionUtils;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.dao.orm.SearchFilter;
 import org.scleropages.crud.dao.orm.jpa.entity.EntityAware;
@@ -60,7 +61,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -152,9 +152,8 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
 
         CategoryPropertyEntity toSave = getModelMapper(CategoryPropertyEntityMapper.class).mapForSave(model);
         propertyManager.awarePropertyMetaEntity(propertyMetaId, toSave);
-        StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.get(stdCategoryId).orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
 
-        assertPropertyMetaUniqueForCategoryHierarchy(standardCategoryEntity.getId(), propertyMetaId);
+        StandardCategoryEntity standardCategoryEntity = assertPropertyMetaUniqueForCategoryHierarchy(stdCategoryId, propertyMetaId);
 
         CategoryProperty.DefaultValues defaultValues = model.getDefaultValues();
         if (null != defaultValues) {
@@ -348,7 +347,13 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     @Transactional(readOnly = true)
     @BizError("62")
     public StandardCategory getStandardCategoryWithProperties(Long id, CategoryProperty.CategoryPropertyBizType... bizType) {
-        return getModelMapper().mapForRead(standardCategoryRepository.getByIdWithCategoryProperties(id, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
+        StandardCategoryEntity entity = standardCategoryRepository.getById(id);
+        Assert.notNull(entity, "no category found: " + id);
+        StandardCategoryModel standardCategoryModel = getModelMapper().mapForRead(entity);
+        List<CategoryProperty> categoryProperties = getModelMapper().categoryPropertyEntityListToCategoryPropertyList(categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(id, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)));
+        standardCategoryModel.setCategoryProperties(categoryProperties);
+        return standardCategoryModel;
+//        return getModelMapper().mapForRead(standardCategoryRepository.getByIdWithCategoryProperties(id, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
     }
 
     /**
@@ -361,12 +366,8 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     @Transactional(readOnly = true)
     @BizError("63")
     public List<CategoryProperty> getAllCategoryProperties(Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
-        StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.getByIdWithCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)).orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
         List<CategoryProperty> properties = Lists.newArrayList();
-        for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
-            properties.add(categoryPropertyModel);
-        }
-        addCategoryPropertyFromParent(properties, standardCategoryEntity.getId(), bizType);
+        addCategoryPropertyFromParent(properties, stdCategoryId, bizType);
         return properties;
     }
 
@@ -425,18 +426,26 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      *
      * @param categoryId
      * @param propertyMetaId
+     * @return categoryId匹配的entity（仅root call 有效）
      */
-    protected void assertPropertyMetaUniqueForCategoryHierarchy(Long categoryId, Long propertyMetaId) {
-        Optional<StandardCategoryEntity> toCheck = standardCategoryRepository.getByIdAndParentIsNotNullWithCategoryProperties(categoryId, null);
-        if (toCheck.isPresent()) {
-            StandardCategoryEntity standardCategoryEntity = toCheck.get();
-            for (CategoryPropertyEntity categoryProperty : standardCategoryEntity.getCategoryProperties()) {
+    protected StandardCategoryEntity assertPropertyMetaUniqueForCategoryHierarchy(Long categoryId, Long propertyMetaId) {
+        StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.getById(categoryId);
+        Assert.notNull(standardCategoryEntity,"no category found: "+categoryId);
+//                .getByIdWithParentAndCategoryProperties(categoryId, null)
+//                .orElseThrow(() -> new IllegalArgumentException("no category found: " + categoryId));
+
+//        List<CategoryPropertyEntity> categoryProperties = standardCategoryEntity.getCategoryProperties();
+        List<CategoryPropertyEntity> categoryProperties = categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(categoryId, null);
+        if (CollectionUtils.isNotEmpty(categoryProperties))
+            for (CategoryPropertyEntity categoryProperty : categoryProperties) {
                 PropertyMetaEntity propertyMetadata = categoryProperty.getPropertyMetadata();
                 if (Objects.equals(propertyMetadata.getId(), propertyMetaId))
-                    throw new IllegalArgumentException("parent category [" + standardCategoryEntity.getName() + "] already bind given property meta: " + propertyMetadata.getName());
+                    throw new IllegalStateException("category [" + standardCategoryEntity.getName() + "(" + standardCategoryEntity.getTag() + ")] already bind given property meta: " + propertyMetadata.getName() + "(" + propertyMetadata.getTag() + ")");
             }
-            assertPropertyMetaUniqueForCategoryHierarchy(standardCategoryEntity.getId(), propertyMetaId);
-        }
+        if (null != standardCategoryEntity.getParent())
+            assertPropertyMetaUniqueForCategoryHierarchy(standardCategoryEntity.getParent().getId(), propertyMetaId);
+        return standardCategoryEntity;
+
     }
 
     /**
@@ -447,14 +456,18 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      * @param bizType       属性业务标识
      */
     protected void addCategoryPropertyFromParent(List<CategoryProperty> properties, Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
-        Optional<StandardCategoryEntity> optional = standardCategoryRepository.getByIdAndParentIsNotNullWithCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType));
-        if (optional.isPresent()) {
-            StandardCategoryEntity standardCategoryEntity = optional.get();
-            for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
-                properties.add(categoryPropertyModel);
-            }
-            addCategoryPropertyFromParent(properties, stdCategoryId, bizType);
-        }
+        StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.getById(stdCategoryId);
+        Assert.notNull(standardCategoryEntity,"no category found: "+stdCategoryId);
+//                .getByIdWithParentAndCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType))
+//                .orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
+
+        List<CategoryProperty> categoryProperties = getModelMapper().categoryPropertyEntityListToCategoryPropertyList(categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType) ));
+        properties.addAll(categoryProperties);
+//        for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
+//            properties.add(categoryPropertyModel);
+//        }
+        if (null != standardCategoryEntity.getParent())
+            addCategoryPropertyFromParent(properties, standardCategoryEntity.getParent().getId(), bizType);
     }
 
 

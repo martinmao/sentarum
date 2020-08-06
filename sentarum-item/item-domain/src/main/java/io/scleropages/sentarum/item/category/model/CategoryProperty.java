@@ -116,7 +116,7 @@ public interface CategoryProperty {
      */
     default void assertsValueRule(Object value) {
         if (required()) {
-            Assert.notNull(value, () -> "value is required for category property: " + id());
+            Assert.notNull(value, () -> "value is required for category property: " + (null != propertyMetadata() ? propertyMetadata().name() + "(" + propertyMetadata().tag() + ")" : id()));
         }
         if (null != value && (readOnly() || invisible()))
             throw new IllegalArgumentException("value must be null when category property is read only or invisible: " + id());

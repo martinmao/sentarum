@@ -44,6 +44,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.scleropages.sentarum</groupId>
             <artifactId>item-domain</artifactId>
             <version>${project.version}</version>

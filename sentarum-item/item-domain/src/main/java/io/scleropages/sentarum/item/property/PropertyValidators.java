@@ -114,6 +114,19 @@ public abstract class PropertyValidators {
                             return validate;
                         }
                     }
+                }else{
+                    Constraint validate = validate(property);
+                    if (null != validate) {
+                        setViolatePropertyMetadata(property);
+                        return validate;
+                    }
+                }
+            }
+            if (null != property.valuesSource()) {
+                Constraint validate = validate(property);
+                if (null != validate) {
+                    setViolatePropertyMetadata(property);
+                    return validate;
                 }
             }
         }
@@ -134,9 +147,10 @@ public abstract class PropertyValidators {
 
     /**
      * assert given property metadata(s) is valid
+     *
      * @param propertyMetadata
      */
-    public static void assertInputsValid(PropertyMetadata... propertyMetadata){
+    public static void assertInputsValid(PropertyMetadata... propertyMetadata) {
         Constraint violate = validate(propertyMetadata);
         if (null != violate) {
             PropertyMetadata violateMeta = PropertyValidators.resetAndGetViolatePropertyMetadata();
@@ -148,17 +162,17 @@ public abstract class PropertyValidators {
         Assert.notNull(input, "input must not be null.");
         List<Constraint> constraints = propertyMetadata.constraints();
         ValuesSource valuesSource = propertyMetadata.valuesSource();
+
+        if (null != constraints) {//先检查约束
+            for (Constraint constraint : constraints) {
+                if (!constraint.validate(propertyMetadata, input))
+                    return constraint;
+            }
+        }
         if (null != valuesSource) {//值来源不为空，则从值来源中检查存在
             SourceValueExists sourceValueExists = new SourceValueExists();
             if (!sourceValueExists.validate(propertyMetadata, input))
                 return sourceValueExists;
-        }
-        if (null == constraints || constraints.size() == 0) {
-            return null;
-        }
-        for (Constraint constraint : constraints) {
-            if (!constraint.validate(propertyMetadata, input))
-                return constraint;
         }
         return null;
     }

@@ -43,24 +43,34 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
     }
 
     default PropertyValueType toPropertyValueType(Integer ordinal) {
+        if (null == ordinal)
+            return null;
         return PropertyValueType.getByOrdinal(ordinal);
     }
 
 
     default Integer toOrdinal(PropertyMetadata.PropertyStructureType propertyStructureType) {
+        if (null == propertyStructureType)
+            return null;
         return propertyStructureType.getOrdinal();
     }
 
     default PropertyMetadata.PropertyStructureType toPropertyStructureType(Integer ordinal) {
+        if (null == ordinal)
+            return null;
         return PropertyMetadata.PropertyStructureType.getByOrdinal(ordinal);
     }
 
 
     default Integer toOrdinal(Input input) {
+        if (null == input)
+            return null;
         return input.getType().getOrdinal();
     }
 
     default Input toInput(Integer ordinal) {
+        if (null == ordinal)
+            return null;
         try {
             return (Input) Input.InputType.getByOrdinal(ordinal).getInputClass().newInstance();
         } catch (Exception e) {
@@ -69,6 +79,8 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
     }
 
     default ConstraintEntity toConstraintEntity(Constraint constraint) {
+        if (null == constraint)
+            return null;
         ConstraintEntity constraintEntity = new ConstraintEntity();
         constraintEntity.setName(constraint.getName());
         constraintEntity.setRule(JsonMapper2.toJson(constraint));

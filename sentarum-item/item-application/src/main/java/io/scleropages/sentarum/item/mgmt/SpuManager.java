@@ -79,8 +79,9 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
             Long metaId = categoryProperty.propertyMetadata().id();
             Object value = values.get(metaId);
             categoryProperty.assertsValueRule(value);
-            CategoryPropertyBizType bizType = categoryProperty.categoryPropertyBizType();
-            PropertyValueModel propertyValueModel = createPropertyValueModel(bizType, value);
+            if (null == value)
+                continue;
+            PropertyValueModel propertyValueModel = createPropertyValueModel(categoryProperty.categoryPropertyBizType(), value);
             propertiesValues.put(metaId, propertyValueModel);
         }
 

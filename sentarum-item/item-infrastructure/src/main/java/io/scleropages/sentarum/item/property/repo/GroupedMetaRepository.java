@@ -37,7 +37,7 @@ public interface GroupedMetaRepository extends GenericRepository<GroupedMetaEnti
 
     default List<GroupedMetaEntryEntity> findAllEntriesById(Long id) {
         Specification spec = (Specification) (root, query, builder) -> {
-            root.fetch("entries", JoinType.LEFT).fetch("propertyMetadata");
+            root.fetch("entries", JoinType.LEFT).fetch("propertyMetadata",JoinType.LEFT);
             return builder.equal(root.get("id"), id);
         };
         Optional<GroupedMetaEntity> optional = get(spec);

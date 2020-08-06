@@ -22,6 +22,11 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.scleropages.sentarum</groupId>
             <artifactId>item-application</artifactId>
             <version>${project.version}</version>
