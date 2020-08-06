@@ -30,7 +30,7 @@ import java.util.Map;
 public class Media {
 
     private Long id;//唯一标识
-    private String outerId;//外部唯一标识,如oss服务文件唯一标识码
+    private String outerId;//外部唯一标识,如对象存储服务唯一标识码
     private ContentType contentType;//内容类型
     private BizType bizType;//业务类型
     private Float order;//顺序

@@ -26,11 +26,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.util.List;
 
 /**
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
@@ -78,7 +78,7 @@ public class AbstractSkuEntity extends IdEntity {
     }
 
     @OneToMany
-    @JoinTable(name = "item_sku_media", joinColumns = {@JoinColumn(name = "sku_id")}, inverseJoinColumns = {@JoinColumn(name = "media_id")})
+    @JoinTable(name = "item_sku_media", uniqueConstraints = @UniqueConstraint(columnNames = {"sku_id", "media_id"}), joinColumns = {@JoinColumn(name = "sku_id")}, inverseJoinColumns = {@JoinColumn(name = "media_id")})
     public List<MediaEntity> getMediaList() {
         return mediaList;
     }

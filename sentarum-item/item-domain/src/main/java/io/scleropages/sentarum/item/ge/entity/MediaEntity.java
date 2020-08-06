@@ -21,6 +21,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * referenced model: {@link io.scleropages.sentarum.item.ge.model.Media}
@@ -28,7 +29,7 @@ import javax.persistence.Table;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "ge_media")
+@Table(name = "ge_media", uniqueConstraints = @UniqueConstraint(columnNames = {"outer_id"}))
 @SequenceGenerator(name = "ge_media_id", sequenceName = "seq_ge_media", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class MediaEntity extends IdEntity {
 

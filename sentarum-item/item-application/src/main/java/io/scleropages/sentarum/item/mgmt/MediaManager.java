@@ -24,6 +24,7 @@ import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -35,7 +36,7 @@ import javax.validation.Valid;
  */
 @Service
 @Validated
-@BizError("40")
+@BizError("99")
 public class MediaManager implements GenericManager<Media, Long, MediaEntityMapper> {
 
     private MediaRepository mediaRepository;
@@ -63,6 +64,16 @@ public class MediaManager implements GenericManager<Media, Long, MediaEntityMapp
     public void saveMedia(@Valid Media media) {
         MediaEntity mediaEntity = mediaRepository.get(media.getId()).orElseThrow(() -> new IllegalArgumentException("no media found: " + media.getId()));
         getModelMapper().mapForUpdate(media, mediaEntity);
+    }
+
+    /**
+     * 删除媒体资源
+     *
+     * @param mediaId
+     */
+    public void deleteMedia(Long mediaId) {
+        Assert.notNull(mediaId, "media id must not be null.");
+        mediaRepository.deleteById(mediaId);
     }
 
     @Autowired

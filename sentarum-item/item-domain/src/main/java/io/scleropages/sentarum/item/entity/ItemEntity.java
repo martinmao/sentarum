@@ -17,17 +17,10 @@ package io.scleropages.sentarum.item.entity;
 
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
 import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
+import org.scleropages.crud.dao.orm.jpa.entity.EntityAware;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -39,7 +32,7 @@ import java.util.List;
 @Entity
 @Table(name = "item")
 @SequenceGenerator(name = "item_id", sequenceName = "seq_item", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class ItemEntity extends IdEntity {
+public class ItemEntity extends IdEntity implements EntityAware<SpuEntity> {
 
     private Integer itemType;
     private Integer sellerType;
@@ -125,7 +118,7 @@ public class ItemEntity extends IdEntity {
     }
 
     @OneToMany
-    @JoinTable(name = "item_media", joinColumns = {@JoinColumn(name = "item_id")}, inverseJoinColumns = {@JoinColumn(name = "media_id")})
+    @JoinTable(name = "item_media", uniqueConstraints = @UniqueConstraint(columnNames = {"item_id", "media_id"}), joinColumns = {@JoinColumn(name = "item_id")}, inverseJoinColumns = {@JoinColumn(name = "media_id")})
     public List<MediaEntity> getMediaList() {
         return mediaList;
     }
@@ -193,5 +186,10 @@ public class ItemEntity extends IdEntity {
 
     public void setAdditionalAttributes(String additionalAttributes) {
         this.additionalAttributes = additionalAttributes;
+    }
+
+    @Override
+    public void setEntity(SpuEntity entity) {
+        setSpu(entity);
     }
 }

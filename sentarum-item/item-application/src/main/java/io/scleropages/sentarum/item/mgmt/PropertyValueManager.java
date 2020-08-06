@@ -157,7 +157,7 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
 
 
     /**
-     * 批量更新保存属性值
+     * 批量更新保存属性值，需要注意的是 models中的元素，必须通过类型具体区分,例如： {@link PropertyValueModel} {@link KeyPropertyValueModel}，不同的模型对应不同的存储表
      *
      * @param models
      */
@@ -184,7 +184,6 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
 
         keyPropertyValueEntities.forEach(AbstractPropertyValueEntity::applyValue);
         propertyValueEntities.forEach(AbstractPropertyValueEntity::applyValue);
-
 
         keyPropertyValueRepository.batchUpdate(keyPropertyValueEntities);
         propertyValueRepository.batchUpdate(propertyValueEntities);

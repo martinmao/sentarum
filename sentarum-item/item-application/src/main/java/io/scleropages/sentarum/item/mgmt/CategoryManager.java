@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.mgmt;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.category.entity.CategoryPropertyEntity;
 import io.scleropages.sentarum.item.category.entity.MarketingCategoryEntity;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
@@ -25,6 +26,7 @@ import io.scleropages.sentarum.item.category.entity.mapper.MarketingCategoryEnti
 import io.scleropages.sentarum.item.category.entity.mapper.StandardCategoryEntityMapper;
 import io.scleropages.sentarum.item.category.entity.mapper.StandardCategoryLinkEntityMapper;
 import io.scleropages.sentarum.item.category.model.CategoryProperty;
+import io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType;
 import io.scleropages.sentarum.item.category.model.MarketingCategory;
 import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.category.model.StandardCategoryLink;
@@ -42,6 +44,8 @@ import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
+import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import org.apache.commons.collections.CollectionUtils;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.dao.orm.SearchFilter;
@@ -346,11 +350,11 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      */
     @Transactional(readOnly = true)
     @BizError("62")
-    public StandardCategory getStandardCategoryWithProperties(Long id, CategoryProperty.CategoryPropertyBizType... bizType) {
+    public StandardCategory getStandardCategoryWithProperties(Long id, CategoryPropertyBizType... bizType) {
         StandardCategoryEntity entity = standardCategoryRepository.getById(id);
         Assert.notNull(entity, "no category found: " + id);
         StandardCategoryModel standardCategoryModel = getModelMapper().mapForRead(entity);
-        List<CategoryProperty> categoryProperties = getModelMapper().categoryPropertyEntityListToCategoryPropertyList(categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(id, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)));
+        List<CategoryProperty> categoryProperties = getModelMapper().categoryPropertyEntityListToCategoryPropertyList(categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(id, CategoryPropertyBizType.toOrdinals(bizType)));
         standardCategoryModel.setCategoryProperties(categoryProperties);
         return standardCategoryModel;
 //        return getModelMapper().mapForRead(standardCategoryRepository.getByIdWithCategoryProperties(id, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)).orElseThrow(() -> new IllegalArgumentException("no category found: " + id)));
@@ -365,7 +369,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      */
     @Transactional(readOnly = true)
     @BizError("63")
-    public List<CategoryProperty> getAllCategoryProperties(Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
+    public List<CategoryProperty> getAllCategoryProperties(Long stdCategoryId, CategoryPropertyBizType... bizType) {
         List<CategoryProperty> properties = Lists.newArrayList();
         addCategoryPropertyFromParent(properties, stdCategoryId, bizType);
         return properties;
@@ -420,6 +424,39 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         return new CategoryNavigatorImpl(graph);
     }
 
+    /**
+     * 根据类目属性定义，设置类目属性值
+     *
+     * @param stdCategoryId 类目id
+     * @param values        属性值集合（key为属性元数据id，value为属性值）
+     * @param bizTypes      类目属性业务类型
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("85")
+    public Map<Long, PropertyValueModel> buildCategoryPropertyValues(Long stdCategoryId, Map<Long, Object> values, CategoryPropertyBizType... bizTypes) {
+        List<CategoryProperty> categoryProperties = getAllCategoryProperties(stdCategoryId, bizTypes);
+
+        Map<Long, PropertyValueModel> propertiesValues = Maps.newHashMap();
+
+        for (CategoryProperty categoryProperty : categoryProperties) {
+            Long metaId = categoryProperty.propertyMetadata().id();
+            Object value = values.get(metaId);
+            categoryProperty.assertsValueRule(value);
+            if (null == value)
+                continue;
+            PropertyValueModel propertyValueModel = createPropertyValueModel(categoryProperty.categoryPropertyBizType(), value);
+            propertiesValues.put(metaId, propertyValueModel);
+        }
+
+        values.keySet().forEach(valueKey -> {
+            if (!propertiesValues.containsKey(valueKey)) {
+                throw new IllegalArgumentException("unknown property metadata id: " + valueKey);
+            }
+        });
+        return propertiesValues;
+    }
+
 
     /**
      * 断言 {@link PropertyMetadata} 在整个 {@link io.scleropages.sentarum.item.category.model.Category} 层次中是唯一的
@@ -455,19 +492,31 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      * @param stdCategoryId 标准类目id
      * @param bizType       属性业务标识
      */
-    protected void addCategoryPropertyFromParent(List<CategoryProperty> properties, Long stdCategoryId, CategoryProperty.CategoryPropertyBizType... bizType) {
+    protected void addCategoryPropertyFromParent(List<CategoryProperty> properties, Long stdCategoryId, CategoryPropertyBizType... bizType) {
         StandardCategoryEntity standardCategoryEntity = standardCategoryRepository.getById(stdCategoryId);
         Assert.notNull(standardCategoryEntity, "no category found: " + stdCategoryId);
 //                .getByIdWithParentAndCategoryProperties(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType))
 //                .orElseThrow(() -> new IllegalArgumentException("no category found: " + stdCategoryId));
 
-        List<CategoryProperty> categoryProperties = getModelMapper().categoryPropertyEntityListToCategoryPropertyList(categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(stdCategoryId, CategoryProperty.CategoryPropertyBizType.toOrdinals(bizType)));
+        List<CategoryProperty> categoryProperties = getModelMapper().categoryPropertyEntityListToCategoryPropertyList(categoryPropertyRepository.findAllByCategory_IdAndCategoryPropertyBizTypeIn(stdCategoryId, CategoryPropertyBizType.toOrdinals(bizType)));
         properties.addAll(categoryProperties);
 //        for (CategoryPropertyModel categoryPropertyModel : getModelMapper(CategoryPropertyEntityMapper.class).mapForReads(standardCategoryEntity.getCategoryProperties())) {
 //            properties.add(categoryPropertyModel);
 //        }
         if (null != standardCategoryEntity.getParent())
             addCategoryPropertyFromParent(properties, standardCategoryEntity.getParent().getId(), bizType);
+    }
+
+
+    protected PropertyValueModel createPropertyValueModel(CategoryPropertyBizType bizType, Object value) {
+        PropertyValueModel valueModel;
+        if (bizType.isKeyProperty())
+            valueModel = new KeyPropertyValueModel();
+        else
+            valueModel = new PropertyValueModel();
+        valueModel.setBizType(bizType.getOrdinal());
+        valueModel.setValue(value);
+        return valueModel;
     }
 
 

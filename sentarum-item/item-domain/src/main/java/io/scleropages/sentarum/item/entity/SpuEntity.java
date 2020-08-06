@@ -21,15 +21,7 @@ import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.EntityAware;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -93,7 +85,7 @@ public class SpuEntity extends IdEntity implements EntityAware<StandardCategoryE
     }
 
     @OneToMany
-    @JoinTable(name = "item_spu_media", joinColumns = {@JoinColumn(name = "spu_id")}, inverseJoinColumns = {@JoinColumn(name = "media_id")})
+    @JoinTable(name = "item_spu_media", uniqueConstraints = @UniqueConstraint(columnNames = {"spu_id", "media_id"}), joinColumns = {@JoinColumn(name = "spu_id")}, inverseJoinColumns = {@JoinColumn(name = "media_id")})
     public List<MediaEntity> getMediaList() {
         return mediaList;
     }
