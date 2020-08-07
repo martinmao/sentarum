@@ -15,9 +15,7 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.SpuEntityMapper;
 import io.scleropages.sentarum.item.model.Spu;
@@ -105,18 +103,14 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
         getModelMapper().mapForUpdate(model, spuEntity);
         spuRepository.save(spuEntity);
 
-        //mapping property meta id to property value.
-        Map<Long, PropertyValueModel> metaIdToPv = categoryManager.applyCategoryPropertyValuesChanges(spuId
+        //apply property changes.
+        List<PropertyValueModel> propertyValueModels = categoryManager.applyCategoryPropertyValuesChanges(spuEntity.getCategory().getId(), spuId
                 , new CategoryManager.PropertyValueChange(KEY_PROPERTY, keyValues, KeyPropertyValueModel.class)
                 , new CategoryManager.PropertyValueChange(SPU_PROPERTY, spuValues, PropertyValueModel.class));
 
-        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(spuEntity.getCategory().getId(), KEY_PROPERTY, SPU_PROPERTY);
-
-        for (CategoryProperty categoryProperty : categoryProperties) {
-            PropertyValue propertyValue = metaIdToPv.get(categoryProperty.propertyMetadata().id());
-            categoryProperty.assertsValueRule(propertyValue.value());
-        }
-        propertyValueManager.savePropertyValues(Lists.newArrayList(metaIdToPv.values()));
+        if (CollectionUtils.isEmpty(propertyValueModels))
+            return;
+        propertyValueManager.savePropertyValues(propertyValueModels);
     }
 
 

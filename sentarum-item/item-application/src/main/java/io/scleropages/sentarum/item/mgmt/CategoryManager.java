@@ -44,6 +44,7 @@ import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import org.apache.commons.collections.CollectionUtils;
@@ -62,10 +63,12 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 类目通用（原子）功能管理器.
@@ -431,7 +434,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
      * @param stdCategoryId 类目id
      * @param values        属性值集合（key为属性元数据id，value为属性值）
      * @param bizTypes      类目属性业务类型进行过滤
-     * @return
+     * @return 属性元数据id->属性值
      */
     @Transactional(readOnly = true)
     @BizError("85")
@@ -458,33 +461,60 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
         return propertiesValues;
     }
 
+
     /**
-     * 根据业务实体id 批量修改其属性值， 修改内容定义在 {@link PropertyValueChange}，其包含三个要素：属性业务类型+要修改的属性值+具体的属性值模型 <br>
+     * 修改属性值，对特定的业务实体批量修改其属性值， 修改内容定义在 {@link PropertyValueChange}，其包含三个要素：属性业务类型+要修改的属性值+具体的属性值模型 <br>
      * 例如要修改某一SPU属性值列表，则需提供spuID,以及一组修改约束：属性业务类型（关键属性/产品属性）,属性值列表（属性值id+值）,目标属性来源（基于不同特性，属性值存储于不同的表）
-     * 注意：该方法仅在内存中进行值的修改，不会进行持久化操作，参考 {@link PropertyValueManager#savePropertyValues(List)}
+     * 注意：该方法仅在内存中进行值的修改，不会进行持久化操作
      *
-     * @param bizId
+     * @param categoryId           业务实体所属类目id
+     * @param bizId                业务实体唯一标识
      * @param propertyValueChanges
-     * @return 属性元数据id+属性值对象
+     * @return
      */
     @Transactional(readOnly = true)
     @BizError("86")
-    public Map<Long, PropertyValueModel> applyCategoryPropertyValuesChanges(Long bizId, PropertyValueChange... propertyValueChanges) {
+    public List<PropertyValueModel> applyCategoryPropertyValuesChanges(Long categoryId, Long bizId, PropertyValueChange... propertyValueChanges) {
+
+        Assert.notNull(categoryId, "categoryId must not be null.");
+        Assert.notNull(bizId, "bizId must not be null.");
+        Assert.notEmpty(propertyValueChanges, "propertyValueChanges must not be empty.");
+
         Map<Long, PropertyValueModel> metaIdToPv = Maps.newHashMap();//mapping property meta id to property value.
 
         for (PropertyValueChange propertyValueChange : propertyValueChanges) {
             Map<Long, Object> values = propertyValueChange.values;
             if (null != values) {
+                //获取业务实体所有属性值，将修改的值应用到 metaIdToPv
                 propertyValueManager.findAllPropertiesValue(propertyValueChange.bizType.getOrdinal(), bizId, propertyValueChange.concreteModelClazz).
                         forEach(o -> {
-                            metaIdToPv.put(o.propertyMetaId(), (PropertyValueModel) o);
-                            if (values.containsKey(o.id())) {
-                                o.changeValue(values.get(o.id()));
+                            CategoryPropertyBizType bizType = CategoryPropertyBizType.getByOrdinal(o.bizType());
+                            PropertyValueModel model = bizType.isKeyProperty() ? new KeyPropertyValueModel() : new PropertyValueModel();
+                            Long valueId = o.id();
+                            model.setId(valueId);
+                            model.setValue(o.value());
+                            metaIdToPv.put(o.propertyMetaId(), model);
+                            Object changeValue = values.get(valueId);
+                            if (null != changeValue) {
+                                model.changeValue(changeValue);
                             }
                         });
             }
         }
-        return metaIdToPv;
+
+        if (metaIdToPv.isEmpty()) {
+            return Collections.emptyList();
+        }
+        //校验 metaIdToPv 中设置的值是否符合类目约束规则
+        List<CategoryProperty> categoryProperties = getAllCategoryProperties(categoryId
+                , Stream.of(propertyValueChanges).map(
+                        propertyValueChange -> propertyValueChange.bizType).toArray(CategoryPropertyBizType[]::new));
+
+        for (CategoryProperty categoryProperty : categoryProperties) {
+            PropertyValue propertyValue = metaIdToPv.get(categoryProperty.propertyMetadata().id());
+            categoryProperty.assertsValueRule(propertyValue.value());
+        }
+        return Lists.newArrayList(metaIdToPv.values());
     }
 
 

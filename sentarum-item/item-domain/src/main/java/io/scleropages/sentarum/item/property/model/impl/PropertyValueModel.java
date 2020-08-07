@@ -62,7 +62,7 @@ public class PropertyValueModel implements PropertyValue {
         return propertyMetaId;
     }
 
-    @NotNull(groups = Create.class)
+    @NotNull(groups = {Create.class, Update.class})
     public Object getValue() {
         return value;
     }

@@ -15,14 +15,11 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
-import com.google.common.collect.Lists;
-import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.entity.ItemEntity;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.ItemEntityMapper;
 import io.scleropages.sentarum.item.model.impl.ItemModel;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
-import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.repo.ItemRepository;
 import io.scleropages.sentarum.item.repo.SpuRepository;
@@ -32,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -63,6 +61,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
         ItemEntity itemEntity = getModelMapper().mapForSave(model);
         SpuEntity spuEntity = spuRepository.getById(spuId).orElseThrow(() -> new IllegalArgumentException("no spu found: " + spuId));
         itemEntity.setSpu(spuEntity);
+        itemEntity.setCategory(spuEntity.getCategory());
         Map<Long, PropertyValueModel> propertiesValues = categoryManager.buildCategoryPropertyValues(spuEntity.getCategory().getId(), values, ITEM_PROPERTY);
         itemRepository.save(itemEntity);
         for (PropertyValueModel value : propertiesValues.values()) {
@@ -87,19 +86,12 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
         getModelMapper().mapForUpdate(model, itemEntity);
         itemRepository.save(itemEntity);
 
-        //mapping property meta id to property value.
-        Map<Long, PropertyValueModel> metaIdToPv = categoryManager.applyCategoryPropertyValuesChanges(itemId
+        List<PropertyValueModel> propertyValueModels = categoryManager.applyCategoryPropertyValuesChanges(itemEntity.getCategory().getId(), itemId
                 , new CategoryManager.PropertyValueChange(ITEM_PROPERTY, itemValues, PropertyValueModel.class));
 
-        SpuEntity spuEntity = spuRepository.getById(itemEntity.getSpu().getId()).get();
-
-        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(spuEntity.getCategory().getId(), ITEM_PROPERTY);
-
-        for (CategoryProperty categoryProperty : categoryProperties) {
-            PropertyValue propertyValue = metaIdToPv.get(categoryProperty.propertyMetadata().id());
-            categoryProperty.assertsValueRule(propertyValue.value());
-        }
-        propertyValueManager.savePropertyValues(Lists.newArrayList(metaIdToPv.values()));
+        if (CollectionUtils.isEmpty(propertyValueModels))
+            return;
+        propertyValueManager.savePropertyValues(propertyValueModels);
     }
 
     @Autowired

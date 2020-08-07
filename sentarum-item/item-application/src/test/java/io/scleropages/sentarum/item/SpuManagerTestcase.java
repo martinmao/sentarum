@@ -28,6 +28,7 @@ import io.scleropages.sentarum.item.model.Spu;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
+import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.constraint.Max;
@@ -66,7 +67,7 @@ import static io.scleropages.sentarum.item.category.model.CategoryProperty.Categ
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 public class SpuManagerTestcase {
 
     @Autowired
@@ -154,6 +155,40 @@ public class SpuManagerTestcase {
             System.out.println(JsonMapper2.toJson(spuManager.findAllKeyPropertyValues(spu.id())));
             System.out.println(JsonMapper2.toJson(spuManager.findAllSpuPropertyValues(spu.id())));
         });
+
+        Spu next = spuPage.iterator().next();
+        SpuModel update = new SpuModel();
+        update.setId(next.id());
+        update.setMarketPrice(new BigDecimal(9999L));
+        Map<Long, Object> keysUpdate = Maps.newHashMap();
+        Map<Long, Object> spuUpdate = Maps.newHashMap();
+
+        List<? extends PropertyValue> allKeyPropertyValues = spuManager.findAllKeyPropertyValues(update.id());
+        List<? extends PropertyValue> allSpuPropertyValues = spuManager.findAllSpuPropertyValues(update.id());
+
+        allKeyPropertyValues.forEach(o -> {
+            if(o.name().equals("model")){
+                keysUpdate.put(o.id(),3L);
+            }
+        });
+        allSpuPropertyValues.forEach(o -> {
+            spuUpdate.put(o.id(),99.9);
+        });
+
+        spuManager.saveSpu(update, keysUpdate, spuUpdate);
+
+
+        flush();
+
+        spuPage = spuManager.findSpuPage(SearchFilter.SearchFilterBuilder.build(spuSearch), SearchFilter.SearchFilterBuilder.build(propertySearch), Pageable.unpaged(), Sort.unsorted());
+        System.out.println(JsonMapper2.toJson(spuPage));
+
+        spuPage.forEach(spu -> {
+            System.out.println(JsonMapper2.toJson(spuManager.getSpu(spu.id())));
+            System.out.println(JsonMapper2.toJson(spuManager.findAllKeyPropertyValues(spu.id())));
+            System.out.println(JsonMapper2.toJson(spuManager.findAllSpuPropertyValues(spu.id())));
+        });
+
     }
 
 
@@ -424,9 +459,11 @@ public class SpuManagerTestcase {
             }
             if (Objects.equals(seriesValue.value(), 2L)) {//iPhone
                 propertyManager.createSourceValue(new SourceValueModel(2L, "iPhoneX", modelPropertyMeta.valuesSource().id(), seriesValue.id()));
+                propertyManager.createSourceValue(new SourceValueModel(3L, "iPhone11", modelPropertyMeta.valuesSource().id(), seriesValue.id()));
+
             }
             if (Objects.equals(seriesValue.value(), 3L)) {//InfoSphere
-                propertyManager.createSourceValue(new SourceValueModel(3L, "InfoSphere Application Server", modelPropertyMeta.valuesSource().id(), seriesValue.id()));
+                propertyManager.createSourceValue(new SourceValueModel(4L, "InfoSphere Application Server", modelPropertyMeta.valuesSource().id(), seriesValue.id()));
             }
         }
 
@@ -451,7 +488,7 @@ public class SpuManagerTestcase {
 
 
     private void flush() {
-        entityManager.flush();
-        entityManager.clear();
+//        entityManager.flush();
+//        entityManager.clear();
     }
 }

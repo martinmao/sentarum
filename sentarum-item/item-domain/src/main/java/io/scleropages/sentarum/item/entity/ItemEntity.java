@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.entity;
 
+import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
 import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.EntityAware;
@@ -32,7 +33,7 @@ import java.util.List;
 @Entity
 @Table(name = "item")
 @SequenceGenerator(name = "item_id", sequenceName = "seq_item", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class ItemEntity extends IdEntity implements EntityAware<SpuEntity> {
+public class ItemEntity extends IdEntity implements EntityAware<Object> {
 
     private Integer itemType;
     private Integer sellerType;
@@ -44,6 +45,7 @@ public class ItemEntity extends IdEntity implements EntityAware<SpuEntity> {
     private String description;
     private Integer status;
     private SpuEntity spu;
+    private StandardCategoryEntity category;
     private BigDecimal salesPrice;
     private Integer num;
     private StructureTextEntity properties;
@@ -99,6 +101,12 @@ public class ItemEntity extends IdEntity implements EntityAware<SpuEntity> {
     @JoinColumn(name = "spu_id")
     public SpuEntity getSpu() {
         return spu;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "std_category_id")
+    public StandardCategoryEntity getCategory() {
+        return category;
     }
 
     @Column(name = "sales_price", nullable = false)
@@ -168,6 +176,10 @@ public class ItemEntity extends IdEntity implements EntityAware<SpuEntity> {
         this.spu = spu;
     }
 
+    public void setCategory(StandardCategoryEntity category) {
+        this.category = category;
+    }
+
     public void setSalesPrice(BigDecimal salesPrice) {
         this.salesPrice = salesPrice;
     }
@@ -189,7 +201,10 @@ public class ItemEntity extends IdEntity implements EntityAware<SpuEntity> {
     }
 
     @Override
-    public void setEntity(SpuEntity entity) {
-        setSpu(entity);
+    public void setEntity(Object entity) {
+        if (entity instanceof SpuEntity)
+            setSpu((SpuEntity) entity);
+        else if (entity instanceof StandardCategoryEntity)
+            setCategory((StandardCategoryEntity) entity);
     }
 }

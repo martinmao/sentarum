@@ -124,9 +124,9 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
     }
 
     /**
-     * 批量新增属性值，其中key为元数据，value为属性模型
+     * 批量新增属性值，其中key为属性元数据id，value为属性模型
      *
-     * @param models
+     * @param models key为属性元数据id，value为属性模型
      */
     @Transactional
     @BizError("13")
@@ -171,10 +171,13 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
         List<PropertyValueEntity> propertyValueEntities = Lists.newArrayList();//普通属性预存列表
         List<PropertyMetadata> validates = Lists.newArrayList();
         models.forEach((model) -> {
-            AbstractPropertyValueEntity propertyValueEntity = (AbstractPropertyValueEntity) getMapper(model).mapForSave(model);
-            PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(model.getPropertyMetaId());
+            Optional<AbstractPropertyValueEntity> optional = getRepository(model).get(model.id());
+            Assert.isTrue(optional.isPresent(), "no property value found: " + model.id());
+            AbstractPropertyValueEntity propertyValueEntity = optional.get();
+
+            PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(propertyValueEntity.getPropertyMetaId());
             buildValidates(validates, propertyMetadata, model);
-            propertyValueEntity.setValue(model.value(), propertyMetadata);
+            propertyValueEntity.prepareValue(model.value(), propertyMetadata);
             if (model instanceof KeyPropertyValueModel)
                 keyPropertyValueEntities.add((KeyPropertyValueEntity) propertyValueEntity);
             else

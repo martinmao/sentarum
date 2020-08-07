@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.model;
 
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.ge.model.Media;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
@@ -110,6 +111,13 @@ public interface Item {
      * @return
      */
     Spu spu();
+
+    /**
+     * 挂靠的标准类目
+     *
+     * @return
+     */
+    StandardCategory category();
 
 
     /**

@@ -15,6 +15,9 @@
  */
 package io.scleropages.sentarum.item.entity.mapper;
 
+import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
+import io.scleropages.sentarum.item.category.entity.mapper.StandardCategoryEntityMapper;
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.entity.ItemEntity;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
@@ -72,6 +75,16 @@ public interface ItemEntityMapper extends ModelMapper<ItemEntity, ItemModel> {
     default SpuEntity toSpuEntity(Spu spu) {
         return null;
     }
+
+
+    default StandardCategory toCategory(StandardCategoryEntity entity){
+        if (!isEntityInitialized(entity)) {
+            return null;
+        }
+        return (StandardCategory) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class).mapForRead(entity);
+    }
+
+    default StandardCategoryEntity toStandardCategoryEntity(StandardCategory standardCategory){return null;}
 
     default List<PropertyValue> toProperties(StructureTextEntity entity) {
         SpuEntityMapper mapper = (SpuEntityMapper) ModelMapperRepository.getRequiredModelMapper(SpuEntityMapper.class);

@@ -53,7 +53,6 @@ import static org.jooq.impl.DSL.*;
 @NoRepositoryBean
 public interface AbstractPropertyValueRepository<E extends AbstractPropertyValueEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
 
-
     default void batchSave(Iterable<E> entities) {
         List<R> recordsToSave = Lists.newArrayList();
         entities.forEach(entity -> {
@@ -159,7 +158,7 @@ public interface AbstractPropertyValueRepository<E extends AbstractPropertyValue
 
             baseQuery.addConditions(propertyConditions);
 
-            if (null != propertySort || propertySort.isSorted())
+            if (null != propertySort && propertySort.isSorted())
                 propertySort.forEach(order -> {// check sort variable must containing in variable condition.
                     String property = order.getProperty();
                     Field field = sortFields.get(property);

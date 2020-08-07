@@ -31,7 +31,7 @@ import java.util.Optional;
 public interface ItemRepository extends GenericRepository<ItemEntity, Long>, JooqRepository<Item, ItemRecord, ItemEntity> {
 
 
-    @EntityGraph(attributePaths = "spu")
+    @EntityGraph(attributePaths = {"spu", "category"})
     @Cacheable
     Optional<ItemEntity> getById(Long aLong);
 }

@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.model.impl;
 
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.ge.model.Media;
 import io.scleropages.sentarum.item.model.Item;
 import io.scleropages.sentarum.item.model.Spu;
@@ -43,6 +44,7 @@ public class ItemModel implements Item {
     private String description;
     private Status status;
     private Spu spu;
+    private StandardCategory category;
     private BigDecimal salesPrice;
     private Integer num;
     private List<PropertyValue> properties;
@@ -85,26 +87,37 @@ public class ItemModel implements Item {
         return outerId;
     }
 
+    @NotNull(groups = Create.class)
     public String getTag() {
         return tag;
     }
 
+    @NotNull(groups = Create.class)
     public String getDescription() {
         return description;
     }
 
+    @NotNull(groups = Create.class)
     public Status getStatus() {
         return status;
     }
 
+    @Null(groups = {Create.class, Update.class})
     public Spu getSpu() {
         return spu;
     }
 
+    @Null(groups = {Create.class, Update.class})
+    public StandardCategory getCategory() {
+        return category;
+    }
+
+    @NotNull(groups = Create.class)
     public BigDecimal getSalesPrice() {
         return salesPrice;
     }
 
+    @NotNull(groups = Create.class)
     public Integer getNum() {
         return num;
     }
@@ -163,6 +176,10 @@ public class ItemModel implements Item {
 
     public void setSpu(Spu spu) {
         this.spu = spu;
+    }
+
+    public void setCategory(StandardCategory category) {
+        this.category = category;
     }
 
     public void setSalesPrice(BigDecimal salesPrice) {
@@ -238,6 +255,11 @@ public class ItemModel implements Item {
     @Override
     public Spu spu() {
         return getSpu();
+    }
+
+    @Override
+    public StandardCategory category() {
+        return getCategory();
     }
 
     @Override
