@@ -95,7 +95,7 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
         getMapper(model).mapForUpdate(model, entity);
         PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(entity.getPropertyMetaId());
         validate(model, propertyMetadata);
-        applyEntityBeforeSave(entity, model, propertyMetadata);
+        entity.prepareValue(model.value(), propertyMetadata);
         getRepository(model).save(entity);
     }
 
@@ -157,31 +157,31 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
 
 
     /**
-     * 批量更新保存属性值，需要注意的是 models中的元素，必须通过类型具体区分,例如： {@link PropertyValueModel} {@link KeyPropertyValueModel}，不同的模型对应不同的存储表
+     * 批量更新保存属性值，需要注意的是 models中的元素，必须通过类型具体区分,例如： {@link PropertyValueModel} {@link KeyPropertyValueModel}，不同的模型对应不同的存储库
      *
      * @param models
      */
     @Transactional
     @BizError("14")
-    @Validated({PropertyValueModel.Update.class})
+    @Validated({PropertyValueModel.BatchUpdate.class})
     public void savePropertyValues(@Valid List<PropertyValueModel> models) {
         Assert.notEmpty(models, "property values must not be empty.");
-
         List<KeyPropertyValueEntity> keyPropertyValueEntities = Lists.newArrayList();//key属性预存列表
         List<PropertyValueEntity> propertyValueEntities = Lists.newArrayList();//普通属性预存列表
         List<PropertyMetadata> validates = Lists.newArrayList();
         models.forEach((model) -> {
-            Optional<AbstractPropertyValueEntity> optional = getRepository(model).get(model.id());
-            Assert.isTrue(optional.isPresent(), "no property value found: " + model.id());
-            AbstractPropertyValueEntity propertyValueEntity = optional.get();
-
-            PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(propertyValueEntity.getPropertyMetaId());
+            PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataDetail(model.getPropertyMetaId());
+            AbstractPropertyValueEntity valueEntity;
+            if (model instanceof KeyPropertyValueModel) {
+                valueEntity = new KeyPropertyValueEntity();
+                keyPropertyValueEntities.add((KeyPropertyValueEntity) valueEntity);
+            } else {
+                valueEntity = new PropertyValueEntity();
+                propertyValueEntities.add((PropertyValueEntity) valueEntity);
+            }
+            valueEntity.setId(model.id());
+            valueEntity.prepareValue(model.value(), propertyMetadata);
             buildValidates(validates, propertyMetadata, model);
-            propertyValueEntity.prepareValue(model.value(), propertyMetadata);
-            if (model instanceof KeyPropertyValueModel)
-                keyPropertyValueEntities.add((KeyPropertyValueEntity) propertyValueEntity);
-            else
-                propertyValueEntities.add((PropertyValueEntity) propertyValueEntity);
         });
         assertValidates(validates);
 

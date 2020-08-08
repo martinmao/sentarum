@@ -67,7 +67,7 @@ import static io.scleropages.sentarum.item.category.model.CategoryProperty.Categ
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-//@Transactional
+@Transactional
 public class SpuManagerTestcase {
 
     @Autowired
@@ -167,18 +167,19 @@ public class SpuManagerTestcase {
         List<? extends PropertyValue> allSpuPropertyValues = spuManager.findAllSpuPropertyValues(update.id());
 
         allKeyPropertyValues.forEach(o -> {
-            if(o.name().equals("model")){
-                keysUpdate.put(o.id(),3L);
+            if (o.name().equals("model")) {
+                keysUpdate.put(o.id(), 3L);
             }
         });
         allSpuPropertyValues.forEach(o -> {
-            spuUpdate.put(o.id(),99.9);
+            spuUpdate.put(o.id(), 99.9);
         });
 
         spuManager.saveSpu(update, keysUpdate, spuUpdate);
 
 
         flush();
+        propertySearch.remove("IN_model");
 
         spuPage = spuManager.findSpuPage(SearchFilter.SearchFilterBuilder.build(spuSearch), SearchFilter.SearchFilterBuilder.build(propertySearch), Pageable.unpaged(), Sort.unsorted());
         System.out.println(JsonMapper2.toJson(spuPage));
@@ -488,7 +489,7 @@ public class SpuManagerTestcase {
 
 
     private void flush() {
-//        entityManager.flush();
-//        entityManager.clear();
+        entityManager.flush();
+        entityManager.clear();
     }
 }

@@ -493,6 +493,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
                             Long valueId = o.id();
                             model.setId(valueId);
                             model.setValue(o.value());
+                            model.setPropertyMetaId(o.propertyMetaId());
                             metaIdToPv.put(o.propertyMetaId(), model);
                             Object changeValue = values.get(valueId);
                             if (null != changeValue) {

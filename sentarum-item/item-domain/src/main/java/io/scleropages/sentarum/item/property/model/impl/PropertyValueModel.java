@@ -35,7 +35,7 @@ public class PropertyValueModel implements PropertyValue {
     private Object value;
 
     @Null(groups = Create.class)
-    @NotNull(groups = Update.class)
+    @NotNull(groups = {Update.class, BatchUpdate.class})
     public Long getId() {
         return id;
     }
@@ -51,18 +51,19 @@ public class PropertyValueModel implements PropertyValue {
         return bizType;
     }
 
-    @NotNull(groups = Create.class)
-    @Null(groups = Update.class)
+    @NotNull(groups = {Create.class})
+    @Null(groups = {Update.class, BatchUpdate.class})
     public Long getBizId() {
         return bizId;
     }
 
-    @Null
+    @Null(groups = {Create.class, Update.class})
+    @NotNull(groups = BatchUpdate.class)
     public Long getPropertyMetaId() {
         return propertyMetaId;
     }
 
-    @NotNull(groups = {Create.class, Update.class})
+    @NotNull(groups = {Create.class, Update.class, BatchUpdate.class})
     public Object getValue() {
         return value;
     }
@@ -132,5 +133,9 @@ public class PropertyValueModel implements PropertyValue {
     }
 
     public interface Update {
+    }
+
+    public interface BatchUpdate {
+
     }
 }
