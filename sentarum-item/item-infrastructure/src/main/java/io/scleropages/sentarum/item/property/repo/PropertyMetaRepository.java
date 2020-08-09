@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.property.repo;
 
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
 import io.scleropages.sentarum.jooq.tables.PtPropertyMeta;
 import io.scleropages.sentarum.jooq.tables.records.PtPropertyMetaRecord;
@@ -25,6 +26,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
 
 import javax.persistence.criteria.JoinType;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -32,8 +34,6 @@ import java.util.Optional;
  */
 public interface PropertyMetaRepository extends GenericRepository<PropertyMetaEntity, Long>,
         JooqRepository<PtPropertyMeta, PtPropertyMetaRecord, PropertyMetaEntity> {
-
-    PropertyMetaEntity getByName(String name);
 
     @Cacheable
     default PropertyMetaEntity getDetailsById(Long id) {
@@ -44,6 +44,21 @@ public interface PropertyMetaRepository extends GenericRepository<PropertyMetaEn
         };
         Optional<PropertyMetaEntity> optional = get(specification);
         Assert.isTrue(optional.isPresent(), "no property meta found: " + id);
-        return optional.get();
+        PropertyMetaEntity propertyMetaEntity = optional.get();
+        Util.propertyNameToId.putIfAbsent(propertyMetaEntity.getName(), propertyMetaEntity.getId());
+        return propertyMetaEntity;
+    }
+
+    default Long getIdByName(String name) {
+        return Util.propertyNameToId.computeIfAbsent(name, s -> {
+            PtPropertyMeta metaTable = dslTable();
+            Long result = dslContext().select(metaTable.ID).from(metaTable).where(metaTable.NAME_.eq(name)).fetchOneInto(Long.class);
+            Assert.notNull(result, "no property meta found: " + name);
+            return result;
+        });
+    }
+
+    abstract class Util {
+        private static final Map<String, Long> propertyNameToId = Maps.newConcurrentMap();
     }
 }

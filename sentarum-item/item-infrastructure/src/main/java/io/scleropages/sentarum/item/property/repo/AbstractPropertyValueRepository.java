@@ -40,7 +40,6 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity.*;
 import static io.scleropages.sentarum.jooq.Tables.PT_KEY_PROPERTY_VALUE;
@@ -123,14 +122,12 @@ public interface AbstractPropertyValueRepository<E extends AbstractPropertyValue
          * apply property conditions to base query.
          *
          * @param bizType               business type id
-         * @param requiredBaseQuery     base query to apply
+         * @param baseQuery             base query to apply
          * @param propertySort          property sort
          * @param propertySearchFilters property search filters
          * @param bizEntityModel        entity model of business object.
          */
-        public static void applyPropertyConditions(Integer bizType, Optional<SelectQuery<Record>> requiredBaseQuery, Sort propertySort, Map<PropertyMetadata, SearchFilter> propertySearchFilters, JpaContexts.ManagedTypeModel<?> bizEntityModel) {
-
-            SelectQuery<Record> baseQuery = requiredBaseQuery.get();
+        public static void applyPropertyConditions(Integer bizType, SelectQuery<Record> baseQuery, Sort propertySort, Map<PropertyMetadata, SearchFilter> propertySearchFilters, JpaContexts.ManagedTypeModel<?> bizEntityModel) {
 
             Table bizTable = dslNameToTable(bizEntityModel.table().toUpperCase());
 

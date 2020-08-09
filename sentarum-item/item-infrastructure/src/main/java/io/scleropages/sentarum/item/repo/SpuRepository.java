@@ -21,7 +21,6 @@ import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository.PropertyConditionsAssembler;
 import io.scleropages.sentarum.jooq.tables.ItemSpu;
 import io.scleropages.sentarum.jooq.tables.records.ItemSpuRecord;
-import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.SelectQuery;
@@ -55,19 +54,17 @@ public interface SpuRepository extends GenericRepository<SpuEntity, Long>, JooqR
     Optional<SpuEntity> getById(Long id);
 
 
-    default Page<SpuEntity> findSpuPage(Map<String, SearchFilter> spuSearchFilters, Map<PropertyMetadata, SearchFilter> keyPropertySearchFilters, Pageable pageable, Sort propertySort) {
+    default Page<SpuEntity> findSpuPage(Map<String, SearchFilter> spuSearchFilters, Map<PropertyMetadata, SearchFilter> propertySearchFilters, Pageable pageable, Sort propertySort) {
         ItemSpu spu = dslTable();
         JpaContexts.ManagedTypeModel<SpuEntity> managedTypeModel = JpaContexts.getManagedTypeModel(SpuEntity.class);
         List<Field> queryFields = Lists.newArrayList(spu.fields());
 
         SelectQuery<Record> query = dslContext().select(queryFields).from(spu).getQuery();
 
-        Condition spuCondition = JpaSupportJooqConditions.bySearchFilters(query, managedTypeModel, spuSearchFilters.values());
+        query.addConditions(JpaSupportJooqConditions.bySearchFilters(query, managedTypeModel, spuSearchFilters.values()));
 
-        query.addConditions(spuCondition);
-
-        if (!CollectionUtils.isEmpty(keyPropertySearchFilters)) {
-            PropertyConditionsAssembler.applyPropertyConditions(KEY_PROPERTY.getOrdinal(), Optional.of(query), propertySort, keyPropertySearchFilters, managedTypeModel);
+        if (!CollectionUtils.isEmpty(propertySearchFilters)) {
+            PropertyConditionsAssembler.applyPropertyConditions(KEY_PROPERTY.getOrdinal(), query, propertySort, propertySearchFilters, managedTypeModel);
         }
 
         return dslPage(() -> query, pageable, false, false).map(o -> {

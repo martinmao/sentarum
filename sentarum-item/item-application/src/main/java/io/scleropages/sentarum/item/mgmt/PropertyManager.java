@@ -278,17 +278,15 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
     @BizError("56")
     public PropertyMetadata getPropertyMetadataByName(String name) {
         Assert.hasText(name, "name must not be empty text.");
-        PropertyMetaEntity propertyMetaEntity = propertyMetaRepository.getByName(name);
-        if (null == propertyMetaEntity)
-            return null;
-        return createPropertyMetadataFromEntity(propertyMetaEntity);
+        Long id = propertyMetaRepository.getIdByName(name);
+        return getPropertyMetadataDetail(id);
     }
 
     @Transactional(readOnly = true)
     @BizError("57")
-    public PropertyMetadata getPropertyMetadataDetail(Long propertyMetadataId) {
-        Assert.notNull(propertyMetadataId, "propertyMetadataId must not be null.");
-        return getModelMapper().mapForRead(propertyMetaRepository.getDetailsById(propertyMetadataId));
+    public PropertyMetadata getPropertyMetadataDetail(Long id) {
+        Assert.notNull(id, "property meta data id must not be null.");
+        return getModelMapper().mapForRead(propertyMetaRepository.getDetailsById(id));
     }
 
 
@@ -348,6 +346,7 @@ public class PropertyManager implements GenericManager<PropertyMetadataModel, Lo
                 .map(entryEntity -> entryEntity.getPropertyMetadata()).collect(Collectors.toList());
         return (List<? extends PropertyMetadata>) getModelMapper().mapForReads(collect);
     }
+
 
     protected void awarePropertyMetaEntity(Long id, EntityAware entityAware) {
         entityAware.setEntity(propertyMetaRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no property meta found: " + id)));

@@ -429,7 +429,7 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     }
 
     /**
-     * 根据类目属性定义，设置类目属性值
+     * 根据类目属性定义，设置类目属性值，并检查类目属性值规则
      *
      * @param stdCategoryId 类目id
      * @param values        属性值集合（key为属性元数据id，value为属性值）
@@ -439,9 +439,15 @@ public class CategoryManager implements GenericManager<StandardCategoryModel, Lo
     @Transactional(readOnly = true)
     @BizError("85")
     public Map<Long, PropertyValueModel> buildCategoryPropertyValues(Long stdCategoryId, Map<Long, Object> values, CategoryPropertyBizType... bizTypes) {
+        Assert.notNull(stdCategoryId, "stdCategoryId must not be null.");
+        Map<Long, PropertyValueModel> propertiesValues = Maps.newHashMap();
         List<CategoryProperty> categoryProperties = getAllCategoryProperties(stdCategoryId, bizTypes);
 
-        Map<Long, PropertyValueModel> propertiesValues = Maps.newHashMap();
+        if (CollectionUtils.isNotEmpty(categoryProperties)) {
+            Assert.notEmpty(values, "values is empty. but fetched category properties not empty.");
+        } else {
+            return propertiesValues;
+        }
 
         for (CategoryProperty categoryProperty : categoryProperties) {
             Long metaId = categoryProperty.propertyMetadata().id();

@@ -15,12 +15,10 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
-import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.SpuEntityMapper;
 import io.scleropages.sentarum.item.model.Spu;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
-import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
@@ -59,8 +57,6 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     private SpuRepository spuRepository;
     private CategoryManager categoryManager;
     private PropertyValueManager propertyValueManager;
-    private PropertyManager propertyManager;
-
 
     /**
      * 创建一个spu
@@ -79,6 +75,8 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
         categoryManager.awareStandardCategoryEntity(stdCategoryId, spuEntity);
         Map<Long, PropertyValueModel> propertiesValues = categoryManager.buildCategoryPropertyValues(stdCategoryId, values, KEY_PROPERTY, SPU_PROPERTY);
         spuRepository.save(spuEntity);
+        if (CollectionUtils.isEmpty(propertiesValues))
+            return;
         for (PropertyValueModel value : propertiesValues.values()) {
             value.setBizId(spuEntity.getId());
         }
@@ -143,28 +141,16 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     /**
      * 查询spu 页
      *
-     * @param spuSearchFilters         spu基本查询
-     * @param keyPropertySearchFilters 关键属性查询
-     * @param pageable                 分页
-     * @param propertySort             关键属性排序
+     * @param spuSearchFilters      spu基本查询
+     * @param propertySearchFilters 关键属性查询
+     * @param pageable              分页
+     * @param propertySort          关键属性排序
      * @return
      */
     @Transactional(readOnly = true)
     @BizError("21")
-    public Page<Spu> findSpuPage(Map<String, SearchFilter> spuSearchFilters, Map<String, SearchFilter> keyPropertySearchFilters, Pageable pageable, Sort propertySort) {
-
-        Map<PropertyMetadata, SearchFilter> propertySearchFilter = Maps.newHashMap();
-
-        if (!CollectionUtils.isEmpty(keyPropertySearchFilters)) {
-            keyPropertySearchFilters.forEach((s, searchFilter) -> {
-                Assert.isTrue(searchFilter.fieldNames.length == 1, "not support multiple property names for single search filter.");
-                String propertyName = searchFilter.fieldNames[0];
-                PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataByName(propertyName);
-                Assert.notNull(propertyMetadata, "no property metadata found: " + propertyName);
-                propertySearchFilter.put(propertyMetadata, searchFilter);
-            });
-        }
-        return spuRepository.findSpuPage(spuSearchFilters, propertySearchFilter, pageable, propertySort).map(entity -> getModelMapper().mapForRead(entity));
+    public Page<Spu> findSpuPage(Map<String, SearchFilter> spuSearchFilters, Map<String, SearchFilter> propertySearchFilters, Pageable pageable, Sort propertySort) {
+        return spuRepository.findSpuPage(spuSearchFilters, propertyValueManager.buildPropertyValueSearchFilters(propertySearchFilters), pageable, propertySort).map(entity -> getModelMapper().mapForRead(entity));
     }
 
     @Transactional(readOnly = true)
@@ -197,10 +183,5 @@ public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMappe
     @Autowired
     public void setPropertyValueManager(PropertyValueManager propertyValueManager) {
         this.propertyValueManager = propertyValueManager;
-    }
-
-    @Autowired
-    public void setPropertyManager(PropertyManager propertyManager) {
-        this.propertyManager = propertyManager;
     }
 }

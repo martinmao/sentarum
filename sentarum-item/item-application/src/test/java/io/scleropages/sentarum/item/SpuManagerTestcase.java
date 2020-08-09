@@ -21,10 +21,13 @@ import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.impl.CategoryPropertyModel;
 import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
 import io.scleropages.sentarum.item.mgmt.CategoryManager;
+import io.scleropages.sentarum.item.mgmt.ItemManager;
 import io.scleropages.sentarum.item.mgmt.PropertyManager;
 import io.scleropages.sentarum.item.mgmt.PropertyValueManager;
 import io.scleropages.sentarum.item.mgmt.SpuManager;
+import io.scleropages.sentarum.item.model.Item;
 import io.scleropages.sentarum.item.model.Spu;
+import io.scleropages.sentarum.item.model.impl.ItemModel;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
@@ -67,7 +70,7 @@ import static io.scleropages.sentarum.item.category.model.CategoryProperty.Categ
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 public class SpuManagerTestcase {
 
     @Autowired
@@ -80,6 +83,8 @@ public class SpuManagerTestcase {
     protected SpuManager spuManager;
     @Autowired
     protected EntityManager entityManager;
+    @Autowired
+    protected ItemManager itemManager;
 
 
     @Test
@@ -87,7 +92,7 @@ public class SpuManagerTestcase {
         Map<String, Object> categorySearch = Maps.newHashMap();
         categorySearch.put("name", "digital_phone");
 
-        StandardCategoryModel shuma = (StandardCategoryModel) categoryManager.findStandardCategoryPage(SearchFilter.SearchFilterBuilder.build(categorySearch), Pageable.unpaged()).iterator().next();
+        StandardCategoryModel digitalPhone = (StandardCategoryModel) categoryManager.findStandardCategoryPage(SearchFilter.SearchFilterBuilder.build(categorySearch), Pageable.unpaged()).iterator().next();
 
 
         SpuModel iPhoneX = new SpuModel();
@@ -100,7 +105,7 @@ public class SpuManagerTestcase {
 
         Map<Long, Object> variables = Maps.newHashMap();
 
-        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(shuma.id(), KEY_PROPERTY, SPU_PROPERTY);
+        List<CategoryProperty> categoryProperties = categoryManager.getAllCategoryProperties(digitalPhone.id(), KEY_PROPERTY, SPU_PROPERTY);
 
 
         categoryProperties.forEach(cp -> {
@@ -127,7 +132,7 @@ public class SpuManagerTestcase {
                 variables.put(cp.propertyMetadata().id(), "150.9");
             }
         });
-        spuManager.createSpu(iPhoneX, shuma.id(), variables);
+        spuManager.createSpu(iPhoneX, digitalPhone.id(), variables);
 
         SourceValueModel valueSearch = new SourceValueModel();
         valueSearch.setValuesSourceId(propertyManager.getValuesSourceByName("series.values").id());
@@ -190,6 +195,29 @@ public class SpuManagerTestcase {
             System.out.println(JsonMapper2.toJson(spuManager.findAllSpuPropertyValues(spu.id())));
         });
 
+        ItemModel item = new ItemModel();
+        item.setItemType(Item.ItemType.ITEM);
+        item.setTag("IphoneX国行版");
+        item.setDescription("iphoneX安达市多撒大所大所大大");
+        item.setNum(998);
+        item.setOuterId("x1221212121212121");
+        item.setSalesPrice(new BigDecimal("8888"));
+        item.setSellerUnionId(101L);
+        item.setSellerId(1011L);
+        item.setSellerCode("xxx112111");
+        item.setSellerType(Item.SellerType.PLATFORM);
+        item.setStatus(Item.Status.VALID);
+
+        itemManager.createItem(item, spuPage.iterator().next().id(), null);
+        itemManager.createItem(item, spuPage.iterator().next().id(), null);
+        itemManager.createItem(item, spuPage.iterator().next().id(), null);
+        itemManager.createItem(item, spuPage.iterator().next().id(), null);
+        itemManager.createItem(item, spuPage.iterator().next().id(), null);
+
+        Map<String, Object> itemSearch = Maps.newHashMap();
+        itemSearch.put("GTE_num",998);
+        Page<Item> itemPage = itemManager.findItemPage(SearchFilter.SearchFilterBuilder.build(itemSearch), SearchFilter.SearchFilterBuilder.build(propertySearch), Pageable.unpaged(), Sort.unsorted());
+        itemPage.forEach(item1 -> System.out.println(JsonMapper2.toJson(item1)));
     }
 
 
@@ -489,7 +517,7 @@ public class SpuManagerTestcase {
 
 
     private void flush() {
-        entityManager.flush();
-        entityManager.clear();
+//        entityManager.flush();
+//        entityManager.clear();
     }
 }

@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.mgmt;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.property.Inputs;
 import io.scleropages.sentarum.item.property.PropertyValidators;
 import io.scleropages.sentarum.item.property.entity.AbstractPropertyValueEntity;
@@ -31,13 +32,18 @@ import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository;
 import io.scleropages.sentarum.item.property.repo.KeyPropertyValueRepository;
 import io.scleropages.sentarum.item.property.repo.PropertyValueRepository;
+import org.jooq.SelectQuery;
 import org.scleropages.crud.GenericManager;
+import org.scleropages.crud.dao.orm.SearchFilter;
+import org.scleropages.crud.dao.orm.jpa.JpaContexts;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -208,6 +214,30 @@ public class PropertyValueManager implements GenericManager<PropertyValueModel, 
         Assert.notNull(bizId, "bizId must not be null.");
         Assert.notNull(modelClazz, "modelClazz must not be null.");
         return (List<? extends PropertyValue>) getMapper(modelClazz).mapForReads(getRepository(modelClazz).findAllByBizTypeAndBizId(bizType, bizId));
+    }
+
+
+    /**
+     * 非API功能，仅用于manager内使用，将一组基于属性名查询条件转换为 属性检索需要的结构(metadata->searchFilter的映射). 参考 {@link io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository.PropertyConditionsAssembler#applyPropertyConditions(Integer, SelectQuery, Sort, Map, JpaContexts.ManagedTypeModel)}
+     *
+     * @param propertySearchFilters
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("40")
+    protected Map<PropertyMetadata, SearchFilter> buildPropertyValueSearchFilters(Map<String, SearchFilter> propertySearchFilters) {
+        Map<PropertyMetadata, SearchFilter> metadataSearchFilters = Maps.newHashMap();
+
+        if (!CollectionUtils.isEmpty(propertySearchFilters)) {
+            propertySearchFilters.forEach((s, searchFilter) -> {
+                Assert.isTrue(searchFilter.fieldNames.length == 1, "not support multiple property names for single search filter.");
+                String propertyName = searchFilter.fieldNames[0];
+                PropertyMetadata propertyMetadata = propertyManager.getPropertyMetadataByName(propertyName);
+                Assert.notNull(propertyMetadata, "no property metadata found: " + propertyName);
+                metadataSearchFilters.put(propertyMetadata, searchFilter);
+            });
+        }
+        return metadataSearchFilters;
     }
 
 

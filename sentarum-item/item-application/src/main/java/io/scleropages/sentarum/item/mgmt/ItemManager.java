@@ -18,14 +18,19 @@ package io.scleropages.sentarum.item.mgmt;
 import io.scleropages.sentarum.item.entity.ItemEntity;
 import io.scleropages.sentarum.item.entity.SpuEntity;
 import io.scleropages.sentarum.item.entity.mapper.ItemEntityMapper;
+import io.scleropages.sentarum.item.model.Item;
 import io.scleropages.sentarum.item.model.impl.ItemModel;
 import io.scleropages.sentarum.item.model.impl.SpuModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import io.scleropages.sentarum.item.repo.ItemRepository;
 import io.scleropages.sentarum.item.repo.SpuRepository;
 import org.scleropages.crud.GenericManager;
+import org.scleropages.crud.dao.orm.SearchFilter;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -64,12 +69,13 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
         itemEntity.setCategory(spuEntity.getCategory());
         Map<Long, PropertyValueModel> propertiesValues = categoryManager.buildCategoryPropertyValues(spuEntity.getCategory().getId(), values, ITEM_PROPERTY);
         itemRepository.save(itemEntity);
-        for (PropertyValueModel value : propertiesValues.values()) {
-            value.setBizId(itemEntity.getId());
+        if (!CollectionUtils.isEmpty(propertiesValues)) {
+            for (PropertyValueModel value : propertiesValues.values()) {
+                value.setBizId(itemEntity.getId());
+            }
+            propertyValueManager.createPropertyValues(propertiesValues);
         }
-        propertyValueManager.createPropertyValues(propertiesValues);
     }
-
 
     /**
      * 更新保存spu
@@ -93,6 +99,23 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
             return;
         propertyValueManager.savePropertyValues(propertyValueModels);
     }
+
+
+    /**
+     * 查询item 页
+     *
+     * @param itemSearchFilters     item信息查询
+     * @param propertySearchFilters 关键属性查询
+     * @param pageable              分页
+     * @param propertySort          关键属性排序
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("21")
+    public Page<Item> findItemPage(Map<String, SearchFilter> itemSearchFilters, Map<String, SearchFilter> propertySearchFilters, Pageable pageable, Sort propertySort) {
+        return itemRepository.findItemPage(itemSearchFilters, propertyValueManager.buildPropertyValueSearchFilters(propertySearchFilters), pageable, propertySort).map(entity -> getModelMapper().mapForRead(entity));
+    }
+
 
     @Autowired
     public void setItemRepository(ItemRepository itemRepository) {
