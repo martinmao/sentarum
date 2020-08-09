@@ -16,11 +16,16 @@
 package io.scleropages.sentarum.item.repo;
 
 import io.scleropages.sentarum.item.entity.AbstractSkuEntity;
+import io.scleropages.sentarum.item.entity.SkuEntity;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -28,4 +33,8 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface AbstractSkuRepository<E extends AbstractSkuEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
 
+
+    @EntityGraph(attributePaths = {"item", "category"})
+    @Cacheable
+    Optional<SkuEntity> getById(Long aLong);
 }

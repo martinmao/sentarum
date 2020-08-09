@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.model;
 
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.ge.model.Media;
 import io.scleropages.sentarum.item.model.impl.CombineSkuModel;
 import io.scleropages.sentarum.item.model.impl.SkuModel;
@@ -52,6 +53,13 @@ public interface Sku {
      * @return
      */
     Item item();
+
+    /**
+     * 挂靠的标准类目
+     *
+     * @return
+     */
+    StandardCategory category();
 
     /**
      * 外部编码（商家自己的sku编码）

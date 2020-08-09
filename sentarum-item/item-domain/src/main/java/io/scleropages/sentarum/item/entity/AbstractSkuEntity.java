@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.entity;
 
+import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
 import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
@@ -37,6 +38,7 @@ import java.util.List;
 public class AbstractSkuEntity extends IdEntity {
 
     private ItemEntity item;
+    private StandardCategoryEntity category;
     private String outerId;
     private Integer status;
     private BigDecimal salesPrice;
@@ -49,6 +51,12 @@ public class AbstractSkuEntity extends IdEntity {
     @JoinColumn(name = "item_id")
     public ItemEntity getItem() {
         return item;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "std_category_id")
+    public StandardCategoryEntity getCategory() {
+        return category;
     }
 
     @Column(name = "outer_id", nullable = false)
@@ -90,6 +98,10 @@ public class AbstractSkuEntity extends IdEntity {
 
     public void setItem(ItemEntity item) {
         this.item = item;
+    }
+
+    public void setCategory(StandardCategoryEntity category) {
+        this.category = category;
     }
 
     public void setOuterId(String outerId) {

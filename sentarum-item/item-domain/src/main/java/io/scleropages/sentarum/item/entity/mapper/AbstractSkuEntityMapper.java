@@ -15,6 +15,9 @@
  */
 package io.scleropages.sentarum.item.entity.mapper;
 
+import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
+import io.scleropages.sentarum.item.category.entity.mapper.StandardCategoryEntityMapper;
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.entity.AbstractSkuEntity;
 import io.scleropages.sentarum.item.entity.ItemEntity;
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
@@ -44,6 +47,17 @@ public interface AbstractSkuEntityMapper<T extends AbstractSkuEntity, M extends 
     }
 
     default ItemEntity toItemEntity(Item item) {
+        return null;
+    }
+
+    default StandardCategory toCategory(StandardCategoryEntity entity) {
+        if (!isEntityInitialized(entity)) {
+            return null;
+        }
+        return (StandardCategory) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class).mapForRead(entity);
+    }
+
+    default StandardCategoryEntity toStandardCategoryEntity(StandardCategory standardCategory) {
         return null;
     }
 

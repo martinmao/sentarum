@@ -15,11 +15,15 @@
  */
 package io.scleropages.sentarum.item.model.impl;
 
+import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.ge.model.Media;
 import io.scleropages.sentarum.item.model.Item;
 import io.scleropages.sentarum.item.model.Sku;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,7 @@ public class SkuModel implements Sku {
 
     private Long id;
     private Item item;
+    private StandardCategory category;
     private String outerId;
     private Status status;
     private BigDecimal salesPrice;
@@ -39,34 +44,48 @@ public class SkuModel implements Sku {
     private List<Media> mediaList;
     private Map<String, Object> additionalAttributes;
 
+    @Null(groups = {Create.class})
+    @NotNull(groups = {Update.class})
     public Long getId() {
         return id;
     }
 
+    @Null
     public Item getItem() {
         return item;
     }
 
+    @Null
+    public StandardCategory getCategory() {
+        return category;
+    }
+
+    @NotEmpty(groups = {Create.class})
     public String getOuterId() {
         return outerId;
     }
 
+    @NotNull(groups = {Create.class})
     public Status getStatus() {
         return status;
     }
 
+    @NotNull(groups = {Create.class})
     public BigDecimal getSalesPrice() {
         return salesPrice;
     }
 
+    @NotNull(groups = {Create.class})
     public Integer getQuantity() {
         return quantity;
     }
 
+    @Null
     public List<PropertyValue> getSalesProperties() {
         return salesProperties;
     }
 
+    @Null
     public List<Media> getMediaList() {
         return mediaList;
     }
@@ -81,6 +100,10 @@ public class SkuModel implements Sku {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    public void setCategory(StandardCategory category) {
+        this.category = category;
     }
 
     public void setOuterId(String outerId) {
@@ -122,6 +145,11 @@ public class SkuModel implements Sku {
     }
 
     @Override
+    public StandardCategory category() {
+        return getCategory();
+    }
+
+    @Override
     public String outerId() {
         return getOuterId();
     }
@@ -154,5 +182,12 @@ public class SkuModel implements Sku {
     @Override
     public Map<String, Object> additionalAttributes() {
         return getAdditionalAttributes();
+    }
+
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

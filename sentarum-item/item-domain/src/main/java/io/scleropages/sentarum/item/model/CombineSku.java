@@ -25,13 +25,6 @@ import java.util.List;
 public interface CombineSku extends Sku {
 
     /**
-     * 唯一标识
-     *
-     * @return
-     */
-    Long id();
-
-    /**
      * 包含的一组 sku 条目.
      *
      * @return

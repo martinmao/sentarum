@@ -18,6 +18,8 @@ package io.scleropages.sentarum.item.model.impl;
 import io.scleropages.sentarum.item.model.CombineSkuEntry;
 import io.scleropages.sentarum.item.model.Sku;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -33,48 +35,56 @@ public class CombineSkuEntryModel implements CombineSkuEntry {
     private BigDecimal salesPrice;
     private Map<String, Object> additionalAttributes;
 
+    @Null(groups = {Create.class})
+    @NotNull(groups = {Update.class})
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @Null
     public Sku getSku() {
         return sku;
+    }
+
+    @NotNull(groups = {Create.class})
+    public Float getOrder() {
+        return order;
+    }
+
+    @NotNull(groups = {Create.class})
+    public Integer getNum() {
+        return num;
+    }
+
+    @NotNull(groups = {Create.class})
+    public BigDecimal getSalesPrice() {
+        return salesPrice;
+    }
+
+
+    public Map<String, Object> getAdditionalAttributes() {
+        return additionalAttributes;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setSku(Sku sku) {
         this.sku = sku;
     }
 
-    public Float getOrder() {
-        return order;
-    }
-
     public void setOrder(Float order) {
         this.order = order;
-    }
-
-    public Integer getNum() {
-        return num;
     }
 
     public void setNum(Integer num) {
         this.num = num;
     }
 
-    public BigDecimal getSalesPrice() {
-        return salesPrice;
-    }
-
     public void setSalesPrice(BigDecimal salesPrice) {
         this.salesPrice = salesPrice;
-    }
-
-    public Map<String, Object> getAdditionalAttributes() {
-        return additionalAttributes;
     }
 
     public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
@@ -109,5 +119,12 @@ public class CombineSkuEntryModel implements CombineSkuEntry {
     @Override
     public Map<String, Object> additionalAttributes() {
         return getAdditionalAttributes();
+    }
+
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

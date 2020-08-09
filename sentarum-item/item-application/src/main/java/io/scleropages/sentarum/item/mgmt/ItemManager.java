@@ -15,14 +15,29 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
+import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
+import io.scleropages.sentarum.item.entity.AbstractSkuEntity;
+import io.scleropages.sentarum.item.entity.CombineSkuEntity;
+import io.scleropages.sentarum.item.entity.CombineSkuEntryEntity;
 import io.scleropages.sentarum.item.entity.ItemEntity;
+import io.scleropages.sentarum.item.entity.SkuEntity;
 import io.scleropages.sentarum.item.entity.SpuEntity;
+import io.scleropages.sentarum.item.entity.mapper.AbstractSkuEntityMapper;
+import io.scleropages.sentarum.item.entity.mapper.CombineSkuEntityMapper;
+import io.scleropages.sentarum.item.entity.mapper.CombineSkuEntryEntityMapper;
 import io.scleropages.sentarum.item.entity.mapper.ItemEntityMapper;
+import io.scleropages.sentarum.item.entity.mapper.SkuEntityMapper;
 import io.scleropages.sentarum.item.model.Item;
+import io.scleropages.sentarum.item.model.impl.CombineSkuEntryModel;
+import io.scleropages.sentarum.item.model.impl.CombineSkuModel;
 import io.scleropages.sentarum.item.model.impl.ItemModel;
-import io.scleropages.sentarum.item.model.impl.SpuModel;
+import io.scleropages.sentarum.item.model.impl.SkuModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
+import io.scleropages.sentarum.item.repo.AbstractSkuRepository;
+import io.scleropages.sentarum.item.repo.CombineSkuEntryRepository;
+import io.scleropages.sentarum.item.repo.CombineSkuRepository;
 import io.scleropages.sentarum.item.repo.ItemRepository;
+import io.scleropages.sentarum.item.repo.SkuRepository;
 import io.scleropages.sentarum.item.repo.SpuRepository;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.dao.orm.SearchFilter;
@@ -40,8 +55,10 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.ITEM_PROPERTY;
+import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.SALES_PROPERTY;
 
 /**
  * Item管理器，提供Item相关通用原子管理功能
@@ -55,9 +72,19 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
 
     private ItemRepository itemRepository;
     private SpuRepository spuRepository;
+    private SkuRepository skuRepository;
+    private CombineSkuRepository combineSkuRepository;
+    private CombineSkuEntryRepository combineSkuEntryRepository;
     private CategoryManager categoryManager;
     private PropertyValueManager propertyValueManager;
 
+    /**
+     * 创建item
+     *
+     * @param model  item模型
+     * @param spuId  所属spu
+     * @param values 商品属性值集合(key为元数据id，value为属性值)
+     */
     @Validated({ItemModel.Create.class})
     @Transactional
     @BizError("10")
@@ -69,35 +96,126 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
         itemEntity.setCategory(spuEntity.getCategory());
         Map<Long, PropertyValueModel> propertiesValues = categoryManager.buildCategoryPropertyValues(spuEntity.getCategory().getId(), values, ITEM_PROPERTY);
         itemRepository.save(itemEntity);
-        if (!CollectionUtils.isEmpty(propertiesValues)) {
-            for (PropertyValueModel value : propertiesValues.values()) {
-                value.setBizId(itemEntity.getId());
-            }
-            propertyValueManager.createPropertyValues(propertiesValues);
-        }
+        applyBizIdToPropertyValues(propertiesValues, itemEntity.getId());
     }
 
     /**
-     * 更新保存spu
+     * 更新保存item
      *
-     * @param model      spu模型
-     * @param itemValues 商品属性值集合(key为属性值id，value为属性值)
+     * @param model  item模型
+     * @param values 商品属性值集合(key为属性值id，value为属性值)
      */
-    @Validated({SpuModel.Update.class})
+    @Validated({ItemModel.Update.class})
     @Transactional
     @BizError("11")
-    public void saveItem(@Valid ItemModel model, Map<Long, Object> itemValues) {
+    public void saveItem(@Valid ItemModel model, Map<Long, Object> values) {
         Long itemId = model.id();
         ItemEntity itemEntity = itemRepository.getById(itemId).orElseThrow(() -> new IllegalArgumentException("no item found: " + itemId));
         getModelMapper().mapForUpdate(model, itemEntity);
         itemRepository.save(itemEntity);
+        saveValues(itemEntity.getCategory().getId(), itemId, new CategoryManager.PropertyValueChange(ITEM_PROPERTY, values, PropertyValueModel.class));
+    }
 
-        List<PropertyValueModel> propertyValueModels = categoryManager.applyCategoryPropertyValuesChanges(itemEntity.getCategory().getId(), itemId
-                , new CategoryManager.PropertyValueChange(ITEM_PROPERTY, itemValues, PropertyValueModel.class));
+    /**
+     * 创建sku
+     *
+     * @param model  sku模型
+     * @param values 销售属性值集合(key为元数据id，value为属性值)
+     */
+    @Validated({SkuModel.Create.class})
+    @Transactional
+    @BizError("12")
+    public void createSku(@Valid SkuModel model, Long itemId, Map<Long, Object> values) {
+        createSkuInternal(model, itemId, values);
+    }
 
-        if (CollectionUtils.isEmpty(propertyValueModels))
-            return;
-        propertyValueManager.savePropertyValues(propertyValueModels);
+
+    /**
+     * 更新保存Sku
+     *
+     * @param model  sku模型
+     * @param values 销售属性值集合(key为属性值id，value为属性值)
+     */
+    @Validated({SkuModel.Update.class})
+    @Transactional
+    @BizError("13")
+    public void saveSku(@Valid SkuModel model, Map<Long, Object> values) {
+        saveSkuInternal(model, values);
+    }
+
+
+    /**
+     * 创建 combine sku
+     *
+     * @param model  combine sku模型
+     * @param values 销售属性值集合(key为元数据id，value为属性值)
+     */
+    @Validated({CombineSkuModel.Create.class})
+    @Transactional
+    @BizError("14")
+    public void createCombineSku(@Valid CombineSkuModel model, Long itemId, Map<Long, Object> values) {
+        createSkuInternal(model, itemId, values);
+    }
+
+
+    /**
+     * 更新保存 combine sku
+     *
+     * @param model  combine sku模型
+     * @param values 销售属性值集合(key为属性值id，value为属性值)
+     */
+    @Validated({CombineSkuModel.Update.class})
+    @Transactional
+    @BizError("15")
+    public void saveCombineSku(@Valid CombineSkuModel model, Map<Long, Object> values) {
+        saveSkuInternal(model, values);
+    }
+
+    /**
+     * 创建组合sku条目(将目标sku加入到组合sku中)
+     *
+     * @param model        组合sku条目模型
+     * @param combineSkuId 组合sku id
+     * @param skuId        目标sku id
+     */
+    @Validated({CombineSkuEntryModel.Create.class})
+    @Transactional
+    @BizError("16")
+    public void createCombineSkuEntry(@Valid CombineSkuEntryModel model, Long combineSkuId, Long skuId) {
+        Assert.notNull(combineSkuId, "combineSkuId must not be null.");
+        Assert.notNull(skuId, "skuId must not be null.");
+        CombineSkuEntryEntity combineSkuEntryEntity = getModelMapper(CombineSkuEntryEntityMapper.class).mapForSave(model);
+        CombineSkuEntity combineSkuEntity = combineSkuRepository.get(combineSkuId).orElseThrow(() -> new IllegalArgumentException("no combine sku found: " + combineSkuId));
+        SkuEntity skuEntity = skuRepository.get(skuId).orElseThrow(() -> new IllegalArgumentException("no sku found: " + skuId));
+        combineSkuEntryEntity.setCombineSku(combineSkuEntity);
+        combineSkuEntryEntity.setSku(skuEntity);
+        combineSkuEntryRepository.save(combineSkuEntryEntity);
+    }
+
+    /**
+     * 更新保存组合sku条目
+     *
+     * @param model 组合sku条目模型
+     */
+    @Validated({CombineSkuEntryModel.Update.class})
+    @Transactional
+    @BizError("17")
+    public void saveCombineSkuEntry(@Valid CombineSkuEntryModel model) {
+        CombineSkuEntryEntity entity = combineSkuEntryRepository.get(model.id()).orElseThrow(() -> new IllegalArgumentException("no combine sku entry found: " + model.id()));
+        getModelMapper(CombineSkuEntryEntityMapper.class).mapForUpdate(model, entity);
+        combineSkuEntryRepository.save(entity);
+    }
+
+    /**
+     * 删除组合sku条目
+     *
+     * @param id
+     */
+    @Transactional
+    @BizError("18")
+    public void deleteCombineSkuEntry(Long id) {
+        Assert.notNull(id, "id must be null.");
+        combineSkuEntryRepository.deleteById(id);
     }
 
 
@@ -111,9 +229,72 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @return
      */
     @Transactional(readOnly = true)
-    @BizError("21")
+    @BizError("50")
     public Page<Item> findItemPage(Map<String, SearchFilter> itemSearchFilters, Map<String, SearchFilter> propertySearchFilters, Pageable pageable, Sort propertySort) {
         return itemRepository.findItemPage(itemSearchFilters, propertyValueManager.buildPropertyValueSearchFilters(propertySearchFilters), pageable, propertySort).map(entity -> getModelMapper().mapForRead(entity));
+    }
+
+
+    protected void createSkuInternal(SkuModel model, Long itemId, Map<Long, Object> values) {
+        Assert.notNull(itemId, "itemId is required.");
+        AbstractSkuEntity skuEntity = (AbstractSkuEntity) getSkuMapper(model).mapForSave(model);
+        ItemEntity itemEntity = itemRepository.getById(itemId).orElseThrow(() -> new IllegalArgumentException("no item found: " + itemId));
+        StandardCategoryEntity categoryEntity = itemEntity.getCategory();
+        skuEntity.setItem(itemEntity);
+        skuEntity.setCategory(categoryEntity);
+        Map<Long, PropertyValueModel> propertiesValues = categoryManager.buildCategoryPropertyValues(categoryEntity.getId(), values, SALES_PROPERTY);
+        getSkuRepository(model).save(skuEntity);
+        applyBizIdToPropertyValues(propertiesValues, skuEntity.getId());
+    }
+
+    public void saveSkuInternal(SkuModel model, Map<Long, Object> values) {
+        Long skuId = model.id();
+        Optional optional = getSkuRepository(model).getById(skuId);
+        Assert.isTrue(optional.isPresent(), "no sku found: " + skuId);
+        AbstractSkuEntity skuEntity = (AbstractSkuEntity) optional.get();
+        getSkuMapper(model).mapForUpdate(model, skuEntity);
+        getSkuRepository(model).save(skuEntity);
+        saveValues(skuEntity.getCategory().getId(), skuId, new CategoryManager.PropertyValueChange(SALES_PROPERTY, values, PropertyValueModel.class));
+    }
+
+
+    protected AbstractSkuEntityMapper getSkuMapper(SkuModel model) {
+        if (model instanceof CombineSkuModel) {
+            return getModelMapper(CombineSkuEntityMapper.class);
+        }
+        return getModelMapper(SkuEntityMapper.class);
+    }
+
+    protected AbstractSkuRepository getSkuRepository(SkuModel model) {
+        if (model instanceof CombineSkuModel) {
+            return combineSkuRepository;
+        }
+        return skuRepository;
+    }
+
+
+    /**
+     * apply biz id to property value models.
+     *
+     * @param propertiesValues
+     * @param bizId
+     */
+    protected void applyBizIdToPropertyValues(Map<Long, PropertyValueModel> propertiesValues, Long bizId) {
+        if (!CollectionUtils.isEmpty(propertiesValues)) {
+            for (PropertyValueModel value : propertiesValues.values()) {
+                value.setBizId(bizId);
+            }
+            propertyValueManager.createPropertyValues(propertiesValues);
+        }
+    }
+
+
+    protected void saveValues(Long categoryId, Long bizId, CategoryManager.PropertyValueChange valueChange) {
+        List<PropertyValueModel> propertyValueModels = categoryManager.applyCategoryPropertyValuesChanges(categoryId, bizId
+                , valueChange);
+        if (CollectionUtils.isEmpty(propertyValueModels))
+            return;
+        propertyValueManager.savePropertyValues(propertyValueModels);
     }
 
 
@@ -125,6 +306,21 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @Autowired
     public void setSpuRepository(SpuRepository spuRepository) {
         this.spuRepository = spuRepository;
+    }
+
+    @Autowired
+    public void setSkuRepository(SkuRepository skuRepository) {
+        this.skuRepository = skuRepository;
+    }
+
+    @Autowired
+    public void setCombineSkuRepository(CombineSkuRepository combineSkuRepository) {
+        this.combineSkuRepository = combineSkuRepository;
+    }
+
+    @Autowired
+    public void setCombineSkuEntryRepository(CombineSkuEntryRepository combineSkuEntryRepository) {
+        this.combineSkuEntryRepository = combineSkuEntryRepository;
     }
 
     @Autowired
