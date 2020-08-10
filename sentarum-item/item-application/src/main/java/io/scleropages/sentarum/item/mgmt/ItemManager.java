@@ -27,7 +27,10 @@ import io.scleropages.sentarum.item.entity.mapper.CombineSkuEntityMapper;
 import io.scleropages.sentarum.item.entity.mapper.CombineSkuEntryEntityMapper;
 import io.scleropages.sentarum.item.entity.mapper.ItemEntityMapper;
 import io.scleropages.sentarum.item.entity.mapper.SkuEntityMapper;
+import io.scleropages.sentarum.item.model.CombineSku;
+import io.scleropages.sentarum.item.model.CombineSkuEntry;
 import io.scleropages.sentarum.item.model.Item;
+import io.scleropages.sentarum.item.model.Sku;
 import io.scleropages.sentarum.item.model.impl.CombineSkuEntryModel;
 import io.scleropages.sentarum.item.model.impl.CombineSkuModel;
 import io.scleropages.sentarum.item.model.impl.ItemModel;
@@ -232,6 +235,46 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @BizError("50")
     public Page<Item> findItemPage(Map<String, SearchFilter> itemSearchFilters, Map<String, SearchFilter> propertySearchFilters, Pageable pageable, Sort propertySort) {
         return itemRepository.findItemPage(itemSearchFilters, propertyValueManager.buildPropertyValueSearchFilters(propertySearchFilters), pageable, propertySort).map(entity -> getModelMapper().mapForRead(entity));
+    }
+
+
+    /**
+     * 查询 sku 页
+     *
+     * @param searchFilters
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("51")
+    public Page<Sku> findSkuPage(Map<String, Object> searchFilters, Pageable pageable) {
+        return skuRepository.findPage(SearchFilter.SearchFilterBuilder.build(searchFilters), pageable).map(skuEntity -> getModelMapper(SkuEntityMapper.class).mapForRead(skuEntity));
+    }
+
+    /**
+     * 查询 combine sku 页
+     *
+     * @param searchFilters
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("52")
+    public Page<CombineSku> findCombineSkuPage(Map<String, Object> searchFilters, Pageable pageable) {
+        return combineSkuRepository.findPage(SearchFilter.SearchFilterBuilder.build(searchFilters), pageable).map(skuEntity -> getModelMapper(CombineSkuEntityMapper.class).mapForRead(skuEntity));
+    }
+
+    /**
+     * 查询 combine sku entry 页
+     *
+     * @param searchFilters
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("53")
+    public Page<CombineSkuEntry> findCombineSkuEntryPage(Map<String, Object> searchFilters, Pageable pageable) {
+        return combineSkuEntryRepository.findPage(SearchFilter.SearchFilterBuilder.build(searchFilters), pageable).map(entity -> getModelMapper(CombineSkuEntryEntityMapper.class).mapForRead(entity));
     }
 
 
