@@ -9,6 +9,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>sentarum-item</module>
+        <module>sentarum-search</module>
     </modules>
     <packaging>pom</packaging>
 
