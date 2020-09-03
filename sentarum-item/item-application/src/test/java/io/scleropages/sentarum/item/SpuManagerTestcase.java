@@ -208,6 +208,7 @@ public class SpuManagerTestcase {
         item.setSellerType(Item.SellerType.PLATFORM);
         item.setStatus(Item.Status.VALID);
 
+
         itemManager.createItem(item, spuPage.iterator().next().id(), null);
         itemManager.createItem(item, spuPage.iterator().next().id(), null);
         itemManager.createItem(item, spuPage.iterator().next().id(), null);

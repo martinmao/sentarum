@@ -17,7 +17,6 @@ package canal;
 
 import com.alibaba.otter.canal.client.CanalConnector;
 import com.alibaba.otter.canal.client.CanalConnectors;
-import com.alibaba.otter.canal.common.utils.AddressUtils;
 import com.alibaba.otter.canal.protocol.CanalEntry.Column;
 import com.alibaba.otter.canal.protocol.CanalEntry.Entry;
 import com.alibaba.otter.canal.protocol.CanalEntry.EntryType;
@@ -26,21 +25,22 @@ import com.alibaba.otter.canal.protocol.CanalEntry.RowChange;
 import com.alibaba.otter.canal.protocol.CanalEntry.RowData;
 import com.alibaba.otter.canal.protocol.Message;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CanalClientTestcase {
+public class CanalClientTest {
 
 
 
 
     public static void main(String args[]) {
         // 创建链接
-        CanalConnector connector = CanalConnectors.newSingleConnector(new InetSocketAddress(AddressUtils.getHostIp(),
-                11111), "example", "canal", "canal");
+//        CanalConnector connector = CanalConnectors.newSingleConnector(new InetSocketAddress(AddressUtils.getHostIp(),
+//                11111), "example", "canal", "canal");
+
+        CanalConnector connector = CanalConnectors.newClusterConnector("mycentos01:2181,mycentos02:2181,mycentos03:2181", "test1", "canal", "canal");
         int batchSize = 1000;
         int emptyCount = 0;
         try {

@@ -10,6 +10,7 @@
     <modules>
         <module>sentarum-item</module>
         <module>sentarum-search</module>
+        <module>sentarum-trading</module>
     </modules>
     <packaging>pom</packaging>
 
