@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.model;
+package io.scleropages.sentarum.item.core.entity.mapper;
 
-import java.util.List;
+import io.scleropages.sentarum.item.core.entity.SkuEntity;
+import io.scleropages.sentarum.item.core.model.impl.SkuModel;
+import org.mapstruct.Mapper;
+import org.scleropages.crud.ModelMapper;
 
 /**
- * SKU逻辑组，基于售卖需求，将一组sku打包为一个sku
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CombineSku extends Sku {
-
-    /**
-     * 包含的一组 sku 条目.
-     *
-     * @return
-     */
-    List<CombineSkuEntry> entries();
+@Mapper(config = ModelMapper.DefaultConfig.class)
+public interface SkuEntityMapper extends AbstractSkuEntityMapper<SkuEntity, SkuModel> {
 }

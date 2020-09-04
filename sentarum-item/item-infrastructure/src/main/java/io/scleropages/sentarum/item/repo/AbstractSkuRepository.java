@@ -15,8 +15,8 @@
  */
 package io.scleropages.sentarum.item.repo;
 
-import io.scleropages.sentarum.item.entity.AbstractSkuEntity;
-import io.scleropages.sentarum.item.entity.SkuEntity;
+import io.scleropages.sentarum.item.core.entity.AbstractSkuEntity;
+import io.scleropages.sentarum.item.core.entity.SkuEntity;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;

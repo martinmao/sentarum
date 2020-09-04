@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.model;
+package io.scleropages.sentarum.item.core.model;
 
 import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.ge.model.Media;
-import io.scleropages.sentarum.item.model.impl.CombineSkuModel;
-import io.scleropages.sentarum.item.model.impl.SkuModel;
+import io.scleropages.sentarum.item.core.model.impl.CombineSkuModel;
+import io.scleropages.sentarum.item.core.model.impl.SkuModel;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import java.math.BigDecimal;

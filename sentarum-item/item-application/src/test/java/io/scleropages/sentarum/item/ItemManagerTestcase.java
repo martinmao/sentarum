@@ -25,10 +25,10 @@ import io.scleropages.sentarum.item.mgmt.ItemManager;
 import io.scleropages.sentarum.item.mgmt.PropertyManager;
 import io.scleropages.sentarum.item.mgmt.PropertyValueManager;
 import io.scleropages.sentarum.item.mgmt.SpuManager;
-import io.scleropages.sentarum.item.model.Item;
-import io.scleropages.sentarum.item.model.Spu;
-import io.scleropages.sentarum.item.model.impl.ItemModel;
-import io.scleropages.sentarum.item.model.impl.SpuModel;
+import io.scleropages.sentarum.item.core.model.Item;
+import io.scleropages.sentarum.item.core.model.Spu;
+import io.scleropages.sentarum.item.core.model.impl.ItemModel;
+import io.scleropages.sentarum.item.core.model.impl.SpuModel;
 import io.scleropages.sentarum.item.property.model.GroupedPropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
@@ -53,7 +53,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -71,7 +70,7 @@ import static io.scleropages.sentarum.item.category.model.CategoryProperty.Categ
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 //@Transactional
-public class SpuManagerTestcase {
+public class ItemManagerTestcase {
 
     @Autowired
     protected PropertyValueManager propertyValueManager;

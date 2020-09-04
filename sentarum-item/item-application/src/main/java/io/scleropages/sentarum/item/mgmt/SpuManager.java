@@ -15,10 +15,10 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
-import io.scleropages.sentarum.item.entity.SpuEntity;
-import io.scleropages.sentarum.item.entity.mapper.SpuEntityMapper;
-import io.scleropages.sentarum.item.model.Spu;
-import io.scleropages.sentarum.item.model.impl.SpuModel;
+import io.scleropages.sentarum.item.core.entity.SpuEntity;
+import io.scleropages.sentarum.item.core.entity.mapper.SpuEntityMapper;
+import io.scleropages.sentarum.item.core.model.Spu;
+import io.scleropages.sentarum.item.core.model.impl.SpuModel;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;

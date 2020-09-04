@@ -13,31 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.model.impl;
-
-import io.scleropages.sentarum.item.model.CombineSku;
-import io.scleropages.sentarum.item.model.CombineSkuEntry;
+package io.scleropages.sentarum.item.core.model;
 
 import java.util.List;
 
 /**
+ * SKU逻辑组，基于售卖需求，将一组sku打包为一个sku
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CombineSkuModel extends SkuModel implements CombineSku {
+public interface CombineSku extends Sku {
 
-
-    private List<CombineSkuEntry> entries;
-
-    public List<CombineSkuEntry> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(List<CombineSkuEntry> entries) {
-        this.entries = entries;
-    }
-
-    @Override
-    public List<CombineSkuEntry> entries() {
-        return getEntries();
-    }
+    /**
+     * 包含的一组 sku 条目.
+     *
+     * @return
+     */
+    List<CombineSkuEntry> entries();
 }

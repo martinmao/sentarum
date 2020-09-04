@@ -13,25 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity;
+package io.scleropages.sentarum.item.core.model.impl;
 
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+import io.scleropages.sentarum.item.core.model.CombineSku;
+import io.scleropages.sentarum.item.core.model.CombineSkuEntry;
 
-import javax.persistence.Entity;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import java.util.List;
 
 /**
- * referenced model:
- * <pre>
- * {@link io.scleropages.sentarum.item.model.impl.SkuModel}
- * </pre>
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Entity
-@Table(name = "item_sku")
-@SequenceGenerator(name = "item_sku_id", sequenceName = "seq_item_sku", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class SkuEntity extends AbstractSkuEntity {
+public class CombineSkuModel extends SkuModel implements CombineSku {
 
+
+    private List<CombineSkuEntry> entries;
+
+    public List<CombineSkuEntry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(List<CombineSkuEntry> entries) {
+        this.entries = entries;
+    }
+
+    @Override
+    public List<CombineSkuEntry> entries() {
+        return getEntries();
+    }
 }

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.model.impl;
+package io.scleropages.sentarum.item.core.model.impl;
 
-import io.scleropages.sentarum.item.model.CombineSkuEntry;
-import io.scleropages.sentarum.item.model.Sku;
+import io.scleropages.sentarum.item.core.model.CombineSkuEntry;
+import io.scleropages.sentarum.item.core.model.Sku;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;

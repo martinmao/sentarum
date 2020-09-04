@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.scleropages.sentarum.item.model;
+package io.scleropages.sentarum.item.core.model;
 
 
 import java.math.BigDecimal;

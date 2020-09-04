@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.item.property.entity;
 
-import io.scleropages.sentarum.item.model.Spu;
+import io.scleropages.sentarum.item.core.model.Spu;
 import io.scleropages.sentarum.item.property.model.impl.KeyPropertyValueModel;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 

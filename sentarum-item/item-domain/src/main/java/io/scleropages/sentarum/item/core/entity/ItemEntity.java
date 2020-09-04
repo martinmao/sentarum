@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity;
+package io.scleropages.sentarum.item.core.entity;
 
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Referenced model: {@link io.scleropages.sentarum.item.model.impl.ItemModel}
+ * Referenced model: {@link io.scleropages.sentarum.item.core.model.impl.ItemModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

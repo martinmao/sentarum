@@ -13,37 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity;
+package io.scleropages.sentarum.item.core.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
  * referenced model:
  * <pre>
- * {@link io.scleropages.sentarum.item.model.impl.CombineSkuModel}
+ * {@link io.scleropages.sentarum.item.core.model.impl.SkuModel}
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "item_combine_sku")
-@SequenceGenerator(name = "item_combine_sku_id", sequenceName = "seq_item_combine_sku", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class CombineSkuEntity extends AbstractSkuEntity {
+@Table(name = "item_sku")
+@SequenceGenerator(name = "item_sku_id", sequenceName = "seq_item_sku", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class SkuEntity extends AbstractSkuEntity {
 
-    private List<CombineSkuEntryEntity> entries;
-
-    @OneToMany(mappedBy = "combineSku")
-    public List<CombineSkuEntryEntity> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(List<CombineSkuEntryEntity> entries) {
-        this.entries = entries;
-    }
 }

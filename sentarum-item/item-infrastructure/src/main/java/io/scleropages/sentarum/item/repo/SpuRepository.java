@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.item.repo;
 
 import com.google.common.collect.Lists;
-import io.scleropages.sentarum.item.entity.SpuEntity;
+import io.scleropages.sentarum.item.core.entity.SpuEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository.PropertyConditionsAssembler;
 import io.scleropages.sentarum.jooq.tables.ItemSpu;

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.mapper;
+package io.scleropages.sentarum.item.core.entity.mapper;
 
-import io.scleropages.sentarum.item.entity.CombineSkuEntity;
-import io.scleropages.sentarum.item.entity.CombineSkuEntryEntity;
-import io.scleropages.sentarum.item.model.CombineSkuEntry;
-import io.scleropages.sentarum.item.model.impl.CombineSkuModel;
+import io.scleropages.sentarum.item.core.entity.CombineSkuEntity;
+import io.scleropages.sentarum.item.core.entity.CombineSkuEntryEntity;
+import io.scleropages.sentarum.item.core.model.CombineSkuEntry;
+import io.scleropages.sentarum.item.core.model.impl.CombineSkuModel;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 import org.scleropages.crud.ModelMapperRepository;

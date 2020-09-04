@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.model;
+package io.scleropages.sentarum.item.core.model;
 
 import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.ge.model.Media;

@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.item.category.model;
 
-import io.scleropages.sentarum.item.model.Item;
+import io.scleropages.sentarum.item.core.model.Item;
 
 /**
  * 与商家相关的商品的类目，例如：

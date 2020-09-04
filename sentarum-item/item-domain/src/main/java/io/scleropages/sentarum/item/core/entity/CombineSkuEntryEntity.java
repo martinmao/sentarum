@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity;
+package io.scleropages.sentarum.item.core.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
@@ -27,7 +27,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
- * referenced model: {@link io.scleropages.sentarum.item.model.impl.CombineSkuEntryModel}
+ * referenced model: {@link io.scleropages.sentarum.item.core.model.impl.CombineSkuEntryModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

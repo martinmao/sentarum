@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.item.repo;
 
-import io.scleropages.sentarum.item.entity.CombineSkuEntryEntity;
+import io.scleropages.sentarum.item.core.entity.CombineSkuEntryEntity;
 import io.scleropages.sentarum.jooq.tables.ItemCombineSkuEntry;
 import io.scleropages.sentarum.jooq.tables.records.ItemCombineSkuEntryRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;

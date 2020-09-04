@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.mapper;
+package io.scleropages.sentarum.item.core.entity.mapper;
 
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.item.category.entity.mapper.StandardCategoryEntityMapper;
 import io.scleropages.sentarum.item.category.model.StandardCategory;
-import io.scleropages.sentarum.item.entity.ItemEntity;
-import io.scleropages.sentarum.item.entity.SpuEntity;
+import io.scleropages.sentarum.item.core.entity.AbstractSkuEntity;
+import io.scleropages.sentarum.item.core.entity.ItemEntity;
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
 import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
 import io.scleropages.sentarum.item.ge.model.Media;
-import io.scleropages.sentarum.item.model.Item;
-import io.scleropages.sentarum.item.model.Spu;
-import io.scleropages.sentarum.item.model.impl.ItemModel;
+import io.scleropages.sentarum.item.core.model.Item;
+import io.scleropages.sentarum.item.core.model.Sku;
+import io.scleropages.sentarum.item.core.model.impl.SkuModel;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
-import org.mapstruct.Mapper;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.ModelMapper;
 import org.scleropages.crud.ModelMapperRepository;
@@ -38,53 +37,38 @@ import java.util.Map;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Mapper(config = ModelMapper.DefaultConfig.class)
-public interface ItemEntityMapper extends ModelMapper<ItemEntity, ItemModel> {
+public interface AbstractSkuEntityMapper<T extends AbstractSkuEntity, M extends SkuModel> extends ModelMapper<T, M> {
 
-    default Integer toOrdinal(Item.ItemType itemType) {
-        return itemType.getOrdinal();
-    }
 
-    default Item.ItemType toItemType(Integer ordinal) {
-        return Item.ItemType.getByOrdinal(ordinal);
-    }
-
-    default Integer toOrdinal(Item.SellerType sellerType) {
-        return sellerType.getOrdinal();
-    }
-
-    default Item.SellerType toSellerType(Integer ordinal) {
-        return Item.SellerType.getByOrdinal(ordinal);
-    }
-
-    default Integer toOrdinal(Item.Status status) {
-        return status.getOrdinal();
-    }
-
-    default Item.Status toStatus(Integer ordinal) {
-        return Item.Status.getByOrdinal(ordinal);
-    }
-
-    default Spu toSpu(SpuEntity entity) {
-        if (!isEntityInitialized(entity)) {
+    default Item toItem(ItemEntity itemEntity) {
+        if (!isEntityInitialized(itemEntity))
             return null;
-        }
-        return (Spu) ModelMapperRepository.getRequiredModelMapper(SpuEntityMapper.class).mapForRead(entity);
+        return (Item) ModelMapperRepository.getRequiredModelMapper(ItemEntityMapper.class).mapForRead(itemEntity);
     }
 
-    default SpuEntity toSpuEntity(Spu spu) {
+    default ItemEntity toItemEntity(Item item) {
         return null;
     }
 
-
-    default StandardCategory toCategory(StandardCategoryEntity entity){
+    default StandardCategory toCategory(StandardCategoryEntity entity) {
         if (!isEntityInitialized(entity)) {
             return null;
         }
         return (StandardCategory) ModelMapperRepository.getRequiredModelMapper(StandardCategoryEntityMapper.class).mapForRead(entity);
     }
 
-    default StandardCategoryEntity toStandardCategoryEntity(StandardCategory standardCategory){return null;}
+    default StandardCategoryEntity toStandardCategoryEntity(StandardCategory standardCategory) {
+        return null;
+    }
+
+    default Integer toOrdinal(Sku.Status status) {
+        return status.getOrdinal();
+    }
+
+    default Sku.Status toStatus(Integer ordinal) {
+        return Sku.Status.getByOrdinal(ordinal);
+    }
+
 
     default List<PropertyValue> toProperties(StructureTextEntity entity) {
         SpuEntityMapper mapper = (SpuEntityMapper) ModelMapperRepository.getRequiredModelMapper(SpuEntityMapper.class);
@@ -95,7 +79,6 @@ public interface ItemEntityMapper extends ModelMapper<ItemEntity, ItemModel> {
         SpuEntityMapper mapper = (SpuEntityMapper) ModelMapperRepository.getRequiredModelMapper(SpuEntityMapper.class);
         return mapper.toStructureTextEntity(propertyValues);
     }
-
 
     default MediaEntity toMediaEntity(Media media) {
         SpuEntityMapper mapper = (SpuEntityMapper) ModelMapperRepository.getRequiredModelMapper(SpuEntityMapper.class);
@@ -112,7 +95,6 @@ public interface ItemEntityMapper extends ModelMapper<ItemEntity, ItemModel> {
         SpuEntityMapper mapper = (SpuEntityMapper) ModelMapperRepository.getRequiredModelMapper(SpuEntityMapper.class);
         return mapper.mediaEntityListToMediaList(list);
     }
-
 
     default String additionalAttributesToPayload(Map<String, Object> additionalAttributes) {
         if (null == additionalAttributes)

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.model.impl;
+package io.scleropages.sentarum.item.core.model.impl;
 
 import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.ge.model.Media;
-import io.scleropages.sentarum.item.model.Item;
-import io.scleropages.sentarum.item.model.Spu;
+import io.scleropages.sentarum.item.core.model.Item;
+import io.scleropages.sentarum.item.core.model.Spu;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import javax.validation.constraints.NotNull;

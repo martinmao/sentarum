@@ -13,46 +13,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.model.impl;
+package io.scleropages.sentarum.item.core.model.impl;
 
 import io.scleropages.sentarum.item.category.model.StandardCategory;
 import io.scleropages.sentarum.item.ge.model.Media;
-import io.scleropages.sentarum.item.model.Item;
-import io.scleropages.sentarum.item.model.Sku;
+import io.scleropages.sentarum.item.core.model.Spu;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SkuModel implements Sku {
+public class SpuModel implements Spu {
 
     private Long id;
-    private Item item;
-    private StandardCategory category;
-    private String outerId;
+    private String name;
+    private String tag;
     private Status status;
-    private BigDecimal salesPrice;
-    private Integer quantity;
-    private List<PropertyValue> salesProperties;
+    private List<PropertyValue> keyProperties;
+    private List<PropertyValue> properties;
+    private BigDecimal marketPrice;
+    private StandardCategory category;
+    private Date marketTime;
     private List<Media> mediaList;
     private Map<String, Object> additionalAttributes;
 
-    @Null(groups = {Create.class})
-    @NotNull(groups = {Update.class})
+
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
+    @NotEmpty(groups = Create.class)
+    public String getName() {
+        return name;
+    }
+
+    @NotEmpty(groups = Create.class)
+    public String getTag() {
+        return tag;
+    }
+
+    @NotNull(groups = Create.class)
+    public Status getStatus() {
+        return status;
+    }
+
     @Null
-    public Item getItem() {
-        return item;
+    public List<PropertyValue> getKeyProperties() {
+        return keyProperties;
+    }
+
+    @Null
+    public List<PropertyValue> getProperties() {
+        return properties;
+    }
+
+    @NotNull(groups = Create.class)
+    public BigDecimal getMarketPrice() {
+        return marketPrice;
     }
 
     @Null
@@ -60,29 +87,9 @@ public class SkuModel implements Sku {
         return category;
     }
 
-    @NotEmpty(groups = {Create.class})
-    public String getOuterId() {
-        return outerId;
-    }
-
-    @NotNull(groups = {Create.class})
-    public Status getStatus() {
-        return status;
-    }
-
-    @NotNull(groups = {Create.class})
-    public BigDecimal getSalesPrice() {
-        return salesPrice;
-    }
-
-    @NotNull(groups = {Create.class})
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    @Null
-    public List<PropertyValue> getSalesProperties() {
-        return salesProperties;
+    @NotNull(groups = Create.class)
+    public Date getMarketTime() {
+        return marketTime;
     }
 
     @Null
@@ -98,32 +105,36 @@ public class SkuModel implements Sku {
         this.id = id;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setCategory(StandardCategory category) {
-        this.category = category;
-    }
-
-    public void setOuterId(String outerId) {
-        this.outerId = outerId;
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    public void setSalesPrice(BigDecimal salesPrice) {
-        this.salesPrice = salesPrice;
+    public void setKeyProperties(List<PropertyValue> keyProperties) {
+        this.keyProperties = keyProperties;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setProperties(List<PropertyValue> properties) {
+        this.properties = properties;
     }
 
-    public void setSalesProperties(List<PropertyValue> salesProperties) {
-        this.salesProperties = salesProperties;
+    public void setMarketPrice(BigDecimal marketPrice) {
+        this.marketPrice = marketPrice;
+    }
+
+    public void setCategory(StandardCategory category) {
+        this.category = category;
+    }
+
+    public void setMarketTime(Date marketTime) {
+        this.marketTime = marketTime;
     }
 
     public void setMediaList(List<Media> mediaList) {
@@ -140,18 +151,13 @@ public class SkuModel implements Sku {
     }
 
     @Override
-    public Item item() {
-        return getItem();
+    public String name() {
+        return getName();
     }
 
     @Override
-    public StandardCategory category() {
-        return getCategory();
-    }
-
-    @Override
-    public String outerId() {
-        return getOuterId();
+    public String tag() {
+        return getTag();
     }
 
     @Override
@@ -160,18 +166,28 @@ public class SkuModel implements Sku {
     }
 
     @Override
-    public BigDecimal salesPrice() {
-        return getSalesPrice();
+    public List<PropertyValue> keyProperties() {
+        return getKeyProperties();
     }
 
     @Override
-    public Integer quantity() {
-        return getQuantity();
+    public List<PropertyValue> properties() {
+        return getProperties();
     }
 
     @Override
-    public List<PropertyValue> salesProperties() {
-        return getSalesProperties();
+    public BigDecimal marketPrice() {
+        return getMarketPrice();
+    }
+
+    @Override
+    public StandardCategory category() {
+        return getCategory();
+    }
+
+    @Override
+    public Date marketTime() {
+        return getMarketTime();
     }
 
     @Override

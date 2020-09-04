@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.entity.mapper;
+package io.scleropages.sentarum.item.core.entity.mapper;
 
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.item.category.entity.mapper.StandardCategoryEntityMapper;
 import io.scleropages.sentarum.item.category.model.StandardCategory;
-import io.scleropages.sentarum.item.entity.SpuEntity;
+import io.scleropages.sentarum.item.core.entity.SpuEntity;
 import io.scleropages.sentarum.item.ge.entity.MediaEntity;
 import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
 import io.scleropages.sentarum.item.ge.entity.mapper.MediaEntityMapper;
 import io.scleropages.sentarum.item.ge.model.Media;
 import io.scleropages.sentarum.item.ge.model.StructureText;
-import io.scleropages.sentarum.item.model.Spu;
-import io.scleropages.sentarum.item.model.impl.SpuModel;
+import io.scleropages.sentarum.item.core.model.Spu;
+import io.scleropages.sentarum.item.core.model.impl.SpuModel;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 import io.scleropages.sentarum.item.property.model.impl.PropertyValueModel;
 import org.mapstruct.Mapper;

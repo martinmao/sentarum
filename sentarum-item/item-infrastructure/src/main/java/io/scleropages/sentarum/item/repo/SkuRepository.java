@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.item.repo;
 
-import io.scleropages.sentarum.item.entity.SkuEntity;
+import io.scleropages.sentarum.item.core.entity.SkuEntity;
 import io.scleropages.sentarum.jooq.tables.ItemSku;
 import io.scleropages.sentarum.jooq.tables.records.ItemSkuRecord;
 
