@@ -11,6 +11,7 @@
         <module>sentarum-item</module>
         <module>sentarum-search</module>
         <module>sentarum-trading</module>
+        <module>sentarum-promotion</module>
     </modules>
     <packaging>pom</packaging>
 
