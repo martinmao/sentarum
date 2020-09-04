@@ -20,8 +20,6 @@ import io.scleropages.sentarum.item.property.entity.PropertyMetaEntity;
 import io.scleropages.sentarum.item.property.entity.ValuesSourceEntity;
 import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.Input;
-import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.vs.AbstractValuesSource;
@@ -31,6 +29,9 @@ import org.scleropages.crud.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static io.scleropages.sentarum.item.property.model.PropertyMetadata.PropertyStructureType;
+import static io.scleropages.sentarum.item.property.model.PropertyMetadata.PropertyValueType;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -49,16 +50,16 @@ public interface PropertyMetaEntityMapper extends ModelMapper<PropertyMetaEntity
     }
 
 
-    default Integer toOrdinal(PropertyMetadata.PropertyStructureType propertyStructureType) {
+    default Integer toOrdinal(PropertyStructureType propertyStructureType) {
         if (null == propertyStructureType)
             return null;
         return propertyStructureType.getOrdinal();
     }
 
-    default PropertyMetadata.PropertyStructureType toPropertyStructureType(Integer ordinal) {
+    default PropertyStructureType toPropertyStructureType(Integer ordinal) {
         if (null == ordinal)
             return null;
-        return PropertyMetadata.PropertyStructureType.getByOrdinal(ordinal);
+        return PropertyStructureType.getByOrdinal(ordinal);
     }
 
 

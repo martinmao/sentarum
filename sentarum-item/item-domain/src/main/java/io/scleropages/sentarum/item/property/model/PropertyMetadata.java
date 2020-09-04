@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.item.property.model;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,65 +27,6 @@ import java.util.Map;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface PropertyMetadata {
-
-    /**
-     * 属性结构的分类
-     */
-    enum PropertyStructureType {
-        /**
-         * 扁平的属性，每个属性各自作为一个维度与其他属性是平行的.
-         */
-        FLAT_PROPERTY(1, "扁平属性"),
-
-        /**
-         * 存在层级的属性,root节点,其属性值会关联一组其他属性（ {@link #HIERARCHY_NODE_PROPERTY} 或 {@link #HIERARCHY_LEAF_PROPERTY} ）
-         * 这种属性结构的划分是为了更好的进行属性分类，导航。避免属性过多而无法穷举筛选的情况.
-         * 例如品牌，系列，型号这三种属性就存在层次关系(品牌确定系列，系列确定型号)，类似还有款式-尺码-颜色同样存在类似约束
-         */
-        HIERARCHY_ROOT_PROPERTY(2, "层级属性-根"),
-        /**
-         * 存在层级的属性，node节点，其属性值会关联一组其他属性 （ {@link #HIERARCHY_NODE_PROPERTY} 或 {@link #HIERARCHY_LEAF_PROPERTY} ）.
-         */
-        HIERARCHY_NODE_PROPERTY(3, "层级属性-节点"),
-        /**
-         * 存在层级的属性，leaf节点，其属性值作为整个层次的最终叶子节点.
-         */
-        HIERARCHY_LEAF_PROPERTY(4, "层级属性-叶");
-
-        private final int ordinal;
-        private final String tag;
-
-        PropertyStructureType(int ordinal, String tag) {
-            this.ordinal = ordinal;
-            this.tag = tag;
-        }
-
-        public int getOrdinal() {
-            return ordinal;
-        }
-
-        public String getTag() {
-            return tag;
-        }
-
-        private static final Map<String, PropertyStructureType> nameMappings = new HashMap<>();
-        private static final Map<Integer, PropertyStructureType> ordinalMappings = new HashMap<>();
-
-        static {
-            for (PropertyStructureType structureType : PropertyStructureType.values()) {
-                nameMappings.put(structureType.name(), structureType);
-                ordinalMappings.put(structureType.getOrdinal(), structureType);
-            }
-        }
-
-        public static PropertyStructureType getByName(String name) {
-            return (name != null ? nameMappings.get(name) : null);
-        }
-
-        public static PropertyStructureType getByOrdinal(int ordinal) {
-            return ordinalMappings.get(ordinal);
-        }
-    }
 
     /**
      * 标识
@@ -181,4 +124,183 @@ public interface PropertyMetadata {
      * @return
      */
     Long refId();
+
+
+    /**
+     * 属性值类型定义
+     *
+     * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
+     */
+    enum PropertyValueType {
+
+        /**
+         * INTEGER(1, Integer.class, "整数")
+         */
+        INTEGER(1, Integer.class, "整数"),
+        /**
+         * LONG(2, Long.class, "长整数")
+         */
+        LONG(2, Long.class, "长整数"),
+        /**
+         * TEXT(3, String.class, "文本")
+         */
+        TEXT(3, String.class, "文本"),
+        /**
+         * DATE(4, Date.class, "日期")
+         */
+        DATE(4, Date.class, "日期"),
+        /**
+         * DECIMAL(5, BigDecimal.class, "小数")
+         */
+        DECIMAL(5, BigDecimal.class, "小数"),
+        /**
+         * BOOLEAN(6, Boolean.class, "是否")
+         */
+        BOOLEAN(6, Boolean.class, "是否"),
+        /**
+         * STRUCTURE_TEXT(7, String.class, "结构化文本")
+         */
+        //DEV tips: 存储到单独的clob表, 表结构需要包含media type（json,html,textarea....）
+        STRUCTURE_TEXT(7, String.class, "结构化文本"),
+        /**
+         * BYTE_ARRAY(8, Byte[].class, "字节序列")
+         */
+        //DEV tips: 存储到单独的blob byte array表,表结构需包含二进制序列化协议
+        BYTE_ARRAY(8, Byte[].class, "字节序列"),
+        /**
+         * PROPERTY_REF(9, Long.class, "属性关联")
+         */
+        //DEV tips: 属性值关联其他属性，型号->系列->品牌
+        PROPERTY_REF(9, Long.class, "属性关联");
+
+
+        private static final Map<String, PropertyValueType> nameMappings = new HashMap<>(18);
+        private static final Map<Integer, PropertyValueType> ordinalMappings = new HashMap<>(18);
+
+
+        static {
+            for (PropertyValueType propertyValueType : PropertyValueType.values()) {
+                nameMappings.put(propertyValueType.name(), propertyValueType);
+                ordinalMappings.put(propertyValueType.getOrdinal(), propertyValueType);
+            }
+        }
+
+        /**
+         * return true if given valueType is check value.
+         *
+         * @param valueType
+         * @return
+         */
+        public static boolean isCheckValueType(PropertyValueType valueType) {
+            return valueType == PROPERTY_REF || valueType == INTEGER || valueType == LONG;
+        }
+
+        private final int ordinal;
+        /**
+         * 匹配的java类型
+         */
+        private final Class javaType;
+        /**
+         * 显示名.
+         */
+        private final String tag;
+
+        PropertyValueType(int ordinal, Class javaType, String tag) {
+            this.ordinal = ordinal;
+            this.javaType = javaType;
+            this.tag = tag;
+        }
+
+
+        public static PropertyValueType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static PropertyValueType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
+
+
+        /**
+         * 返回显示指定的 ordinal
+         *
+         * @return
+         */
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        /**
+         * 返回对应的java类型
+         *
+         * @return
+         */
+        public Class getJavaType() {
+            return javaType;
+        }
+
+
+        public String getTag() {
+            return tag;
+        }}
+
+
+    /**
+     * 属性结构的分类
+     */
+    enum PropertyStructureType {
+        /**
+         * 扁平的属性，每个属性各自作为一个维度与其他属性是平行的.
+         */
+        FLAT_PROPERTY(1, "扁平属性"),
+
+        /**
+         * 存在层级的属性,root节点,其属性值会关联一组其他属性（ {@link #HIERARCHY_NODE_PROPERTY} 或 {@link #HIERARCHY_LEAF_PROPERTY} ）
+         * 这种属性结构的划分是为了更好的进行属性分类，导航。避免属性过多而无法穷举筛选的情况.
+         * 例如品牌，系列，型号这三种属性就存在层次关系(品牌确定系列，系列确定型号)，类似还有款式-尺码-颜色同样存在类似约束
+         */
+        HIERARCHY_ROOT_PROPERTY(2, "层级属性-根"),
+        /**
+         * 存在层级的属性，node节点，其属性值会关联一组其他属性 （ {@link #HIERARCHY_NODE_PROPERTY} 或 {@link #HIERARCHY_LEAF_PROPERTY} ）.
+         */
+        HIERARCHY_NODE_PROPERTY(3, "层级属性-节点"),
+        /**
+         * 存在层级的属性，leaf节点，其属性值作为整个层次的最终叶子节点.
+         */
+        HIERARCHY_LEAF_PROPERTY(4, "层级属性-叶");
+
+        private final int ordinal;
+        private final String tag;
+
+        PropertyStructureType(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        private static final Map<String, PropertyStructureType> nameMappings = new HashMap<>();
+        private static final Map<Integer, PropertyStructureType> ordinalMappings = new HashMap<>();
+
+        static {
+            for (PropertyStructureType structureType : PropertyStructureType.values()) {
+                nameMappings.put(structureType.name(), structureType);
+                ordinalMappings.put(structureType.getOrdinal(), structureType);
+            }
+        }
+
+        public static PropertyStructureType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static PropertyStructureType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
+    }
 }

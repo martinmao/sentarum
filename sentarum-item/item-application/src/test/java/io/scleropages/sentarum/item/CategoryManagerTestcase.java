@@ -28,7 +28,7 @@ import io.scleropages.sentarum.item.mgmt.CategoryManager;
 import io.scleropages.sentarum.item.mgmt.CategoryNavigator;
 import io.scleropages.sentarum.item.mgmt.PropertyManager;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValueType;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.impl.PropertyMetadataModel;
 import io.scleropages.sentarum.item.property.model.impl.SourceValueModel;
 import io.scleropages.sentarum.item.property.model.input.MultiCheck;

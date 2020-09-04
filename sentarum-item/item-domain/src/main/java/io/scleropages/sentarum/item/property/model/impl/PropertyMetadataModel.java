@@ -18,7 +18,6 @@ package io.scleropages.sentarum.item.property.model.impl;
 import io.scleropages.sentarum.item.property.model.Constraint;
 import io.scleropages.sentarum.item.property.model.Input;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import org.springframework.core.OrderComparator;
 import org.springframework.util.Assert;

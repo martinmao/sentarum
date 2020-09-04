@@ -18,7 +18,7 @@ package io.scleropages.sentarum.item.property;
 
 import com.google.common.collect.Lists;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValueType;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata.PropertyValueType;
 import io.scleropages.sentarum.item.property.model.ValuesSource;
 import io.scleropages.sentarum.item.property.model.constraint.ConstraintDepends;
 import io.scleropages.sentarum.item.property.model.constraint.Max;

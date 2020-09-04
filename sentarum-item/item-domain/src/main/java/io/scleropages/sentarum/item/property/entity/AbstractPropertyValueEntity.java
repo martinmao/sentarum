@@ -18,7 +18,7 @@ package io.scleropages.sentarum.item.property.entity;
 import io.scleropages.sentarum.item.ge.entity.ByteArrayEntity;
 import io.scleropages.sentarum.item.ge.entity.StructureTextEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
-import io.scleropages.sentarum.item.property.model.PropertyValueType;
+import io.scleropages.sentarum.item.property.model.PropertyMetadata.PropertyValueType;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
