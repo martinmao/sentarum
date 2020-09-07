@@ -50,10 +50,6 @@ public interface Coupon {
     Status status();
 
 
-
-
-
-
     /**
      * 券状态
      */

@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.coupon.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
