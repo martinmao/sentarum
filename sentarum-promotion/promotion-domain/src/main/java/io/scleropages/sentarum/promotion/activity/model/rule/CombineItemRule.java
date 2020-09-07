@@ -16,10 +16,29 @@
 package io.scleropages.sentarum.promotion.activity.model.rule;
 
 /**
- * 套装促销，组合商品促销或打包促销，即指定一组商品设置一个总的促销价
+ * <pre>
+ * 套装促销，组合商品促销或打包促销，即指定一组商品设置一个总的促销价，其计算规则为总价按 {@link #getAmount()}计 或 (单价*数量+单价*数量...)* {@link #getDiscount()}记
+ * 多买优惠促销，线下促销场景较为多见，例如M元任选N件，或M件N折
+ * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class CombineItemRule extends ItemRule {
-    
+
+    /**
+     * 仅适用于多买优惠促销
+     * <pre>
+     * M元任选N件时：用户在主商品池中选择该数量的商品计价为 {@link #getAmount()}
+     * M件N折时：用户在主商品池中选择该数量的商品计价为 (单价*数量+单价*数量...)* {@link #getDiscount()}
+     * </pre>
+     */
+    private Integer num;
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
 }
