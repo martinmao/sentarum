@@ -287,6 +287,13 @@ public interface Activity {
 
     /**
      * 活动状态
+     * <pre>
+     *     SAVED->SUBMIT->APPROVING->READY->RUNNING->FINISHED
+     *                        |               |
+     *                        |->REJECT       |->SUSPEND->RUNNING
+     *                                        |
+     *                                        |->TERMINATE
+     * </pre>
      */
     enum Status {
 

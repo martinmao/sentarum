@@ -27,6 +27,7 @@
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
         <spring-cloud-aliababa.version>2.2.1.RELEASE</spring-cloud-aliababa.version>
         <spring-cloud.version>Greenwich.SR6</spring-cloud.version>
+        <spring-statemachine.version>2.2.0.RELEASE</spring-statemachine.version>
         <druid.version>1.1.21</druid.version>
         <shardingsphere.version>4.0.0-RC3</shardingsphere.version>
         <guava.version>27.0.1-jre</guava.version>
@@ -58,6 +59,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.statemachine</groupId>
+                <artifactId>spring-statemachine-bom</artifactId>
+                <version>${spring-statemachine.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
