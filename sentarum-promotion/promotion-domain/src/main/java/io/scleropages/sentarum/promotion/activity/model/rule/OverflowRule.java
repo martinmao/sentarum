@@ -15,10 +15,9 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.rule;
 
-import io.scleropages.sentarum.promotion.activity.model.PromotionRule;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,60 +25,85 @@ import java.util.Map;
  * <pre>
  *     支持以下规则定义：
  *     金额维度：
- *     固定满减规则：满金额时触发，例如：满100元减10元，当满200时，则减20元, {@link #overCycle()} 参数可以控制是否支持满元上不封顶
- *     阶梯满减规则：满100减10，满300减50，满500减80，暂不支持 {@link #overCycle()}
- *     固定满赠规则：满100送牙膏,当满200时，送两只牙膏 {@link #overCycle()} 参数可以控制是否支持满元上不封顶
- *     阶梯满赠规则：满100送牙膏，满200送牙刷，满300+50送电动牙刷, 暂不支持 {@link #overCycle()}
+ *     固定满减规则：满金额时触发，例如：满100元减10元，当满200时，则减20元, {@link #getOverCycle()} 参数可以控制是否支持满元上不封顶
+ *     阶梯满减规则：满100减10，满300减50，满500减80，暂不支持 {@link #getOverCycle()}
+ *     固定满赠规则：满100送牙膏,当满200时，送两只牙膏 {@link #getOverCycle()} 参数可以控制是否支持满元上不封顶
+ *     阶梯满赠规则：满100送牙膏，满200送牙刷，满300+50送电动牙刷, 暂不支持 {@link #getOverCycle()}
  *
  *     商品数量维度：
- *     固定满件减规则：满件数时触发，例如：满10件减10元，当满20件时，则减20元, {@link #overCycle()} 参数可以控制是否支持满元上不封顶
- *     阶梯满件减规则：满10件减10，满30件减50，满50件减80，暂不支持 {@link #overCycle()}
- *     固定满件赠规则：满10件送牙膏,当满20件时，送两只牙膏 {@link #overCycle()} 参数可以控制是否支持满元上不封顶
- *     阶梯满件赠规则：满10件送牙膏，满20件送牙刷，满30件+50送电动牙刷,不支持 {@link #overCycle()}
+ *     固定满件减规则：满件数时触发，例如：满10件减10元，当满20件时，则减20元, {@link #getOverCycle()} 参数可以控制是否支持满元上不封顶
+ *     阶梯满件减规则：满10件减10，满30件减50，满50件减80，暂不支持 {@link #getOverCycle()}
+ *     固定满件赠规则：满10件送牙膏,当满20件时，送两只牙膏 {@link #getOverCycle()} 参数可以控制是否支持满元上不封顶
+ *     阶梯满件赠规则：满10件送牙膏，满20件送牙刷，满30件+50送电动牙刷,不支持 {@link #getOverCycle()}
  *
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface OverflowRule extends PromotionRule {
+public class OverflowRule extends AbstractPromotionRule {
+
 
     /**
      * 触发条件
      *
      * @return
      */
-    OverCondition overCondition();
+    private OverCondition overCondition;
 
     /**
      * 触发规则的结果
      *
      * @return
      */
-    OverResult overResult();
-
+    private OverResult overResult;
     /**
-     * 满金额 {@link #overCondition()}=={@link OverCondition#AMOUNT_OVER_FIX}||{@link OverCondition#AMOUNT_OVER_STEP}时有效
-     *
-     * @return
-     */
-    BigDecimal overAmount();
-
-    /**
-     * 满件数量, {@link #overCondition()}=={@link OverCondition#ITEM_COUNT_OVER}时有效
-     *
-     * @return
-     */
-    Integer itemOverCount();
-
-
-    /**
-     * 是否支持循环满减, {@link #overCondition()}=={@link OverCondition#AMOUNT_OVER_FIX} || {@link OverCondition#ITEM_COUNT_OVER} 时有效，true为上不封顶，false为仅一次<br>
+     * 是否支持循环满减, {@link #getOverCondition()}=={@link OverCondition#AMOUNT_OVER_FIX} || {@link OverCondition#ITEM_COUNT_OVER} 时有效，true为上不封顶，false为仅一次<br>
      * true=满100元减10元，当满200时，则减20元,false=满100元减10元，当满200时，还是减10元
      *
      * @return
      */
-    Boolean overCycle();
+    private Boolean overCycle;
 
+
+    /**
+     * 一组与当前规则绑定的促销设置
+     */
+    private List<? extends OverResultConfig> overResultConfigs;
+
+
+    public OverCondition getOverCondition() {
+        return overCondition;
+    }
+
+    public void setOverCondition(OverCondition overCondition) {
+        this.overCondition = overCondition;
+    }
+
+
+    public OverResult getOverResult() {
+        return overResult;
+    }
+
+    public void setOverResult(OverResult overResult) {
+        this.overResult = overResult;
+    }
+
+    public Boolean getOverCycle() {
+        return overCycle;
+    }
+
+    public void setOverCycle(Boolean overCycle) {
+        this.overCycle = overCycle;
+    }
+
+
+    public List<? extends OverResultConfig> getOverResultConfigs() {
+        return overResultConfigs;
+    }
+
+    public void setOverResultConfigs(List<? extends OverResultConfig> overResultConfigs) {
+        this.overResultConfigs = overResultConfigs;
+    }
 
     /**
      * 规则触发条件
@@ -91,13 +115,9 @@ public interface OverflowRule extends PromotionRule {
         ITEM_COUNT_OVER(3, "满件数", "满指定件数商品时触发");
 
         private final int ordinal;
-        /**
-         * 显示名.
-         */
+
         private final String tag;
-        /**
-         * 描述
-         */
+
         private final String desc;
 
         OverCondition(int ordinal, String tag, String desc) {
@@ -145,24 +165,23 @@ public interface OverflowRule extends PromotionRule {
      */
     enum OverResult {
 
-        DECREASE_AMOUNT(0, "减金额", "满足条件后减少金额，例如满100减5元"),
-        DISCOUNT(1, "打折扣", "满足条件后打折,例如满300打8折"),
-        SEND_GIFT(2, "发赠品", "满足条件后发放赠品，例如满200送牙刷");
+        DECREASE_AMOUNT(0, "减金额", "满足条件后减少金额，例如满100减5元", DecreaseAmount.class),
+        DISCOUNT(1, "折扣", "满足条件后打折,例如满300打8折", DecreaseDiscount.class),
+        SEND_GIFT(2, "发赠品", "满足条件后发放赠品，例如满200送牙刷", SendGift.class);
 
         private final int ordinal;
-        /**
-         * 显示名.
-         */
+
         private final String tag;
-        /**
-         * 描述
-         */
+
         private final String desc;
 
-        OverResult(int ordinal, String tag, String desc) {
+        private final Class overResultConfigClass;
+
+        OverResult(int ordinal, String tag, String desc, Class overResultConfigClass) {
             this.ordinal = ordinal;
             this.tag = tag;
             this.desc = desc;
+            this.overResultConfigClass = overResultConfigClass;
         }
 
         public int getOrdinal() {
@@ -177,6 +196,9 @@ public interface OverflowRule extends PromotionRule {
             return desc;
         }
 
+        public Class getOverResultConfigClass() {
+            return overResultConfigClass;
+        }
 
         private static final Map<String, OverResult> nameMappings = new HashMap<>();
         private static final Map<Integer, OverResult> ordinalMappings = new HashMap<>();
@@ -196,22 +218,42 @@ public interface OverflowRule extends PromotionRule {
         public static OverResult getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
         }
+
+    }
+
+    /**
+     * 标识接口，用于标识各种促销结果配置
+     */
+    public interface OverResultConfig {
+
+        /**
+         * map to {@link OverResult#ordinal}
+         *
+         * @return
+         */
+        Integer ordinal();
     }
 
 
     /**
-     * 满减金额设置
+     * 满减金额设置 for {@link OverResult}
      */
-    class DecreaseAmount {
+    class DecreaseAmount implements OverResultConfig {
 
         /**
-         * 满额
+         * 满金额 {@link #getOverCondition()}=={@link OverCondition#AMOUNT_OVER_FIX}||{@link OverCondition#AMOUNT_OVER_STEP}时有效
          */
         private BigDecimal overAmount;
+
         /**
          * 减额
          */
         private BigDecimal decreaseAmount;
+
+        /**
+         * 满件数量, {@link #getOverCondition()}=={@link OverCondition#ITEM_COUNT_OVER}时有效
+         */
+        private Integer itemOverCount;
 
         public BigDecimal getOverAmount() {
             return overAmount;
@@ -228,21 +270,42 @@ public interface OverflowRule extends PromotionRule {
         public void setDecreaseAmount(BigDecimal decreaseAmount) {
             this.decreaseAmount = decreaseAmount;
         }
+
+
+        public Integer getItemOverCount() {
+            return itemOverCount;
+        }
+
+        public void setItemOverCount(Integer itemOverCount) {
+            this.itemOverCount = itemOverCount;
+        }
+
+        @Override
+        public Integer ordinal() {
+            return 0;
+        }
     }
 
 
     /**
-     * 满打折设置
+     * 满打折设置 for {@link OverResult}
      */
-    class DecreaseDiscount {
+    public static class DecreaseDiscount implements OverResultConfig {
+
         /**
-         * 满额
+         * 满金额 {@link #getOverCondition()}=={@link OverCondition#AMOUNT_OVER_FIX}||{@link OverCondition#AMOUNT_OVER_STEP}时有效
          */
         private BigDecimal overAmount;
+
         /**
          * 折扣
          */
         private BigDecimal discount;
+
+        /**
+         * 满件数量, {@link #getOverCondition()}=={@link OverCondition#ITEM_COUNT_OVER}时有效
+         */
+        private Integer itemOverCount;
 
         public BigDecimal getOverAmount() {
             return overAmount;
@@ -259,8 +322,102 @@ public interface OverflowRule extends PromotionRule {
         public void setDiscount(BigDecimal discount) {
             this.discount = discount;
         }
+
+        public Integer getItemOverCount() {
+            return itemOverCount;
+        }
+
+        public void setItemOverCount(Integer itemOverCount) {
+            this.itemOverCount = itemOverCount;
+        }
+
+        @Override
+        public Integer ordinal() {
+            return 1;
+        }
     }
 
 
+    /**
+     * 发赠品设置 for {@link OverResult}
+     */
+    public static class SendGift implements OverResultConfig {
+
+        /**
+         * 满金额 {@link #getOverCondition()}=={@link OverCondition#AMOUNT_OVER_FIX}||{@link OverCondition#AMOUNT_OVER_STEP}时有效
+         */
+        private BigDecimal overAmount;
+
+        /**
+         * 满件数量, {@link #getOverCondition()}=={@link OverCondition#ITEM_COUNT_OVER}时有效
+         */
+        private Integer itemOverCount;
+
+        /**
+         * 赠品详情
+         */
+        private List<SendGiftDetail> sendGiftDetails;
+
+        public BigDecimal getOverAmount() {
+            return overAmount;
+        }
+
+        public void setOverAmount(BigDecimal overAmount) {
+            this.overAmount = overAmount;
+        }
+
+        public Integer getItemOverCount() {
+            return itemOverCount;
+        }
+
+        public void setItemOverCount(Integer itemOverCount) {
+            this.itemOverCount = itemOverCount;
+        }
+
+        public List<SendGiftDetail> getSendGiftDetails() {
+            return sendGiftDetails;
+        }
+
+        public void setSendGiftDetails(List<SendGiftDetail> sendGiftDetails) {
+            this.sendGiftDetails = sendGiftDetails;
+        }
+
+        @Override
+        public Integer ordinal() {
+            return 2;
+        }
+    }
+
+    /**
+     * 发赠品详情
+     */
+    public static class SendGiftDetail {
+
+        /**
+         * 赠品id
+         */
+        private Long giftId;
+        /**
+         * 赠品数量
+         */
+        private Integer num;
+
+
+        public Long getGiftId() {
+            return giftId;
+        }
+
+        public void setGiftId(Long giftId) {
+            this.giftId = giftId;
+        }
+
+        public Integer getNum() {
+            return num;
+        }
+
+        public void setNum(Integer num) {
+            this.num = num;
+        }
+    }
 }
 
