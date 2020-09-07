@@ -255,18 +255,38 @@ public interface Item {
     }
 
 
+    /**
+     * 商品状态
+     * <pre>
+     *     SAVED->SUBMIT->APPROVING->READY->ONLINE->TERMINATE
+     *              ^         |               |
+     *              |         |->REJECT       |->OFFLINE->ONLINE
+     *              |               |
+     *              ----------------|
+     *
+     * </pre>
+     */
     enum Status {
 
-        VALID(1, "有效"), INVALID(2, "无效");
+        SAVED(0, "已保存", "商品已保存"),
+        SUBMIT(1, "提交", "商品提交审核"),
+        APPROVING(2, "审核中", "活动正在审核中..."),
+        READY(3, "就绪", "审核通过，商品就绪，等待卖家上架"),
+        REJECT(4, "拒绝", "审核不通过，商品被驳回"),
+        ONLINE(5, "上架", "商品上架，可进行售卖"),
+        OFFLINE(6, "下架", "商品下架，暂时不可售卖"),
+        TERMINATE(7, "不可用", "商品终止售卖");
 
 
-        Status(int ordinal, String tag) {
+        Status(int ordinal, String tag, String desc) {
             this.ordinal = ordinal;
             this.tag = tag;
+            this.desc = desc;
         }
 
         private final int ordinal;
         private final String tag;
+        private final String desc;
 
         public int getOrdinal() {
             return ordinal;
@@ -274,6 +294,10 @@ public interface Item {
 
         public String getTag() {
             return tag;
+        }
+
+        public String getDesc() {
+            return desc;
         }
 
         private static final Map<String, Status> nameMappings = new HashMap<>();
