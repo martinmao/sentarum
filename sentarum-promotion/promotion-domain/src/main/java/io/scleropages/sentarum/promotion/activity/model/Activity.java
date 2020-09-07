@@ -122,11 +122,6 @@ public interface Activity {
 
 
 
-
-
-
-
-
     /**
      * 参与渠道
      */
