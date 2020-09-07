@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
+package io.scleropages.sentarum.promotion.activity.model.rule.item;
 
 /**
- * Base class of promotion activity rule.
+ * 指定单品参与促销
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Promotion {
+public class SpecifyItemRule extends AbstractItemRule {
 
-    /**
-     * 唯一标识
-     *
-     * @return
-     */
-    Long id();
-
-    /**
-     * 关联的活动
-     *
-     * @return
-     */
-    Activity activity();
 }

@@ -15,10 +15,42 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.rule;
 
+import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.activity.model.PromotionRule;
+
 /**
- * 套装促销，组合商品促销或打包促销，即指定一组商品设置一个总的促销价
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CombineItemPromotion extends ItemPromotion {
+public abstract class AbstractPromotionRule implements PromotionRule {
+
+
+    private Long id;
+
+    private Activity activity;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
+
+    @Override
+    public Long id() {
+        return getId();
+    }
+
+    @Override
+    public Activity activity() {
+        return getActivity();
+    }
 }

@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule;
+package io.scleropages.sentarum.promotion.activity.model.rule.item;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.Promotion;
+import io.scleropages.sentarum.promotion.activity.model.ItemRule;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class AbstractPromotion implements Promotion {
+public abstract class AbstractItemRule implements ItemRule {
 
     private Long id;
-
     private Activity activity;
+    private List<Long> associatedIds;
+
+    public List<Long> getAssociatedIds() {
+        return associatedIds;
+    }
+
+    public void setAssociatedIds(List<Long> associatedIds) {
+        this.associatedIds = associatedIds;
+    }
 
     public Long getId() {
         return id;
@@ -51,5 +61,10 @@ public abstract class AbstractPromotion implements Promotion {
     @Override
     public Activity activity() {
         return getActivity();
+    }
+
+    @Override
+    public List<Long> associatedIds() {
+        return getAssociatedIds();
     }
 }

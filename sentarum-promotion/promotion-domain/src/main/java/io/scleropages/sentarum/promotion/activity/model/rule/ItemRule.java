@@ -15,10 +15,12 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.rule;
 
+import io.scleropages.sentarum.promotion.activity.model.Activity;
+
 import java.math.BigDecimal;
 
 /**
- * 单品促销，直接对单个单品设置促销价，或一组单品设置折扣
+ * 单品促销规则定义，直接对单个单品设置促销价，或一组单品设置折扣
  * <pre>
  * NOTE：
  * 如果要设置促销价，必须确保 {@link io.scleropages.sentarum.promotion.activity.model.Activity}中关联的 item只能有一个
@@ -27,24 +29,45 @@ import java.math.BigDecimal;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ItemPromotion extends AbstractPromotion {
+public class ItemRule extends AbstractPromotionRule {
 
     private BigDecimal amount;
 
     private BigDecimal discount;
 
+    /**
+     * return amount of single item associated from {@link Activity#itemRule()}.
+     *
+     * @return
+     */
     public BigDecimal getAmount() {
         return amount;
     }
 
+    /**
+     * set amount of single item associated from {@link Activity#itemRule()}.
+     *
+     * @param amount
+     */
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
+    /**
+     * return discount of multiple items associated from {@link Activity#itemRule()}.
+     *
+     * @return
+     */
     public BigDecimal getDiscount() {
         return discount;
     }
 
+
+    /**
+     * set discount of multiple items associated from {@link Activity#itemRule()}.
+     *
+     * @param discount
+     */
     public void setDiscount(BigDecimal discount) {
         this.discount = discount;
     }

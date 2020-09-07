@@ -106,11 +106,25 @@ public interface Activity {
 
 
     /**
-     * 活动规则
+     * 促销规则
      *
      * @return
      */
-    Promotion activityRule();
+    PromotionRule promotionRule();
+
+
+    /**
+     * 促销商品规则
+     *
+     * @return
+     */
+    ItemRule itemRule();
+
+
+
+
+
+
 
 
     /**
