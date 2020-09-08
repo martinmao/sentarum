@@ -15,14 +15,12 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import java.util.List;
-
 /**
- * 促销商品规则定义，其具体绑定规则参考子类
+ * 该接口确定商品的来源
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemRule {
+public interface ItemSource {
 
     /**
      * 唯一标识
@@ -37,11 +35,4 @@ public interface ItemRule {
      * @return
      */
     Activity activity();
-
-    /**
-     * 关联的id列表，id来源可以是单品id，品牌id，或 类目id，参考 {@link Activity#participateItemRange()}
-     *
-     * @return
-     */
-    List<Long> associatedIds();
 }

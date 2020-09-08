@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
+import io.scleropages.sentarum.promotion.rule.model.PromotionRule;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,13 +71,6 @@ public interface Activity {
     Status status();
 
     /**
-     * 参与渠道
-     *
-     * @return
-     */
-    ParticipateChannel participateChannel();
-
-    /**
      * 参与商品范围
      *
      * @return
@@ -118,68 +113,8 @@ public interface Activity {
      *
      * @return
      */
-    ItemRule itemRule();
+    ItemSource itemSource();
 
-
-
-    /**
-     * 参与渠道
-     */
-    enum ParticipateChannel {
-
-        ALL(0, "全平台", "全平台参与活动"),
-        APP_MALL(1, "APP商城", "该活动仅支持app商城"),
-        PC_MALL(2, "PC商城", "该活动仅支持pc商城"),
-        WE_CHAT_MALL(3, "微信商城", "该活动仅支持微信商城"),
-        SELLER_SHOP(4, "商家店铺", "平台商家自建活动");
-
-        private final int ordinal;
-        /**
-         * 显示名.
-         */
-        private final String tag;
-        /**
-         * 描述
-         */
-        private final String desc;
-
-        ParticipateChannel(int ordinal, String tag, String desc) {
-            this.ordinal = ordinal;
-            this.tag = tag;
-            this.desc = desc;
-        }
-
-        public int getOrdinal() {
-            return ordinal;
-        }
-
-        public String getTag() {
-            return tag;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-
-        private static final Map<String, ParticipateChannel> nameMappings = new HashMap<>();
-        private static final Map<Integer, ParticipateChannel> ordinalMappings = new HashMap<>();
-
-        static {
-            for (ParticipateChannel channel : ParticipateChannel.values()) {
-                nameMappings.put(channel.name(), channel);
-                ordinalMappings.put(channel.getOrdinal(), channel);
-            }
-        }
-
-        public static ParticipateChannel getByName(String name) {
-            return (name != null ? nameMappings.get(name) : null);
-        }
-
-        public static ParticipateChannel getByOrdinal(int ordinal) {
-            return ordinalMappings.get(ordinal);
-        }
-    }
 
     enum ParticipateItemRange {
 

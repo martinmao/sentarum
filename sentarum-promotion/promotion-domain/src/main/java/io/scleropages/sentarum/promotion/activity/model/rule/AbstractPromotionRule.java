@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.activity.model.rule;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.PromotionRule;
+import io.scleropages.sentarum.promotion.rule.model.PromotionRule;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -52,5 +52,10 @@ public abstract class AbstractPromotionRule implements PromotionRule {
     @Override
     public Activity activity() {
         return getActivity();
+    }
+
+    @Override
+    public boolean evaluate() {
+        return true;
     }
 }

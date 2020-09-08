@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
+package io.scleropages.sentarum.promotion.rule.model;
+
+import io.scleropages.sentarum.promotion.activity.model.Activity;
 
 /**
  * Base class of promotion activity rule.
@@ -35,4 +37,12 @@ public interface PromotionRule {
      * @return
      */
     Activity activity();
+
+
+    /**
+     * return true if promotion request is match for current rule.
+     *
+     * @return
+     */
+    boolean evaluate();
 }

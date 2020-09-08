@@ -16,26 +16,16 @@
 package io.scleropages.sentarum.promotion.activity.model.rule.item;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.ItemRule;
-
-import java.util.List;
+import io.scleropages.sentarum.promotion.activity.model.ItemSource;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class AbstractItemRule implements ItemRule {
+public abstract class AbstractItemRule implements ItemSource {
 
     private Long id;
     private Activity activity;
-    private List<Long> associatedIds;
 
-    public List<Long> getAssociatedIds() {
-        return associatedIds;
-    }
-
-    public void setAssociatedIds(List<Long> associatedIds) {
-        this.associatedIds = associatedIds;
-    }
 
     public Long getId() {
         return id;
@@ -61,10 +51,5 @@ public abstract class AbstractItemRule implements ItemRule {
     @Override
     public Activity activity() {
         return getActivity();
-    }
-
-    @Override
-    public List<Long> associatedIds() {
-        return getAssociatedIds();
     }
 }
