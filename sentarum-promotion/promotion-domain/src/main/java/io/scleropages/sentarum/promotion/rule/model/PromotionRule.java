@@ -40,7 +40,7 @@ public interface PromotionRule {
 
 
     /**
-     * return true if promotion request is match for current rule.
+     * return true if promotion request is matches and handled by current rule.
      *
      * @return
      */
