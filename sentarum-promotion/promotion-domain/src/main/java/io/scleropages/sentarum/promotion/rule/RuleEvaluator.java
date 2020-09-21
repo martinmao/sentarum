@@ -13,33 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model;
+package io.scleropages.sentarum.promotion.rule;
 
 /**
- * used for promotion rules build.
+ * 促销规则计算器.每个计算规则都需要实现该接口，完成计算后将结果写入{@link EvaluationContext}.最终由一系列连续计算规则构成 {@link RuleEvaluatorChain} 进行顺序计算
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PromotionRuleBuilder {
-
-
-    /**
-     * create a new rules group
-     *
-     * @param group
-     * @param conjunction
-     * @param promotionRule
-     */
-    void createRuleGroup(String group, Conjunction conjunction, PromotionRule... promotionRule);
-
-
-
+public interface RuleEvaluator {
 
     /**
-     * 规则连接，对于多个规则的匹配结果连接的方式
+     * @param evaluateContext
+     * @param chain
      */
-    enum Conjunction {
-        OR, AND
-    }
+    void evaluate(EvaluationContext evaluateContext, RuleEvaluatorChain chain);
 
+    /**
+     * 计算规则描述
+     */
+    String desc();
 }

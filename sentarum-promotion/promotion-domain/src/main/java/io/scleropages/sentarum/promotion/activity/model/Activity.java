@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.rule.model.PromotionRule;
+import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -105,7 +105,7 @@ public interface Activity {
      *
      * @return
      */
-    PromotionRule promotionRule();
+    Rule promotionRule();
 
 
     /**

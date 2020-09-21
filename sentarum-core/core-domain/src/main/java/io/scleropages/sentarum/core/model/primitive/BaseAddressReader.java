@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule.item;
+package io.scleropages.sentarum.core.model.primitive;
+
+import java.util.List;
 
 /**
- * 指定营销类目参与促销
+ * The loader used for load base address
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SpecifyCategoryRule extends AbstractItemRule {
+public interface BaseAddressReader {
+
+    /**
+     * read base address list.
+     *
+     * @return
+     */
+    List<BaseAddress> read();
 }

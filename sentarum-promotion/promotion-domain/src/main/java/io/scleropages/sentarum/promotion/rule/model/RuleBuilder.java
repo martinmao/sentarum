@@ -13,46 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+package io.scleropages.sentarum.promotion.rule.model;
 
 /**
- * implementation this for item source from associated domain object.
- *
+ * used for promotion rules build.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public class RuleBuilder {
+
 
     /**
-     * 唯一标识
+     * create a new rules group
      *
-     * @return
+     * @param group
+     * @param conjunction
+     * @param rules
      */
-    Long id();
+    public void withRuleGroup(String group, Conjunction conjunction, Rule... rules) {
+
+    }
+
 
     /**
-     * read a page of items.
-     *
-     * @param pageable
-     * @return
+     * 规则连接，对于多个规则的匹配结果连接的方式
      */
-    Page<? extends Item> readItems(Pageable pageable);
+    enum Conjunction {
+        OR, AND
+    }
 
-    /**
-     * read a item by id.
-     *
-     * @param id
-     * @return
-     */
-    Item readItem(Long id);
-
-    /**
-     * associated activity.
-     *
-     * @return
-     */
-    Activity activity();
 }

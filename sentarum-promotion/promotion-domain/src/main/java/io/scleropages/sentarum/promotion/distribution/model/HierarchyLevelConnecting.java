@@ -13,46 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+package io.scleropages.sentarum.promotion.distribution.model;
 
 /**
- * implementation this for item source from associated domain object.
- *
+ * 分销体系层级连线,从一个等级变更到另外一个等级
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public interface HierarchyLevelConnecting {
 
     /**
-     * 唯一标识
+     * id of hierarchy level
      *
      * @return
      */
     Long id();
 
     /**
-     * read a page of items.
+     * associated level upgrade/degrade source from.
      *
-     * @param pageable
      * @return
      */
-    Page<? extends Item> readItems(Pageable pageable);
+    LevelDefinition changeFrom();
 
     /**
-     * read a item by id.
+     * associated distribution hierarchy
      *
-     * @param id
      * @return
      */
-    Item readItem(Long id);
+    DistributionHierarchy distributionHierarchy();
+
 
     /**
-     * associated activity.
+     * associated level upgrade/degrade target to.
      *
      * @return
      */
-    Activity activity();
+    LevelDefinition changeTo();
+
+
+    /**
+     * defined strategy of level changes from {@link #changeFrom()} to {@link #changeTo()}
+     *
+     * @return
+     */
+    LevelChangeStrategy levelChangeStrategy();
+
+
 }

@@ -13,43 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule.item;
+package io.scleropages.sentarum.promotion.rule.model;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.ItemSource;
 
 /**
+ * Base class of promotion activity rule.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class AbstractItemRule implements ItemSource {
+public interface Rule {
 
-    private Long id;
-    private Activity activity;
+    /**
+     * 唯一标识
+     *
+     * @return
+     */
+    Long id();
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
-
-    @Override
-    public Long id() {
-        return getId();
-    }
-
-    @Override
-    public Activity activity() {
-        return getActivity();
-    }
+    /**
+     * 关联的活动
+     *
+     * @return
+     */
+    Activity activity();
 }

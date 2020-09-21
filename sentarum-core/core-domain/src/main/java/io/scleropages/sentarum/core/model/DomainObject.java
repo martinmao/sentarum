@@ -13,13 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule.item;
+package io.scleropages.sentarum.core.model;
+
+import java.util.List;
 
 /**
- * 指定单品参与促销
+ * represent a domain object.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SpecifyItemRule extends AbstractItemRule {
+public interface DomainObject {
 
+    /**
+     * identity of this domain object.
+     *
+     * @return
+     */
+    Long id();
+
+    /**
+     * type id of this domain object.
+     *
+     * @return
+     */
+    Integer typeId();
+
+    /**
+     * name of this domain object.
+     *
+     * @return
+     */
+    String name();
+
+    /**
+     * the tags marked of this domain object.
+     *
+     * @return
+     */
+    List<Tag> tags();
+
+    /**
+     * add tag.
+     *
+     * @param tag
+     */
+    void addTag(Tag tag);
+
+    /**
+     * remove tag.
+     *
+     * @param tag
+     */
+    void removeTag(Tag tag);
 }

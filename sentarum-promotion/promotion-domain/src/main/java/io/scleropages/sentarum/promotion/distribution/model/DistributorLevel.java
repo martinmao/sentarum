@@ -13,46 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+package io.scleropages.sentarum.promotion.distribution.model;
 
 /**
- * implementation this for item source from associated domain object.
- *
+ * 分销人等级，分销人在不同分销体系可处于不同的分销等级
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public interface DistributorLevel {
 
     /**
-     * 唯一标识
+     * level of distributor.
      *
      * @return
      */
-    Long id();
+    LevelDefinition level();
+
 
     /**
-     * read a page of items.
-     *
-     * @param pageable
-     * @return
-     */
-    Page<? extends Item> readItems(Pageable pageable);
-
-    /**
-     * read a item by id.
-     *
-     * @param id
-     * @return
-     */
-    Item readItem(Long id);
-
-    /**
-     * associated activity.
+     * associated distributor hierarchy
      *
      * @return
      */
-    Activity activity();
+    DistributionHierarchy distributionHierarchy();
+
+
+    /**
+     * parent distributor of this.
+     *
+     * @return
+     */
+    Distributor parent();
 }

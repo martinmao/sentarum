@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule;
+package io.scleropages.sentarum.promotion.rule.model.impl;
+
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -40,7 +42,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OverflowRule extends AbstractPromotionRule {
+public class OverflowRule extends AbstractRule {
 
 
     /**

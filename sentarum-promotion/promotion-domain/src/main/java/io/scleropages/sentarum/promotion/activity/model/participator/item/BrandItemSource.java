@@ -13,46 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
+package io.scleropages.sentarum.promotion.activity.model.participator.item;
 
+import io.scleropages.sentarum.promotion.activity.model.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
- * implementation this for item source from associated domain object.
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public class BrandItemSource extends AbstractItemSource {
 
-    /**
-     * 唯一标识
-     *
-     * @return
-     */
-    Long id();
+    private List<Long> brandIds;
 
-    /**
-     * read a page of items.
-     *
-     * @param pageable
-     * @return
-     */
-    Page<? extends Item> readItems(Pageable pageable);
+    public List<Long> getBrandIds() {
+        return brandIds;
+    }
 
-    /**
-     * read a item by id.
-     *
-     * @param id
-     * @return
-     */
-    Item readItem(Long id);
+    public void setBrandIds(List<Long> brandIds) {
+        this.brandIds = brandIds;
+    }
 
-    /**
-     * associated activity.
-     *
-     * @return
-     */
-    Activity activity();
+    @Override
+    public Page<? extends Item> readItems(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Item readItem(Long id) {
+        return null;
+    }
 }

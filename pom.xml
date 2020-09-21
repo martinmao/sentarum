@@ -8,6 +8,7 @@
     <artifactId>sentarum-root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
+        <module>sentarum-core</module>
         <module>sentarum-item</module>
         <module>sentarum-search</module>
         <module>sentarum-trading</module>

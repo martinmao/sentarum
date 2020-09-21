@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule.channel;
+package io.scleropages.sentarum.promotion.activity.model.participator.channel;
 
-import io.scleropages.sentarum.promotion.activity.model.rule.AbstractPromotionRule;
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ChannelRule extends AbstractPromotionRule {
+public class ChannelRule extends AbstractRule {
 
     /**
      * 参与渠道

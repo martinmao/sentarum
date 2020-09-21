@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule;
+package io.scleropages.sentarum.promotion.rule.model.impl;
+
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ import java.util.List;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class GiftRule extends AbstractPromotionRule {
+public class GiftRule extends AbstractRule {
 
     private List<Long> giftIds;
 

@@ -13,12 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule.item;
+package io.scleropages.sentarum.promotion.rule;
 
 /**
- * 指定品牌参与促销
+ * 规则计算链，按顺序执行 {@link RuleEvaluator}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SpecifyBrandRule extends AbstractItemRule {
+public interface RuleEvaluatorChain {
+
+
+    /**
+     * 执行下一个计算
+     *
+     * @param evaluateContext
+     */
+    void evaluate(EvaluationContext evaluateContext);
+
+    /**
+     * return a name identify this evaluator chain.
+     *
+     * @return
+     */
+    String name();
 }

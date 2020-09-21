@@ -13,46 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+package io.scleropages.sentarum.core.model;
 
 /**
- * implementation this for item source from associated domain object.
- *
+ * represent a tag used for mark specify domain object. the domain object has one or more tag(s).
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public interface Tag {
 
     /**
-     * 唯一标识
+     * id of tag.
      *
      * @return
      */
     Long id();
 
     /**
-     * read a page of items.
+     * name of tag.
      *
-     * @param pageable
      * @return
      */
-    Page<? extends Item> readItems(Pageable pageable);
+    String name();
 
     /**
-     * read a item by id.
-     *
-     * @param id
-     * @return
-     */
-    Item readItem(Long id);
-
-    /**
-     * associated activity.
+     * value of tag.
      *
      * @return
      */
-    Activity activity();
+    String value();
 }

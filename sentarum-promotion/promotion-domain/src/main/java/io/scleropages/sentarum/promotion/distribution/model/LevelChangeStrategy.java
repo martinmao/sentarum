@@ -13,46 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+package io.scleropages.sentarum.promotion.distribution.model;
 
 /**
- * implementation this for item source from associated domain object.
- *
+ * 分销级别变更策略
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public interface LevelChangeStrategy {
 
     /**
-     * 唯一标识
+     * change result of this strategy.
      *
      * @return
      */
-    Long id();
+    ChangeResult changeResult();
+
 
     /**
-     * read a page of items.
-     *
-     * @param pageable
-     * @return
+     * change result definition
      */
-    Page<? extends Item> readItems(Pageable pageable);
+    enum ChangeResult {
+        Upgrade, Degrade
+    }
 
-    /**
-     * read a item by id.
-     *
-     * @param id
-     * @return
-     */
-    Item readItem(Long id);
-
-    /**
-     * associated activity.
-     *
-     * @return
-     */
-    Activity activity();
 }

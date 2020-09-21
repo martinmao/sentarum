@@ -106,7 +106,7 @@ public interface Item {
 
 
     /**
-     * 关联的SPU
+     * 挂靠的SPU
      *
      * @return
      */

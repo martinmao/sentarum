@@ -149,7 +149,7 @@ public interface ValuesSource {
         String valueTag();
 
         /**
-         * 当属性类型为 {@link PropertyValueType#PROPERTY_REF}.必须指定当前值关联的目标值唯一标识.
+         * 当属性类型为 {@link io.scleropages.sentarum.item.property.model.PropertyMetadata.PropertyValueType#PROPERTY_REF}.必须指定当前值关联的目标值唯一标识.
          * 例如 MacBookPro(型号值)->Mac(系列值)->Apple(品牌值)层层ref关系定义.
          *
          * @return

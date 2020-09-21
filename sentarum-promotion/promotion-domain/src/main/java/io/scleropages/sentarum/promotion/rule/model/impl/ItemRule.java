@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.rule;
+package io.scleropages.sentarum.promotion.rule.model.impl;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 
 import java.math.BigDecimal;
 
@@ -29,14 +30,14 @@ import java.math.BigDecimal;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ItemRule extends AbstractPromotionRule {
+public class ItemRule extends AbstractRule {
 
     private BigDecimal amount;
 
     private BigDecimal discount;
 
     /**
-     * return amount of single item associated from {@link Activity#itemRule()}.
+     * return amount of single item associated from {@link Activity#itemSource()}.
      *
      * @return
      */
@@ -45,7 +46,7 @@ public class ItemRule extends AbstractPromotionRule {
     }
 
     /**
-     * set amount of single item associated from {@link Activity#itemRule()}.
+     * set amount of single item associated from {@link Activity#itemSource()}.
      *
      * @param amount
      */
@@ -54,7 +55,7 @@ public class ItemRule extends AbstractPromotionRule {
     }
 
     /**
-     * return discount of multiple items associated from {@link Activity#itemRule()}.
+     * return discount of multiple items associated from {@link Activity#itemSource()}.
      *
      * @return
      */
@@ -64,7 +65,7 @@ public class ItemRule extends AbstractPromotionRule {
 
 
     /**
-     * set discount of multiple items associated from {@link Activity#itemRule()}.
+     * set discount of multiple items associated from {@link Activity#itemSource()}.
      *
      * @param discount
      */

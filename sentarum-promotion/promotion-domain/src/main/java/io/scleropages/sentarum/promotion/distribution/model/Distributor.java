@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
+package io.scleropages.sentarum.promotion.distribution.model;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 /**
- * implementation this for item source from associated domain object.
- *
+ * 分销员
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public interface Distributor {
 
     /**
      * 唯一标识
@@ -33,26 +31,26 @@ public interface ItemSource {
      */
     Long id();
 
-    /**
-     * read a page of items.
-     *
-     * @param pageable
-     * @return
-     */
-    Page<? extends Item> readItems(Pageable pageable);
 
     /**
-     * read a item by id.
+     * name of distributor
      *
-     * @param id
      * @return
      */
-    Item readItem(Long id);
+    String name();
 
     /**
-     * associated activity.
+     * invitation code of distributor.
      *
      * @return
      */
-    Activity activity();
+    String invitationCode();
+
+
+    /**
+     * associated distributor levels.
+     *
+     * @return
+     */
+    List<DistributorLevel> distributorLevels();
 }

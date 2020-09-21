@@ -205,7 +205,7 @@ public class ItemManagerTestcase {
         item.setSellerId(1011L);
         item.setSellerCode("xxx112111");
         item.setSellerType(Item.SellerType.PLATFORM);
-        item.setStatus(Item.Status.VALID);
+        item.setStatus(Item.Status.SAVED);
 
 
         itemManager.createItem(item, spuPage.iterator().next().id(), null);

@@ -15,44 +15,24 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 /**
- * implementation this for item source from associated domain object.
- *
+ * a concept of item in promotion.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public interface Item {
 
     /**
-     * 唯一标识
+     * id of item.
      *
      * @return
      */
     Long id();
 
     /**
-     * read a page of items.
-     *
-     * @param pageable
-     * @return
-     */
-    Page<? extends Item> readItems(Pageable pageable);
-
-    /**
-     * read a item by id.
-     *
-     * @param id
-     * @return
-     */
-    Item readItem(Long id);
-
-    /**
-     * associated activity.
+     * name of item.
      *
      * @return
      */
-    Activity activity();
+    String name();
 }
