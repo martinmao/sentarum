@@ -34,7 +34,7 @@ public interface HierarchyLevelConnecting {
      *
      * @return
      */
-    LevelDefinition changeFrom();
+    DistributionLevel changeFrom();
 
     /**
      * associated distribution hierarchy
@@ -49,7 +49,7 @@ public interface HierarchyLevelConnecting {
      *
      * @return
      */
-    LevelDefinition changeTo();
+    DistributionLevel changeTo();
 
 
     /**

@@ -15,6 +15,9 @@
  */
 package io.scleropages.sentarum.promotion.distribution.model;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  * 分销人等级，分销人在不同分销体系可处于不同的分销等级
  *
@@ -22,12 +25,20 @@ package io.scleropages.sentarum.promotion.distribution.model;
  */
 public interface DistributorLevel {
 
+
     /**
-     * level of distributor.
+     * 唯一标识
      *
      * @return
      */
-    LevelDefinition level();
+    Long id();
+
+    /**
+     * level of distributor
+     *
+     * @return
+     */
+    DistributionLevel level();
 
 
     /**
@@ -44,4 +55,34 @@ public interface DistributorLevel {
      * @return
      */
     Distributor parent();
+
+
+
+    /**
+     * total amount of this distributor in current level
+     *
+     * @return
+     */
+    BigDecimal totalAmount();
+
+
+    /**
+     * add given amount to {@link #totalAmount()}
+     */
+    void addTotalAmount(BigDecimal amount);
+
+
+    /**
+     * 最近一次消费时间
+     *
+     * @return
+     */
+    Date recencyTime();
+
+    /**
+     * 最近一次消费金额
+     *
+     * @return
+     */
+    BigDecimal recencyAmount();
 }

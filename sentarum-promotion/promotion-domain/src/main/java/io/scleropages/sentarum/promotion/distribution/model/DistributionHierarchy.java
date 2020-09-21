@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.distribution.model;
 
+import io.scleropages.sentarum.promotion.activity.model.ItemSource;
+
 import java.util.List;
 
 /**
@@ -39,10 +41,18 @@ public interface DistributionHierarchy {
 
 
     /**
-     * distribution levels definition of this hierarchy.
+     * distribution levels connections of this hierarchy.
      *
      * @return
      */
     List<HierarchyLevelConnecting> hierarchyLevels();
+
+
+    /**
+     * 应用于当前分销体系的商品源
+     *
+     * @return
+     */
+    ItemSource itemSource();
 
 }

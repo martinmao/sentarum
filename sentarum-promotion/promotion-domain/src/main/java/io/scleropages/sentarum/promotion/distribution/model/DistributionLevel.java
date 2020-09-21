@@ -20,7 +20,7 @@ package io.scleropages.sentarum.promotion.distribution.model;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface LevelDefinition {
+public interface DistributionLevel {
 
 
     /**
