@@ -16,6 +16,9 @@
 package io.scleropages.sentarum.promotion.rule.model;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.rule.EvaluationContext;
+import io.scleropages.sentarum.promotion.rule.EvaluationLevel;
+import io.scleropages.sentarum.promotion.rule.RuleEvaluatorChain;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -26,6 +29,8 @@ public abstract class AbstractRule implements Rule {
     private Long id;
 
     private Activity activity;
+
+    private EvaluationLevel evaluationLevel;
 
     public Long getId() {
         return id;
@@ -43,6 +48,14 @@ public abstract class AbstractRule implements Rule {
         this.activity = activity;
     }
 
+    public EvaluationLevel getEvaluationLevel() {
+        return evaluationLevel;
+    }
+
+    public void setEvaluationLevel(EvaluationLevel evaluationLevel) {
+        this.evaluationLevel = evaluationLevel;
+    }
+
     @Override
     public Long id() {
         return getId();
@@ -51,5 +64,20 @@ public abstract class AbstractRule implements Rule {
     @Override
     public Activity activity() {
         return getActivity();
+    }
+
+    @Override
+    public void evaluate(EvaluationContext evaluateContext, RuleEvaluatorChain chain) {
+
+    }
+
+    @Override
+    public String desc() {
+        return null;
+    }
+
+    @Override
+    public EvaluationLevel evaluationLevel() {
+        return getEvaluationLevel();
     }
 }

@@ -15,13 +15,11 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.participator;
 
-import io.scleropages.sentarum.promotion.activity.model.Activity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
  * implementation this for item source from associated domain object.
- *
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -49,11 +47,4 @@ public interface ItemSource {
      * @return
      */
     ItemSnapshot readItem(Long id);
-
-    /**
-     * associated activity.
-     *
-     * @return
-     */
-    Activity activity();
 }

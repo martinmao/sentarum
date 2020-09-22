@@ -22,6 +22,14 @@ package io.scleropages.sentarum.promotion.rule;
  */
 public interface RuleEvaluator {
 
+
+    /**
+     * 计算规则所处级别,同级互斥，低级可与高级叠加
+     *
+     * @return
+     */
+    EvaluationLevel evaluationLevel();
+
     /**
      * @param evaluateContext
      * @param chain

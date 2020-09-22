@@ -16,13 +16,14 @@
 package io.scleropages.sentarum.promotion.rule.model;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.rule.RuleEvaluator;
 
 /**
  * Base class of promotion activity rule.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Rule {
+public interface Rule extends RuleEvaluator {
 
     /**
      * 唯一标识
@@ -37,4 +38,5 @@ public interface Rule {
      * @return
      */
     Activity activity();
+
 }
