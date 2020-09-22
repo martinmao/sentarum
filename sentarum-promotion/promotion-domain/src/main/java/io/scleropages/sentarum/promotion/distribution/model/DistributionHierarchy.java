@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.distribution.model;
 
-import io.scleropages.sentarum.promotion.activity.model.ItemSource;
+import io.scleropages.sentarum.promotion.activity.model.participator.ItemSource;
 
 import java.util.List;
 

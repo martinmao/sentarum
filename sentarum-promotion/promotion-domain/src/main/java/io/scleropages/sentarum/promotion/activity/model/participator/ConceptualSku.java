@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
+package io.scleropages.sentarum.promotion.activity.model.participator;
 
 /**
- * a concept of item in promotion.
+ * a concept of sku in promotion.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Item {
+public interface ConceptualSku {
 
-    /**
-     * id of item.
-     *
-     * @return
-     */
     Long id();
 
-    /**
-     * name of item.
-     *
-     * @return
-     */
     String name();
+
 }

@@ -256,7 +256,7 @@ public interface Item {
 
 
     /**
-     * 商品状态
+     * 商品状态机定义
      * <pre>
      *     SAVED->SUBMIT->APPROVING->READY->ONLINE->TERMINATE
      *              ^         |               |

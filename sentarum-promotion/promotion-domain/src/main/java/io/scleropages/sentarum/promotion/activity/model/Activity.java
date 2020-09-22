@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
+import io.scleropages.sentarum.promotion.activity.model.participator.ItemSource;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
@@ -109,7 +110,7 @@ public interface Activity {
 
 
     /**
-     * 促销商品规则
+     * 促销商品来源
      *
      * @return
      */

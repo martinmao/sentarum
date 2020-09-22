@@ -13,46 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
+package io.scleropages.sentarum.promotion.activity.model.participator;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 /**
- * implementation this for item source from associated domain object.
- *
+ * a concept of item in promotion.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public interface ConceptualItem {
 
     /**
-     * 唯一标识
+     * id of item.
      *
      * @return
      */
     Long id();
 
     /**
-     * read a page of items.
+     * name of item.
      *
-     * @param pageable
      * @return
      */
-    Page<? extends Item> readItems(Pageable pageable);
+    String name();
+
 
     /**
-     * read a item by id.
-     *
-     * @param id
-     * @return
-     */
-    Item readItem(Long id);
-
-    /**
-     * associated activity.
+     * conceptual sku list of this item.
+     * 该限定并非必须的，只有活动商品粒度细分到具体的sku才需设置.
      *
      * @return
      */
-    Activity activity();
+    List<ConceptualSku> skuList();
 }

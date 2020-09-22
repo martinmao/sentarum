@@ -15,34 +15,22 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.participator.item;
 
-import io.scleropages.sentarum.promotion.activity.model.Item;
+import io.scleropages.sentarum.promotion.activity.model.participator.ConceptualItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class BrandItemSource extends AbstractItemSource {
 
-    private List<Long> brandIds;
-
-    public List<Long> getBrandIds() {
-        return brandIds;
-    }
-
-    public void setBrandIds(List<Long> brandIds) {
-        this.brandIds = brandIds;
-    }
-
     @Override
-    public Page<? extends Item> readItems(Pageable pageable) {
+    public Page<? extends ConceptualItem> readItems(Pageable pageable) {
         return null;
     }
 
     @Override
-    public Item readItem(Long id) {
+    public ConceptualItem readItem(Long id) {
         return null;
     }
 }
