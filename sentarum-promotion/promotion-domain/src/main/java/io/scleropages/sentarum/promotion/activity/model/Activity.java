@@ -110,7 +110,7 @@ public interface Activity {
 
 
     /**
-     * 促销商品来源
+     * 促销主商品来源
      *
      * @return
      */

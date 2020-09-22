@@ -40,6 +40,22 @@ public interface ItemSnapshot {
 
 
     /**
+     * total num of item in promotion.可做促销库存
+     *
+     * @return
+     */
+    Integer totalNum();
+
+
+    /**
+     * num of item in promotion per user.可做促销用户限购
+     *
+     * @return
+     */
+    Integer userNum();
+
+
+    /**
      * conceptual sku list of this item.
      * 该限定并非必须的，只有活动商品粒度细分到具体的sku才需设置.
      *

@@ -36,4 +36,20 @@ public interface SkuSnapshot {
      * @return
      */
     String name();
+
+
+    /**
+     * total num of item in promotion.可做促销库存
+     *
+     * @return
+     */
+    Integer totalNum();
+
+
+    /**
+     * num of item in promotion per user.可做促销用户限购
+     *
+     * @return
+     */
+    Integer userNum();
 }
