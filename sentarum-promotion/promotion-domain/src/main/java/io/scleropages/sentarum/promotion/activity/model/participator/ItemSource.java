@@ -40,7 +40,7 @@ public interface ItemSource {
      * @param pageable
      * @return
      */
-    Page<? extends ConceptualItem> readItems(Pageable pageable);
+    Page<? extends ItemSnapshot> readItems(Pageable pageable);
 
     /**
      * read a item by id.
@@ -48,7 +48,7 @@ public interface ItemSource {
      * @param id
      * @return
      */
-    ConceptualItem readItem(Long id);
+    ItemSnapshot readItem(Long id);
 
     /**
      * associated activity.

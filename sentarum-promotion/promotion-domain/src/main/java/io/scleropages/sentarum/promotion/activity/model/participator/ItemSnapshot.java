@@ -18,11 +18,11 @@ package io.scleropages.sentarum.promotion.activity.model.participator;
 import java.util.List;
 
 /**
- * a concept of item in promotion.
+ * the capture snapshot of item in promotion.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ConceptualItem {
+public interface ItemSnapshot {
 
     /**
      * id of item.
@@ -45,5 +45,5 @@ public interface ConceptualItem {
      *
      * @return
      */
-    List<ConceptualSku> skuList();
+    List<SkuSnapshot> skuList();
 }

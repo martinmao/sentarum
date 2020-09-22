@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.participator.item;
 
-import io.scleropages.sentarum.promotion.activity.model.participator.ConceptualItem;
+import io.scleropages.sentarum.promotion.activity.model.participator.ItemSnapshot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,12 +25,12 @@ import org.springframework.data.domain.Pageable;
 public class BrandItemSource extends AbstractItemSource {
 
     @Override
-    public Page<? extends ConceptualItem> readItems(Pageable pageable) {
+    public Page<? extends ItemSnapshot> readItems(Pageable pageable) {
         return null;
     }
 
     @Override
-    public ConceptualItem readItem(Long id) {
+    public ItemSnapshot readItem(Long id) {
         return null;
     }
 }

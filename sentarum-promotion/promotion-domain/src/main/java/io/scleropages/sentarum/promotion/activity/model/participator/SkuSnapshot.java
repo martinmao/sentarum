@@ -16,14 +16,24 @@
 package io.scleropages.sentarum.promotion.activity.model.participator;
 
 /**
- * a concept of sku in promotion.
+ * the capture snapshot of sku in promotion.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ConceptualSku {
+public interface SkuSnapshot {
 
+    /**
+     * id of sku
+     *
+     * @return
+     */
     Long id();
 
-    String name();
 
+    /**
+     * name of sku.
+     *
+     * @return
+     */
+    String name();
 }

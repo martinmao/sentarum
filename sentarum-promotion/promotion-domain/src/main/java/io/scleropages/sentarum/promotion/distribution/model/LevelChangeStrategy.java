@@ -31,6 +31,16 @@ public interface LevelChangeStrategy {
 
 
     /**
+     * implementation the strategy method to evaluate given distributor level meet the change conditions.
+     *
+     * @param levelConnecting
+     * @param distributor
+     * @return return true if given distributor the level changed.
+     */
+    Boolean evaluate(HierarchyLevelConnecting levelConnecting, Distributor distributor);
+
+
+    /**
      * change result definition
      */
     enum ChangeResult {
