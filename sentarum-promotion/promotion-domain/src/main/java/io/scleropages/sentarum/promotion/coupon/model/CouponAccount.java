@@ -13,38 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.distribution.model;
+package io.scleropages.sentarum.promotion.coupon.model;
 
 /**
- * 分销级别变更策略
+ * user account of coupon.
+ * <pre>
+ *     优惠券核销规则：
+ *     1.筛选可用优惠券，有效期、商品范围等维度
+ *     2.优先使用抵扣金额最多的优惠券
+ *     3.金额相同，优先使用同级优惠券，例如单品优惠券>品牌优惠券>品类优惠券
+ *     4.优惠券额度大于实际支付金额时，需要用户确认
+ * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface LevelChangeStrategy {
+public interface CouponAccount {
 
-    /**
-     * change result of this strategy.
-     *
-     * @return
-     */
-    ChangeResult changeResult();
-
-
-    /**
-     * implementation this strategy method to evaluate given distributor level meet the change conditions.
-     *
-     * @param levelConnecting
-     * @param distributor
-     * @return return true if given distributor the level changed.
-     */
-    Boolean evaluate(HierarchyLevelConnecting levelConnecting, Distributor distributor);
-
-
-    /**
-     * change result definition
-     */
-    enum ChangeResult {
-        Upgrade, Degrade
-    }
 
 }

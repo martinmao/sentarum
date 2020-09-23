@@ -14,6 +14,7 @@
         <module>sentarum-trading</module>
         <module>sentarum-promotion</module>
         <module>sentarum-business-process</module>
+        <module>sentarum-member</module>
     </modules>
     <packaging>pom</packaging>
 

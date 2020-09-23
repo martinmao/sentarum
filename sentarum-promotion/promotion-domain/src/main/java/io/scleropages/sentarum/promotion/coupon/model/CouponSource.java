@@ -15,14 +15,16 @@
  */
 package io.scleropages.sentarum.promotion.coupon.model;
 
+import io.scleropages.sentarum.promotion.activity.model.Activity;
+
 import java.util.Date;
 
 /**
- * defined a coupon information
+ * defined a source of coupon information.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CouponDefinition {
+public interface CouponSource {
 
     /**
      * 券定义唯一标识
@@ -48,14 +50,47 @@ public interface CouponDefinition {
 
 
     /**
-     * 开始时间
+     * 券关联的活动.
+     *
+     * @return
+     */
+    Activity activity();
+
+
+    /**
+     * total num of coupon.
+     *
+     * @return
+     */
+    Integer totalNum();
+
+
+    /**
+     * num of coupon per user.
+     *
+     * @return
+     */
+    Integer userNum();
+
+
+    /**
+     * 券领取后的有效天数.超过有效天数则处于过期状态
+     *
+     * @return
+     */
+    Integer validDays();
+
+
+    /**
+     * 券适用开始时间，activity可设定一个非常大的时间区间，而券可根据运营需要随时设定有效期.即优惠券活动可以始终存在
+     * 但优惠券可根据需要随时创建.
      *
      * @return
      */
     Date startTime();
 
     /**
-     * 结束时间
+     * 券适用结束时间
      *
      * @return
      */

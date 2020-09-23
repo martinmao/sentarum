@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.coupon.model;
 
+import io.scleropages.sentarum.promotion.activity.model.Activity;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -28,11 +30,11 @@ public interface Coupon {
     Long id();
 
     /**
-     * id of {@link CouponDefinition}
+     * id of {@link CouponSource}
      *
      * @return
      */
-    Long definitionId();
+    CouponSource couponSource();
 
 
     /**
@@ -48,6 +50,14 @@ public interface Coupon {
      * @return
      */
     Status status();
+
+
+    /**
+     * 券关联的活动.
+     *
+     * @return
+     */
+    Activity activity();
 
 
     /**
