@@ -11,6 +11,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>trading-domain</module>
+        <module>trading-infrastructure</module>
+        <module>trading-application</module>
     </modules>
     <artifactId>sentarum-trading</artifactId>
 

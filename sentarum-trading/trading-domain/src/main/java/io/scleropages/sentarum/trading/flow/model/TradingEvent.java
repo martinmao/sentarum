@@ -13,27 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.coupon.model;
+package io.scleropages.sentarum.trading.flow.model;
+
+import java.util.Date;
 
 /**
- * user account of coupon.
- * <pre>
- *     优惠券核销规则：
- *     1.筛选可用优惠券，有效期、商品范围等维度
- *     2.优先使用抵扣金额最多的优惠券
- *     3.金额相同，优先使用同级优惠券，例如单品优惠券>品牌优惠券>品类优惠券
- *     4.优惠券额度大于实际支付金额时，需要用户确认
- * </pre>
+ * Events generated during the trading flow. It will cause the flowing from node into another node or fire a outgoing event.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CouponAccount {
-
+public interface TradingEvent {
 
     /**
-     * id of coupon account.
+     * id of event.
      *
      * @return
      */
     Long id();
+
+
+    /**
+     * name of event.
+     *
+     * @return
+     */
+    String name();
+
+    /**
+     * tag of event.
+     *
+     * @return
+     */
+    String tag();
+
+    /**
+     * description of event.
+     *
+     * @return
+     */
+    String desc();
+
+    /**
+     * the time of this event fired.
+     *
+     * @return
+     */
+    Date firedTime();
+
+
+    /**
+     * business payload(order,payment...) of this trading event.
+     *
+     * @return
+     */
+    Object tradingPayload();
+
+
 }

@@ -12,6 +12,14 @@
     <artifactId>trading-domain</artifactId>
 
     <dependencies>
+
+
+        <dependency>
+            <groupId>org.scleropages.sentarum</groupId>
+            <artifactId>core-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -20,6 +28,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jooq</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.statemachine</groupId>
+            <artifactId>spring-statemachine-starter</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>com.google.guava</groupId>
