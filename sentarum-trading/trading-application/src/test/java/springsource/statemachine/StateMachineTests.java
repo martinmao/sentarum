@@ -62,6 +62,7 @@ public class StateMachineTests extends EnumStateMachineConfigurerAdapter<StateMa
             throws Exception {
         states.withStates()
                 .initial(States.S1)
+                .end(States.S3)
                 .states(EnumSet.allOf(States.class));
     }
 
