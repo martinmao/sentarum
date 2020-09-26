@@ -48,9 +48,4 @@ public abstract class AbstractItemSource implements ItemSource {
     public Long id() {
         return getId();
     }
-
-    @Override
-    public Activity activity() {
-        return getActivity();
-    }
 }
