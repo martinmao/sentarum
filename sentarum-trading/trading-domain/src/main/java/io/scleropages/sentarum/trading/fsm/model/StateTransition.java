@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.trading.fsm.model;
 
 /**
- * defined a state transition or fsm (Finite-state machine).
+ * defined a state transition of fsm (Finite-state machine).
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -67,8 +67,7 @@ public interface StateTransition {
 
 
     /**
-     * id of listener.
-     * if incoming event fired. the listener will be received a notify.
+     * id of listener. if incoming event fired. the listener will be received a notify.
      *
      * @return
      */
@@ -76,8 +75,7 @@ public interface StateTransition {
 
 
     /**
-     * id of evaluator.
-     * if incoming event fired. the evaluator will check whether the conditions for switching from one state to another.
+     * id of evaluator. if incoming event fired. the evaluator will check whether the conditions for switching from one state to another.
      *
      * @return
      */
