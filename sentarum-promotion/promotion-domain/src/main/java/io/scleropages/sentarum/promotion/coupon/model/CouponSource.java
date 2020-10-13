@@ -27,7 +27,7 @@ import java.util.Date;
 public interface CouponSource {
 
     /**
-     * 券定义唯一标识
+     * 唯一标识
      *
      * @return
      */

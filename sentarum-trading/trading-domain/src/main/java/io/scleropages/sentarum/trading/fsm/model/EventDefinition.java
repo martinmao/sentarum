@@ -13,41 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.flow.model;
+package io.scleropages.sentarum.trading.fsm.model;
 
 /**
- * trading node of {@link TradingFlow}.
+ * represent a event definition of fsm (Finite-state machine).
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TradingNode {
-
+public interface EventDefinition {
 
     /**
-     * id of trading node.
+     * id of this event definition.
      *
      * @return
      */
     Long id();
 
-    /**
-     * the status value of this trading node.
-     *
-     * @return
-     */
-    Integer value();
 
     /**
-     * the status name of this trading node.
+     * name of this event definition.
      *
      * @return
      */
     String name();
 
     /**
-     * the status description of this trading node.
+     * tag of this event definition.
      *
      * @return
      */
-    String description();
+    String tag();
+
+    /**
+     * description of this event definition.
+     *
+     * @return
+     */
+    String desc();
+
+
+    /**
+     * direction of this event definition.
+     *
+     * @return
+     */
+    Direction direction();
+
+
+    /**
+     * 事件方向
+     * <pre>
+     * 入射事件代表外部系统传入的事件，其会改变节点流向.
+     * 出射事件往往是一个外部通知,外部订阅事件处理特定逻辑.
+     * </pre>
+     */
+    enum Direction {
+
+        /**
+         * 入射事件
+         */
+        INCOMING,
+        /**
+         * 出射事件
+         */
+        OUTGOING
+    }
 }

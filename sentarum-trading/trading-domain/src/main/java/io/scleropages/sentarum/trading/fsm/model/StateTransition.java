@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.flow.model;
+package io.scleropages.sentarum.trading.fsm.model;
 
 /**
- * defined a trade node transition.
+ * defined a state transition or fsm (Finite-state machine).
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface NodeTransition {
+public interface StateTransition {
 
 
     /**
@@ -31,37 +31,55 @@ public interface NodeTransition {
     Long id();
 
     /**
-     * associated trading flow
+     * associated fsm definition of this transition.
      *
      * @return
      */
-    TradingFlow tradingFlow();
+    StateMachineDefinition stateMachineDefinition();
 
     /**
-     * source of node.
+     * source state of this transition.
      *
      * @return
      */
-    TradingNode source();
+    State source();
 
     /**
-     * target of node.
+     * target state of this transition.
      *
      * @return
      */
-    TradingNode target();
+    State target();
 
     /**
-     * associated incoming event. the event will cause the flowing from {@link #source()} to {@link #target()}
+     * associated incoming event definition. the event will cause the fms state changes from {@link #source()} to {@link #target()}
      *
      * @return
      */
-    EventDefinition incomingEvent();
+    EventDefinition incomingEventDefinition();
 
     /**
      * if incoming event fired. the associated outgoing event will throw out.
      *
      * @return
      */
-    EventDefinition outgoingEvent();
+    EventDefinition outgoingEventDefinition();
+
+
+    /**
+     * id of listener.
+     * if incoming event fired. the listener will be received a notify.
+     *
+     * @return
+     */
+    String listenerId();
+
+
+    /**
+     * id of evaluator.
+     * if incoming event fired. the evaluator will check whether the conditions for switching from one state to another.
+     *
+     * @return
+     */
+    String evaluatorId();
 }

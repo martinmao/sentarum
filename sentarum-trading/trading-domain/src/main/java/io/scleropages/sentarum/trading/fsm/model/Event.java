@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.flow.model;
+package io.scleropages.sentarum.trading.fsm.model;
 
-import java.util.List;
+import java.util.Date;
 
 /**
- * trading flow definition. The flow defined a set of nodes ( {@link TradingNode} ) and transition ({@link NodeTransition}) between nodes
+ * event of fsm (Finite-state machine)
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TradingFlow {
+public interface Event {
 
     /**
-     * id of this flow.
+     * id of event.
      *
      * @return
      */
@@ -33,25 +33,38 @@ public interface TradingFlow {
 
 
     /**
-     * the initial node defined in this flow.
+     * name of event.
      *
      * @return
      */
-    TradingNode initialNode();
+    String name();
+
+    /**
+     * tag of event.
+     *
+     * @return
+     */
+    String tag();
+
+    /**
+     * description of event.
+     *
+     * @return
+     */
+    String desc();
+
+    /**
+     * the time of this event was fired.
+     *
+     * @return
+     */
+    Date firedTime();
 
 
     /**
-     * a list of transitions.
+     * business payload(order,payment...) of this event.
      *
      * @return
      */
-    List<NodeTransition> transitions();
-
-
-    /**
-     * the end node defined in this flow.
-     *
-     * @return
-     */
-    TradingNode endNode();
+    Object bizPayload();
 }

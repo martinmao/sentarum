@@ -17,6 +17,8 @@ package io.scleropages.sentarum.promotion.coupon.model;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 
+import java.util.Date;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -58,6 +60,14 @@ public interface Coupon {
      * @return
      */
     Activity activity();
+
+
+    /**
+     * 创建时间
+     *
+     * @return
+     */
+    Date createTime();
 
 
     /**

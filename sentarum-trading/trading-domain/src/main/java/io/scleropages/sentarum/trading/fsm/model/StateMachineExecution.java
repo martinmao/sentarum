@@ -13,69 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.flow.model;
+package io.scleropages.sentarum.trading.fsm.model;
+
+import java.util.List;
 
 /**
- * represent a event definition of trading.
+ * represent a fsm (Finite-state machine) execution.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface EventDefinition {
+public interface StateMachineExecution {
+
 
     /**
-     * id of event definition.
+     * id of this execution.
      *
      * @return
      */
     Long id();
 
-
     /**
-     * name of event definition.
+     * associated definition of this fsm.
      *
      * @return
      */
-    String name();
+    StateMachineDefinition stateMachineDefinition();
 
     /**
-     * tag of event definition.
+     * current state of this execution.
      *
      * @return
      */
-    String tag();
+    State currentState();
+
 
     /**
-     * description of event definition.
+     * list of histories events of this execution.
      *
      * @return
      */
-    String desc();
-
+    List<Event> historiesEvents();
 
     /**
-     * 事件方向
+     * terminate this execution.
      *
      * @return
      */
-    EventDirection eventDirection();
-
+    void terminate();
 
     /**
-     * 事件方向
-     * <pre>
-     * 入射事件代表外部系统传入的事件，其会改变节点流向.
-     * 出射事件往往是一个外部通知,外部订阅事件处理特定逻辑.
-     * </pre>
+     * suspend this execution.
      */
-    enum EventDirection {
+    void suspend();
 
-        /**
-         * 入射事件
-         */
-        INCOMING,
-        /**
-         * 出射事件
-         */
-        OUTGOING
-    }
+    /**
+     * resume this execution.
+     */
+    void resume();
 }

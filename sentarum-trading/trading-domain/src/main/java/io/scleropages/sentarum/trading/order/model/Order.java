@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.model;
 
-import io.scleropages.sentarum.trading.flow.model.TradingFlow;
+import io.scleropages.sentarum.trading.fsm.model.StateMachineDefinition;
 
 /**
  * 订单
@@ -89,6 +89,6 @@ public interface Order {
      *
      * @return
      */
-    TradingFlow tradingFlow();
+    StateMachineDefinition tradingFlow();
 
 }

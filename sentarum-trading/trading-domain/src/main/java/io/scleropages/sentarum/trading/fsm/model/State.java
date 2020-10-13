@@ -13,61 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.flow.model;
-
-import java.util.List;
+package io.scleropages.sentarum.trading.fsm.model;
 
 /**
- * a flow execution of trading.
+ * state of fsm (Finite-state machine)
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface FlowExecution {
+public interface State {
 
 
     /**
-     * id of this execution.
+     * id of this state.
      *
      * @return
      */
     Long id();
 
     /**
-     * associated flow of this execution.
+     * the value of this state.
      *
      * @return
      */
-    TradingFlow tradingFlow();
+    Integer value();
 
     /**
-     * current node of this execution.
+     * the name of this state.
      *
      * @return
      */
-    TradingNode currentNode();
-
+    String name();
 
     /**
-     * list of events was fired in this execution.
+     * the description of this state.
      *
      * @return
      */
-    List<TradingEvent> events();
+    String description();
+
 
     /**
-     * terminate this execution.
+     * coming this state will fired action invoke.
      *
      * @return
      */
-    void terminate();
+    String comingActionId();
 
     /**
-     * suspend this execution.
+     * outgoing this state will fired action invoke.
+     *
+     * @return
      */
-    void suspend();
-
-    /**
-     * resume this execution.
-     */
-    void resume();
+    String outgoingActionId();
 }

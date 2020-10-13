@@ -15,12 +15,19 @@
  */
 package springsource.statemachine;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import com.google.common.collect.Maps;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.shell.Bootstrap;
+import org.springframework.shell.core.CommandMarker;
+import org.springframework.shell.core.annotation.CliCommand;
+import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.StateMachineContext;
+import org.springframework.statemachine.StateMachinePersist;
 import org.springframework.statemachine.config.EnableStateMachine;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
@@ -29,24 +36,46 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 import org.springframework.statemachine.listener.StateMachineListener;
 import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 import org.springframework.statemachine.state.State;
+import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.EnumSet;
+import java.util.Map;
+
+import static springsource.statemachine.StateMachineTests.Events;
+import static springsource.statemachine.StateMachineTests.States;
+
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Configuration
-@SpringBootApplication
+//@SpringBootApplication
 @EnableStateMachine
-public class StateMachineTests extends EnumStateMachineConfigurerAdapter<StateMachineTests.States, StateMachineTests.Events> {
+@Component
+public class StateMachineTests extends EnumStateMachineConfigurerAdapter<States, Events> implements StateMachinePersist<States, Events, Long>, CommandMarker, ApplicationContextAware {
+
+
+    private static final Map<Long, States> memoryStatesRepository = Maps.newHashMap();
+
+
+    @Override
+    public void write(StateMachineContext<States, Events> context, Long contextObj) throws Exception {
+        memoryStatesRepository.put(contextObj, context.getState());
+    }
+
+    @Override
+    public StateMachineContext<States, Events> read(Long contextObj) throws Exception {
+        return null;
+    }
 
 
     public enum States {
-        S1, S2, S3
+        S1, S2, S3, SF
     }
 
     public enum Events {
-        E1, E2
+        E1, E2, E3
     }
 
     @Override
@@ -54,7 +83,7 @@ public class StateMachineTests extends EnumStateMachineConfigurerAdapter<StateMa
             throws Exception {
         config.withConfiguration()
                 .autoStartup(true)
-                .listener(listener());
+                .listener(listener()).machineId("sampleMachine");
     }
 
     @Override
@@ -62,7 +91,7 @@ public class StateMachineTests extends EnumStateMachineConfigurerAdapter<StateMa
             throws Exception {
         states.withStates()
                 .initial(States.S1)
-                .end(States.S3)
+                .end(States.SF)
                 .states(EnumSet.allOf(States.class));
     }
 
@@ -73,7 +102,10 @@ public class StateMachineTests extends EnumStateMachineConfigurerAdapter<StateMa
                 .source(States.S1).target(States.S2).event(Events.E1)
                 .and()
                 .withExternal()
-                .source(States.S2).target(States.S3).event(Events.E2);
+                .source(States.S2).target(States.S3).event(Events.E2)
+                .and()
+                .withExternal()
+                .source(States.S3).target(States.SF).event(Events.E3);
     }
 
     @Bean
@@ -86,13 +118,29 @@ public class StateMachineTests extends EnumStateMachineConfigurerAdapter<StateMa
         };
     }
 
-    public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(StateMachineTests.class, args);
+    private ApplicationContext applicationContext;
 
-        StateMachine<States, Events> stateMachine = applicationContext.getBean(StateMachine.class);
 
-        stateMachine.sendEvent(Events.E1);
-        stateMachine.sendEvent(Events.E2);
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+
+    @CliCommand(value = "sm event", help = "Sends an event to a state machine")
+    public String event(@CliOption(key = {"", "event"}, mandatory = true, help = "The event") final String event) {
+        StateMachine<States, Events> sm = applicationContext.getBean(StateMachine.class);
+        sm.sendEvent(Events.valueOf(event));
+        return "Event " + event + " send";
+    }
+
+
+    public static void main(String[] args) throws IOException {
+//        ConfigurableApplicationContext applicationContext = SpringApplication.run(StateMachineTests.class, args);
+//        StateMachine<States, Events> sm = applicationContext.getBean(StateMachine.class);
+//        sm.sendEvent(Events.E1);
+//        sm.sendEvent(Events.E2);
+        Bootstrap.main(args);
     }
 
 }
