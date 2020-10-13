@@ -13,56 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.fsm.model;
+package springsource.statemachine;
 
 /**
- * state of fsm (Finite-state machine)
+ *
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface State {
+public class SimpleStateMachineTests{
 
 
-    /**
-     * id of this state.
-     *
-     * @return
-     */
-    Long id();
 
-    /**
-     * the value of this state.
-     *
-     * @return
-     */
-    Integer value();
-
-    /**
-     * the name of this state.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * the description of this state.
-     *
-     * @return
-     */
-    String description();
-
-
-    /**
-     * entry this state will fired action invoke.
-     *
-     * @return
-     */
-    String entryActionId();
-
-    /**
-     * exit this state will fired action invoke.
-     *
-     * @return
-     */
-    String exitActionId();
+    public static void main(String[] args) {
+    }
 }

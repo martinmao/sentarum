@@ -38,32 +38,32 @@ public interface StateTransition {
     StateMachineDefinition stateMachineDefinition();
 
     /**
-     * source state of this transition.
+     * source state from of this transition.
      *
      * @return
      */
-    State source();
+    State from();
 
     /**
-     * target state of this transition.
+     * target state to of this transition.
      *
      * @return
      */
-    State target();
+    State to();
 
     /**
-     * associated incoming event definition. the event will cause the fms state changes from {@link #source()} to {@link #target()}
+     * associated entry event definition. the event will cause the fms state changes from {@link #from()} to {@link #to()}
      *
      * @return
      */
-    EventDefinition incomingEventDefinition();
+    EventDefinition event();
 
     /**
-     * if incoming event fired. the associated outgoing event will throw out.
+     * id of evaluator. if incoming event fired. the evaluator will check whether the conditions for switching from one state to another.
      *
      * @return
      */
-    EventDefinition outgoingEventDefinition();
+    String evaluatorId();
 
 
     /**
@@ -73,11 +73,4 @@ public interface StateTransition {
      */
     String listenerId();
 
-
-    /**
-     * id of evaluator. if incoming event fired. the evaluator will check whether the conditions for switching from one state to another.
-     *
-     * @return
-     */
-    String evaluatorId();
 }
