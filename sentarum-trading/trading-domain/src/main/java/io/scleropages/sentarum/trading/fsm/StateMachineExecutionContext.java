@@ -13,40 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.fsm.model;
+package io.scleropages.sentarum.trading.fsm;
 
 /**
- * represent state of fsm (Finite-state machine)
+ * the execution context of fsm (Finite-state machine)
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface State {
+public interface StateMachineExecutionContext {
 
-    /**
-     * id of this state.
-     *
-     * @return
-     */
-    Long id();
-
-    /**
-     * the value of this state.
-     *
-     * @return
-     */
-    Integer value();
-
-    /**
-     * the name of this state.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * the description of this state.
-     *
-     * @return
-     */
-    String desc();
 }

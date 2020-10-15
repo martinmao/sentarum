@@ -15,6 +15,9 @@
  */
 package io.scleropages.sentarum.trading.fsm.model;
 
+import io.scleropages.sentarum.trading.fsm.TransitionAction;
+import io.scleropages.sentarum.trading.fsm.TransitionEvaluator;
+
 /**
  * defined a state transition of fsm (Finite-state machine).
  *
@@ -59,18 +62,17 @@ public interface StateTransition {
     EventDefinition event();
 
     /**
-     * id of evaluator. if incoming event fired. the evaluator will check whether the conditions for switching from one state to another.
+     * if entered event fired. the evaluator will check whether the conditions for switching from one state to another.
      *
      * @return
      */
-    String evaluatorId();
+    TransitionEvaluator evaluator();
 
 
     /**
-     * id of listener. if incoming event fired. the listener will be received a notify.
+     * action to be performed during transition
      *
      * @return
      */
-    String listenerId();
-
+    TransitionAction action();
 }

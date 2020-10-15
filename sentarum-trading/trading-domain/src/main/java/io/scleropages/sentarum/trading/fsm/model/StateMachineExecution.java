@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.trading.fsm.model;
 
+import io.scleropages.sentarum.trading.fsm.StateMachineExecutionListener;
+
 import java.util.List;
 
 /**
@@ -59,15 +61,22 @@ public interface StateMachineExecution {
      *
      * @return
      */
-    void terminate();
+    void terminate(String note);
 
     /**
      * suspend this execution.
      */
-    void suspend();
+    void suspend(String note);
 
     /**
      * resume this execution.
      */
     void resume();
+
+    /**
+     * the execution listener of this execution.
+     *
+     * @return
+     */
+    StateMachineExecutionListener executionListener();
 }

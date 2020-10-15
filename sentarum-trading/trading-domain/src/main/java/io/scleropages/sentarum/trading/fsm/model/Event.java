@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.trading.fsm.model;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * event of fsm (Finite-state machine)
@@ -30,6 +31,14 @@ public interface Event {
      * @return
      */
     Long id();
+
+
+    /**
+     * associated definition of this event.
+     *
+     * @return
+     */
+    EventDefinition eventDefinition();
 
 
     /**
@@ -62,9 +71,17 @@ public interface Event {
 
 
     /**
+     * headers of this event.
+     *
+     * @return
+     */
+    Map<String, Object> headers();
+
+
+    /**
      * business payload(order,payment...) of this event.
      *
      * @return
      */
-    Object bizPayload();
+    Object body();
 }

@@ -13,40 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.fsm.model;
+package io.scleropages.sentarum.trading.fsm;
+
+import io.scleropages.sentarum.trading.fsm.model.Event;
+import io.scleropages.sentarum.trading.fsm.model.State;
 
 /**
- * represent state of fsm (Finite-state machine)
+ * The transit-action from transition
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface State {
+public interface TransitionAction {
 
     /**
-     * id of this state.
+     * action performed during transition
      *
-     * @return
+     * @param from
+     * @param to
+     * @param event
      */
-    Long id();
-
-    /**
-     * the value of this state.
-     *
-     * @return
-     */
-    Integer value();
-
-    /**
-     * the name of this state.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * the description of this state.
-     *
-     * @return
-     */
-    String desc();
+    void execute(State from, State to, Event event);
 }
