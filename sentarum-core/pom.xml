@@ -13,5 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>core-domain</module>
+        <module>core-infrastructure</module>
+        <module>core-application</module>
     </modules>
 </project>

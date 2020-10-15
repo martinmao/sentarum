@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.model;
 
-import io.scleropages.sentarum.trading.fsm.model.StateMachineDefinition;
+import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 
 /**
  * 订单
