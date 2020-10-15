@@ -47,11 +47,10 @@ public interface StateMachineDefinition {
      */
     List<StateTransition> transitions();
 
-
     /**
-     * the final state of this fms.
+     * return true if state machine started automatically.
      *
      * @return
      */
-    State finalState();
+    Boolean autoStartup();
 }
