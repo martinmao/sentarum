@@ -97,6 +97,11 @@ public class StateMachineExecutionModel implements StateMachineExecution {
     }
 
     @Override
+    public void sendEvent(Event event) {
+
+    }
+
+    @Override
     public void terminate(String note) {
 
     }

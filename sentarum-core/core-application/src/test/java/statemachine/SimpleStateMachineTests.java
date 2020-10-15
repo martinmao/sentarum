@@ -18,6 +18,7 @@ package statemachine;
 import org.squirrelframework.foundation.fsm.Action;
 import org.squirrelframework.foundation.fsm.Condition;
 import org.squirrelframework.foundation.fsm.StateMachineBuilderFactory;
+import org.squirrelframework.foundation.fsm.StateMachineStatus;
 import org.squirrelframework.foundation.fsm.UntypedStateMachine;
 import org.squirrelframework.foundation.fsm.UntypedStateMachineBuilder;
 import org.squirrelframework.foundation.fsm.impl.AbstractUntypedStateMachine;
@@ -29,12 +30,24 @@ public class SimpleStateMachineTests {
 
     static class SampleStateMachine extends AbstractUntypedStateMachine {
 
-        protected void s1ToS2(String from, String to, String event, Object context) {
-            System.out.println("s1ToS2");
+        protected void enteredS1(Object from, Object to, Object event, Object context) {
+            System.out.println("enteredS1:   " + event + "(" + from + "->" + to + ")" + context);
+        }
+
+        protected void exitedS1(Object from, Object to, Object event, Object context) {
+            System.out.println("exitedS1:  " + event + "(" + from + "->" + to + ")" + context);
         }
 
         protected void s2ToS3(Object from, Object to, Object event, Object context) {
             System.out.println("s2ToS3");
+        }
+
+
+        @Override
+        protected void afterTransitionCausedException(Object fromState, Object toState, Object event, Object context) {
+            //默认情况下：状态机异常将会终止状态机执行
+            setStatus(StateMachineStatus.IDLE);
+            //super.afterTransitionCausedException(fromState, toState, event, context);
         }
     }
 
@@ -42,15 +55,16 @@ public class SimpleStateMachineTests {
     public static void main(String[] args) {
 
         UntypedStateMachineBuilder builder = StateMachineBuilderFactory.create(SampleStateMachine.class);
+
         builder.externalTransition().from("S1").to("S2").on("E1").perform(new Action<UntypedStateMachine, Object, Object, Object>() {
             @Override
             public void execute(Object from, Object to, Object event, Object context, UntypedStateMachine stateMachine) {
-                System.out.println(event + ": " + from + "->" + to + " {" + context + "}");
+                System.out.println(event + "(" + from + "->" + to + ")" + context);
             }
 
             @Override
             public String name() {
-                return null;
+                return "this must not null.";
             }
 
             @Override
@@ -71,7 +85,7 @@ public class SimpleStateMachineTests {
         builder.externalTransition().from("S2").to("S3").on("E2").when(new Condition<Object>() {
             @Override
             public boolean isSatisfied(Object context) {
-                System.out.println("condition fired: "+context);
+                System.out.println("condition fired: " + context);
                 return true;
             }
 
@@ -81,10 +95,55 @@ public class SimpleStateMachineTests {
             }
         }).callMethod("s2ToS3");
 
+        builder.onEntry("S1").callMethod("enteredS1");
+        builder.onExit("S1").callMethod("exitedS1");
+
+
+        //序列状态，串行，自动只会进入第一个子状态
+        builder.defineSequentialStatesOn("S3", "S31", "S32", "S33");
+        builder.externalTransition().from("S3").to("S4").on("E3");
+        builder.externalTransition().from("S31").to("S32").on("E3_1");
+        builder.externalTransition().from("S32").to("S33").on("E3_2");
+        builder.externalTransition().from("S33").to("S5").on("E3_3");
+
+        //并发状态，自动进入全部子状态
+        builder.defineParallelStatesOn("S5", "S51", "S52");
+        builder.defineSequentialStatesOn("S51", "S511", "S512");
+        builder.defineSequentialStatesOn("S52", "S521", "S522");
+        builder.externalTransition().from("S511").to("S512").on("E5_1");
+        builder.externalTransition().from("S521").to("S522").on("E5_2");
+        builder.defineFinishEvent("E5");
+
+        builder.externalTransition().from("S5").to("S6");
+
+
         UntypedStateMachine fsm = builder.newStateMachine("S1");
-        fsm.fire("E1", "E1 fsm context");
+        fsm.start("fsm context");
+        fsm.fire("E1", "fsm context1");
         System.out.println("Current state is " + fsm.getCurrentState());
-        fsm.fire("E2", "E2 fsm context");
+        fsm.fire("E2", "fsm context2");
         System.out.println("Current state is " + fsm.getCurrentState());
+
+        System.out.println("########################");
+        fsm.fire("E3_1");
+        System.out.println("Current state is " + fsm.getCurrentState());
+        fsm.fire("E3_2");
+        System.out.println("Current state is " + fsm.getCurrentState());
+        fsm.fire("E3_3");
+        System.out.println("Current state is " + fsm.getCurrentState());
+
+        fsm.fire("E5_1");
+
+        System.out.println(fsm.getSubStatesOn("S5"));
+
+        fsm.fire("E5_2");
+
+        System.out.println(fsm.getSubStatesOn("S5"));
+
+        fsm.fire("E5");
+
+
+//        System.out.println(fsm.exportXMLDefinition(true));
+
     }
 }

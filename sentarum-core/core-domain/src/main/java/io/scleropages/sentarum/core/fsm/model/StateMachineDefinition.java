@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.core.fsm.model;
 
+import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
+
 import java.util.List;
 
 /**
@@ -53,4 +55,11 @@ public interface StateMachineDefinition {
      * @return
      */
     Boolean autoStartup();
+
+    /**
+     * listener for each execution of this fsm.
+     *
+     * @return
+     */
+    StateMachineExecutionListener executionListener();
 }

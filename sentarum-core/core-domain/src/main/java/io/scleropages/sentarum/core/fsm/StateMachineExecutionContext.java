@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.core.fsm;
 
+import java.util.Map;
+
 /**
  * the execution context of fsm (Finite-state machine)
  *
@@ -22,4 +24,42 @@ package io.scleropages.sentarum.core.fsm;
  */
 public interface StateMachineExecutionContext {
 
+
+    /**
+     * set a attribute to this context.
+     *
+     * @param name
+     * @param attribute
+     */
+    void setAttribute(String name, Object attribute);
+
+    /**
+     * remove attribute from this context.
+     *
+     * @param name
+     */
+    void removeAttribute(String name);
+
+    /**
+     * get attribute from this context.
+     *
+     * @param name
+     * @return
+     */
+    Object getAttribute(String name);
+
+    /**
+     * get attributes from this context.
+     *
+     * @return
+     */
+    Map<String, Object> getAttributes();
+
+    /**
+     * return true if given attribute exists.
+     *
+     * @param name
+     * @return
+     */
+    boolean hasAttribute(String name);
 }

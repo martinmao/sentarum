@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.core.fsm.model.impl;
 
+import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
@@ -31,6 +32,7 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
     private State initialState;
     private List<StateTransition> transitions;
     private Boolean autoStartup;
+    private StateMachineExecutionListener executionListener;
 
 
     public Long getId() {
@@ -49,6 +51,10 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
         return autoStartup;
     }
 
+    public StateMachineExecutionListener getExecutionListener() {
+        return executionListener;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -63,6 +69,10 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
 
     public void setAutoStartup(Boolean autoStartup) {
         this.autoStartup = autoStartup;
+    }
+
+    public void setExecutionListener(StateMachineExecutionListener executionListener) {
+        this.executionListener = executionListener;
     }
 
     @Override
@@ -83,5 +93,10 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
     @Override
     public Boolean autoStartup() {
         return getAutoStartup();
+    }
+
+    @Override
+    public StateMachineExecutionListener executionListener() {
+        return getExecutionListener();
     }
 }

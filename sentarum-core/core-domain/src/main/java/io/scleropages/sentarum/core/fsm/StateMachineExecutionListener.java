@@ -19,6 +19,8 @@ import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.State;
 
 /**
+ * a listener of state machine exection.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface StateMachineExecutionListener {

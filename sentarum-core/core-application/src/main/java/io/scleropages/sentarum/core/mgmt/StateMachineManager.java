@@ -13,25 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm;
-
-import io.scleropages.sentarum.core.fsm.model.Event;
-import io.scleropages.sentarum.core.fsm.model.State;
+package io.scleropages.sentarum.core.mgmt;
 
 /**
- * The transit-action from transition
+ * manager of state machine.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TransitionAction {
+public class StateMachineManager {
 
-    /**
-     * action performed during transition
-     *
-     * @param from
-     * @param to
-     * @param event
-     * @param executionContext
-     */
-    void execute(State from, State to, Event event, StateMachineExecutionContext executionContext);
+    
+
 }

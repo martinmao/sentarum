@@ -56,6 +56,14 @@ public interface StateMachineExecution {
      */
     List<Event> historiesEvents();
 
+
+    /**
+     * send event to this execution.
+     *
+     * @param event
+     */
+    void sendEvent(Event event);
+
     /**
      * terminate this execution.
      *

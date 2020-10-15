@@ -61,6 +61,9 @@ public interface StateTransition {
      */
     EventDefinition event();
 
+
+
+
     /**
      * if entered event fired. the evaluator will check whether the conditions for switching from one state to another.
      *
