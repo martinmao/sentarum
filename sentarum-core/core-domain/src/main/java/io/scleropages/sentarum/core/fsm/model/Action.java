@@ -18,7 +18,7 @@ package io.scleropages.sentarum.core.fsm.model;
 import io.scleropages.sentarum.core.fsm.StateMachineExecutionContext;
 
 /**
- * The action of fsm (Finite-state machine) lifecycle.
+ * The action performed of fsm (Finite-state machine) lifecycle.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
