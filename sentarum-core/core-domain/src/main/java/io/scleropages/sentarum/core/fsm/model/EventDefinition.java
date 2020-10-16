@@ -50,32 +50,4 @@ public interface EventDefinition {
      * @return
      */
     String desc();
-
-
-    /**
-     * direction of this event definition.
-     *
-     * @return
-     */
-    Direction direction();
-
-
-    /**
-     * 事件方向
-     * <pre>
-     * 入射事件代表外部系统传入的事件，其会改变节点流向.
-     * 出射事件往往是一个外部通知,外部订阅事件处理特定逻辑.
-     * </pre>
-     */
-    enum Direction {
-
-        /**
-         * 入射事件
-         */
-        INCOMING,
-        /**
-         * 出射事件
-         */
-        OUTGOING
-    }
 }
