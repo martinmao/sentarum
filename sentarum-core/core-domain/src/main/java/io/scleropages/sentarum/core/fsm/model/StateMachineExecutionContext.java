@@ -13,59 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm.model.runtime;
+package io.scleropages.sentarum.core.fsm.model;
 
-import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
-import io.scleropages.sentarum.core.fsm.model.State;
-import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
+import java.util.Map;
 
 /**
- * represent a fsm (Finite-state machine) execution.
+ * the execution context of fsm (Finite-state machine)
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StateMachineExecution {
+public interface StateMachineExecutionContext {
 
 
     /**
-     * id of this execution.
+     * set a attribute to this context.
      *
-     * @return
+     * @param name
+     * @param attribute
      */
-    Long id();
+    void setAttribute(String name, Object attribute);
 
     /**
-     * id of business
+     * remove attribute from this context.
      *
-     * @return
+     * @param name
      */
-    Long bizId();
+    void removeAttribute(String name);
 
     /**
-     * type of business
+     * get attribute from this context.
      *
+     * @param name
      * @return
      */
-    Integer bizType();
+    Object getAttribute(String name);
 
     /**
-     * associated definition of this fsm.
+     * get attributes from this context.
      *
      * @return
      */
-    StateMachineDefinition stateMachineDefinition();
+    Map<String, Object> getAttributes();
 
     /**
-     * current state of this execution.
+     * return true if given attribute exists.
      *
+     * @param name
      * @return
      */
-    State currentState();
-
-    /**
-     * the execution listener of this execution.
-     *
-     * @return
-     */
-    StateMachineExecutionListener executionListener();
+    boolean hasAttribute(String name);
 }

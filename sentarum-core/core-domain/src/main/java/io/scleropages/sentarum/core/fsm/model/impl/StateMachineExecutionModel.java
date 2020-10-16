@@ -18,21 +18,18 @@ package io.scleropages.sentarum.core.fsm.model.impl;
 import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
-import io.scleropages.sentarum.core.fsm.model.runtime.HistoricTransitionExecution;
 import io.scleropages.sentarum.core.fsm.model.runtime.StateMachineExecution;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class StateMachineExecutionModel implements StateMachineExecution {
-
+public class StateMachineExecutionModel implements StateMachineExecution {
 
     private Long id;
     private StateMachineDefinition stateMachineDefinition;
     private State currentState;
-    private List<HistoricTransitionExecution> historicTransitionExecutions;
+    private Long bizId;
+    private Integer bizType;
     private StateMachineExecutionListener executionListener;
 
 
@@ -48,9 +45,12 @@ public abstract class StateMachineExecutionModel implements StateMachineExecutio
         return currentState;
     }
 
+    public Long getBizId() {
+        return bizId;
+    }
 
-    public List<HistoricTransitionExecution> getHistoricTransitionExecutions() {
-        return historicTransitionExecutions;
+    public Integer getBizType() {
+        return bizType;
     }
 
     public StateMachineExecutionListener getExecutionListener() {
@@ -69,9 +69,12 @@ public abstract class StateMachineExecutionModel implements StateMachineExecutio
         this.currentState = currentState;
     }
 
+    public void setBizId(Long bizId) {
+        this.bizId = bizId;
+    }
 
-    public void setHistoricTransitionExecutions(List<HistoricTransitionExecution> historicTransitionExecutions) {
-        this.historicTransitionExecutions = historicTransitionExecutions;
+    public void setBizType(Integer bizType) {
+        this.bizType = bizType;
     }
 
     public void setExecutionListener(StateMachineExecutionListener executionListener) {
@@ -99,9 +102,13 @@ public abstract class StateMachineExecutionModel implements StateMachineExecutio
         return getExecutionListener();
     }
 
+    @Override
+    public Long bizId() {
+        return getBizId();
+    }
 
     @Override
-    public List<HistoricTransitionExecution> historicTransitionExecutions() {
-        return getHistoricTransitionExecutions();
+    public Integer bizType() {
+        return getBizType();
     }
 }

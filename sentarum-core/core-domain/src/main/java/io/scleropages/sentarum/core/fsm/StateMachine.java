@@ -15,51 +15,45 @@
  */
 package io.scleropages.sentarum.core.fsm;
 
-import java.util.Map;
+import io.scleropages.sentarum.core.fsm.model.Event;
+import io.scleropages.sentarum.core.fsm.model.runtime.StateMachineExecution;
 
 /**
- * the execution context of fsm (Finite-state machine)
+ * represent a fsm (Finite-state machine)
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StateMachineExecutionContext {
-
+public interface StateMachine {
 
     /**
-     * set a attribute to this context.
+     * send event to this state machine.
      *
-     * @param name
-     * @param attribute
+     * @param event
      */
-    void setAttribute(String name, Object attribute);
+    void sendEvent(Event event);
 
     /**
-     * remove attribute from this context.
-     *
-     * @param name
-     */
-    void removeAttribute(String name);
-
-    /**
-     * get attribute from this context.
-     *
-     * @param name
-     * @return
-     */
-    Object getAttribute(String name);
-
-    /**
-     * get attributes from this context.
+     * terminate this state machine.
      *
      * @return
      */
-    Map<String, Object> getAttributes();
+    void terminate(String note);
 
     /**
-     * return true if given attribute exists.
+     * suspend this state machine.
+     */
+    void suspend(String note);
+
+    /**
+     * resume this state machine.
+     */
+    void resume();
+
+    /**
+     * return execution of this state machine.
      *
-     * @param name
      * @return
      */
-    boolean hasAttribute(String name);
+    StateMachineExecution stateMachineExecution();
+
 }

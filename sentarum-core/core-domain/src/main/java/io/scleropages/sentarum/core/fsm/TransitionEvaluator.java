@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.core.fsm;
 
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
+
 /**
  * evaluator transition of execution
  *

@@ -160,7 +160,6 @@ public class SimpleStateMachineTests {
         });
 
 
-
         fsm.start("fsm context");
         fsm.fire("E1", "fsm context1");
         System.out.println("Current state is " + fsm.getCurrentState());
@@ -189,10 +188,13 @@ public class SimpleStateMachineTests {
 
         System.out.println(fsm.canAccept("xxxxx"));
         System.out.println(fsm.isTerminated());
-        fsm.terminate();
 
-
-//        System.out.println(fsm.exportXMLDefinition(true));
+        fsm = builder.newStateMachine("S5");
+        fsm.fire("E5_1");
+        System.out.println(fsm.isTerminated());
+        fsm.fire("E5_2");
+        System.out.println(fsm.isTerminated());
+//      System.out.println(fsm.exportXMLDefinition(true));
 
     }
 }

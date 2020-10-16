@@ -15,13 +15,83 @@
  */
 package io.scleropages.sentarum.core.mgmt;
 
+import io.scleropages.sentarum.core.fsm.StateMachine;
+import io.scleropages.sentarum.core.fsm.model.impl.ActionModel;
+import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
+import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
+import io.scleropages.sentarum.core.fsm.model.impl.StateModel;
+import io.scleropages.sentarum.core.fsm.model.runtime.HistoricTransitionExecution;
+import io.scleropages.sentarum.core.fsm.model.runtime.StateMachineExecution;
+
+import java.util.List;
+
 /**
  * manager of state machine.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class StateMachineManager {
+public interface StateMachineManager {
 
-    
+    /**
+     * create new state.
+     *
+     * @param state state to create
+     */
+    void createState(StateModel state);
 
+    /**
+     * create new event definition.
+     *
+     * @param eventDefinition
+     */
+    void createEventDefinition(EventDefinitionModel eventDefinition);
+
+    /**
+     * create new state machine definition.
+     *
+     * @param stateMachineDefinition
+     */
+    void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition);
+
+    /**
+     * create new state transition
+     *
+     * @param stateMachineDefinitionId id of state machine definition.
+     * @param fromStateId              id of from state
+     * @param toStateId                id of target to state
+     * @param eventDefinitionId        id of event definition
+     * @param action                   performed action.
+     */
+    void createStateTransition(Long stateMachineDefinitionId, Long fromStateId, Long toStateId, Long eventDefinitionId, ActionModel action);
+
+    /**
+     * create new state machine.
+     *
+     * @param stateMachineDefinitionId
+     */
+    void createStateMachine(Long stateMachineDefinitionId);
+
+    /**
+     * return state machine
+     *
+     * @param id id of state machine.
+     * @return
+     */
+    StateMachine getStateMachine(Long id);
+
+    /**
+     * return state machine execution by id.
+     *
+     * @param id
+     * @return
+     */
+    StateMachineExecution getStateMachineExecution(Long id);
+
+    /**
+     * return all historic transition executions by state machine execution id.
+     *
+     * @param stateMachineExecutionId
+     * @return
+     */
+    List<HistoricTransitionExecution> getAllHistoricTransitionExecutions(Long stateMachineExecutionId);
 }

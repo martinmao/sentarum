@@ -17,6 +17,7 @@ package io.scleropages.sentarum.core.fsm;
 
 import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.State;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 
 /**
  * a listener of state machine execution.
