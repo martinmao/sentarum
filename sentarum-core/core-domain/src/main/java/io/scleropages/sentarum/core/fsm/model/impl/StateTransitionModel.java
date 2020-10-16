@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.core.fsm.model.impl;
 
-import io.scleropages.sentarum.core.fsm.TransitionAction;
+import io.scleropages.sentarum.core.fsm.model.Action;
 import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
 import io.scleropages.sentarum.core.fsm.model.EventDefinition;
 import io.scleropages.sentarum.core.fsm.model.State;
@@ -34,7 +34,7 @@ public class StateTransitionModel implements StateTransition {
     private State to;
     private EventDefinition event;
     private TransitionEvaluator evaluator;
-    private TransitionAction action;
+    private Action action;
 
     public Long getId() {
         return id;
@@ -60,7 +60,7 @@ public class StateTransitionModel implements StateTransition {
         return evaluator;
     }
 
-    public TransitionAction getAction() {
+    public Action getAction() {
         return action;
     }
 
@@ -88,7 +88,7 @@ public class StateTransitionModel implements StateTransition {
         this.evaluator = evaluator;
     }
 
-    public void setAction(TransitionAction action) {
+    public void setAction(Action action) {
         this.action = action;
     }
 
@@ -123,7 +123,7 @@ public class StateTransitionModel implements StateTransition {
     }
 
     @Override
-    public TransitionAction action() {
+    public Action action() {
         return getAction();
     }
 }

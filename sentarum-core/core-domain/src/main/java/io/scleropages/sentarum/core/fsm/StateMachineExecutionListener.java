@@ -19,7 +19,7 @@ import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.State;
 
 /**
- * a listener of state machine exection.
+ * a listener of state machine execution.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

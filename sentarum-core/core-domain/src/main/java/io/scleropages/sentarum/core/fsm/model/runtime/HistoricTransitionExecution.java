@@ -13,66 +13,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm.model;
+package io.scleropages.sentarum.core.fsm.model.runtime;
 
-import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
+import io.scleropages.sentarum.core.fsm.model.Event;
+import io.scleropages.sentarum.core.fsm.model.State;
+import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
+
+import java.util.Date;
 
 /**
- * defined a state transition of fsm (Finite-state machine).
+ * Represent a during of transition
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StateTransition {
-
+public interface HistoricTransitionExecution {
 
     /**
-     * id of this transition.
+     * id of this transition execution.
      *
      * @return
      */
     Long id();
 
     /**
-     * associated fsm definition of this transition.
+     * associated statemachine definition.
      *
      * @return
      */
     StateMachineDefinition stateMachineDefinition();
 
     /**
-     * source state from of this transition.
+     * associated statemachine execution.
+     *
+     * @return
+     */
+    StateMachineExecution stateMachineExecution();
+
+
+    /**
+     * source state of this transition execution.
      *
      * @return
      */
     State from();
 
     /**
-     * target state to of this transition.
+     * target state of this transition execution.
      *
      * @return
      */
     State to();
 
     /**
-     * associated event definition. the event will cause the fms state changes during transition.
+     * event fired of this transition execution.
      *
      * @return
      */
-    EventDefinition event();
+    Event event();
 
 
     /**
-     * if entered event fired. the evaluator will check whether the conditions for switching from one state to another.
+     * time of this transition execution nearly to {@link Event#firedTime()}.
      *
      * @return
      */
-    TransitionEvaluator evaluator();
+    Date time();
 
-
-    /**
-     * action to be performed during transition
-     *
-     * @return
-     */
-    Action action();
 }

@@ -18,6 +18,7 @@ package statemachine;
 import org.squirrelframework.foundation.fsm.Action;
 import org.squirrelframework.foundation.fsm.Condition;
 import org.squirrelframework.foundation.fsm.StateMachineBuilderFactory;
+import org.squirrelframework.foundation.fsm.StateMachineConfiguration;
 import org.squirrelframework.foundation.fsm.StateMachineStatus;
 import org.squirrelframework.foundation.fsm.UntypedStateMachine;
 import org.squirrelframework.foundation.fsm.UntypedStateMachineBuilder;
@@ -38,14 +39,34 @@ public class SimpleStateMachineTests {
             System.out.println("exitedS1:  " + event + "(" + from + "->" + to + ")" + context);
         }
 
+
         protected void s2ToS3(Object from, Object to, Object event, Object context) {
             System.out.println("s2ToS3");
         }
 
+        //follow methods always call and not required to registered.
+        protected void beforeActionInvoked(Object from, Object to, Object event, Object context) {
+        }
+
+        protected void afterTransitionCausedException(Exception e, Object from, Object to, Object event, Object context) {
+        }
+
+        protected void beforeTransitionBegin(Object from, Object event, Object context) {
+        }
+
+        protected void afterTransitionCompleted(Object from, Object to, Object event, Object context) {
+        }
+
+        protected void afterTransitionEnd(Object from, Object to, Object event, Object context) {
+        }
+
+        protected void afterTransitionDeclined(Object from, Object event, Object context) {
+            throw new IllegalArgumentException("不支持的 event");
+        }
 
         @Override
         protected void afterTransitionCausedException(Object fromState, Object toState, Object event, Object context) {
-            //默认情况下：状态机异常将会终止状态机执行
+            //默认情况下：状态机异常将会终止状态机执行，此处进行重置
             setStatus(StateMachineStatus.IDLE);
             //super.afterTransitionCausedException(fromState, toState, event, context);
         }
@@ -112,12 +133,34 @@ public class SimpleStateMachineTests {
         builder.defineSequentialStatesOn("S52", "S521", "S522");
         builder.externalTransition().from("S511").to("S512").on("E5_1");
         builder.externalTransition().from("S521").to("S522").on("E5_2");
-        builder.defineFinishEvent("E5");
+        builder.defineFinalState("S512");
+        builder.defineFinalState("S522");
 
-        builder.externalTransition().from("S5").to("S6");
+
+        builder.defineFinishEvent("S5_FINISHED");
+
+        builder.externalTransition().from("S5").to("S6").on("S5_FINISHED");
+
+        builder.defineFinalState("S6");
+
+        // after 50ms delay fire event "END" every 100ms from S6 with null context
+//        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//        SquirrelSingletonProvider.getInstance().register(ScheduledExecutorService.class, scheduler);
+//        builder.defineTimedState("S5", 50, 100, "END", null);
+//        builder.externalTransition().from("S5").to("S_END").on("END");
 
 
-        UntypedStateMachine fsm = builder.newStateMachine("S1");
+        UntypedStateMachine fsm = builder.newStateMachine("S1", StateMachineConfiguration.create().enableDebugMode(true));
+
+        //fsm.addTransitionXXXXXListener(); for each transition event listener.
+        //fsm.addXXXXListener(); for other else.
+        //fsm.addDeclarativeListener(); 支持以注解方式申明，参考StateMachineLogger
+        fsm.addStateMachineListener(event -> {
+            System.out.println("fsm listener event: " + event.getClass().getSimpleName());
+        });
+
+
+
         fsm.start("fsm context");
         fsm.fire("E1", "fsm context1");
         System.out.println("Current state is " + fsm.getCurrentState());
@@ -132,6 +175,8 @@ public class SimpleStateMachineTests {
         fsm.fire("E3_3");
         System.out.println("Current state is " + fsm.getCurrentState());
 
+        System.out.println(fsm.getSubStatesOn("S5"));
+
         fsm.fire("E5_1");
 
         System.out.println(fsm.getSubStatesOn("S5"));
@@ -140,7 +185,11 @@ public class SimpleStateMachineTests {
 
         System.out.println(fsm.getSubStatesOn("S5"));
 
-        fsm.fire("E5");
+        System.out.println("Current state is " + fsm.getCurrentState());
+
+        System.out.println(fsm.canAccept("xxxxx"));
+        System.out.println(fsm.isTerminated());
+        fsm.terminate();
 
 
 //        System.out.println(fsm.exportXMLDefinition(true));

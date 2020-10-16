@@ -16,76 +16,46 @@
 package io.scleropages.sentarum.core.fsm.model.impl;
 
 import io.scleropages.sentarum.core.fsm.model.Action;
-import io.scleropages.sentarum.core.fsm.model.State;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class StateModel implements State {
+public abstract class ActionModel implements Action {
 
     private Long id;
-    private Integer value;
+
     private String name;
+
     private String desc;
-    private Action enteredAction;
-    private Action exitAction;
+
 
     public Long getId() {
         return id;
-    }
-
-    public Integer getValue() {
-        return value;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public Action getEnteredAction() {
-        return enteredAction;
-    }
-
-    public Action getExitAction() {
-        return exitAction;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setValue(Integer value) {
-        this.value = value;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getDesc() {
+        return desc;
+    }
+
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public void setEnteredAction(Action enteredAction) {
-        this.enteredAction = enteredAction;
-    }
-
-    public void setExitAction(Action exitAction) {
-        this.exitAction = exitAction;
     }
 
     @Override
     public Long id() {
         return getId();
-    }
-
-    @Override
-    public Integer value() {
-        return getValue();
     }
 
     @Override
@@ -96,15 +66,5 @@ public class StateModel implements State {
     @Override
     public String desc() {
         return getDesc();
-    }
-
-    @Override
-    public Action enteredAction() {
-        return getEnteredAction();
-    }
-
-    @Override
-    public Action exitAction() {
-        return getExitAction();
     }
 }

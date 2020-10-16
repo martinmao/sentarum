@@ -16,23 +16,23 @@
 package io.scleropages.sentarum.core.fsm.model.impl;
 
 import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
-import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
-import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.runtime.HistoricTransitionExecution;
+import io.scleropages.sentarum.core.fsm.model.runtime.StateMachineExecution;
 
 import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class StateMachineExecutionModel implements StateMachineExecution {
+public abstract class StateMachineExecutionModel implements StateMachineExecution {
 
 
     private Long id;
     private StateMachineDefinition stateMachineDefinition;
     private State currentState;
-    private List<Event> historiesEvents;
+    private List<HistoricTransitionExecution> historicTransitionExecutions;
     private StateMachineExecutionListener executionListener;
 
 
@@ -48,8 +48,9 @@ public class StateMachineExecutionModel implements StateMachineExecution {
         return currentState;
     }
 
-    public List<Event> getHistoriesEvents() {
-        return historiesEvents;
+
+    public List<HistoricTransitionExecution> getHistoricTransitionExecutions() {
+        return historicTransitionExecutions;
     }
 
     public StateMachineExecutionListener getExecutionListener() {
@@ -68,8 +69,9 @@ public class StateMachineExecutionModel implements StateMachineExecution {
         this.currentState = currentState;
     }
 
-    public void setHistoriesEvents(List<Event> historiesEvents) {
-        this.historiesEvents = historiesEvents;
+
+    public void setHistoricTransitionExecutions(List<HistoricTransitionExecution> historicTransitionExecutions) {
+        this.historicTransitionExecutions = historicTransitionExecutions;
     }
 
     public void setExecutionListener(StateMachineExecutionListener executionListener) {
@@ -91,33 +93,15 @@ public class StateMachineExecutionModel implements StateMachineExecution {
         return getCurrentState();
     }
 
-    @Override
-    public List<Event> historiesEvents() {
-        return getHistoriesEvents();
-    }
-
-    @Override
-    public void sendEvent(Event event) {
-
-    }
-
-    @Override
-    public void terminate(String note) {
-
-    }
-
-    @Override
-    public void suspend(String note) {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
 
     @Override
     public StateMachineExecutionListener executionListener() {
-        return null;
+        return getExecutionListener();
+    }
+
+
+    @Override
+    public List<HistoricTransitionExecution> historicTransitionExecutions() {
+        return getHistoricTransitionExecutions();
     }
 }

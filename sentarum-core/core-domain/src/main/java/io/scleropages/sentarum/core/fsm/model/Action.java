@@ -13,20 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm;
+package io.scleropages.sentarum.core.fsm.model;
 
-import io.scleropages.sentarum.core.fsm.model.Event;
-import io.scleropages.sentarum.core.fsm.model.State;
+import io.scleropages.sentarum.core.fsm.StateMachineExecutionContext;
 
 /**
- * The transit-action from transition
+ * The action of fsm (Finite-state machine) lifecycle.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TransitionAction {
+public interface Action {
+
 
     /**
-     * action performed during transition
+     * id of this action.
+     *
+     * @return
+     */
+    Long id();
+
+    /**
+     * name of this action.
+     *
+     * @return
+     */
+    String name();
+
+
+    /**
+     * description of this action
+     *
+     * @return
+     */
+    String desc();
+
+
+    /**
+     * action performed during fsm execution lifecycle
      *
      * @param from
      * @param to

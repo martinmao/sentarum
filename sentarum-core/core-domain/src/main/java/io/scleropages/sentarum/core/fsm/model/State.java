@@ -49,4 +49,18 @@ public interface State {
      * @return
      */
     String desc();
+
+    /**
+     * action performed when state entered.
+     *
+     * @return
+     */
+    Action enteredAction();
+
+    /**
+     * action performed when state exit.
+     *
+     * @return
+     */
+    Action exitAction();
 }
