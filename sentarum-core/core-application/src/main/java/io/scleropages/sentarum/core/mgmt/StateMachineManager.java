@@ -20,8 +20,8 @@ import io.scleropages.sentarum.core.fsm.model.impl.ActionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateModel;
-import io.scleropages.sentarum.core.fsm.model.runtime.HistoricTransitionExecution;
-import io.scleropages.sentarum.core.fsm.model.runtime.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.HistoricTransitionExecution;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 
 import java.util.List;
 

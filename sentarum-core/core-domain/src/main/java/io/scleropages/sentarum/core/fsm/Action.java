@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm.model;
+package io.scleropages.sentarum.core.fsm;
+
+import io.scleropages.sentarum.core.fsm.model.Event;
+import io.scleropages.sentarum.core.fsm.model.State;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 
 /**
  * The action performed of fsm (Finite-state machine) lifecycle.

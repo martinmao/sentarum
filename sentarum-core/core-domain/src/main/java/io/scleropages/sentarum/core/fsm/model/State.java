@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.core.fsm.model;
 
+import io.scleropages.sentarum.core.fsm.Action;
+
 /**
  * represent state of fsm (Finite-state machine)
  *

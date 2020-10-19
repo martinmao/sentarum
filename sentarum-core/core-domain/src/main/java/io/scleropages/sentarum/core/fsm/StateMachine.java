@@ -16,7 +16,9 @@
 package io.scleropages.sentarum.core.fsm;
 
 import io.scleropages.sentarum.core.fsm.model.Event;
-import io.scleropages.sentarum.core.fsm.model.runtime.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+
+import java.util.Map;
 
 /**
  * represent a fsm (Finite-state machine)
@@ -25,22 +27,27 @@ import io.scleropages.sentarum.core.fsm.model.runtime.StateMachineExecution;
  */
 public interface StateMachine {
 
+
     /**
      * send event to this state machine.
      *
-     * @param event
+     * @param event             event to sent
+     * @param contextAttributes attributes of context.
      */
-    void sendEvent(Event event);
+    void sendEvent(Event event, Map<String, Object> contextAttributes);
+
 
     /**
      * terminate this state machine.
      *
-     * @return
+     * @param note
      */
     void terminate(String note);
 
     /**
      * suspend this state machine.
+     *
+     * @param note
      */
     void suspend(String note);
 
@@ -55,5 +62,4 @@ public interface StateMachine {
      * @return
      */
     StateMachineExecution stateMachineExecution();
-
 }

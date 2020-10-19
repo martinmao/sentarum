@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm.model.runtime;
+package io.scleropages.sentarum.core.fsm.model;
 
 import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
 import io.scleropages.sentarum.core.fsm.model.State;

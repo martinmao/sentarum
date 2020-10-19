@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.core.fsm.model.impl;
 
-import io.scleropages.sentarum.core.fsm.model.Action;
+import io.scleropages.sentarum.core.fsm.Action;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>

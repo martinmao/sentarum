@@ -18,7 +18,7 @@ package io.scleropages.sentarum.core.fsm.model.impl;
 import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
-import io.scleropages.sentarum.core.fsm.model.runtime.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>

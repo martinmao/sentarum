@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.core.fsm.model;
 
+import io.scleropages.sentarum.core.fsm.Action;
 import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
 
 /**
