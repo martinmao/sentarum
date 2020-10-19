@@ -15,8 +15,6 @@
  */
 package io.scleropages.sentarum.core.fsm.model;
 
-import io.scleropages.sentarum.core.fsm.Action;
-
 /**
  * represent state of fsm (Finite-state machine)
  *
@@ -46,6 +44,13 @@ public interface State {
     String name();
 
     /**
+     * tag of this state.
+     *
+     * @return
+     */
+    String tag();
+
+    /**
      * the description of this state.
      *
      * @return
@@ -57,12 +62,12 @@ public interface State {
      *
      * @return
      */
-    Action enteredAction();
+    InvocationConfig enteredActionConfig();
 
     /**
      * action performed when state exit.
      *
      * @return
      */
-    Action exitAction();
+    InvocationConfig exitActionConfig();
 }

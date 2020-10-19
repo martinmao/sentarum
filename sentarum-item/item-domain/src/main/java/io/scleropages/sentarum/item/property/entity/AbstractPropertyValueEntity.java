@@ -99,7 +99,7 @@ public class AbstractPropertyValueEntity extends IdEntity {
     }
 
 
-    @Column(name = NAME_COLUMN, nullable = false)
+    @Column(name = NAME_COLUMN, nullable = false, length = 64)
     public String getName() {
         return name;
     }
@@ -114,7 +114,7 @@ public class AbstractPropertyValueEntity extends IdEntity {
         return longValue;
     }
 
-    @Column(name = TEXT_VALUE_COLUMN)
+    @Column(name = TEXT_VALUE_COLUMN, length = 64)
     public String getTextValue() {
         return textValue;
     }

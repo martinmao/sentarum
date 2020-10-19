@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.core.fsm;
 
+import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 
 /**
@@ -28,10 +29,17 @@ public interface TransitionEvaluator {
      * evaluate given execution context test whether change state to another
      * return true if successful, false otherwise.
      *
+     * @param invocationConfig
      * @param executionContext
      * @return
      */
-    default boolean evaluate(StateMachineExecutionContext executionContext) {
-        return true;
-    }
+    boolean evaluate(InvocationConfig invocationConfig, StateMachineExecutionContext executionContext);
+
+
+    /**
+     * associated class of invocation config implementation.
+     *
+     * @return
+     */
+    Class invocationConfigClass();
 }

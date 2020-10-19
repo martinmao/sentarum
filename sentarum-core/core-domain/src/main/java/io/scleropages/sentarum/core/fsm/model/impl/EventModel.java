@@ -38,9 +38,7 @@ public class EventModel implements Event {
 
     private Date firedTime;
 
-    private Map<String, Object> headers;
-
-    private Object body;
+    private Map<String, Object> body;
 
 
     public Long getId() {
@@ -67,11 +65,7 @@ public class EventModel implements Event {
         return firedTime;
     }
 
-    public Map<String, Object> getHeaders() {
-        return headers;
-    }
-
-    public Object getBody() {
+    public Map<String, Object> getBody() {
         return body;
     }
 
@@ -99,11 +93,7 @@ public class EventModel implements Event {
         this.firedTime = firedTime;
     }
 
-    public void setHeaders(Map<String, Object> headers) {
-        this.headers = headers;
-    }
-
-    public void setBody(Object body) {
+    public void setBody(Map<String, Object> body) {
         this.body = body;
     }
 
@@ -138,12 +128,7 @@ public class EventModel implements Event {
     }
 
     @Override
-    public Map<String, Object> headers() {
-        return getHeaders();
-    }
-
-    @Override
-    public Object body() {
+    public Map<String, Object> body() {
         return getBody();
     }
 }

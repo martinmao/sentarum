@@ -71,17 +71,9 @@ public interface Event {
 
 
     /**
-     * headers of this event.
-     *
-     * @return
-     */
-    Map<String, Object> headers();
-
-
-    /**
      * business payload(order,payment...) of this event.
      *
      * @return
      */
-    Object body();
+    Map<String, Object> body();
 }

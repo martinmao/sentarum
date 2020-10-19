@@ -13,55 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm.model.impl;
+package io.scleropages.sentarum.core.fsm.entity;
 
-import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
-import io.scleropages.sentarum.core.fsm.model.State;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
+ * referenced from: {@link io.scleropages.sentarum.core.fsm.model.impl.StateModel}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class StateModel implements State {
+@Entity
+@Table(name = "fsm_state")
+@SequenceGenerator(name = "state_id", sequenceName = "seq_state", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class StateEntity extends IdEntity {
 
-    private Long id;
     private Integer value;
     private String name;
     private String tag;
     private String desc;
-    private InvocationConfig enteredActionConfig;
-    private InvocationConfig exitActionConfig;
 
-    public Long getId() {
-        return id;
-    }
+    private InvocationConfigEntity enteredActionConfig;
+    private InvocationConfigEntity exitActionConfig;
 
+    @Column(name = "value_", nullable = false, unique = true)
     public Integer getValue() {
         return value;
     }
 
+    @Column(name = "name_", nullable = false, unique = true)
     public String getName() {
         return name;
     }
 
+    @Column(name = "tag_", nullable = false)
     public String getTag() {
         return tag;
     }
 
+    @Column(name = "desc_", nullable = false)
     public String getDesc() {
         return desc;
     }
 
-    public InvocationConfig getEnteredActionConfig() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "entered_invocation_conf", nullable = false)
+    public InvocationConfigEntity getEnteredActionConfig() {
         return enteredActionConfig;
     }
 
-    public InvocationConfig getExitActionConfig() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exit_invocation_conf", nullable = false)
+    public InvocationConfigEntity getExitActionConfig() {
         return exitActionConfig;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public void setValue(Integer value) {
         this.value = value;
@@ -79,46 +92,11 @@ public class StateModel implements State {
         this.desc = desc;
     }
 
-    public void setEnteredActionConfig(InvocationConfig enteredActionConfig) {
+    public void setEnteredActionConfig(InvocationConfigEntity enteredActionConfig) {
         this.enteredActionConfig = enteredActionConfig;
     }
 
-    public void setExitActionConfig(InvocationConfig exitActionConfig) {
+    public void setExitActionConfig(InvocationConfigEntity exitActionConfig) {
         this.exitActionConfig = exitActionConfig;
-    }
-
-    @Override
-    public Long id() {
-        return getId();
-    }
-
-    @Override
-    public Integer value() {
-        return getValue();
-    }
-
-    @Override
-    public String name() {
-        return getName();
-    }
-
-    @Override
-    public String tag() {
-        return getTag();
-    }
-
-    @Override
-    public String desc() {
-        return getDesc();
-    }
-
-    @Override
-    public InvocationConfig enteredActionConfig() {
-        return getEnteredActionConfig();
-    }
-
-    @Override
-    public InvocationConfig exitActionConfig() {
-        return getExitActionConfig();
     }
 }

@@ -15,42 +15,39 @@
  */
 package io.scleropages.sentarum.core.fsm.model.impl;
 
-import io.scleropages.sentarum.core.fsm.Action;
+import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class ActionModel implements Action {
+public class InvocationConfigModel implements InvocationConfig {
 
     private Long id;
-
-    private String name;
-
-    private String desc;
-
+    private String configImplementation;
+    private String invocationImplementation;
 
     public Long getId() {
         return id;
+    }
+
+    public String getConfigImplementation() {
+        return configImplementation;
+    }
+
+    public String getInvocationImplementation() {
+        return invocationImplementation;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public void setConfigImplementation(String configImplementation) {
+        this.configImplementation = configImplementation;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setInvocationImplementation(String invocationImplementation) {
+        this.invocationImplementation = invocationImplementation;
     }
 
     @Override
@@ -59,12 +56,12 @@ public abstract class ActionModel implements Action {
     }
 
     @Override
-    public String name() {
-        return getName();
+    public String configImplementation() {
+        return getConfigImplementation();
     }
 
     @Override
-    public String desc() {
-        return getDesc();
+    public String invocationImplementation() {
+        return getInvocationImplementation();
     }
 }

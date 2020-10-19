@@ -16,12 +16,12 @@
 package io.scleropages.sentarum.core.mgmt;
 
 import io.scleropages.sentarum.core.fsm.StateMachine;
-import io.scleropages.sentarum.core.fsm.model.impl.ActionModel;
-import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
-import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
-import io.scleropages.sentarum.core.fsm.model.impl.StateModel;
 import io.scleropages.sentarum.core.fsm.model.HistoricTransitionExecution;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
+import io.scleropages.sentarum.core.fsm.model.impl.InvocationConfigModel;
+import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
+import io.scleropages.sentarum.core.fsm.model.impl.StateModel;
 
 import java.util.List;
 
@@ -60,9 +60,9 @@ public interface StateMachineManager {
      * @param fromStateId              id of from state
      * @param toStateId                id of target to state
      * @param eventDefinitionId        id of event definition
-     * @param action                   performed action.
+     * @param actionConfigModel        performed action.
      */
-    void createStateTransition(Long stateMachineDefinitionId, Long fromStateId, Long toStateId, Long eventDefinitionId, ActionModel action);
+    void createStateTransition(Long stateMachineDefinitionId, Long fromStateId, Long toStateId, Long eventDefinitionId, InvocationConfigModel actionConfigModel);
 
     /**
      * create new state machine.

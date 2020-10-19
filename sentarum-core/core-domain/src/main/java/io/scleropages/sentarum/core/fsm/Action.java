@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.core.fsm;
 
 import io.scleropages.sentarum.core.fsm.model.Event;
+import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 
@@ -26,37 +27,22 @@ import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
  */
 public interface Action {
 
-
-    /**
-     * id of this action.
-     *
-     * @return
-     */
-    Long id();
-
-    /**
-     * name of this action.
-     *
-     * @return
-     */
-    String name();
-
-
-    /**
-     * description of this action
-     *
-     * @return
-     */
-    String desc();
-
-
     /**
      * action performed during fsm execution lifecycle
      *
+     * @param invocationConfig
      * @param from
      * @param to
      * @param event
      * @param executionContext
      */
-    void execute(State from, State to, Event event, StateMachineExecutionContext executionContext);
+    void execute(InvocationConfig invocationConfig, State from, State to, Event event, StateMachineExecutionContext executionContext);
+
+
+    /**
+     * associated class of invocation config implementation.
+     *
+     * @return
+     */
+    Class invocationConfigClass();
 }

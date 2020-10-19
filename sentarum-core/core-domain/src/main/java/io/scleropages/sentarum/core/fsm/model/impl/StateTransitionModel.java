@@ -15,9 +15,8 @@
  */
 package io.scleropages.sentarum.core.fsm.model.impl;
 
-import io.scleropages.sentarum.core.fsm.Action;
-import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
 import io.scleropages.sentarum.core.fsm.model.EventDefinition;
+import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
@@ -33,8 +32,8 @@ public class StateTransitionModel implements StateTransition {
     private State from;
     private State to;
     private EventDefinition event;
-    private TransitionEvaluator evaluator;
-    private Action action;
+    private InvocationConfig evaluatorConfig;
+    private InvocationConfig actionConfig;
 
     public Long getId() {
         return id;
@@ -56,12 +55,12 @@ public class StateTransitionModel implements StateTransition {
         return event;
     }
 
-    public TransitionEvaluator getEvaluator() {
-        return evaluator;
+    public InvocationConfig getEvaluatorConfig() {
+        return evaluatorConfig;
     }
 
-    public Action getAction() {
-        return action;
+    public InvocationConfig getActionConfig() {
+        return actionConfig;
     }
 
     public void setId(Long id) {
@@ -84,12 +83,12 @@ public class StateTransitionModel implements StateTransition {
         this.event = event;
     }
 
-    public void setEvaluator(TransitionEvaluator evaluator) {
-        this.evaluator = evaluator;
+    public void setEvaluatorConfig(InvocationConfig evaluatorConfig) {
+        this.evaluatorConfig = evaluatorConfig;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setActionConfig(InvocationConfig actionConfig) {
+        this.actionConfig = actionConfig;
     }
 
     @Override
@@ -118,12 +117,13 @@ public class StateTransitionModel implements StateTransition {
     }
 
     @Override
-    public TransitionEvaluator evaluator() {
-        return getEvaluator();
+    public InvocationConfig evaluatorConfig() {
+        return getEvaluatorConfig();
     }
 
     @Override
-    public Action action() {
-        return getAction();
+    public InvocationConfig actionConfig() {
+        return getActionConfig();
     }
+
 }

@@ -15,9 +15,6 @@
  */
 package io.scleropages.sentarum.core.fsm.model;
 
-import io.scleropages.sentarum.core.fsm.Action;
-import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
-
 /**
  * defined a state transition of fsm (Finite-state machine).
  *
@@ -67,13 +64,13 @@ public interface StateTransition {
      *
      * @return
      */
-    TransitionEvaluator evaluator();
+    InvocationConfig evaluatorConfig();
 
 
     /**
-     * action to be performed during transition
+     * action config to be performed during transition
      *
      * @return
      */
-    Action action();
+    InvocationConfig actionConfig();
 }

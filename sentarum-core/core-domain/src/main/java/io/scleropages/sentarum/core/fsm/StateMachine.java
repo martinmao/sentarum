@@ -38,6 +38,12 @@ public interface StateMachine {
 
 
     /**
+     * start this state machine.
+     */
+    void start();
+
+
+    /**
      * terminate this state machine.
      *
      * @param note

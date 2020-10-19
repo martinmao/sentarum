@@ -13,39 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm.model.impl;
+package io.scleropages.sentarum.core.fsm.entity;
 
-import io.scleropages.sentarum.core.fsm.model.EventDefinition;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
+ * referenced model: {@link io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class EventDefinitionModel implements EventDefinition {
+@Entity
+@Table(name = "fsm_event_def")
+@SequenceGenerator(name = "event_def_id", sequenceName = "seq_event_def", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class EventDefinitionEntity extends IdEntity {
 
-    private Long id;
     private String name;
     private String tag;
     private String desc;
 
-    public Long getId() {
-        return id;
-    }
-
+    @Column(name = "name_", nullable = false, unique = true)
     public String getName() {
         return name;
     }
 
+    @Column(name = "tag_", nullable = false)
     public String getTag() {
         return tag;
     }
 
+    @Column(name = "desc_", nullable = false)
     public String getDesc() {
         return desc;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setName(String name) {
@@ -59,26 +62,4 @@ public class EventDefinitionModel implements EventDefinition {
     public void setDesc(String desc) {
         this.desc = desc;
     }
-
-
-    @Override
-    public Long id() {
-        return getId();
-    }
-
-    @Override
-    public String name() {
-        return getName();
-    }
-
-    @Override
-    public String tag() {
-        return getTag();
-    }
-
-    @Override
-    public String desc() {
-        return getDesc();
-    }
-
 }

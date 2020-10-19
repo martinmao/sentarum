@@ -27,15 +27,35 @@ import java.util.List;
 public interface StateMachineDefinition {
 
     /**
-     * id of this fsm.
+     * id of this fsm definition.
      *
      * @return
      */
     Long id();
 
+    /**
+     * name of this fsm definition.
+     *
+     * @return
+     */
+    String name();
 
     /**
-     * the initial state of this fsm.
+     * tag of this fsm definition.
+     *
+     * @return
+     */
+    String tag();
+
+    /**
+     * description of this fsm definition.
+     *
+     * @return
+     */
+    String desc();
+
+    /**
+     * the initial state of this fsm definition.
      *
      * @return
      */
@@ -43,7 +63,7 @@ public interface StateMachineDefinition {
 
 
     /**
-     * a list of state transitions of this fsm.
+     * a list of state transitions of this fsm definition.
      *
      * @return
      */

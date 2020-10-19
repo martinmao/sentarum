@@ -29,6 +29,9 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
 
 
     private Long id;
+    private String name;
+    private String tag;
+    private String desc;
     private State initialState;
     private List<StateTransition> transitions;
     private Boolean autoStartup;
@@ -37,6 +40,18 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 
     public State getInitialState() {
@@ -59,6 +74,18 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
         this.id = id;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
     public void setInitialState(State initialState) {
         this.initialState = initialState;
     }
@@ -78,6 +105,21 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
     @Override
     public Long id() {
         return getId();
+    }
+
+    @Override
+    public String name() {
+        return getName();
+    }
+
+    @Override
+    public String tag() {
+        return getTag();
+    }
+
+    @Override
+    public String desc() {
+        return getDesc();
     }
 
     @Override

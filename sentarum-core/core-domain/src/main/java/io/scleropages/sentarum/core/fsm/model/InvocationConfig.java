@@ -15,55 +15,31 @@
  */
 package io.scleropages.sentarum.core.fsm.model;
 
-import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
-
 /**
- * represent a fsm (Finite-state machine) execution.
+ * represent a config for {@link io.scleropages.sentarum.core.fsm.Action}, {@link io.scleropages.sentarum.core.fsm.TransitionEvaluator}....
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StateMachineExecution {
-
+public interface InvocationConfig {
 
     /**
-     * id of this execution.
+     * id of this action.
      *
      * @return
      */
     Long id();
 
     /**
-     * id of business
+     * implementation of config.
      *
      * @return
      */
-    Long bizId();
+    String configImplementation();
 
     /**
-     * type of business
+     * implementation of invocation.
      *
      * @return
      */
-    Integer bizType();
-
-    /**
-     * associated definition of this fsm.
-     *
-     * @return
-     */
-    StateMachineDefinition stateMachineDefinition();
-
-    /**
-     * current state of this execution.
-     *
-     * @return
-     */
-    State currentState();
-
-    /**
-     * the execution listener of this execution.
-     *
-     * @return
-     */
-    StateMachineExecutionListener executionListener();
+    String invocationImplementation();
 }
