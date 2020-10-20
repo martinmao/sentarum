@@ -34,8 +34,6 @@ public class EventModel implements Event {
 
     private String tag;
 
-    private String desc;
-
     private Date firedTime;
 
     private Map<String, Object> body;
@@ -55,10 +53,6 @@ public class EventModel implements Event {
 
     public String getTag() {
         return tag;
-    }
-
-    public String getDesc() {
-        return desc;
     }
 
     public Date getFiredTime() {
@@ -83,10 +77,6 @@ public class EventModel implements Event {
 
     public void setTag(String tag) {
         this.tag = tag;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public void setFiredTime(Date firedTime) {
@@ -115,11 +105,6 @@ public class EventModel implements Event {
     @Override
     public String tag() {
         return getTag();
-    }
-
-    @Override
-    public String desc() {
-        return getDesc();
     }
 
     @Override

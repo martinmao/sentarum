@@ -56,13 +56,6 @@ public interface Event {
     String tag();
 
     /**
-     * description of event.
-     *
-     * @return
-     */
-    String desc();
-
-    /**
      * the time of this event was fired.
      *
      * @return
