@@ -25,4 +25,6 @@ import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface EventDefinitionRepository extends GenericRepository<EventDefinitionEntity, Long>, JooqRepository<FsmEventDef, FsmEventDefRecord, EventDefinitionEntity> {
+
+
 }
