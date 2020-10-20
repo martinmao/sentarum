@@ -25,7 +25,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import java.util.List;
 
 /**
@@ -34,8 +33,7 @@ import java.util.List;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "pt_property_meta",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"name_"}))
+@Table(name = "pt_property_meta")
 @SequenceGenerator(name = "pt_property_meta_id", sequenceName = "seq_pt_property_meta", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class PropertyMetaEntity extends IdEntity {
 
@@ -45,7 +43,7 @@ public class PropertyMetaEntity extends IdEntity {
     private Boolean keyed;
     private Integer bizType;
     /**
-     * {@link io.scleropages.sentarum.item.property.model.PropertyValueType}
+     * {@link io.scleropages.sentarum.item.property.model.PropertyMetadata.PropertyValueType}
      */
     private Integer valueType;
     /**
@@ -63,7 +61,7 @@ public class PropertyMetaEntity extends IdEntity {
     private Long refId;
 
 
-    @Column(name = "name_", nullable = false)
+    @Column(name = "name_", nullable = false, unique = true)
     public String getName() {
         return name;
     }

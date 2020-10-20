@@ -17,12 +17,11 @@ package io.scleropages.sentarum.item;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.zaxxer.hikari.HikariDataSource;
-import org.scleropages.core.util.RandomGenerator;
-import org.scleropages.core.util.SecureRandomGenerator;
 import org.scleropages.crud.configure.CrudFeaturesImporter;
 import org.scleropages.crud.dao.jdbc.FrameworkRoutingDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +37,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @Import({CrudFeaturesImporter.class})
+@EntityScan(basePackages = {"io.scleropages.sentarum.item"})
 public class ApplicationConfiguration {
 
     @Configuration
