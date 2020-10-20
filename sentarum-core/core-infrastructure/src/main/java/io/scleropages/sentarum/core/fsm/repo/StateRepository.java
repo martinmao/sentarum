@@ -15,14 +15,14 @@
  */
 package io.scleropages.sentarum.core.fsm.repo;
 
-import io.scleropages.sentarum.core.fsm.entity.StateMachineDefinitionEntity;
-import io.scleropages.sentarum.jooq.tables.FsmDef;
-import io.scleropages.sentarum.jooq.tables.records.FsmDefRecord;
+import io.scleropages.sentarum.core.fsm.entity.StateEntity;
+import io.scleropages.sentarum.jooq.tables.FsmState;
+import io.scleropages.sentarum.jooq.tables.records.FsmStateRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StateMachineDefinitionRepository extends GenericRepository<StateMachineDefinitionEntity, Long>, JooqRepository<FsmDef, FsmDefRecord, StateMachineDefinitionEntity> {
+public interface StateRepository extends GenericRepository<StateEntity, Long>, JooqRepository<FsmState, FsmStateRecord, StateEntity> {
 }
