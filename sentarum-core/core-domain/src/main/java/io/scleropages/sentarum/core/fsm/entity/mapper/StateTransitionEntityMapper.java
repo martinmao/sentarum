@@ -56,9 +56,6 @@ public interface StateTransitionEntityMapper extends ModelMapper<StateTransition
     }
 
     default InvocationConfig toInvocationConfig(InvocationConfigEntity entity) {
-        if (!isEntityInitialized(entity)) {
-            return null;
-        }
         return (InvocationConfig) ModelMapperRepository.getRequiredModelMapper(InvocationConfigEntityMapper.class).mapForRead(entity);
     }
 

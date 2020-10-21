@@ -21,8 +21,23 @@ import io.scleropages.sentarum.jooq.tables.records.FsmDefRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.JoinType;
+import java.util.Optional;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface StateMachineDefinitionRepository extends GenericRepository<StateMachineDefinitionEntity, Long>, JooqRepository<FsmDef, FsmDefRecord, StateMachineDefinitionEntity> {
+
+    default Optional<StateMachineDefinitionEntity> getById(Long id, boolean fetchInvocationConfig) {
+        return get((root, query, builder) -> {
+            if (fetchInvocationConfig) {
+                Fetch<Object, Object> initialStateFetch = root.fetch("initialState", JoinType.LEFT);
+                initialStateFetch.fetch("enteredActionConfig", JoinType.LEFT);
+                initialStateFetch.fetch("exitActionConfig", JoinType.LEFT);
+            }
+            return builder.equal(root.get("id"), id);
+        });
+    }
 }

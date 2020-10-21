@@ -13,33 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm;
+package io.scleropages.sentarum.core.fsm.provider;
 
+import io.scleropages.sentarum.core.fsm.Action;
+import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
 import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
-import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 
 /**
- * evaluator for transition
+ * spi strategy interface for lookup invocation( {@link Action},{@link TransitionEvaluator}...) components.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TransitionEvaluator {
+public interface InvocationContainer {
 
     /**
-     * evaluate given execution context test whether change state to another
-     * return true if yes, false otherwise.
+     * return action by action config.
      *
-     * @param invocationConfig
-     * @param executionContext
+     * @param actionConfig
      * @return
      */
-    boolean evaluate(InvocationConfig invocationConfig, StateMachineExecutionContext executionContext);
+    Action getAction(InvocationConfig actionConfig);
 
 
     /**
-     * associated class of invocation config implementation.
+     * string array of action implementations.
      *
      * @return
      */
-    Class invocationConfigClass();
+    String[] actionImplementations();
+
+
+    /**
+     * return evaluator by evaluator config.
+     *
+     * @param evaluatorConfig
+     * @return
+     */
+    TransitionEvaluator getTransitionEvaluator(InvocationConfig evaluatorConfig);
+
+
+    /**
+     * string array of evaluator implementations.
+     *
+     * @return
+     */
+    String[] transitionEvaluatorImplementations();
 }

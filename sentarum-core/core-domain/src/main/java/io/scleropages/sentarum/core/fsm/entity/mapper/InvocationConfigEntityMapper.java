@@ -18,6 +18,8 @@ package io.scleropages.sentarum.core.fsm.entity.mapper;
 import io.scleropages.sentarum.core.fsm.entity.InvocationConfigEntity;
 import io.scleropages.sentarum.core.fsm.model.impl.InvocationConfigModel;
 import org.mapstruct.Mapper;
+import org.scleropages.core.mapper.JsonMapper2;
+import org.scleropages.core.util.Reflections2;
 import org.scleropages.crud.ModelMapper;
 
 /**
@@ -26,4 +28,26 @@ import org.scleropages.crud.ModelMapper;
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface InvocationConfigEntityMapper extends ModelMapper<InvocationConfigEntity, InvocationConfigModel> {
 
+
+    @Override
+    default InvocationConfigModel mapForRead(InvocationConfigEntity entity) {
+        if (!isEntityInitialized(entity))
+            return null;
+        try {
+            return JsonMapper2.fromJson(entity.getConfigPayload(), Reflections2.getClass(entity.getConfigImplementation()));
+        } catch (Exception e) {
+            throw new IllegalStateException("failure to create InvocationConfig by entity: " + entity.getId(), e);
+        }
+    }
+
+    @Override
+    default InvocationConfigEntity mapForSave(InvocationConfigModel model) {
+        if (null == model)
+            return null;
+        InvocationConfigEntity configEntity = new InvocationConfigEntity();
+        configEntity.setConfigImplementation(model.getConfigImplementation());
+        configEntity.setInvocationImplementation(model.getInvocationImplementation());
+        configEntity.setConfigPayload(JsonMapper2.toJson(model));
+        return configEntity;
+    }
 }

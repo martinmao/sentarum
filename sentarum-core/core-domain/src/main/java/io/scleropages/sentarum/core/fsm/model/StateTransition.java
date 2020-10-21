@@ -61,14 +61,15 @@ public interface StateTransition {
 
     /**
      * if entered event fired. the evaluator will check whether the conditions for switching from one state to another.
-     *
+     * see {@link io.scleropages.sentarum.core.fsm.TransitionEvaluator}
      * @return
      */
     InvocationConfig evaluatorConfig();
 
 
     /**
-     * action config to be performed during transition
+     * action config to be performed during transition.
+     * see {@link io.scleropages.sentarum.core.fsm.Action}
      *
      * @return
      */

@@ -21,8 +21,31 @@ import io.scleropages.sentarum.jooq.tables.records.FsmTransitionRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.JoinType;
+import java.util.List;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface StateTransitionRepository extends GenericRepository<StateTransitionEntity, Long>, JooqRepository<FsmTransition, FsmTransitionRecord, StateTransitionEntity> {
+
+
+    default List<StateTransitionEntity> findAllByStateMachineDefinition_Id(Long id, boolean fetchInvocationConfig) {
+        List<StateTransitionEntity> result = findAll((root, query, builder) -> {
+            Fetch<Object, Object> fromFetch = root.fetch("from", JoinType.LEFT);
+            Fetch<Object, Object> toFetch = root.fetch("to", JoinType.LEFT);
+            root.fetch("event", JoinType.LEFT);
+            if (fetchInvocationConfig) {
+                fromFetch.fetch("enteredActionConfig", JoinType.LEFT);
+                fromFetch.fetch("exitActionConfig", JoinType.LEFT);
+                toFetch.fetch("enteredActionConfig", JoinType.LEFT);
+                toFetch.fetch("exitActionConfig", JoinType.LEFT);
+                root.fetch("evaluatorConfig", JoinType.LEFT);
+                root.fetch("actionConfig", JoinType.LEFT);
+            }
+            return builder.equal(root.get("stateMachineDefinition").get("id"), id);
+        });
+        return result;
+    }
 }

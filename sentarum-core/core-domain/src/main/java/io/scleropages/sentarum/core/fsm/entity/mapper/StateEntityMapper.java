@@ -30,9 +30,6 @@ import org.scleropages.crud.ModelMapperRepository;
 public interface StateEntityMapper extends ModelMapper<StateEntity, StateModel> {
 
     default InvocationConfig toInvocationConfig(InvocationConfigEntity entity) {
-        if (!isEntityInitialized(entity)) {
-            return null;
-        }
         return (InvocationConfig) ModelMapperRepository.getRequiredModelMapper(InvocationConfigEntityMapper.class).mapForRead(entity);
     }
 

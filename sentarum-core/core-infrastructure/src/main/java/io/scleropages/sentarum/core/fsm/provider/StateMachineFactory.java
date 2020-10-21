@@ -13,17 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm.repo;
+package io.scleropages.sentarum.core.fsm.provider;
 
-import io.scleropages.sentarum.core.fsm.entity.InvocationConfigEntity;
-import io.scleropages.sentarum.jooq.tables.FsmInvocationConf;
-import io.scleropages.sentarum.jooq.tables.records.FsmInvocationConfRecord;
-import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import io.scleropages.sentarum.core.fsm.StateMachine;
 
 /**
+ * spi strategy interface for building {@link StateMachine}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface InvocationConfigRepository extends GenericRepository<InvocationConfigEntity, Long>, JooqRepository<FsmInvocationConf, FsmInvocationConfRecord, InvocationConfigEntity> {
+public interface StateMachineFactory {
 
+    /**
+     * create new state machine by definition id.
+     *
+     * @param definitionId id for {@link io.scleropages.sentarum.core.fsm.model.StateMachineDefinition}
+     * @return
+     */
+    StateMachine createStateMachine(Long definitionId);
+
+    /**
+     * get exists state machine by id.
+     *
+     * @param machineId id for {@link StateMachine}
+     * @return
+     */
+    StateMachine getStateMachine(Long machineId);
 }
