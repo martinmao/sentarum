@@ -77,6 +77,7 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
                             }
                         });
                     }
+
                     InvocationConfig actionConfig = stateTransition.actionConfig();
 
                     if (null != actionConfig) {
