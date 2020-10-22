@@ -20,6 +20,7 @@ import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -32,10 +33,12 @@ import javax.persistence.UniqueConstraint;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "fsm_execution", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"biz_type", "biz_id"}),
-        @UniqueConstraint(columnNames = {"fsm_def_id", "execution_state", "current_state_id"})
-})
+@Table(name = "fsm_execution",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"biz_type", "biz_id"})},
+        indexes = {
+                @Index(columnList = "fsm_def_id,execution_state,current_state_id")
+        })
 @SequenceGenerator(name = "fsm_execution_id", sequenceName = "seq_fsm_execution", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class StateMachineExecutionEntity extends IdEntity {
 

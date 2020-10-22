@@ -145,6 +145,12 @@ public class StateMachineManagerImpl implements StateMachineManager {
         this.eventDefinitionEntityMapper = eventDefinitionEntityMapper;
     }
 
+
+    @Autowired
+    public void setStateTransitionEntityMapper(StateTransitionEntityMapper stateTransitionEntityMapper) {
+        this.stateTransitionEntityMapper = stateTransitionEntityMapper;
+    }
+
     @Autowired
     public void setStateMachineDefinitionRepository(StateMachineDefinitionRepository stateMachineDefinitionRepository) {
         this.stateMachineDefinitionRepository = stateMachineDefinitionRepository;
@@ -161,11 +167,6 @@ public class StateMachineManagerImpl implements StateMachineManager {
     }
 
     @Autowired
-    public void setStateTransitionEntityMapper(StateTransitionEntityMapper stateTransitionEntityMapper) {
-        this.stateTransitionEntityMapper = stateTransitionEntityMapper;
-    }
-
-    @Autowired
     public void setTransitionRepository(StateTransitionRepository transitionRepository) {
         this.transitionRepository = transitionRepository;
     }
@@ -179,4 +180,5 @@ public class StateMachineManagerImpl implements StateMachineManager {
     public void setStateMachineFactory(StateMachineFactory stateMachineFactory) {
         this.stateMachineFactory = stateMachineFactory;
     }
+
 }

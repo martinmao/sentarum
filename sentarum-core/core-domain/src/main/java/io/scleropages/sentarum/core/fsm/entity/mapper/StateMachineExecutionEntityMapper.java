@@ -17,8 +17,11 @@ package io.scleropages.sentarum.core.fsm.entity.mapper;
 
 import io.scleropages.sentarum.core.fsm.entity.StateEntity;
 import io.scleropages.sentarum.core.fsm.entity.StateMachineDefinitionEntity;
+import io.scleropages.sentarum.core.fsm.entity.StateMachineExecutionEntity;
 import io.scleropages.sentarum.core.fsm.model.State;
-import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
+import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.impl.StateMachineExecutionModel;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 import org.scleropages.crud.ModelMapperRepository;
@@ -27,12 +30,19 @@ import org.scleropages.crud.ModelMapperRepository;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface StateMachineDefinitionEntityMapper extends ModelMapper<StateMachineDefinitionEntity, StateMachineDefinitionModel> {
+public interface StateMachineExecutionEntityMapper extends ModelMapper<StateMachineExecutionEntity, StateMachineExecutionModel> {
+
+    default Integer toOrdinal(StateMachineExecution.ExecutionState executionState) {
+        return executionState.getOrdinal();
+    }
+
+    default StateMachineExecution.ExecutionState toExecutionState(Integer ordinal) {
+        return StateMachineExecution.ExecutionState.getByOrdinal(ordinal);
+    }
 
     default State toState(StateEntity entity) {
         if (!isEntityInitialized(entity)) {
             return null;
-
         }
         return (State) ModelMapperRepository.getRequiredModelMapper(StateEntityMapper.class).mapForRead(entity);
     }
@@ -41,4 +51,15 @@ public interface StateMachineDefinitionEntityMapper extends ModelMapper<StateMac
         return null;
     }
 
+
+    default StateMachineDefinition toStateMachineDefinition(StateMachineDefinitionEntity entity) {
+        if (!isEntityInitialized(entity)) {
+            return null;
+        }
+        return (StateMachineDefinition) ModelMapperRepository.getRequiredModelMapper(StateMachineDefinitionEntityMapper.class).mapForRead(entity);
+    }
+
+    default StateMachineDefinitionEntity toStateMachineDefinitionEntity(StateMachineDefinition stateMachineDefinition) {
+        return null;
+    }
 }

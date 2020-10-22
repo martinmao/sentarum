@@ -29,6 +29,7 @@ import io.scleropages.sentarum.core.fsm.model.StateTransition;
 import io.scleropages.sentarum.core.fsm.provider.AbstractStateMachineFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.squirrelframework.foundation.fsm.Action;
 import org.squirrelframework.foundation.fsm.Condition;
 import org.squirrelframework.foundation.fsm.StateMachineBuilder;
@@ -48,6 +49,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
+@Component
 public class SquirrelStateMachineFactory extends AbstractStateMachineFactory implements InitializingBean {
 
 

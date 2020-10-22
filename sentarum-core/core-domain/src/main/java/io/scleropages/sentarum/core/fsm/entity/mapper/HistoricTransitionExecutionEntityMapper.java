@@ -15,16 +15,16 @@
  */
 package io.scleropages.sentarum.core.fsm.entity.mapper;
 
-import io.scleropages.sentarum.core.fsm.entity.EventDefinitionEntity;
-import io.scleropages.sentarum.core.fsm.entity.InvocationConfigEntity;
+import io.scleropages.sentarum.core.fsm.entity.EventEntity;
+import io.scleropages.sentarum.core.fsm.entity.HistoricTransitionExecutionEntity;
 import io.scleropages.sentarum.core.fsm.entity.StateEntity;
 import io.scleropages.sentarum.core.fsm.entity.StateMachineDefinitionEntity;
-import io.scleropages.sentarum.core.fsm.entity.StateTransitionEntity;
-import io.scleropages.sentarum.core.fsm.model.EventDefinition;
-import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
+import io.scleropages.sentarum.core.fsm.entity.StateMachineExecutionEntity;
+import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
-import io.scleropages.sentarum.core.fsm.model.impl.StateTransitionModel;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.impl.HistoricTransitionExecutionModel;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 import org.scleropages.crud.ModelMapperRepository;
@@ -33,8 +33,7 @@ import org.scleropages.crud.ModelMapperRepository;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface StateTransitionEntityMapper extends ModelMapper<StateTransitionEntity, StateTransitionModel> {
-
+public interface HistoricTransitionExecutionEntityMapper extends ModelMapper<HistoricTransitionExecutionEntity, HistoricTransitionExecutionModel> {
 
     default State toState(StateEntity entity) {
         if (!isEntityInitialized(entity)) {
@@ -48,17 +47,6 @@ public interface StateTransitionEntityMapper extends ModelMapper<StateTransition
     }
 
 
-    default EventDefinition toEventDefinition(EventDefinitionEntity entity) {
-        if (!isEntityInitialized(entity)) {
-            return null;
-        }
-        return (EventDefinition) ModelMapperRepository.getRequiredModelMapper(EventDefinitionEntityMapper.class).mapForRead(entity);
-    }
-
-    default EventDefinitionEntity toEventDefinitionEntity(EventDefinition eventDefinition) {
-        return null;
-    }
-
     default StateMachineDefinition toStateMachineDefinition(StateMachineDefinitionEntity entity) {
         if (!isEntityInitialized(entity)) {
             return null;
@@ -70,11 +58,27 @@ public interface StateTransitionEntityMapper extends ModelMapper<StateTransition
         return null;
     }
 
-    default InvocationConfig toInvocationConfig(InvocationConfigEntity entity) {
-        return (InvocationConfig) ModelMapperRepository.getRequiredModelMapper(InvocationConfigEntityMapper.class).mapForRead(entity);
+
+    default StateMachineExecution toStateMachineExecution(StateMachineExecutionEntity entity) {
+        if (!isEntityInitialized(entity)) {
+            return null;
+        }
+        return (StateMachineExecution) ModelMapperRepository.getRequiredModelMapper(StateMachineExecutionEntityMapper.class).mapForRead(entity);
     }
 
-    default InvocationConfigEntity toInvocationConfigEntity(InvocationConfig invocationConfig) {
-        return (InvocationConfigEntity) ModelMapperRepository.getRequiredModelMapper(InvocationConfigEntityMapper.class).mapForSave(invocationConfig);
+    default StateMachineExecutionEntity toStateMachineExecutionEntity(StateMachineExecution stateMachineExecution) {
+        return null;
     }
+
+    default Event toEvent(EventEntity entity) {
+        if (!isEntityInitialized(entity)) {
+            return null;
+        }
+        return (Event) ModelMapperRepository.getRequiredModelMapper(EventEntityMapper.class).mapForRead(entity);
+    }
+
+    default EventEntity toEventEntity(Event event) {
+        return null;
+    }
+
 }

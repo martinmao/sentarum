@@ -38,6 +38,10 @@ public class EventModel implements Event {
 
     private Map<String, Object> body;
 
+    private Boolean accepted;
+
+    private String note;
+
 
     public Long getId() {
         return id;
@@ -63,6 +67,14 @@ public class EventModel implements Event {
         return body;
     }
 
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -85,6 +97,14 @@ public class EventModel implements Event {
 
     public void setBody(Map<String, Object> body) {
         this.body = body;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override
@@ -115,5 +135,15 @@ public class EventModel implements Event {
     @Override
     public Map<String, Object> body() {
         return getBody();
+    }
+
+    @Override
+    public Boolean accepted() {
+        return getAccepted();
+    }
+
+    @Override
+    public String note() {
+        return getNote();
     }
 }

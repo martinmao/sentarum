@@ -16,7 +16,9 @@
 package io.scleropages.sentarum.core.boot.autoconfigure;
 
 import io.scleropages.sentarum.core.fsm.entity.StateMachineDefinitionEntity;
+import io.scleropages.sentarum.core.fsm.entity.mapper.StateMachineDefinitionEntityMapper;
 import io.scleropages.sentarum.core.fsm.mgmt.StateMachineManager;
+import io.scleropages.sentarum.core.fsm.provider.StateMachineFactory;
 import io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -41,7 +43,7 @@ public class StateMachineApplicationAutoConfiguration {
 
     @EntityScan(basePackageClasses = {StateMachineDefinitionEntity.class})
     @EnableJpaRepositories(basePackageClasses = {StateMachineDefinitionRepository.class})
-    @ComponentScan(basePackageClasses = StateMachineManager.class)
+    @ComponentScan(basePackageClasses = {StateMachineManager.class, StateMachineDefinitionEntityMapper.class, StateMachineFactory.class})
     public static class Configuration {
 
     }

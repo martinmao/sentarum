@@ -69,4 +69,20 @@ public interface Event {
      * @return
      */
     Map<String, Object> body();
+
+    /**
+     * return true if this event was accept by state machine.
+     * accept means result caused state changes.
+     *
+     * @return
+     */
+    Boolean accepted();
+
+
+    /**
+     * return state machine process note. reject note...
+     *
+     * @return
+     */
+    String note();
 }

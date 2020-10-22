@@ -40,6 +40,8 @@ public class EventEntity extends IdEntity {
     private String tag;
     private Date firedTime;
     private String body;
+    private Boolean accepted;
+    private String note;
 
     private EventDefinitionEntity eventDefinition;
 
@@ -63,6 +65,16 @@ public class EventEntity extends IdEntity {
         return body;
     }
 
+    @Column(name = "accepted_", nullable = false)
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    @Column(name = "note_")
+    public String getNote() {
+        return note;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_def_id", nullable = false)
     public EventDefinitionEntity getEventDefinition() {
@@ -83,6 +95,14 @@ public class EventEntity extends IdEntity {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public void setEventDefinition(EventDefinitionEntity eventDefinition) {
