@@ -15,24 +15,27 @@
  */
 package io.scleropages.sentarum.core.fsm.model.impl;
 
-import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
+import io.scleropages.sentarum.core.fsm.model.Event;
+import io.scleropages.sentarum.core.fsm.model.HistoricTransitionExecution;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 
+import java.util.Date;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class StateMachineExecutionModel implements StateMachineExecution {
+public class HistoricTransitionExecutionModel implements HistoricTransitionExecution {
+
 
     private Long id;
     private StateMachineDefinition stateMachineDefinition;
-    private State currentState;
-    private Long bizId;
-    private Integer bizType;
-    private ExecutionState executionState;
-    private StateMachineExecutionListener executionListener;
-
+    private StateMachineExecution stateMachineExecution;
+    private State from;
+    private State to;
+    private Event event;
+    private Date time;
 
     public Long getId() {
         return id;
@@ -42,24 +45,24 @@ public class StateMachineExecutionModel implements StateMachineExecution {
         return stateMachineDefinition;
     }
 
-    public State getCurrentState() {
-        return currentState;
+    public StateMachineExecution getStateMachineExecution() {
+        return stateMachineExecution;
     }
 
-    public Long getBizId() {
-        return bizId;
+    public State getFrom() {
+        return from;
     }
 
-    public Integer getBizType() {
-        return bizType;
+    public State getTo() {
+        return to;
     }
 
-    public ExecutionState getExecutionState() {
-        return executionState;
+    public Event getEvent() {
+        return event;
     }
 
-    public StateMachineExecutionListener getExecutionListener() {
-        return executionListener;
+    public Date getTime() {
+        return time;
     }
 
     public void setId(Long id) {
@@ -70,24 +73,24 @@ public class StateMachineExecutionModel implements StateMachineExecution {
         this.stateMachineDefinition = stateMachineDefinition;
     }
 
-    public void setCurrentState(State currentState) {
-        this.currentState = currentState;
+    public void setStateMachineExecution(StateMachineExecution stateMachineExecution) {
+        this.stateMachineExecution = stateMachineExecution;
     }
 
-    public void setBizId(Long bizId) {
-        this.bizId = bizId;
+    public void setFrom(State from) {
+        this.from = from;
     }
 
-    public void setBizType(Integer bizType) {
-        this.bizType = bizType;
+    public void setTo(State to) {
+        this.to = to;
     }
 
-    public void setExecutionState(ExecutionState executionState) {
-        this.executionState = executionState;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
-    public void setExecutionListener(StateMachineExecutionListener executionListener) {
-        this.executionListener = executionListener;
+    public void setTime(Date time) {
+        this.time = time;
     }
 
     @Override
@@ -101,28 +104,27 @@ public class StateMachineExecutionModel implements StateMachineExecution {
     }
 
     @Override
-    public State currentState() {
-        return getCurrentState();
+    public StateMachineExecution stateMachineExecution() {
+        return getStateMachineExecution();
     }
 
     @Override
-    public ExecutionState executionState() {
-        return getExecutionState();
-    }
-
-
-    @Override
-    public StateMachineExecutionListener executionListener() {
-        return getExecutionListener();
+    public State from() {
+        return getFrom();
     }
 
     @Override
-    public Long bizId() {
-        return getBizId();
+    public State to() {
+        return getTo();
     }
 
     @Override
-    public Integer bizType() {
-        return getBizType();
+    public Event event() {
+        return getEvent();
+    }
+
+    @Override
+    public Date time() {
+        return getTime();
     }
 }

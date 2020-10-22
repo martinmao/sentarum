@@ -60,6 +60,6 @@ public interface StateTransitionEntityMapper extends ModelMapper<StateTransition
     }
 
     default InvocationConfigEntity toInvocationConfigEntity(InvocationConfig invocationConfig) {
-        return null;
+        return (InvocationConfigEntity) ModelMapperRepository.getRequiredModelMapper(InvocationConfigEntityMapper.class).mapForSave(invocationConfig);
     }
 }

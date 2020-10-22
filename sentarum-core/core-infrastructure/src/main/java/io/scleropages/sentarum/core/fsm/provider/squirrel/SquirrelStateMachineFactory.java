@@ -23,6 +23,7 @@ import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
 import io.scleropages.sentarum.core.fsm.provider.AbstractStateMachineFactory;
@@ -38,6 +39,7 @@ import org.squirrelframework.foundation.fsm.builder.On;
 import org.squirrelframework.foundation.fsm.impl.AbstractUntypedStateMachine;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -117,7 +119,37 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         }
         org.squirrelframework.foundation.fsm.StateMachine stateMachine = builder.newStateMachine(stateMachineDefinition.initialState());
 
-        return null;
+        return new StateMachine() {
+            @Override
+            public void sendEvent(Event event, Map<String, Object> contextAttributes) {
+                stateMachine.fire(event, contextAttributes);
+            }
+
+            @Override
+            public void start(Map<String, Object> contextAttributes) {
+                stateMachine.start(contextAttributes);
+            }
+
+            @Override
+            public void terminate(String note) {
+                stateMachine.terminate();
+            }
+
+            @Override
+            public void suspend(String note) {
+
+            }
+
+            @Override
+            public void resume() {
+
+            }
+
+            @Override
+            public StateMachineExecution stateMachineExecution() {
+                return null;
+            }
+        };
     }
 
     @StateMachineParameters(stateType = State.class, eventType = Event.class, contextType = StateMachineExecutionContext.class)

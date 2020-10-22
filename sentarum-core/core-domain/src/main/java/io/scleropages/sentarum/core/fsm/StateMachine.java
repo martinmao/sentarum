@@ -40,7 +40,7 @@ public interface StateMachine {
     /**
      * start this state machine.
      */
-    void start();
+    void start(Map<String, Object> contextAttributes);
 
 
     /**

@@ -61,9 +61,25 @@ public interface StateMachineExecution {
     State currentState();
 
     /**
+     * state of this execution.
+     *
+     * @return
+     */
+    ExecutionState executionState();
+
+    /**
      * the execution listener of this execution.
      *
      * @return
      */
     StateMachineExecutionListener executionListener();
+
+
+    /**
+     * enum state of execution.
+     */
+    enum ExecutionState {
+        //! NOTE: never to change enum orders.
+        RUNNING, SUSPEND, TERMINATE, FINISHED
+    }
 }
