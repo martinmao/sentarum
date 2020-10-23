@@ -237,6 +237,13 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         return executionEntity;
     }
 
+    /**
+     * implements this method for provider.
+     *
+     * @param stateMachineDefinition definition of state machine for creating.
+     * @param stateTransitions       state transitions of state machine for creating.
+     * @return
+     */
     protected abstract ProviderStateMachine createStateMachineInternal(StateMachineDefinition
                                                                                stateMachineDefinition, List<StateTransition> stateTransitions);
 

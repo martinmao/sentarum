@@ -27,7 +27,7 @@ import org.squirrelframework.foundation.fsm.impl.AbstractUntypedStateMachine;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SimpleStateMachineTests {
+public class SquirrelStateMachineTests {
 
     static class SampleStateMachine extends AbstractUntypedStateMachine {
 

@@ -42,8 +42,8 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Map;
 
-import static statemachine.StateMachineTests.Events;
-import static statemachine.StateMachineTests.States;
+import static statemachine.SpringStateMachineTests.Events;
+import static statemachine.SpringStateMachineTests.States;
 
 
 /**
@@ -53,7 +53,7 @@ import static statemachine.StateMachineTests.States;
 //@SpringBootApplication
 @EnableStateMachine
 @Component
-public class StateMachineTests extends EnumStateMachineConfigurerAdapter<States, Events> implements StateMachinePersist<States, Events, Long>, CommandMarker, ApplicationContextAware {
+public class SpringStateMachineTests extends EnumStateMachineConfigurerAdapter<States, Events> implements StateMachinePersist<States, Events, Long>, CommandMarker, ApplicationContextAware {
 
 
     private static final Map<Long, States> memoryStatesRepository = Maps.newHashMap();
