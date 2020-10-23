@@ -26,5 +26,4 @@ import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
  */
 public interface StateMachineExecutionRepository extends GenericRepository<StateMachineExecutionEntity, Long>, JooqRepository<FsmExecution, FsmExecutionRecord, StateMachineExecutionEntity> {
 
-
 }

@@ -20,6 +20,7 @@ import io.scleropages.sentarum.jooq.tables.FsmDef;
 import io.scleropages.sentarum.jooq.tables.records.FsmDefRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.JoinType;
@@ -30,6 +31,7 @@ import java.util.Optional;
  */
 public interface StateMachineDefinitionRepository extends GenericRepository<StateMachineDefinitionEntity, Long>, JooqRepository<FsmDef, FsmDefRecord, StateMachineDefinitionEntity> {
 
+    @Cacheable
     default Optional<StateMachineDefinitionEntity> getById(Long id, boolean fetchInvocationConfig) {
         return get((root, query, builder) -> {
             if (fetchInvocationConfig) {
@@ -40,4 +42,7 @@ public interface StateMachineDefinitionRepository extends GenericRepository<Stat
             return builder.equal(root.get("id"), id);
         });
     }
+
+    @Cacheable
+    Optional<StateMachineDefinitionEntity> getByName(String name);
 }

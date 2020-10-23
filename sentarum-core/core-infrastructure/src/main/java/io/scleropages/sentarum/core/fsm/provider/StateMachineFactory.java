@@ -17,6 +17,8 @@ package io.scleropages.sentarum.core.fsm.provider;
 
 import io.scleropages.sentarum.core.fsm.StateMachine;
 
+import java.util.Map;
+
 /**
  * spi strategy interface for building {@link StateMachine}
  *
@@ -25,12 +27,15 @@ import io.scleropages.sentarum.core.fsm.StateMachine;
 public interface StateMachineFactory {
 
     /**
-     * create new state machine by definition id.
+     * create new state machine with initial state.
      *
-     * @param definitionId id for {@link io.scleropages.sentarum.core.fsm.model.StateMachineDefinition}
+     * @param definitionId      id for {@link io.scleropages.sentarum.core.fsm.model.StateMachineDefinition}
+     * @param bizType           type of business model.
+     * @param bizId             id of business model.
+     * @param contextAttributes optional context attributes.
      * @return
      */
-    StateMachine createStateMachine(Long definitionId);
+    StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes);
 
     /**
      * get exists state machine by id.

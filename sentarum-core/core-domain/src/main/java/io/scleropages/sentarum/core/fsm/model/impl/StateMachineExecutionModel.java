@@ -19,6 +19,7 @@ import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -31,6 +32,7 @@ public class StateMachineExecutionModel implements StateMachineExecution {
     private Long bizId;
     private Integer bizType;
     private ExecutionState executionState;
+    private StateMachineExecutionContext executionContext;
     private StateMachineExecutionListener executionListener;
 
 
@@ -56,6 +58,10 @@ public class StateMachineExecutionModel implements StateMachineExecution {
 
     public ExecutionState getExecutionState() {
         return executionState;
+    }
+
+    public StateMachineExecutionContext getExecutionContext() {
+        return executionContext;
     }
 
     public StateMachineExecutionListener getExecutionListener() {
@@ -86,6 +92,10 @@ public class StateMachineExecutionModel implements StateMachineExecution {
         this.executionState = executionState;
     }
 
+    public void setExecutionContext(StateMachineExecutionContext executionContext) {
+        this.executionContext = executionContext;
+    }
+
     public void setExecutionListener(StateMachineExecutionListener executionListener) {
         this.executionListener = executionListener;
     }
@@ -114,6 +124,11 @@ public class StateMachineExecutionModel implements StateMachineExecution {
     @Override
     public StateMachineExecutionListener executionListener() {
         return getExecutionListener();
+    }
+
+    @Override
+    public StateMachineExecutionContext executionContext() {
+        return getExecutionContext();
     }
 
     @Override

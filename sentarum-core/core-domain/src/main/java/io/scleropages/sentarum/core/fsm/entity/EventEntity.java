@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.core.fsm.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+import org.springframework.util.Assert;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,6 +45,7 @@ public class EventEntity extends IdEntity {
     private String note;
 
     private EventDefinitionEntity eventDefinition;
+
 
     @Column(name = "name_", nullable = false)
     public String getName() {
@@ -107,5 +109,13 @@ public class EventEntity extends IdEntity {
 
     public void setEventDefinition(EventDefinitionEntity eventDefinition) {
         this.eventDefinition = eventDefinition;
+    }
+
+    public void populateEventDefinitionInformation() {
+        Assert.notNull(eventDefinition, "eventDefinition not yet associated.");
+        setName(eventDefinition.getName());
+        setTag(eventDefinition.getTag());
+        if (null == firedTime)
+            setFiredTime(new Date());
     }
 }

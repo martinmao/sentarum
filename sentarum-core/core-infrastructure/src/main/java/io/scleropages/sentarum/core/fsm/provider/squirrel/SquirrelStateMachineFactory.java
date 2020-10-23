@@ -17,16 +17,15 @@ package io.scleropages.sentarum.core.fsm.provider.squirrel;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.scleropages.sentarum.core.fsm.StateMachine;
 import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
 import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
-import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
 import io.scleropages.sentarum.core.fsm.provider.AbstractStateMachineFactory;
+import io.scleropages.sentarum.core.fsm.provider.ProviderStateMachine;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -59,7 +58,7 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
     private Cache<Long, StateMachineBuilder> stateMachineBuilderCache;
 
     @Override
-    protected StateMachine createStateMachineInternal(StateMachineDefinition stateMachineDefinition, List<StateTransition> stateTransitions) {
+    protected ProviderStateMachine createStateMachineInternal(StateMachineDefinition stateMachineDefinition, List<StateTransition> stateTransitions) {
         StateMachineBuilder builder;
         try {
             builder = stateMachineBuilderCache.get(stateMachineDefinition.id(), () -> {
@@ -121,10 +120,14 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         }
         org.squirrelframework.foundation.fsm.StateMachine stateMachine = builder.newStateMachine(stateMachineDefinition.initialState());
 
-        return new StateMachine() {
+        return new ProviderStateMachine() {
             @Override
-            public void sendEvent(Event event, Map<String, Object> contextAttributes) {
-                stateMachine.fire(event, contextAttributes);
+            public boolean sendEvent(Event event, Map<String, Object> contextAttributes) {
+                if (stateMachine.canAccept(event)) {
+                    stateMachine.fire(event, contextAttributes);
+                    return true;
+                }
+                return false;
             }
 
             @Override
@@ -133,23 +136,8 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
             }
 
             @Override
-            public void terminate(String note) {
-                stateMachine.terminate();
-            }
-
-            @Override
-            public void suspend(String note) {
-
-            }
-
-            @Override
-            public void resume() {
-
-            }
-
-            @Override
-            public StateMachineExecution stateMachineExecution() {
-                return null;
+            public State currentState() {
+                return (State) stateMachine.getCurrentState();
             }
         };
     }

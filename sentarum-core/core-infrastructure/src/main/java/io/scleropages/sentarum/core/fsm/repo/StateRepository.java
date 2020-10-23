@@ -20,6 +20,7 @@ import io.scleropages.sentarum.jooq.tables.FsmState;
 import io.scleropages.sentarum.jooq.tables.records.FsmStateRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.criteria.JoinType;
 
@@ -28,12 +29,13 @@ import javax.persistence.criteria.JoinType;
  */
 public interface StateRepository extends GenericRepository<StateEntity, Long>, JooqRepository<FsmState, FsmStateRecord, StateEntity> {
 
-    default StateEntity getById(Long id, boolean fetchInvocationConfig) {
+    @Cacheable
+    default StateEntity getById(Long id) {
         return get((root, query, builder) -> {
-            if (fetchInvocationConfig) {
-                root.fetch("enteredActionConfig", JoinType.LEFT);
-                root.fetch("exitActionConfig", JoinType.LEFT);
-            }
+//            if (fetchInvocationConfig) {
+            root.fetch("enteredActionConfig", JoinType.LEFT);
+            root.fetch("exitActionConfig", JoinType.LEFT);
+//            }
             return builder.equal(root.get("id"), id);
         }).orElseThrow(() -> new IllegalArgumentException("no state found: " + id));
     }

@@ -19,6 +19,7 @@ import io.scleropages.sentarum.core.fsm.StateMachineExecutionListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * represent a fsm (Finite-state machine) execution.
@@ -79,6 +80,14 @@ public interface StateMachineExecution {
 
 
     /**
+     * context of this execution.
+     *
+     * @return
+     */
+    StateMachineExecutionContext executionContext();
+
+
+    /**
      * enum state of execution.
      */
     enum ExecutionState {
@@ -97,6 +106,81 @@ public interface StateMachineExecution {
             this.tag = tag;
             this.desc = desc;
         }
+
+        /**
+         * return true if current state is running.
+         *
+         * @return
+         */
+        public boolean isRunning() {
+            return Objects.equals(this, RUNNING);
+        }
+
+        /**
+         * return true if current state is suspend.
+         *
+         * @return
+         */
+        public boolean isSuspend() {
+            return Objects.equals(this, SUSPEND);
+        }
+
+        /**
+         * return true if current state is terminate.
+         *
+         * @return
+         */
+        public boolean isTerminate() {
+            return Objects.equals(this, TERMINATE);
+        }
+
+        /**
+         * return true if current state is finished.
+         *
+         * @return
+         */
+        public boolean isFinished() {
+            return Objects.equals(this, FINISHED);
+        }
+
+        /**
+         * return true if current state accepting a terminate command.
+         *
+         * @return
+         */
+        public boolean acceptingTerminate() {
+            if (isTerminate() || isFinished())
+                return false;
+            return true;
+        }
+
+        /**
+         * return true if current state accepting a suspend command.
+         *
+         * @return
+         */
+        public boolean acceptingSuspend() {
+            return isRunning();
+        }
+
+        /**
+         * return true if current state accepting a resume command.
+         *
+         * @return
+         */
+        public boolean acceptingResume() {
+            return isSuspend();
+        }
+
+        /**
+         * return true if current state accepting a event command.
+         *
+         * @return
+         */
+        public boolean acceptingEvents() {
+            return isRunning();
+        }
+
 
         public int getOrdinal() {
             return ordinal;

@@ -20,6 +20,7 @@ import io.scleropages.sentarum.jooq.tables.FsmTransition;
 import io.scleropages.sentarum.jooq.tables.records.FsmTransitionRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.JoinType;
@@ -31,6 +32,7 @@ import java.util.List;
 public interface StateTransitionRepository extends GenericRepository<StateTransitionEntity, Long>, JooqRepository<FsmTransition, FsmTransitionRecord, StateTransitionEntity> {
 
 
+    @Cacheable
     default List<StateTransitionEntity> findAllByStateMachineDefinition_Id(Long id, boolean fetchInvocationConfig) {
         List<StateTransitionEntity> result = findAll((root, query, builder) -> {
             Fetch<Object, Object> fromFetch = root.fetch("from", JoinType.LEFT);

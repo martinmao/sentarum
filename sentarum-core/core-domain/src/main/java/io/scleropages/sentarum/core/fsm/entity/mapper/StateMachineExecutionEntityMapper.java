@@ -21,6 +21,8 @@ import io.scleropages.sentarum.core.fsm.entity.StateMachineExecutionEntity;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
+import io.scleropages.sentarum.core.fsm.model.impl.StateMachineExecutionContextModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateMachineExecutionModel;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
@@ -59,7 +61,13 @@ public interface StateMachineExecutionEntityMapper extends ModelMapper<StateMach
         return (StateMachineDefinition) ModelMapperRepository.getRequiredModelMapper(StateMachineDefinitionEntityMapper.class).mapForRead(entity);
     }
 
-    default StateMachineDefinitionEntity toStateMachineDefinitionEntity(StateMachineDefinition stateMachineDefinition) {
-        return null;
+    default String executionContextToPayload(StateMachineExecutionContext executionContext) {
+        if (null == executionContext)
+            return null;
+        return ((StateMachineExecutionContextModel) executionContext).getContextPayload();
+    }
+
+    default StateMachineExecutionContext payloadToExecutionContext(String contextPayload) {
+        return StateMachineExecutionContextModel.newInstance(contextPayload);
     }
 }

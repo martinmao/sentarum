@@ -47,6 +47,7 @@ public class StateMachineExecutionEntity extends IdEntity {
     private Long bizId;
     private Integer bizType;
     private Integer executionState;
+    private String executionContext;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fsm_def_id", nullable = false)
@@ -75,6 +76,11 @@ public class StateMachineExecutionEntity extends IdEntity {
         return executionState;
     }
 
+    @Column(name = "context_payload")
+    public String getExecutionContext() {
+        return executionContext;
+    }
+
     public void setStateMachineDefinition(StateMachineDefinitionEntity stateMachineDefinition) {
         this.stateMachineDefinition = stateMachineDefinition;
     }
@@ -93,5 +99,9 @@ public class StateMachineExecutionEntity extends IdEntity {
 
     public void setExecutionState(Integer executionState) {
         this.executionState = executionState;
+    }
+
+    public void setExecutionContext(String executionContext) {
+        this.executionContext = executionContext;
     }
 }

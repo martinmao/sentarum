@@ -17,6 +17,9 @@ package io.scleropages.sentarum.core.fsm.model.impl;
 
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
+import org.apache.commons.collections.MapUtils;
+import org.scleropages.core.mapper.JsonMapper2;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,16 +29,30 @@ import java.util.Map;
  */
 public class StateMachineExecutionContextModel implements StateMachineExecutionContext {
 
-    private final Map<String, Object> context = Maps.newHashMap();
+    private static final String EMPTY_CONTEXT_PAYLOAD = "{}";
+
+    private final Map<String, Object> context;
+
+    private volatile boolean contextChanges = false;
+
+    public StateMachineExecutionContextModel(Map<String, Object> context) {
+        this.context = context;
+    }
+
+    public StateMachineExecutionContextModel() {
+        this(Maps.newHashMap());
+    }
 
     @Override
     public void setAttribute(String name, Object attribute) {
         context.put(name, attribute);
+        contextChanges = true;
     }
 
     @Override
     public void removeAttribute(String name) {
         context.remove(name);
+        contextChanges = true;
     }
 
     @Override
@@ -51,5 +68,25 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
     @Override
     public boolean hasAttribute(String name) {
         return context.containsKey(name);
+    }
+
+
+    public String getContextPayload() {
+        if (MapUtils.isNotEmpty(context)) {
+            return JsonMapper2.toJson(context);
+        } else {
+            return EMPTY_CONTEXT_PAYLOAD;
+        }
+    }
+
+    public static final StateMachineExecutionContextModel newInstance(String contextPayload) {
+        if (StringUtils.hasText(contextPayload)) {
+            return new StateMachineExecutionContextModel(JsonMapper2.fromJson(contextPayload));
+        }
+        return new StateMachineExecutionContextModel();
+    }
+
+    public Boolean contextChanges() {
+        return contextChanges;
     }
 }

@@ -20,11 +20,20 @@ import io.scleropages.sentarum.jooq.tables.FsmEventDef;
 import io.scleropages.sentarum.jooq.tables.records.FsmEventDefRecord;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
+
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface EventDefinitionRepository extends GenericRepository<EventDefinitionEntity, Long>, JooqRepository<FsmEventDef, FsmEventDefRecord, EventDefinitionEntity> {
 
+
+    @Cacheable
+    Optional<EventDefinitionEntity> getById(Long id);
+
+    @Cacheable
+    Optional<EventDefinitionEntity> getByName(String name);
 
 }

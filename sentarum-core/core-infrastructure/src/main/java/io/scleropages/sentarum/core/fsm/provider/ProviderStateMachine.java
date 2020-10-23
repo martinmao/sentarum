@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.fsm;
+package io.scleropages.sentarum.core.fsm.provider;
 
 import io.scleropages.sentarum.core.fsm.model.Event;
-import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.State;
 
 import java.util.Map;
 
 /**
- * represent a fsm (Finite-state machine)
+ * spi strategy interface state machine provider.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StateMachine {
-
-
-    /**
-     * id of this state machine.
-     *
-     * @return
-     */
-    Long id();
+public interface ProviderStateMachine {
 
 
     /**
@@ -42,7 +34,7 @@ public interface StateMachine {
      * @param event             event to sent
      * @param contextAttributes attributes of context. theses attribute will applying to {@link io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext}
      */
-    void sendEvent(Event event, Map<String, Object> contextAttributes);
+    boolean sendEvent(Event event, Map<String, Object> contextAttributes);
 
 
     /**
@@ -54,35 +46,9 @@ public interface StateMachine {
 
 
     /**
-     * terminate this state machine.
-     *
-     * @param note
-     */
-    void terminate(String note);
-
-    /**
-     * suspend this state machine.
-     *
-     * @param note
-     */
-    void suspend(String note);
-
-    /**
-     * resume this state machine.
-     */
-    void resume(String note);
-
-    /**
-     * return execution of this state machine.
+     * return state of now.
      *
      * @return
      */
-    StateMachineExecution stateMachineExecution();
-
-    /**
-     * return true if current state machine started.
-     *
-     * @return
-     */
-    boolean isStarted();
+    State currentState();
 }
