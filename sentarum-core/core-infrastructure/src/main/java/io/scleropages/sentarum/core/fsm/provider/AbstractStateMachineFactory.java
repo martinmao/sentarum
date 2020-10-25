@@ -35,9 +35,11 @@ import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution.ExecutionState;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
 import io.scleropages.sentarum.core.fsm.model.impl.EventModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateMachineExecutionContextModel;
+import io.scleropages.sentarum.core.fsm.model.impl.StateMachineExecutionModel;
 import io.scleropages.sentarum.core.fsm.repo.EventDefinitionRepository;
 import io.scleropages.sentarum.core.fsm.repo.EventRepository;
 import io.scleropages.sentarum.core.fsm.repo.HistoricTransitionExecutionRepository;
@@ -45,6 +47,7 @@ import io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateMachineExecutionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateTransitionRepository;
+import org.apache.commons.collections.MapUtils;
 import org.scleropages.crud.ModelMapperRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,78 +92,13 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         Assert.notNull(bizType, "bizType is required.");
         Assert.notNull(bizId, "bizId is required.");
 
+        //read state machine definition and transitions for state machine building.
         StateMachineDefinitionEntity stateMachineDefinitionEntity = definitionRepository.getById(definitionId).orElseThrow(() -> new IllegalArgumentException("no state machine definition id found: " + definitionId));
         List<StateTransitionEntity> stateTransitionEntities = transitionRepository.findAllByStateMachineDefinition_Id(definitionId, definitionRepository, stateRepository, eventDefinitionRepository);
-
         ProviderStateMachine providerStateMachine = createStateMachineInternal(map(stateMachineDefinitionEntity), map(stateTransitionEntities));
 
-        StateMachine delegatingStateMachine = new StateMachine() {
-
-            private StateMachineExecutionEntity stateMachineExecutionEntity;
-            private StateMachineExecution stateMachineExecution;
-            private AtomicBoolean started = new AtomicBoolean(false);
-
-            @Override
-            public Long id() {
-                assertStarted();
-                return stateMachineExecution.id();
-            }
-
-            @Override
-            public void sendEvent(Event event, Map<String, Object> contextAttributes) {
-                assertStarted();
-                sendEventInternal(stateMachineDefinitionEntity, stateMachineExecutionEntity, providerStateMachine, event, contextAttributes);
-            }
-
-            @Override
-            public void start(Map<String, Object> contextAttributes) {
-                if (started.compareAndSet(false, true)) {
-                    providerStateMachine.start(contextAttributes);
-                    this.stateMachineExecutionEntity = createStateMachineExecution(bizType, bizId, stateMachineDefinitionEntity, contextAttributes);
-                    this.stateMachineExecution = stateMachineExecutionEntityMapper.mapForRead(stateMachineExecutionEntity);
-                }
-            }
-
-            @Override
-            public void terminate(String note) {
-                if (!stateMachineExecution.executionState().acceptingTerminate()) {
-                    throw new IllegalStateException("not allowed terminate a [" + stateMachineExecution.executionState() + "] state machine.");
-                }
-                updateStateMachineExecutionState(stateMachineExecutionEntity, ExecutionState.TERMINATE, note);
-            }
-
-            @Override
-            public void suspend(String note) {
-                if (!stateMachineExecution.executionState().acceptingSuspend()) {
-                    throw new IllegalStateException("not allowed suspend a [" + stateMachineExecution.executionState() + "] state machine.");
-                }
-                updateStateMachineExecutionState(stateMachineExecutionEntity, ExecutionState.SUSPEND, note);
-            }
-
-            @Override
-            public void resume(String note) {
-                if (!stateMachineExecution.executionState().acceptingResume()) {
-                    throw new IllegalStateException("not allowed resume a [" + stateMachineExecution.executionState() + "] state machine.");
-                }
-                updateStateMachineExecutionState(stateMachineExecutionEntity, ExecutionState.RUNNING, note);
-            }
-
-            @Override
-            public StateMachineExecution stateMachineExecution() {
-                assertStarted();
-                return stateMachineExecution;
-            }
-
-            @Override
-            public boolean isStarted() {
-                return started.get();
-            }
-
-            private void assertStarted() {
-                if (!isStarted())
-                    throw new IllegalStateException("state machine has not bean started. call start first.");
-            }
-        };
+        //create state machine ready for servicing.
+        StateMachine delegatingStateMachine = new DelegatingStateMachine(providerStateMachine, stateMachineDefinitionEntity, bizType, bizId);
 
         if (stateMachineDefinitionEntity.getAutoStartup()) {
             delegatingStateMachine.start(contextAttributes);
@@ -169,18 +107,18 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     }
 
 
-    private final void updateStateMachineExecutionState(StateMachineExecutionEntity executionEntity, ExecutionState executionState, String note) {
-        executionEntity.setExecutionState(executionState.getOrdinal());
-        stateMachineExecutionRepository.save(executionEntity);
-    }
+    private void sendEventInternal(DelegatingStateMachine stateMachine, Event event, Map<String, Object> contextAttributes) {
+        final ExecutionState executionState = stateMachine.stateMachineExecution.executionState();
+        final StateMachineDefinitionEntity definitionEntity = stateMachine.stateMachineDefinitionEntity;
+        final StateMachineExecutionEntity executionEntity = stateMachine.stateMachineExecutionEntity;
+        final ProviderStateMachine providerStateMachine = stateMachine.providerStateMachine;
+        StateMachineExecutionModel execution = stateMachine.stateMachineExecution;
 
-
-    protected void sendEventInternal(StateMachineDefinitionEntity definitionEntity, StateMachineExecutionEntity executionEntity, ProviderStateMachine providerStateMachine, Event event, Map<String, Object> contextAttributes) {
-        ExecutionState executionState = ExecutionState.getByOrdinal(executionEntity.getExecutionState());
         if (!executionState.acceptingEvents()) {
             throw new IllegalStateException("not allowed accepting events. execution state is: " + executionState);
         }
         State stateFrom = providerStateMachine.currentState();
+        execution.getExecutionContext().addAttributes(contextAttributes, true);
         boolean accepted = providerStateMachine.sendEvent(event, contextAttributes);
         EventEntity eventEntity = createEventEntity(event, accepted);
         StateMachineExecutionEntityContext entityContext = new StateMachineExecutionEntityContext(definitionEntity, executionEntity);
@@ -236,13 +174,173 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         return executionEntity;
     }
 
-    protected void saveContextPayload(StateMachineExecution stateMachineExecution) {
-        Assert.notNull(stateMachineExecution, "stateMachineExecution must not be null.");
-        StateMachineExecutionContextModel stateMachineExecutionContext = (StateMachineExecutionContextModel) stateMachineExecution.executionContext();
-        if (null == stateMachineExecutionContext && !stateMachineExecutionContext.contextChanges())
+
+    private void observeStateMachineExecutionContext(StateMachineExecutionModel execution) {
+        execution.setExecutionContext(new ObservableStateMachineExecutionContext(execution));
+    }
+
+
+    private final class DelegatingStateMachine implements StateMachine {
+
+        private final ProviderStateMachine providerStateMachine;
+        private final StateMachineDefinitionEntity stateMachineDefinitionEntity;
+        private final Integer bizType;
+        private final Long bizId;
+        private StateMachineExecutionEntity stateMachineExecutionEntity;
+        private StateMachineExecutionModel stateMachineExecution;
+        private AtomicBoolean started = new AtomicBoolean(false);
+
+
+        public DelegatingStateMachine(ProviderStateMachine providerStateMachine, StateMachineDefinitionEntity stateMachineDefinitionEntity, Integer bizType, Long bizId) {
+            this.providerStateMachine = providerStateMachine;
+            this.stateMachineDefinitionEntity = stateMachineDefinitionEntity;
+            this.bizType = bizType;
+            this.bizId = bizId;
+        }
+
+        @Override
+        public Long id() {
+            assertStarted();
+            return stateMachineExecution.id();
+        }
+
+        @Override
+        public void sendEvent(Event event, Map<String, Object> contextAttributes) {
+            assertStarted();
+            sendEventInternal(this, event, contextAttributes);
+        }
+
+        @Override
+        public void start(Map<String, Object> contextAttributes) {
+            if (started.compareAndSet(false, true)) {
+                providerStateMachine.start(contextAttributes);
+
+                this.stateMachineExecutionEntity = createStateMachineExecution(bizType, bizId, stateMachineDefinitionEntity, contextAttributes);
+                this.stateMachineExecution = stateMachineExecutionEntityMapper.mapForRead(stateMachineExecutionEntity);
+                observeStateMachineExecutionContext(this.stateMachineExecution);
+            }
+        }
+
+        @Override
+        public void terminate(String note) {
+            if (!stateMachineExecution.executionState().acceptingTerminate()) {
+                throw new IllegalStateException("not allowed terminate a [" + stateMachineExecution.executionState() + "] state machine.");
+            }
+            updateStateMachineExecutionState(stateMachineExecutionEntity, ExecutionState.TERMINATE, note);
+        }
+
+        @Override
+        public void suspend(String note) {
+            if (!stateMachineExecution.executionState().acceptingSuspend()) {
+                throw new IllegalStateException("not allowed suspend a [" + stateMachineExecution.executionState() + "] state machine.");
+            }
+            updateStateMachineExecutionState(stateMachineExecutionEntity, ExecutionState.SUSPEND, note);
+        }
+
+        @Override
+        public void resume(String note) {
+            if (!stateMachineExecution.executionState().acceptingResume()) {
+                throw new IllegalStateException("not allowed resume a [" + stateMachineExecution.executionState() + "] state machine.");
+            }
+            updateStateMachineExecutionState(stateMachineExecutionEntity, ExecutionState.RUNNING, note);
+        }
+
+        @Override
+        public StateMachineExecution stateMachineExecution() {
+            assertStarted();
+            return stateMachineExecution;
+        }
+
+        @Override
+        public boolean isStarted() {
+            return started.get();
+        }
+
+        private void assertStarted() {
+            if (!isStarted())
+                throw new IllegalStateException("state machine has not bean started. call start first.");
+        }
+
+    }
+
+
+    private final void updateStateMachineExecutionState(StateMachineExecutionEntity executionEntity, ExecutionState executionState, String note) {
+        executionEntity.setExecutionState(executionState.getOrdinal());
+        stateMachineExecutionRepository.save(executionEntity);
+    }
+
+
+    /**
+     * observable execution context holds the change status and how to save this context.
+     */
+    private final class ObservableStateMachineExecutionContext extends StateMachineExecutionContextModel implements StateMachineExecutionContext {
+
+        private final StateMachineExecution execution;
+        private final StateMachineExecutionContext nativeContext;
+        private volatile boolean changeFlag = false;
+
+        public ObservableStateMachineExecutionContext(StateMachineExecution execution) {
+            this.execution = execution;
+            this.nativeContext = execution.executionContext();
+        }
+
+        @Override
+        public void setAttribute(String name, Object attribute) {
+            nativeContext.setAttribute(name, attribute);
+            changeFlag = true;
+        }
+
+        @Override
+        public void removeAttribute(String name) {
+            nativeContext.removeAttribute(name);
+            changeFlag = true;
+        }
+
+        @Override
+        public Object getAttribute(String name) {
+            return nativeContext.getAttribute(name);
+        }
+
+        @Override
+        public Map<String, Object> getAttributes() {
+            return nativeContext.getAttributes();
+        }
+
+        @Override
+        public boolean hasAttribute(String name) {
+            return nativeContext.hasAttribute(name);
+        }
+
+        @Override
+        public void addAttributes(Map<String, Object> contextAttributes, boolean force) {
+            nativeContext.addAttributes(contextAttributes, force);
+            if (MapUtils.isNotEmpty(contextAttributes))
+                changeFlag = true;
+        }
+
+        private boolean changed() {
+            return changeFlag;
+        }
+
+        private void resetChange() {
+            changeFlag = false;
+        }
+
+        @Override
+        public void save() {
+            saveContextPayload(execution.id(), this);
+        }
+    }
+
+    private void saveContextPayload(Long executionId, ObservableStateMachineExecutionContext stateMachineExecutionContext) {
+        if (!stateMachineExecutionContext.changed()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("no context attributes changes found from state machine execution: ", stateMachineExecutionContext.execution.id());
+            }
             return;
-        stateMachineExecutionRepository.saveContextPayload(stateMachineExecution.id(), stateMachineExecutionContext.getContextPayload());
-        stateMachineExecutionContext.resetChanges();
+        }
+        stateMachineExecutionRepository.saveContextPayload(executionId, stateMachineExecutionContext.getContextPayload());
+        stateMachineExecutionContext.resetChange();
     }
 
     /**

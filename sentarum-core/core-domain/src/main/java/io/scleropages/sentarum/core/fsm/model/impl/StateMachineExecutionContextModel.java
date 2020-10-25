@@ -35,8 +35,6 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
 
     private final Map<String, Object> context;
 
-    private volatile boolean contextChanges = false;
-
     public StateMachineExecutionContextModel(Map<String, Object> context) {
         if (null == context)
             context = createMap();
@@ -50,13 +48,11 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
     @Override
     public void setAttribute(String name, Object attribute) {
         context.put(name, attribute);
-        contextChanges = true;
     }
 
     @Override
     public void removeAttribute(String name) {
         context.remove(name);
-        contextChanges = true;
     }
 
     @Override
@@ -75,7 +71,6 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
     }
 
 
-    @Override
     public String getContextPayload() {
         if (MapUtils.isNotEmpty(context)) {
             return JsonMapper2.toJson(context);
@@ -95,7 +90,6 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
                 context.putIfAbsent(k, v);
             }
         });
-        contextChanges = true;
     }
 
     public static final StateMachineExecutionContextModel newInstance(String contextPayload) {
@@ -105,19 +99,8 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
         return new StateMachineExecutionContextModel();
     }
 
-    @Override
-    public boolean contextChanges() {
-        return contextChanges;
-    }
 
     protected Map<String, Object> createMap() {
         return Maps.newHashMap();
-    }
-
-    /**
-     * reset contextChanges flag.
-     */
-    public void resetChanges() {
-        contextChanges = false;
     }
 }
