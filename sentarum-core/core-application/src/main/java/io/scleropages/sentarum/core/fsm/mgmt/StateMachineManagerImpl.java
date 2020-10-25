@@ -24,7 +24,10 @@ import io.scleropages.sentarum.core.fsm.entity.mapper.EventDefinitionEntityMappe
 import io.scleropages.sentarum.core.fsm.entity.mapper.StateEntityMapper;
 import io.scleropages.sentarum.core.fsm.entity.mapper.StateMachineDefinitionEntityMapper;
 import io.scleropages.sentarum.core.fsm.entity.mapper.StateTransitionEntityMapper;
+import io.scleropages.sentarum.core.fsm.model.EventDefinition;
 import io.scleropages.sentarum.core.fsm.model.HistoricTransitionExecution;
+import io.scleropages.sentarum.core.fsm.model.State;
+import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
@@ -41,8 +44,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
+ * generic state machine manager implementation.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
@@ -110,8 +116,9 @@ public class StateMachineManagerImpl implements StateMachineManager {
     }
 
     @Override
-    public void createStateMachine(Long stateMachineDefinitionId) {
-
+    @Transactional
+    public StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes) {
+        return stateMachineFactory.createStateMachine(definitionId, bizType, bizId, contextAttributes);
     }
 
     @Override
@@ -127,6 +134,41 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @Override
     public List<HistoricTransitionExecution> getAllHistoricTransitionExecutions(Long stateMachineExecutionId) {
         return null;
+    }
+
+    @Override
+    public StateMachineDefinition getStateMachineDefinition(Long id) {
+        return stateMachineDefinitionEntityMapper.mapForRead(stateMachineDefinitionRepository.getById(id).orElseThrow(() -> new IllegalArgumentException("no state machine definition found by id: " + id)));
+    }
+
+    @Override
+    public StateMachineDefinition getStateMachineDefinitionByName(String name) {
+        return getStateMachineDefinition(stateMachineDefinitionRepository.getIdByName(name).orElseThrow(() -> new IllegalArgumentException("no state machine definition found by name: " + name)));
+    }
+
+    @Override
+    public State getState(Long id) {
+        return stateEntityMapper.mapForRead(stateRepository.getById(id));
+    }
+
+    @Override
+    public State getStateByValue(Integer value) {
+        return getState(stateRepository.getIdByValue(value).orElseThrow(() -> new IllegalArgumentException("no state found by value: " + value)));
+    }
+
+    @Override
+    public State getStateByName(String name) {
+        return getState(stateRepository.getIdByName(name).orElseThrow(() -> new IllegalArgumentException("no state found by name: " + name)));
+    }
+
+    @Override
+    public EventDefinition getEventDefinition(Long id) {
+        return eventDefinitionEntityMapper.mapForRead(eventDefinitionRepository.getById(id).orElseThrow(() -> new IllegalArgumentException("no event definition found by id: " + id)));
+    }
+
+    @Override
+    public EventDefinition getEventDefinitionByName(String name) {
+        return getEventDefinition(eventDefinitionRepository.getIdByName(name).orElseThrow(() -> new IllegalArgumentException("no event definition found by name: " + name)));
     }
 
 

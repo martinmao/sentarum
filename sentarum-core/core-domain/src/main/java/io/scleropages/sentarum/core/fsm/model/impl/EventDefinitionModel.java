@@ -17,6 +17,10 @@ package io.scleropages.sentarum.core.fsm.model.impl;
 
 import io.scleropages.sentarum.core.fsm.model.EventDefinition;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -27,18 +31,23 @@ public class EventDefinitionModel implements EventDefinition {
     private String tag;
     private String desc;
 
+    @Null(groups = CreateModel.class)
+    @NotNull(groups = UpdateModel.class)
     public Long getId() {
         return id;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getName() {
         return name;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getTag() {
         return tag;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getDesc() {
         return desc;
     }
@@ -79,6 +88,13 @@ public class EventDefinitionModel implements EventDefinition {
     @Override
     public String desc() {
         return getDesc();
+    }
+
+
+    public interface CreateModel {
+    }
+
+    public interface UpdateModel {
     }
 
 }

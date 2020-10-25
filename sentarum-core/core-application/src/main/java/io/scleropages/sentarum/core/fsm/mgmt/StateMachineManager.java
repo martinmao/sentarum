@@ -16,7 +16,10 @@
 package io.scleropages.sentarum.core.fsm.mgmt;
 
 import io.scleropages.sentarum.core.fsm.StateMachine;
+import io.scleropages.sentarum.core.fsm.model.EventDefinition;
 import io.scleropages.sentarum.core.fsm.model.HistoricTransitionExecution;
+import io.scleropages.sentarum.core.fsm.model.State;
+import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
@@ -24,6 +27,7 @@ import io.scleropages.sentarum.core.fsm.model.impl.StateModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateTransitionModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * manager of state machine.
@@ -68,9 +72,12 @@ public interface StateMachineManager {
     /**
      * create new state machine.
      *
-     * @param stateMachineDefinitionId
+     * @param definitionId      id of state machine definition.
+     * @param bizType           type business model.
+     * @param bizId             id of business model.
+     * @param contextAttributes attributes of context.
      */
-    void createStateMachine(Long stateMachineDefinitionId);
+    StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes);
 
     /**
      * return state machine
@@ -95,4 +102,62 @@ public interface StateMachineManager {
      * @return
      */
     List<HistoricTransitionExecution> getAllHistoricTransitionExecutions(Long stateMachineExecutionId);
+
+
+    /**
+     * return state definition by id.
+     *
+     * @param id
+     * @return
+     */
+    StateMachineDefinition getStateMachineDefinition(Long id);
+
+    /**
+     * return state definition by name.
+     *
+     * @param name
+     * @return
+     */
+    StateMachineDefinition getStateMachineDefinitionByName(String name);
+
+
+    /**
+     * return state by id.
+     *
+     * @param id
+     * @return
+     */
+    State getState(Long id);
+
+    /**
+     * return state by value.
+     *
+     * @param value
+     * @return
+     */
+    State getStateByValue(Integer value);
+
+    /**
+     * return state by name.
+     *
+     * @param name
+     * @return
+     */
+    State getStateByName(String name);
+
+    /**
+     * return event definition by id.
+     *
+     * @param id
+     * @return
+     */
+    EventDefinition getEventDefinition(Long id);
+
+    /**
+     * return event definition by name.
+     *
+     * @param name
+     * @return
+     */
+    EventDefinition getEventDefinitionByName(String name);
 }

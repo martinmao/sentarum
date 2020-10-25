@@ -66,16 +66,17 @@ public class StateTransitionEntity extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eval_invocation_conf", nullable = false)
+    @JoinColumn(name = "eval_invocation_conf_id")
     public InvocationConfigEntity getEvaluatorConfig() {
         return evaluatorConfig;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "action_invocation_conf", nullable = false)
+    @JoinColumn(name = "action_invocation_conf_id")
     public InvocationConfigEntity getActionConfig() {
         return actionConfig;
     }
+
 
     public void setStateMachineDefinition(StateMachineDefinitionEntity stateMachineDefinition) {
         this.stateMachineDefinition = stateMachineDefinition;

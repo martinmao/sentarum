@@ -23,6 +23,7 @@ import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.criteria.JoinType;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -30,7 +31,7 @@ import javax.persistence.criteria.JoinType;
 public interface StateRepository extends GenericRepository<StateEntity, Long>, JooqRepository<FsmState, FsmStateRecord, StateEntity> {
 
     @Cacheable
-    default StateEntity getById(Long id) {
+    default StateEntity getById(Long id /*,boolean fetchInvocationConfig*/) {
         return get((root, query, builder) -> {
 //            if (fetchInvocationConfig) {
             root.fetch("enteredActionConfig", JoinType.LEFT);
@@ -39,4 +40,17 @@ public interface StateRepository extends GenericRepository<StateEntity, Long>, J
             return builder.equal(root.get("id"), id);
         }).orElseThrow(() -> new IllegalArgumentException("no state found: " + id));
     }
+
+    @Cacheable
+    default Optional<Long> getIdByValue(Integer value) {
+        FsmState fsmState = dslTable();
+        return dslContext().select(fsmState.ID).from(fsmState).where(fsmState.VALUE_.eq(value)).fetchOptional(fsmState.ID);
+    }
+
+    @Cacheable
+    default Optional<Long> getIdByName(String name) {
+        FsmState fsmState = dslTable();
+        return dslContext().select(fsmState.ID).from(fsmState).where(fsmState.NAME_.eq(name)).fetchOptional(fsmState.ID);
+    }
+
 }

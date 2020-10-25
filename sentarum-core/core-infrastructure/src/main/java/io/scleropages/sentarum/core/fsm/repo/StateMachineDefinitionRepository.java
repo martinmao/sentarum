@@ -32,17 +32,20 @@ import java.util.Optional;
 public interface StateMachineDefinitionRepository extends GenericRepository<StateMachineDefinitionEntity, Long>, JooqRepository<FsmDef, FsmDefRecord, StateMachineDefinitionEntity> {
 
     @Cacheable
-    default Optional<StateMachineDefinitionEntity> getById(Long id, boolean fetchInvocationConfig) {
+    default Optional<StateMachineDefinitionEntity> getById(Long id/*, Boolean fetchInvocationConfig*/) {
         return get((root, query, builder) -> {
-            if (fetchInvocationConfig) {
-                Fetch<Object, Object> initialStateFetch = root.fetch("initialState", JoinType.LEFT);
-                initialStateFetch.fetch("enteredActionConfig", JoinType.LEFT);
-                initialStateFetch.fetch("exitActionConfig", JoinType.LEFT);
-            }
+//            if (fetchInvocationConfig) {
+            Fetch<Object, Object> initialStateFetch = root.fetch("initialState", JoinType.LEFT);
+            initialStateFetch.fetch("enteredActionConfig", JoinType.LEFT);
+            initialStateFetch.fetch("exitActionConfig", JoinType.LEFT);
+//            }
             return builder.equal(root.get("id"), id);
         });
     }
 
     @Cacheable
-    Optional<StateMachineDefinitionEntity> getByName(String name);
+    default Optional<Long> getIdByName(String name) {
+        FsmDef fsmDef = dslTable();
+        return dslContext().select(fsmDef.ID).from(fsmDef).where(fsmDef.NAME_.eq(name)).fetchOptional(fsmDef.ID);
+    }
 }

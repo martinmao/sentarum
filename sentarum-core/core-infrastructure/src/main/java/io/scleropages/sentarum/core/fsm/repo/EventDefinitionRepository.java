@@ -24,16 +24,19 @@ import org.springframework.cache.annotation.Cacheable;
 
 import java.util.Optional;
 
+import static io.scleropages.sentarum.jooq.Tables.*;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface EventDefinitionRepository extends GenericRepository<EventDefinitionEntity, Long>, JooqRepository<FsmEventDef, FsmEventDefRecord, EventDefinitionEntity> {
 
-
     @Cacheable
     Optional<EventDefinitionEntity> getById(Long id);
 
     @Cacheable
-    Optional<EventDefinitionEntity> getByName(String name);
+    default Optional<Long> getIdByName(String name) {
+        return dslContext().select(FSM_EVENT_DEF.ID).from(FSM_EVENT_DEF).where(FSM_EVENT_DEF.NAME_.eq(name)).fetchOptional(FSM_EVENT_DEF.ID);
+    }
 
 }

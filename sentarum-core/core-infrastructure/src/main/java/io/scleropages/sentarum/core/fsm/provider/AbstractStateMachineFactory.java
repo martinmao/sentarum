@@ -89,8 +89,8 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         Assert.notNull(bizType, "bizType is bizType.");
         Assert.notNull(bizId, "bizId is required.");
 
-        StateMachineDefinitionEntity stateMachineDefinitionEntity = definitionRepository.getById(definitionId, true).orElseThrow(() -> new IllegalArgumentException("no state machine definition id found: " + definitionId));
-        List<StateTransitionEntity> stateTransitionEntities = transitionRepository.findAllByStateMachineDefinition_Id(definitionId, true);
+        StateMachineDefinitionEntity stateMachineDefinitionEntity = definitionRepository.getById(definitionId).orElseThrow(() -> new IllegalArgumentException("no state machine definition id found: " + definitionId));
+        List<StateTransitionEntity> stateTransitionEntities = transitionRepository.findAllByStateMachineDefinition_Id(definitionId, definitionRepository, stateRepository, eventDefinitionRepository);
 
         ProviderStateMachine providerStateMachine = createStateMachineInternal(map(stateMachineDefinitionEntity), map(stateTransitionEntities));
 

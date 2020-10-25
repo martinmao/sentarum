@@ -64,13 +64,13 @@ public class StateEntity extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entered_invocation_conf", nullable = false)
+    @JoinColumn(name = "entered_invocation_conf_id")
     public InvocationConfigEntity getEnteredActionConfig() {
         return enteredActionConfig;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exit_invocation_conf", nullable = false)
+    @JoinColumn(name = "exit_invocation_conf_id")
     public InvocationConfigEntity getExitActionConfig() {
         return exitActionConfig;
     }

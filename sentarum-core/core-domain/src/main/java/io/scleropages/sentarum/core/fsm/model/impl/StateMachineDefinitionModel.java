@@ -20,14 +20,16 @@ import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class StateMachineDefinitionModel implements StateMachineDefinition {
-
-
+    
     private Long id;
     private String name;
     private String tag;
@@ -38,30 +40,38 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
     private StateMachineExecutionListener executionListener;
 
 
+    @Null(groups = CreateModel.class)
+    @NotNull(groups = UpdateModel.class)
     public Long getId() {
         return id;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getName() {
         return name;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getTag() {
         return tag;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getDesc() {
         return desc;
     }
 
+    @Null
     public State getInitialState() {
         return initialState;
     }
 
+    @Null
     public List<StateTransition> getTransitions() {
         return transitions;
     }
 
+    @NotNull(groups = CreateModel.class)
     public Boolean getAutoStartup() {
         return autoStartup;
     }
@@ -140,5 +150,12 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
     @Override
     public StateMachineExecutionListener executionListener() {
         return getExecutionListener();
+    }
+
+
+    public interface CreateModel {
+    }
+
+    public interface UpdateModel {
     }
 }

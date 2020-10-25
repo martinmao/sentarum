@@ -21,6 +21,8 @@ import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
 
+import javax.validation.constraints.Null;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -35,26 +37,31 @@ public class StateTransitionModel implements StateTransition {
     private InvocationConfig evaluatorConfig;
     private InvocationConfig actionConfig;
 
+    @Null
     public Long getId() {
         return id;
     }
 
+    @Null
     public StateMachineDefinition getStateMachineDefinition() {
         return stateMachineDefinition;
     }
 
+    @Null
     public State getFrom() {
         return from;
     }
 
+    @Null
     public State getTo() {
         return to;
     }
 
+    @Null
     public EventDefinition getEvent() {
         return event;
     }
-
+    
     public InvocationConfig getEvaluatorConfig() {
         return evaluatorConfig;
     }
@@ -126,4 +133,8 @@ public class StateTransitionModel implements StateTransition {
         return getActionConfig();
     }
 
+
+    public interface CreateModel {
+
+    }
 }

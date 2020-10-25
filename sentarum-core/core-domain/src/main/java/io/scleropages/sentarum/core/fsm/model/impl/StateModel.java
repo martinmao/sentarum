@@ -18,6 +18,10 @@ package io.scleropages.sentarum.core.fsm.model.impl;
 import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.State;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -31,22 +35,28 @@ public class StateModel implements State {
     private InvocationConfig enteredActionConfig;
     private InvocationConfig exitActionConfig;
 
+    @Null(groups = CreateModel.class)
+    @NotNull(groups = UpdateModel.class)
     public Long getId() {
         return id;
     }
 
+    @NotNull(groups = CreateModel.class)
     public Integer getValue() {
         return value;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getName() {
         return name;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getTag() {
         return tag;
     }
 
+    @NotEmpty(groups = CreateModel.class)
     public String getDesc() {
         return desc;
     }
@@ -120,5 +130,12 @@ public class StateModel implements State {
     @Override
     public InvocationConfig exitActionConfig() {
         return getExitActionConfig();
+    }
+
+
+    public interface CreateModel {
+    }
+
+    public interface UpdateModel {
     }
 }
