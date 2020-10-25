@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
+ * not a thread-safety context implementation. if required a concurrency context implementation you must override {@link #createMap()}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class StateMachineExecutionContextModel implements StateMachineExecutionContext {
@@ -36,11 +38,13 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
     private volatile boolean contextChanges = false;
 
     public StateMachineExecutionContextModel(Map<String, Object> context) {
+        if (null == context)
+            context = createMap();
         this.context = context;
     }
 
     public StateMachineExecutionContextModel() {
-        this(Maps.newHashMap());
+        this(null);
     }
 
     @Override
@@ -71,12 +75,27 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
     }
 
 
+    @Override
     public String getContextPayload() {
         if (MapUtils.isNotEmpty(context)) {
             return JsonMapper2.toJson(context);
         } else {
             return EMPTY_CONTEXT_PAYLOAD;
         }
+    }
+
+    @Override
+    public void addAttributes(Map<String, Object> contextAttributes, boolean force) {
+        if (null == contextAttributes || contextAttributes.isEmpty())
+            return;
+        contextAttributes.forEach((k, v) -> {
+            if (force) {
+                context.put(k, v);
+            } else {
+                context.putIfAbsent(k, v);
+            }
+        });
+        contextChanges = true;
     }
 
     public static final StateMachineExecutionContextModel newInstance(String contextPayload) {
@@ -86,7 +105,19 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
         return new StateMachineExecutionContextModel();
     }
 
-    public Boolean contextChanges() {
+    @Override
+    public boolean contextChanges() {
         return contextChanges;
+    }
+
+    protected Map<String, Object> createMap() {
+        return Maps.newHashMap();
+    }
+
+    /**
+     * reset contextChanges flag.
+     */
+    public void resetChanges() {
+        contextChanges = false;
     }
 }

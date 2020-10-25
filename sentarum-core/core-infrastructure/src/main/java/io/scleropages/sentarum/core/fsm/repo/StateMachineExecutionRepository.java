@@ -26,4 +26,9 @@ import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
  */
 public interface StateMachineExecutionRepository extends GenericRepository<StateMachineExecutionEntity, Long>, JooqRepository<FsmExecution, FsmExecutionRecord, StateMachineExecutionEntity> {
 
+
+    default void saveContextPayload(Long id, String contextPayload) {
+        FsmExecution fsmExecution = dslTable();
+        dslContext().update(fsmExecution).set(fsmExecution.CONTEXT_PAYLOAD, contextPayload).where(fsmExecution.ID.eq(id)).execute();
+    }
 }

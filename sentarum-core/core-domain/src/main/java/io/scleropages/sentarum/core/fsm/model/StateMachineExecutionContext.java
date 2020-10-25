@@ -62,4 +62,27 @@ public interface StateMachineExecutionContext {
      * @return
      */
     boolean hasAttribute(String name);
+
+    /**
+     * return true if current context attributes was changed.
+     *
+     * @return
+     */
+    boolean contextChanges();
+
+
+    /**
+     * return text payload of this context.
+     *
+     * @return
+     */
+    String getContextPayload();
+
+    /**
+     * append given attributes to current context.
+     *
+     * @param contextAttributes appending attributes.
+     * @param force             true if replaces when exists. or false do nothing.
+     */
+    void addAttributes(Map<String, Object> contextAttributes, boolean force);
 }

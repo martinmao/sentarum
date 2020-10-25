@@ -120,6 +120,10 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         }
         org.squirrelframework.foundation.fsm.StateMachine stateMachine = builder.newStateMachine(stateMachineDefinition.initialState());
 
+        stateMachine.addStateMachineListener(event -> {
+
+        });
+
         return new ProviderStateMachine() {
             @Override
             public boolean sendEvent(Event event, Map<String, Object> contextAttributes) {
@@ -140,6 +144,7 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
                 return (State) stateMachine.getCurrentState();
             }
         };
+
     }
 
     @StateMachineParameters(stateType = State.class, eventType = Event.class, contextType = StateMachineExecutionContext.class)

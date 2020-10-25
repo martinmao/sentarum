@@ -229,12 +229,20 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         executionEntity.setBizId(bizId);
         executionEntity.setStateMachineDefinition(stateMachineDefinitionEntity);
         executionEntity.setCurrentState(stateMachineDefinitionEntity.getInitialState());
-        if (null != contextAttributes)
-            executionEntity.setExecutionContext(new StateMachineExecutionContextModel(contextAttributes).getContextPayload());
+        executionEntity.setExecutionContext(new StateMachineExecutionContextModel(contextAttributes).getContextPayload());
         stateMachineExecutionRepository.save(executionEntity);
         if (logger.isDebugEnabled())
             logger.debug("successfully create state machine execution: {} with state: {}.", executionEntity.getId(), executionEntity.getCurrentState().getName());
         return executionEntity;
+    }
+
+    protected void saveContextPayload(StateMachineExecution stateMachineExecution) {
+        Assert.notNull(stateMachineExecution, "stateMachineExecution must not be null.");
+        StateMachineExecutionContextModel stateMachineExecutionContext = (StateMachineExecutionContextModel) stateMachineExecution.executionContext();
+        if (null == stateMachineExecutionContext && !stateMachineExecutionContext.contextChanges())
+            return;
+        stateMachineExecutionRepository.saveContextPayload(stateMachineExecution.id(), stateMachineExecutionContext.getContextPayload());
+        stateMachineExecutionContext.resetChanges();
     }
 
     /**
