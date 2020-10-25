@@ -178,7 +178,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     protected void sendEventInternal(StateMachineDefinitionEntity definitionEntity, StateMachineExecutionEntity executionEntity, ProviderStateMachine providerStateMachine, Event event, Map<String, Object> contextAttributes) {
         ExecutionState executionState = ExecutionState.getByOrdinal(executionEntity.getExecutionState());
         if (!executionState.acceptingEvents()) {
-            throw new IllegalStateException("state machine not running. current execution state is: " + executionState);
+            throw new IllegalStateException("not allowed accepting events. execution state is: " + executionState);
         }
         State stateFrom = providerStateMachine.currentState();
         boolean accepted = providerStateMachine.sendEvent(event, contextAttributes);
