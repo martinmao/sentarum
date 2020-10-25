@@ -17,8 +17,7 @@ package io.scleropages.sentarum.core.fsm.provider;
 
 import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.State;
-
-import java.util.Map;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 
 /**
  * spi strategy interface state machine provider.
@@ -31,18 +30,18 @@ public interface ProviderStateMachine {
     /**
      * send event to this state machine.
      *
-     * @param event             event to sent
-     * @param contextAttributes attributes of context. theses attribute will applying to {@link io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext}
+     * @param event            event to sent
+     * @param executionContext context of this state machine execution.
      */
-    boolean sendEvent(Event event, Map<String, Object> contextAttributes);
+    boolean sendEvent(Event event, StateMachineExecutionContext executionContext);
 
 
     /**
      * start this state machine.
      *
-     * @param contextAttributes attributes of context. theses attribute will applying to {@link io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext}
+     * @param executionContext context of this state machine execution.
      */
-    void start(Map<String, Object> contextAttributes);
+    void start(StateMachineExecutionContext executionContext);
 
 
     /**

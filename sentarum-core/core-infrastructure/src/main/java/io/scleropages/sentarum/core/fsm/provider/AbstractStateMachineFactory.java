@@ -119,7 +119,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         }
         State stateFrom = providerStateMachine.currentState();
         execution.getExecutionContext().addAttributes(contextAttributes, true);
-        boolean accepted = providerStateMachine.sendEvent(event, contextAttributes);
+        boolean accepted = providerStateMachine.sendEvent(event, execution.getExecutionContext());
         EventEntity eventEntity = createEventEntity(event, accepted);
         StateMachineExecutionEntityContext entityContext = new StateMachineExecutionEntityContext(definitionEntity, executionEntity);
         if (accepted) {
@@ -213,11 +213,10 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         @Override
         public void start(Map<String, Object> contextAttributes) {
             if (started.compareAndSet(false, true)) {
-                providerStateMachine.start(contextAttributes);
-
                 this.stateMachineExecutionEntity = createStateMachineExecution(bizType, bizId, stateMachineDefinitionEntity, contextAttributes);
                 this.stateMachineExecution = stateMachineExecutionEntityMapper.mapForRead(stateMachineExecutionEntity);
-                observeStateMachineExecutionContext(this.stateMachineExecution);
+                observeStateMachineExecutionContext(stateMachineExecution);
+                providerStateMachine.start(stateMachineExecution.getExecutionContext());
             }
         }
 

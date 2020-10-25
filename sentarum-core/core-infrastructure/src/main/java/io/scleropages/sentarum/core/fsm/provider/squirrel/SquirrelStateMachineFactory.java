@@ -39,7 +39,6 @@ import org.squirrelframework.foundation.fsm.builder.On;
 import org.squirrelframework.foundation.fsm.impl.AbstractUntypedStateMachine;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -126,17 +125,17 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
 
         return new ProviderStateMachine() {
             @Override
-            public boolean sendEvent(Event event, Map<String, Object> contextAttributes) {
+            public boolean sendEvent(Event event, StateMachineExecutionContext executionContext) {
                 if (stateMachine.canAccept(event)) {
-                    stateMachine.fire(event, contextAttributes);
+                    stateMachine.fire(event, executionContext);
                     return true;
                 }
                 return false;
             }
 
             @Override
-            public void start(Map<String, Object> contextAttributes) {
-                stateMachine.start(contextAttributes);
+            public void start(StateMachineExecutionContext executionContext) {
+                stateMachine.start(executionContext);
             }
 
             @Override
