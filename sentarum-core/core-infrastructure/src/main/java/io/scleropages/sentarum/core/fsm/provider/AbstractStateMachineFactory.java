@@ -127,7 +127,6 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
                     throw new IllegalStateException("not allowed terminate a [" + stateMachineExecution.executionState() + "] state machine.");
                 }
                 updateStateMachineExecutionState(stateMachineExecutionEntity, ExecutionState.TERMINATE, note);
-
             }
 
             @Override
@@ -192,6 +191,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         }
     }
 
+
     private final void createHistoricTransitionExecution(StateMachineExecutionEntityContext entityContext, State
             stateFrom, State stateTo, EventEntity event) {
         HistoricTransitionExecutionEntity entity = new HistoricTransitionExecutionEntity();
@@ -247,18 +247,42 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     protected abstract ProviderStateMachine createStateMachineInternal(StateMachineDefinition
                                                                                stateMachineDefinition, List<StateTransition> stateTransitions);
 
+    /**
+     * map given entities to model.
+     *
+     * @param stateMachineDefinitionEntity
+     * @return
+     */
     protected StateMachineDefinition map(StateMachineDefinitionEntity stateMachineDefinitionEntity) {
         return (StateMachineDefinition) ModelMapperRepository.getRequiredModelMapper(StateMachineDefinitionEntityMapper.class).mapForRead(stateMachineDefinitionEntity);
     }
 
+    /**
+     * map given entities to model.
+     *
+     * @param stateTransitionEntities
+     * @return
+     */
     protected List<StateTransition> map(List<StateTransitionEntity> stateTransitionEntities) {
         return (List<StateTransition>) ModelMapperRepository.getRequiredModelMapper(StateTransitionEntityMapper.class).mapForReads(stateTransitionEntities);
     }
 
+    /**
+     * return {@link Action} by invocation config from {@link InvocationContainer}
+     *
+     * @param invocationConfig
+     * @return
+     */
     protected Action getAction(InvocationConfig invocationConfig) {
         return invocationContainer.getAction(invocationConfig);
     }
 
+    /**
+     * return {@link TransitionEvaluator} by invocation config from {@link InvocationContainer}.
+     *
+     * @param invocationConfig
+     * @return
+     */
     protected TransitionEvaluator getTransitionEvaluator(InvocationConfig invocationConfig) {
         return invocationContainer.getTransitionEvaluator(invocationConfig);
     }

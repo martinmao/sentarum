@@ -25,6 +25,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.Map;
@@ -45,6 +46,7 @@ public class SpringInvocationContainer implements InvocationContainer, Initializ
 
     @Override
     public Action getAction(InvocationConfig actionConfig) {
+        assertInvocationConfig(actionConfig);
         return actions.get(actionConfig.invocationImplementation());
     }
 
@@ -55,6 +57,7 @@ public class SpringInvocationContainer implements InvocationContainer, Initializ
 
     @Override
     public TransitionEvaluator getTransitionEvaluator(InvocationConfig evaluatorConfig) {
+        assertInvocationConfig(evaluatorConfig);
         return evaluators.get(evaluatorConfig.invocationImplementation());
     }
 
@@ -74,5 +77,12 @@ public class SpringInvocationContainer implements InvocationContainer, Initializ
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+
+    protected void assertInvocationConfig(InvocationConfig invocationConfig) {
+        Assert.notNull(invocationConfig, "invocation config must not be null.");
+        Assert.hasText(invocationConfig.invocationImplementation(), "invocation implementation must not be empty text.");
+
     }
 }
