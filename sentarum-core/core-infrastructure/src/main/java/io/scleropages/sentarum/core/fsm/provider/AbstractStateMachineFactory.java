@@ -86,7 +86,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     public StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes) {
 
         Assert.notNull(definitionId, "definitionId is required.");
-        Assert.notNull(bizType, "bizType is bizType.");
+        Assert.notNull(bizType, "bizType is required.");
         Assert.notNull(bizId, "bizId is required.");
 
         StateMachineDefinitionEntity stateMachineDefinitionEntity = definitionRepository.getById(definitionId).orElseThrow(() -> new IllegalArgumentException("no state machine definition id found: " + definitionId));
