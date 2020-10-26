@@ -19,6 +19,8 @@ import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.State;
 import org.springframework.util.Assert;
 
+import java.util.Objects;
+
 /**
  * proxy and override {@link State}'s {@link #hashCode()} and {@link #equals(Object)}.
  *
@@ -76,6 +78,10 @@ public class SquirrelState implements State {
 
     @Override
     public boolean equals(Object obj) {
-        return state.name().equals(obj);
+        if (null == obj)
+            return false;
+        if (!(obj instanceof SquirrelState))
+            return false;
+        return Objects.equals(state.name(), ((SquirrelState) obj).name());
     }
 }

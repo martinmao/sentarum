@@ -46,18 +46,23 @@ public class SquirrelStateMachineTests {
 
         //follow methods always call and not required to registered.
         protected void beforeActionInvoked(Object from, Object to, Object event, Object context) {
+            System.out.println("beforeActionInvoked");
         }
 
         protected void afterTransitionCausedException(Exception e, Object from, Object to, Object event, Object context) {
+            System.out.println("afterTransitionCausedException");
         }
 
         protected void beforeTransitionBegin(Object from, Object event, Object context) {
+            System.out.println("beforeTransitionBegin");
         }
 
         protected void afterTransitionCompleted(Object from, Object to, Object event, Object context) {
+            System.out.println("afterTransitionCompleted");
         }
 
         protected void afterTransitionEnd(Object from, Object to, Object event, Object context) {
+            System.out.println("afterTransitionEnd");
         }
 
         protected void afterTransitionDeclined(Object from, Object event, Object context) {
@@ -151,6 +156,9 @@ public class SquirrelStateMachineTests {
 
 
         UntypedStateMachine fsm = builder.newStateMachine("S1", StateMachineConfiguration.create().enableDebugMode(true));
+        fsm.addStateMachineListener(event -> {
+            System.out.println(event);
+        });
 
         //fsm.addTransitionXXXXXListener(); for each transition event listener.
         //fsm.addXXXXListener(); for other else.

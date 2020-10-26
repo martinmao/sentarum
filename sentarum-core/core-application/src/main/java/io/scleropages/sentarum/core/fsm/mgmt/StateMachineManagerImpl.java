@@ -24,12 +24,14 @@ import io.scleropages.sentarum.core.fsm.entity.mapper.EventDefinitionEntityMappe
 import io.scleropages.sentarum.core.fsm.entity.mapper.StateEntityMapper;
 import io.scleropages.sentarum.core.fsm.entity.mapper.StateMachineDefinitionEntityMapper;
 import io.scleropages.sentarum.core.fsm.entity.mapper.StateTransitionEntityMapper;
+import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.EventDefinition;
 import io.scleropages.sentarum.core.fsm.model.HistoricTransitionExecution;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
+import io.scleropages.sentarum.core.fsm.model.impl.EventModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateTransitionModel;
@@ -42,6 +44,7 @@ import io.scleropages.sentarum.core.fsm.repo.StateTransitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -119,6 +122,14 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @Transactional
     public StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes) {
         return stateMachineFactory.createStateMachine(definitionId, bizType, bizId, contextAttributes);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Event createEvent(String name, Map<String, Object> body) {
+        Assert.hasText(name, "event name must not empty.");
+        EventDefinition eventDefinition = getEventDefinitionByName(name);
+        return new EventModel(eventDefinition, body);
     }
 
     @Override

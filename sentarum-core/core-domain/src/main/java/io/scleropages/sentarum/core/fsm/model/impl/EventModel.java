@@ -51,6 +51,14 @@ public class EventModel implements Event {
         this.name = name;
     }
 
+    public EventModel(EventDefinition eventDefinition, Map<String, Object> body) {
+        Assert.notNull(eventDefinition, "event definition must not be null.");
+        this.eventDefinition = eventDefinition;
+        this.name = eventDefinition.name();
+        this.tag = eventDefinition.tag();
+        this.body = body;
+    }
+
     public Long getId() {
         return id;
     }

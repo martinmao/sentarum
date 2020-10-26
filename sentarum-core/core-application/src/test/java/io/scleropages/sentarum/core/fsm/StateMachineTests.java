@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.core.fsm;
 
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.core.fsm.mgmt.StateMachineManager;
 import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
@@ -25,14 +26,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-//@Transactional
+
 public class StateMachineTests {
 
     @Autowired
@@ -94,6 +97,15 @@ public class StateMachineTests {
 
         System.out.println("##################################################");
 
-        StateMachine stateMachine = stateMachineManager.createStateMachine(stateMachineManager.getStateMachineDefinitionByName("CARD_PUSH").id(), 1, 1l, null);
+        Map<String, Object> cardEventBody = Maps.newHashMap();
+        cardEventBody.put("x", 1);
+        cardEventBody.put("y", "xxxxxxxxxxxx");
+        cardEventBody.put("z", new Date());
+        Map<String, Object> contextAttributes = Maps.newHashMap();
+        contextAttributes.put("init", "init");
+        StateMachine stateMachine = stateMachineManager.createStateMachine(stateMachineManager.getStateMachineDefinitionByName("CARD_PUSH").id(), 1, 1l, contextAttributes);
+        contextAttributes.remove("init");
+        contextAttributes.put("second", "second");
+        stateMachine.sendEvent(stateMachineManager.createEvent("CARD", cardEventBody), contextAttributes);
     }
 }

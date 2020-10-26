@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.core.fsm.mgmt;
 
 import io.scleropages.sentarum.core.fsm.StateMachine;
+import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.EventDefinition;
 import io.scleropages.sentarum.core.fsm.model.HistoricTransitionExecution;
 import io.scleropages.sentarum.core.fsm.model.State;
@@ -78,6 +79,16 @@ public interface StateMachineManager {
      * @param contextAttributes attributes of context.
      */
     StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes);
+
+
+    /**
+     * create new event for sending to statemachine.
+     *
+     * @param name name of event definition.
+     * @param body event business body.
+     * @return
+     */
+    Event createEvent(String name, Map<String, Object> body);
 
     /**
      * return state machine

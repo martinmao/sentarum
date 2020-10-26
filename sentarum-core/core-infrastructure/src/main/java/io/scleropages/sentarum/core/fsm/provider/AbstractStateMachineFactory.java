@@ -169,6 +169,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         executionEntity.setStateMachineDefinition(stateMachineDefinitionEntity);
         executionEntity.setCurrentState(stateMachineDefinitionEntity.getInitialState());
         executionEntity.setExecutionContext(new StateMachineExecutionContextModel(contextAttributes).getContextPayload());
+        executionEntity.setExecutionState(ExecutionState.RUNNING.getOrdinal());
         stateMachineExecutionRepository.save(executionEntity);
         if (logger.isDebugEnabled())
             logger.debug("successfully create state machine execution: {} with state: {}.", executionEntity.getId(), executionEntity.getCurrentState().getName());

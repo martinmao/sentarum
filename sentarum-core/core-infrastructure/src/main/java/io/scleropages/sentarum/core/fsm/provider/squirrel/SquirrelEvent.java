@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * proxy and override {@link Event}'s {@link #hashCode()} and {@link #equals(Object)}.
@@ -90,6 +91,10 @@ public class SquirrelEvent implements Event {
 
     @Override
     public boolean equals(Object obj) {
-        return event.name().equals(obj);
+        if (null == obj)
+            return false;
+        if (!(obj instanceof SquirrelEvent))
+            return false;
+        return Objects.equals(event.name(), ((SquirrelEvent) obj).name());
     }
 }

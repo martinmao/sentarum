@@ -27,6 +27,7 @@ import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
 import io.scleropages.sentarum.core.fsm.provider.AbstractStateMachineFactory;
 import io.scleropages.sentarum.core.fsm.provider.ProviderStateMachine;
+import org.scleropages.core.mapper.JsonMapper2;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -120,10 +121,10 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         } catch (ExecutionException e) {
             throw new IllegalStateException("failure to create state machine builder. ", e);
         }
-        org.squirrelframework.foundation.fsm.StateMachine stateMachine = builder.newStateMachine(stateMachineDefinition.initialState());
+        org.squirrelframework.foundation.fsm.StateMachine stateMachine = builder.newStateMachine(createSquirrelState(stateMachineDefinition.initialState()));
 
         stateMachine.addStateMachineListener(event -> {
-
+            System.out.println(event);
         });
 
         return new ProviderStateMachine() {
@@ -169,37 +170,39 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
 
         protected void afterTransitionCausedException(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
             //默认情况下：状态机异常将会终止状态机执行，此处进行重置
-            setStatus(StateMachineStatus.IDLE);
+//            setStatus(StateMachineStatus.IDLE);
             //super.afterTransitionCausedException(fromState, toState, event, context);
+            System.out.println("afterTransitionCausedException: "+event + "(" + fromState + "->" + toState + "): [" + context+"]");
+
         }
 
 
         protected void beforeTransitionBegin(SquirrelState fromState, SquirrelEvent event, StateMachineExecutionContext context) {
-            super.beforeTransitionBegin(fromState, event, context);
+            System.out.println("beforeTransitionBegin: "+event + "(" + fromState + "->" + null + "): [" + context+"]");
         }
 
         protected void afterTransitionCompleted(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            super.afterTransitionCompleted(fromState, toState, event, context);
+            System.out.println("afterTransitionCompleted: "+event + "(" + fromState + "->" + toState + "): [" + context+"]");
         }
 
 
         protected void afterTransitionEnd(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            super.afterTransitionEnd(fromState, toState, event, context);
+            System.out.println("afterTransitionEnd: "+event + "(" + fromState + "->" + toState + "): [" + context+"]");
         }
 
 
         protected void afterTransitionDeclined(SquirrelState fromState, SquirrelEvent event, StateMachineExecutionContext context) {
-            super.afterTransitionDeclined(fromState, event, context);
+            System.out.println("afterTransitionDeclined: "+event + "(" + fromState + "->" + null + "): [" + context+"]");
         }
 
 
         protected void beforeActionInvoked(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            super.beforeActionInvoked(fromState, toState, event, context);
+            System.out.println("beforeActionInvoked: "+event + "(" + fromState + "->" + null + "): [" + context+"]");
         }
 
 
         protected void afterActionInvoked(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            super.afterActionInvoked(fromState, toState, event, context);
+            System.out.println("afterActionInvoked: "+event + "(" + fromState + "->" + null + "): [" + context+"]");
         }
 
     }
