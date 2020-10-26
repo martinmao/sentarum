@@ -102,10 +102,13 @@ public class StateMachineTests {
         cardEventBody.put("y", "xxxxxxxxxxxx");
         cardEventBody.put("z", new Date());
         Map<String, Object> contextAttributes = Maps.newHashMap();
-        contextAttributes.put("init", "init");
+        contextAttributes.put("1", "1");
         StateMachine stateMachine = stateMachineManager.createStateMachine(stateMachineManager.getStateMachineDefinitionByName("CARD_PUSH").id(), 1, 1l, contextAttributes);
-        contextAttributes.remove("init");
-        contextAttributes.put("second", "second");
+        contextAttributes.remove("1");
+        contextAttributes.put("2", "2");
+        stateMachine.sendEvent(stateMachineManager.createEvent("PUSH", null), contextAttributes);
+        contextAttributes.remove("2");
+        contextAttributes.put("3", "3");
         stateMachine.sendEvent(stateMachineManager.createEvent("CARD", cardEventBody), contextAttributes);
     }
 }

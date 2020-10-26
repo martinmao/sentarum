@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.core.fsm.provider;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import io.scleropages.sentarum.core.fsm.Action;
 import io.scleropages.sentarum.core.fsm.StateMachine;
 import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
@@ -47,7 +49,6 @@ import io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateMachineExecutionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateTransitionRepository;
-import org.apache.commons.collections.MapUtils;
 import org.scleropages.crud.ModelMapperRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,7 @@ import org.springframework.util.Assert;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -112,21 +114,24 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         if (!executionState.acceptingEvents()) {
             throw new IllegalStateException("not allowed accepting events. execution state is: " + executionState);
         }
-        final StateMachineExecutionEntity executionEntity = stateMachine.stateMachineExecutionEntity;
         final ProviderStateMachine providerStateMachine = stateMachine.providerStateMachine;
         final StateMachineExecutionModel execution = stateMachine.stateMachineExecution;
+
 
         State stateFrom = providerStateMachine.currentState();
         ObservableStateMachineExecutionContext executionContext = (ObservableStateMachineExecutionContext) execution.getExecutionContext();
         executionContext.addAttributes(contextAttributes, true);
         boolean accepted = providerStateMachine.sendEvent(event, execution.getExecutionContext());
-        EventEntity eventEntity = createEventEntity(event, accepted);
-        //if events was accepted.write back execution context and create transition execution...
+        String note = accepted ? null : String.format("statemachine execution %s[%s] with state [%s] reject event [%s]. ", stateMachine.stateMachineDefinitionEntity.getName(), execution.id(), execution.currentState().name(), event.name());
+        EventEntity eventEntity = createEventEntity(event, accepted, note);
+
+        //if events was accepted write back execution context and create transition execution...
         if (accepted) {
-            saveContextPayload(execution.id(), executionContext);
+            saveContextPayloadInternal(execution.id(), executionContext);
             createHistoricTransitionExecution(stateMachine, stateFrom, providerStateMachine.currentState(), eventEntity);
         } else {
-            logger.warn("current execution [{}] with state [{}] reject event: {}", executionEntity.getId(), executionEntity.getCurrentState().getName(), event.name());
+            executionContext.resetChange();
+            logger.warn(note);
         }
     }
 
@@ -143,7 +148,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         historicTransitionExecutionRepository.save(entity);
     }
 
-    private final EventEntity createEventEntity(Event event, boolean accepted) {
+    private final EventEntity createEventEntity(Event event, boolean accepted, String note) {
         Assert.notNull(event, "event must not be null.");
         EventDefinition eventDefinition = event.eventDefinition();
         Assert.notNull(eventDefinition, "event definition must not be null.");
@@ -154,6 +159,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         eventEntity.setEventDefinition(eventDefinitionEntity);
         eventEntity.populateEventDefinitionInformation();
         eventEntity.setAccepted(accepted);
+        eventEntity.setNote(note);
         eventRepository.save(eventEntity);
         if (logger.isDebugEnabled())
             logger.debug("saved state machine event: {}. accepting result: {}.", eventEntity.getName(), eventEntity.getAccepted());
@@ -281,23 +287,28 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     private final class ObservableStateMachineExecutionContext extends StateMachineExecutionContextModel implements StateMachineExecutionContext {
 
         private final StateMachineExecution execution;
-        private final StateMachineExecutionContext nativeContext;
+        private final StateMachineExecutionContextModel nativeContext;
+        private final Map<String, Object> writingBuffer;//keep writing attributes and flush to native context when saving.
+        private final Set<String> removingBuffer;//keep removing attributes and flush to native context when saving.
         private volatile boolean changeFlag = false;
 
-        public ObservableStateMachineExecutionContext(StateMachineExecution execution) {
+
+        private ObservableStateMachineExecutionContext(StateMachineExecution execution) {
             this.execution = execution;
-            this.nativeContext = execution.executionContext();
+            this.nativeContext = (StateMachineExecutionContextModel) execution.executionContext();
+            this.writingBuffer = Maps.newHashMap();
+            this.removingBuffer = Sets.newHashSet();
         }
 
         @Override
         public void setAttribute(String name, Object attribute) {
-            nativeContext.setAttribute(name, attribute);
+            writingBuffer.put(name, attribute);
             changeFlag = true;
         }
 
         @Override
         public void removeAttribute(String name) {
-            nativeContext.removeAttribute(name);
+            removingBuffer.add(name);
             changeFlag = true;
         }
 
@@ -318,9 +329,13 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
 
         @Override
         public void addAttributes(Map<String, Object> contextAttributes, boolean force) {
-            nativeContext.addAttributes(contextAttributes, force);
-            if (MapUtils.isNotEmpty(contextAttributes))
-                changeFlag = true;
+            writingBuffer.putAll(contextAttributes);
+            changeFlag = true;
+        }
+
+        @Override
+        public String getContextPayload() {
+            return nativeContext.getContextPayload();
         }
 
         private boolean changed() {
@@ -328,16 +343,34 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         }
 
         private void resetChange() {
+            if (logger.isDebugEnabled()) {
+                logger.debug("reset changes");
+            }
+            writingBuffer.clear();
+            removingBuffer.clear();
             changeFlag = false;
         }
 
         @Override
         public void save() {
-            saveContextPayload(execution.id(), this);
+            if (!changed()) {
+                return;
+            }
+            nativeContext.addAttributes(writingBuffer, true);
+            if (logger.isDebugEnabled()) {
+                logger.debug("apply writing buffer [] to native context.", writingBuffer);
+            }
+            for (String removingKey : removingBuffer) {
+                nativeContext.removeAttribute(removingKey);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("remove [] from native context.", removingKey);
+                }
+            }
+            saveContextPayloadInternal(execution.id(), this);
         }
     }
 
-    private void saveContextPayload(Long executionId, ObservableStateMachineExecutionContext stateMachineExecutionContext) {
+    private void saveContextPayloadInternal(Long executionId, ObservableStateMachineExecutionContext stateMachineExecutionContext) {
         if (!stateMachineExecutionContext.changed()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("no context attributes changes found from state machine execution: ", stateMachineExecutionContext.execution.id());
@@ -453,15 +486,5 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     public void setHistoricTransitionExecutionRepository(HistoricTransitionExecutionRepository
                                                                  historicTransitionExecutionRepository) {
         this.historicTransitionExecutionRepository = historicTransitionExecutionRepository;
-    }
-
-    private class StateMachineExecutionEntityContext {
-        private final StateMachineDefinitionEntity stateMachineDefinitionEntity;
-        private final StateMachineExecutionEntity stateMachineExecutionEntity;
-
-        public StateMachineExecutionEntityContext(StateMachineDefinitionEntity stateMachineDefinitionEntity, StateMachineExecutionEntity stateMachineExecutionEntity) {
-            this.stateMachineDefinitionEntity = stateMachineDefinitionEntity;
-            this.stateMachineExecutionEntity = stateMachineExecutionEntity;
-        }
     }
 }
