@@ -19,6 +19,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
 import io.scleropages.sentarum.core.fsm.model.Event;
+import io.scleropages.sentarum.core.fsm.model.EventDefinition;
 import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
@@ -63,14 +64,16 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
             builder = stateMachineBuilderCache.get(stateMachineDefinition.id(), () -> {
                 StateMachineBuilder smb = StateMachineBuilderFactory.create(DefaultSquirrelStateMachine.class);
                 stateTransitions.forEach(stateTransition -> {
-                    On on = smb.externalTransition().from(stateTransition.from()).to(stateTransition.to()).on(stateTransition.event());
+                    On on = smb.externalTransition().from(createSquirrelState(stateTransition.from()))
+                            .to(createSquirrelState(stateTransition.to()))
+                            .on(createSquirrelEvent(stateTransition.event()));
                     InvocationConfig evaluatorConfig = stateTransition.evaluatorConfig();
                     if (null != evaluatorConfig) {
                         TransitionEvaluator transitionEvaluator = getTransitionEvaluator(evaluatorConfig);
                         on.when(new Condition() {
                             @Override
                             public boolean isSatisfied(Object context) {
-                                return transitionEvaluator.evaluate(evaluatorConfig, (StateMachineExecutionContext) context);
+                                return transitionEvaluator.evaluate(evaluatorConfig, null != context ? (StateMachineExecutionContext) context : null);
                             }
 
                             @Override
@@ -87,7 +90,7 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
                         on.perform(new Action() {
                             @Override
                             public void execute(Object from, Object to, Object event, Object context, org.squirrelframework.foundation.fsm.StateMachine stateMachine) {
-                                action.execute(actionConfig, (State) from, (State) to, (Event) event, (StateMachineExecutionContext) context);
+                                action.execute(actionConfig, null != from ? (State) from : null, null != to ? (State) to : null, null != event ? (Event) event : null, null != context ? (StateMachineExecutionContext) context : null);
                             }
 
                             @Override
@@ -126,8 +129,9 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         return new ProviderStateMachine() {
             @Override
             public boolean sendEvent(Event event, StateMachineExecutionContext executionContext) {
-                if (stateMachine.canAccept(event)) {
-                    stateMachine.fire(event, executionContext);
+                SquirrelEvent squirrelEvent = createSquirrelEvent(event);
+                if (stateMachine.canAccept(squirrelEvent)) {
+                    stateMachine.fire(squirrelEvent, executionContext);
                     return true;
                 }
                 return false;
@@ -146,42 +150,55 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
 
     }
 
-    @StateMachineParameters(stateType = State.class, eventType = Event.class, contextType = StateMachineExecutionContext.class)
+
+    protected SquirrelState createSquirrelState(State state) {
+        return new SquirrelState(state);
+    }
+
+    protected SquirrelEvent createSquirrelEvent(EventDefinition event) {
+        return new SquirrelEvent(event);
+    }
+
+    protected SquirrelEvent createSquirrelEvent(Event event) {
+        return new SquirrelEvent(event);
+    }
+
+    @StateMachineParameters(stateType = SquirrelState.class, eventType = SquirrelEvent.class, contextType = StateMachineExecutionContext.class)
     static class DefaultSquirrelStateMachine extends AbstractUntypedStateMachine {
 
 
-        protected void afterTransitionCausedException(State fromState, State toState, Event event, StateMachineExecutionContext context) {
+        protected void afterTransitionCausedException(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
             //默认情况下：状态机异常将会终止状态机执行，此处进行重置
             setStatus(StateMachineStatus.IDLE);
             //super.afterTransitionCausedException(fromState, toState, event, context);
         }
 
 
-        protected void beforeTransitionBegin(State fromState, Event event, StateMachineExecutionContext context) {
+        protected void beforeTransitionBegin(SquirrelState fromState, SquirrelEvent event, StateMachineExecutionContext context) {
             super.beforeTransitionBegin(fromState, event, context);
         }
 
-        protected void afterTransitionCompleted(State fromState, State toState, Event event, StateMachineExecutionContext context) {
+        protected void afterTransitionCompleted(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
             super.afterTransitionCompleted(fromState, toState, event, context);
         }
 
 
-        protected void afterTransitionEnd(State fromState, State toState, Event event, StateMachineExecutionContext context) {
+        protected void afterTransitionEnd(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
             super.afterTransitionEnd(fromState, toState, event, context);
         }
 
 
-        protected void afterTransitionDeclined(State fromState, Event event, StateMachineExecutionContext context) {
+        protected void afterTransitionDeclined(SquirrelState fromState, SquirrelEvent event, StateMachineExecutionContext context) {
             super.afterTransitionDeclined(fromState, event, context);
         }
 
 
-        protected void beforeActionInvoked(State fromState, State toState, Event event, StateMachineExecutionContext context) {
+        protected void beforeActionInvoked(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
             super.beforeActionInvoked(fromState, toState, event, context);
         }
 
 
-        protected void afterActionInvoked(State fromState, State toState, Event event, StateMachineExecutionContext context) {
+        protected void afterActionInvoked(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
             super.afterActionInvoked(fromState, toState, event, context);
         }
 

@@ -17,6 +17,7 @@ package io.scleropages.sentarum.core.fsm.model.impl;
 
 import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.EventDefinition;
+import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.Map;
@@ -42,6 +43,13 @@ public class EventModel implements Event {
 
     private String note;
 
+    public EventModel() {
+    }
+
+    public EventModel(String name) {
+        Assert.hasText(name, "event name must not empty.");
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
