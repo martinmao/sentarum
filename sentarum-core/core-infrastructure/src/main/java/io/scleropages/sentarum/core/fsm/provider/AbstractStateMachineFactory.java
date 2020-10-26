@@ -109,32 +109,33 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
 
     private void sendEventInternal(DelegatingStateMachine stateMachine, Event event, Map<String, Object> contextAttributes) {
         final ExecutionState executionState = stateMachine.stateMachineExecution.executionState();
-        final StateMachineDefinitionEntity definitionEntity = stateMachine.stateMachineDefinitionEntity;
-        final StateMachineExecutionEntity executionEntity = stateMachine.stateMachineExecutionEntity;
-        final ProviderStateMachine providerStateMachine = stateMachine.providerStateMachine;
-        StateMachineExecutionModel execution = stateMachine.stateMachineExecution;
-
         if (!executionState.acceptingEvents()) {
             throw new IllegalStateException("not allowed accepting events. execution state is: " + executionState);
         }
+        final StateMachineExecutionEntity executionEntity = stateMachine.stateMachineExecutionEntity;
+        final ProviderStateMachine providerStateMachine = stateMachine.providerStateMachine;
+        final StateMachineExecutionModel execution = stateMachine.stateMachineExecution;
+
         State stateFrom = providerStateMachine.currentState();
-        execution.getExecutionContext().addAttributes(contextAttributes, true);
+        ObservableStateMachineExecutionContext executionContext = (ObservableStateMachineExecutionContext) execution.getExecutionContext();
+        executionContext.addAttributes(contextAttributes, true);
         boolean accepted = providerStateMachine.sendEvent(event, execution.getExecutionContext());
         EventEntity eventEntity = createEventEntity(event, accepted);
-        StateMachineExecutionEntityContext entityContext = new StateMachineExecutionEntityContext(definitionEntity, executionEntity);
+        //if events was accepted.write back execution context and create transition execution...
         if (accepted) {
-            createHistoricTransitionExecution(entityContext, stateFrom, providerStateMachine.currentState(), eventEntity);
+            saveContextPayload(execution.id(), executionContext);
+            createHistoricTransitionExecution(stateMachine, stateFrom, providerStateMachine.currentState(), eventEntity);
         } else {
             logger.warn("current execution [{}] with state [{}] reject event: {}", executionEntity.getId(), executionEntity.getCurrentState().getName(), event.name());
         }
     }
 
 
-    private final void createHistoricTransitionExecution(StateMachineExecutionEntityContext entityContext, State
+    private final void createHistoricTransitionExecution(DelegatingStateMachine stateMachine, State
             stateFrom, State stateTo, EventEntity event) {
         HistoricTransitionExecutionEntity entity = new HistoricTransitionExecutionEntity();
-        entity.setStateMachineDefinition(entityContext.stateMachineDefinitionEntity);
-        entity.setStateMachineExecution(entityContext.stateMachineExecutionEntity);
+        entity.setStateMachineDefinition(stateMachine.stateMachineDefinitionEntity);
+        entity.setStateMachineExecution(stateMachine.stateMachineExecutionEntity);
         entity.setFrom(stateRepository.getById(stateFrom.id()));
         entity.setTo(stateRepository.getById(stateTo.id()));
         entity.setEvent(event);
@@ -175,11 +176,6 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     }
 
 
-    private void observeStateMachineExecutionContext(StateMachineExecutionModel execution) {
-        execution.setExecutionContext(new ObservableStateMachineExecutionContext(execution));
-    }
-
-
     private final class DelegatingStateMachine implements StateMachine {
 
         private final ProviderStateMachine providerStateMachine;
@@ -215,7 +211,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
             if (started.compareAndSet(false, true)) {
                 this.stateMachineExecutionEntity = createStateMachineExecution(bizType, bizId, stateMachineDefinitionEntity, contextAttributes);
                 this.stateMachineExecution = stateMachineExecutionEntityMapper.mapForRead(stateMachineExecutionEntity);
-                observeStateMachineExecutionContext(stateMachineExecution);
+                observeStateMachineExecution(stateMachineExecution);
                 providerStateMachine.start(stateMachineExecution.getExecutionContext());
             }
         }
@@ -260,6 +256,15 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
                 throw new IllegalStateException("state machine has not bean started. call start first.");
         }
 
+    }
+
+    /**
+     * set observable context to given execution.
+     *
+     * @param execution
+     */
+    private void observeStateMachineExecution(StateMachineExecutionModel execution) {
+        execution.setExecutionContext(new ObservableStateMachineExecutionContext(execution));
     }
 
 
