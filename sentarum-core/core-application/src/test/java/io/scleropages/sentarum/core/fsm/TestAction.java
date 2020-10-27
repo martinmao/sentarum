@@ -38,6 +38,8 @@ public class TestAction extends InvocationConfigModel implements Action {
         System.out.println(invocationConfig.toString());
 
         System.out.println("from: " + from + " to: " + to + " on: " + event + " with: " + executionContext);
+
+        throw new IllegalStateException("xxxxx");
     }
 
     @Override

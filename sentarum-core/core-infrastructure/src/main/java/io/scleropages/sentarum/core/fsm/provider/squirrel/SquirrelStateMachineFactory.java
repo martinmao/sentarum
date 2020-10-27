@@ -21,6 +21,7 @@ import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
 import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.EventDefinition;
 import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
+import io.scleropages.sentarum.core.fsm.model.RollbackOnError;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
@@ -70,8 +71,7 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
                     SquirrelState squirrelTo = createSquirrelState(stateTransition.to(), true, smb);
                     SquirrelEvent squirrelEvent = createSquirrelEvent(stateTransition.event());
 
-                    On on = smb.externalTransition().from(squirrelFrom).to(squirrelTo)
-                            .on(squirrelEvent);
+                    On on = smb.externalTransition().from(squirrelFrom).to(squirrelTo).on(squirrelEvent);
                     When when = null;
                     InvocationConfig evaluatorConfig = stateTransition.evaluatorConfig();
                     if (null != evaluatorConfig) {
@@ -79,7 +79,12 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
                         when = on.when(new Condition() {
                             @Override
                             public boolean isSatisfied(Object context) {
-                                return transitionEvaluator.evaluate(evaluatorConfig, null != context ? (StateMachineExecutionContext) context : null);
+                                try {
+                                    return transitionEvaluator.evaluate(evaluatorConfig, null != context ? (StateMachineExecutionContext) context : null);
+                                } catch (Exception e) {
+                                    logger.warn("detected errors was occurred when transition evaluator. please never throw any exception from this. you must explicitly returned TRUE or FALSE: ", e);
+                                    return false;
+                                }
                             }
 
                             @Override
@@ -151,7 +156,18 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         return new Action() {
             @Override
             public void execute(Object from, Object to, Object event, Object context, StateMachine stateMachine) {
-                action.execute(invocationConfig, null != from ? (State) from : null, null != to ? (State) to : null, null != event ? (Event) event : null, null != context ? (StateMachineExecutionContext) context : null);
+                try {
+                    action.execute(invocationConfig, null != from ? (State) from : null, null != to ? (State) to : null, null != event ? (Event) event : null, null != context ? (StateMachineExecutionContext) context : null);
+                } catch (Exception e) {
+                    if (action instanceof RollbackOnError && ((RollbackOnError) action).rollback()) {
+                        rollbackOnError(action, invocationConfig, e);
+                    }
+                    if (invocationConfig instanceof RollbackOnError && ((RollbackOnError) invocationConfig).rollback()) {
+                        rollbackOnError(action, invocationConfig, e);
+                    } else {
+                        logger.warn("detected errors was occurred when action performing. but configured no transaction roll back.", e);
+                    }
+                }
             }
 
             @Override
@@ -174,6 +190,13 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
                 return 0;
             }
         };
+    }
+
+    private void rollbackOnError(io.scleropages.sentarum.core.fsm.Action action, InvocationConfig invocationConfig, Exception ex) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("detected errors was occurred when action[{}] with configure[{}] performing. throws runtime exception to rollback current transaction.", action.getClass().getSimpleName(), invocationConfig);
+        }
+        throw new IllegalStateException(ex);
     }
 
 

@@ -128,5 +128,7 @@ public class StateMachineTests {
         contextAttributes.remove("2");
         contextAttributes.put("3", "3");
         stateMachine.sendEvent(stateMachineManager.createEvent("CARD", cardEventBody), contextAttributes);
+
+
     }
 }
