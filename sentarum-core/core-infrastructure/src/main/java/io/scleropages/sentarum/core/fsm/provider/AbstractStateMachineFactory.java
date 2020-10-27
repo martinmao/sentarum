@@ -69,7 +69,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbstractStateMachineFactory implements StateMachineFactory {
 
-
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private StateMachineDefinitionRepository definitionRepository;
@@ -106,6 +105,13 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
             delegatingStateMachine.start(contextAttributes);
         }
         return delegatingStateMachine;
+    }
+
+
+    @Override
+    @Transactional
+    public StateMachine getStateMachine(Long machineId) {
+        return null;
     }
 
 
@@ -167,6 +173,15 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     }
 
 
+    /**
+     * create new state machine execution.
+     *
+     * @param bizType                      client request business type.
+     * @param bizId                        client request business id.
+     * @param stateMachineDefinitionEntity definition of state machine to be created.
+     * @param contextAttributes            init attributes of context for this execution.
+     * @return
+     */
     protected StateMachineExecutionEntity createStateMachineExecution(Integer bizType, Long
             bizId, StateMachineDefinitionEntity stateMachineDefinitionEntity, Map<String, Object> contextAttributes) {
         StateMachineExecutionEntity executionEntity = new StateMachineExecutionEntity();
@@ -183,6 +198,9 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     }
 
 
+    /**
+     * a default implementation of {@link StateMachine}
+     */
     private final class DelegatingStateMachine implements StateMachine {
 
         private final ProviderStateMachine providerStateMachine;
@@ -216,9 +234,11 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         @Override
         public void start(Map<String, Object> contextAttributes) {
             if (started.compareAndSet(false, true)) {
+                //create execution for this state machine.
                 this.stateMachineExecutionEntity = createStateMachineExecution(bizType, bizId, stateMachineDefinitionEntity, contextAttributes);
                 this.stateMachineExecution = stateMachineExecutionEntityMapper.mapForRead(stateMachineExecutionEntity);
-                observeStateMachineExecution(stateMachineExecution);
+
+                postStateMachineExecutionCreation(stateMachineExecution);
                 providerStateMachine.start(stateMachineExecution.getExecutionContext());
             }
         }
@@ -266,15 +286,22 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     }
 
     /**
-     * set observable context to given execution.
+     * add features for given execution.
      *
      * @param execution
      */
-    private void observeStateMachineExecution(StateMachineExecutionModel execution) {
+    private void postStateMachineExecutionCreation(StateMachineExecutionModel execution) {
         execution.setExecutionContext(new ObservableStateMachineExecutionContext(execution));
     }
 
 
+    /**
+     * update statemachine execution state and saved immediately.
+     *
+     * @param executionEntity
+     * @param executionState
+     * @param note
+     */
     private final void updateStateMachineExecutionState(StateMachineExecutionEntity executionEntity, ExecutionState executionState, String note) {
         executionEntity.setExecutionState(executionState.getOrdinal());
         stateMachineExecutionRepository.save(executionEntity);
@@ -282,7 +309,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
 
 
     /**
-     * observable execution context holds the change status and how to save this context.
+     * observable execution context holds the change status. after {@link #save()} the change status will applying to repository.
      */
     private final class ObservableStateMachineExecutionContext extends StateMachineExecutionContextModel implements StateMachineExecutionContext {
 
@@ -303,13 +330,13 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         @Override
         public void setAttribute(String name, Object attribute) {
             writingBuffer.put(name, attribute);
-            changeFlag = true;
+            change();
         }
 
         @Override
         public void removeAttribute(String name) {
             removingBuffer.add(name);
-            changeFlag = true;
+            change();
         }
 
         @Override
@@ -330,7 +357,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         @Override
         public void addAttributes(Map<String, Object> contextAttributes, boolean force) {
             writingBuffer.putAll(contextAttributes);
-            changeFlag = true;
+            change();
         }
 
         @Override
@@ -338,7 +365,11 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
             return nativeContext.getContextPayload();
         }
 
-        private boolean changed() {
+        private void change() {
+            changeFlag = true;
+        }
+
+        private boolean isChanged() {
             return changeFlag;
         }
 
@@ -353,12 +384,15 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
 
         @Override
         public void save() {
-            if (!changed()) {
-                return;
-            }
-            nativeContext.addAttributes(writingBuffer, true);
-            if (logger.isDebugEnabled()) {
-                logger.debug("apply writing buffer [] to native context.", writingBuffer);
+            saveContextPayloadInternal(execution.id(), this);
+        }
+
+        private void flush() {
+            if (!writingBuffer.isEmpty()) {
+                nativeContext.addAttributes(writingBuffer, true);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("apply writing buffer [{}] to native context.", writingBuffer);
+                }
             }
             for (String removingKey : removingBuffer) {
                 nativeContext.removeAttribute(removingKey);
@@ -366,17 +400,17 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
                     logger.debug("remove [] from native context.", removingKey);
                 }
             }
-            saveContextPayloadInternal(execution.id(), this);
         }
     }
 
     private void saveContextPayloadInternal(Long executionId, ObservableStateMachineExecutionContext stateMachineExecutionContext) {
-        if (!stateMachineExecutionContext.changed()) {
+        if (!stateMachineExecutionContext.isChanged()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("no context attributes changes found from state machine execution: ", stateMachineExecutionContext.execution.id());
             }
             return;
         }
+        stateMachineExecutionContext.flush();
         stateMachineExecutionRepository.saveContextPayload(executionId, stateMachineExecutionContext.getContextPayload());
         stateMachineExecutionContext.resetChange();
     }
@@ -429,11 +463,6 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
      */
     protected TransitionEvaluator getTransitionEvaluator(InvocationConfig invocationConfig) {
         return invocationContainer.getTransitionEvaluator(invocationConfig);
-    }
-
-    @Override
-    public StateMachine getStateMachine(Long machineId) {
-        return null;
     }
 
     @Autowired
