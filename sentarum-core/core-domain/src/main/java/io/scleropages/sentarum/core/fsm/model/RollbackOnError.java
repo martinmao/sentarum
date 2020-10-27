@@ -15,8 +15,11 @@
  */
 package io.scleropages.sentarum.core.fsm.model;
 
+import io.scleropages.sentarum.core.fsm.Action;
+
 /**
- * an identified interface. if error was occurred on {@link io.scleropages.sentarum.core.fsm.Action}. determined whether transition succeed.
+ * an identified interface. if error was occurred on {@link Action}. determined whether transition succeed.<br>
+ * you can in your owned implementation of {@link Action} or {@link InvocationConfig} class declaring add this interface.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
