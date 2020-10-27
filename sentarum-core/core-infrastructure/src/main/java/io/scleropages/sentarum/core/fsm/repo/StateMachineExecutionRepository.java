@@ -18,8 +18,11 @@ package io.scleropages.sentarum.core.fsm.repo;
 import io.scleropages.sentarum.core.fsm.entity.StateMachineExecutionEntity;
 import io.scleropages.sentarum.jooq.tables.FsmExecution;
 import io.scleropages.sentarum.jooq.tables.records.FsmExecutionRecord;
+import org.jooq.Field;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+
+import javax.persistence.metamodel.Attribute;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -30,5 +33,22 @@ public interface StateMachineExecutionRepository extends GenericRepository<State
     default void saveContextPayload(Long id, String contextPayload) {
         FsmExecution fsmExecution = dslTable();
         dslContext().update(fsmExecution).set(fsmExecution.CONTEXT_PAYLOAD, contextPayload).where(fsmExecution.ID.eq(id)).execute();
+    }
+
+    default StateMachineExecutionEntity getById(Long id, StateMachineDefinitionRepository definitionRepository, StateRepository stateRepository) {
+        FsmExecution fsmExecution = dslTable();
+        FsmExecutionRecord fsmExecutionRecord = dslContext().selectFrom(fsmExecution).where(fsmExecution.ID.eq(id)).fetchOptional().orElseThrow(() -> new IllegalArgumentException("no state machine execution found: " + id));
+        StateMachineExecutionEntity executionEntity = new StateMachineExecutionEntity();
+        dslRecordInto(fsmExecutionRecord, executionEntity, new ReferenceEntityAssembler() {
+            @Override
+            public void applyReferenceIdToTargetEntity(Object targetEntity, Attribute refAttribute, Field field, Object fieldValue) {
+                //any referenced entity ignored.
+            }
+        });
+        Long fsmDefId = fsmExecutionRecord.getFsmDefId();
+        executionEntity.setStateMachineDefinition(definitionRepository.getById(fsmDefId).orElseThrow(() -> new IllegalArgumentException("no state machine definition found: " + fsmDefId)));
+        Long currentStateId = fsmExecutionRecord.getCurrentStateId();
+        executionEntity.setCurrentState(stateRepository.getById(currentStateId));
+        return executionEntity;
     }
 }

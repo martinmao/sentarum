@@ -63,59 +63,18 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
     protected ProviderStateMachine createStateMachineInternal(StateMachineDefinition stateMachineDefinition, List<StateTransition> stateTransitions) {
         StateMachineBuilder builder;
         try {
-            builder = stateMachineBuilderCache.get(stateMachineDefinition.id(), () -> {
-                StateMachineBuilder smb = StateMachineBuilderFactory.create(DefaultSquirrelStateMachine.class);
-                stateTransitions.forEach(stateTransition -> {
-
-                    SquirrelState squirrelFrom = createSquirrelState(stateTransition.from(), true, smb);
-                    SquirrelState squirrelTo = createSquirrelState(stateTransition.to(), true, smb);
-                    SquirrelEvent squirrelEvent = createSquirrelEvent(stateTransition.event());
-
-                    On on = smb.externalTransition().from(squirrelFrom).to(squirrelTo).on(squirrelEvent);
-                    When when = null;
-                    InvocationConfig evaluatorConfig = stateTransition.evaluatorConfig();
-                    if (null != evaluatorConfig) {
-                        TransitionEvaluator transitionEvaluator = getTransitionEvaluator(evaluatorConfig);
-                        when = on.when(new Condition() {
-                            @Override
-                            public boolean isSatisfied(Object context) {
-                                try {
-                                    return transitionEvaluator.evaluate(evaluatorConfig, null != context ? (StateMachineExecutionContext) context : null);
-                                } catch (Exception e) {
-                                    logger.warn("detected errors was occurred when transition evaluator. please never throw any exception from this. you must explicitly returned TRUE or FALSE: ", e);
-                                    return false;
-                                }
-                            }
-
-                            @Override
-                            public String name() {
-                                return evaluatorConfig.invocationImplementation();
-                            }
-                        });
-                    }
-
-                    InvocationConfig actionConfig = stateTransition.actionConfig();
-                    if (null != actionConfig) {
-                        if (null == when) {
-                            on.perform(createAction(actionConfig));
-                        } else {
-                            when.perform(createAction(actionConfig));
-                        }
-                    }
-                    if (logger.isDebugEnabled())
-                        logger.debug("build transition from: {} to: {} on: {}", squirrelFrom.name(), squirrelTo.name(), squirrelEvent.name());
-                });
-                return smb;
-            });
+            builder = stateMachineBuilderCache.get(stateMachineDefinition.id(), () -> createStateMachineBuilder(stateTransitions));
         } catch (ExecutionException e) {
             throw new IllegalStateException("failure to create state machine builder. ", e);
         }
         org.squirrelframework.foundation.fsm.StateMachine stateMachine = builder.newStateMachine(createSquirrelState(stateMachineDefinition.initialState(), false, null));
-
         stateMachine.addStateMachineListener(event -> {
             //System.out.println(event);
         });
+        return createProviderStateMachine(stateMachine);
+    }
 
+    protected ProviderStateMachine createProviderStateMachine(org.squirrelframework.foundation.fsm.StateMachine stateMachine) {
         return new ProviderStateMachine() {
             @Override
             public boolean sendEvent(Event event, StateMachineExecutionContext executionContext) {
@@ -137,7 +96,52 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
                 return (State) stateMachine.getCurrentState();
             }
         };
+    }
 
+
+    protected StateMachineBuilder createStateMachineBuilder(List<StateTransition> stateTransitions) {
+        StateMachineBuilder smb = StateMachineBuilderFactory.create(DefaultSquirrelStateMachine.class);
+        stateTransitions.forEach(stateTransition -> {
+
+            SquirrelState squirrelFrom = createSquirrelState(stateTransition.from(), true, smb);
+            SquirrelState squirrelTo = createSquirrelState(stateTransition.to(), true, smb);
+            SquirrelEvent squirrelEvent = createSquirrelEvent(stateTransition.event());
+
+            On on = smb.externalTransition().from(squirrelFrom).to(squirrelTo).on(squirrelEvent);
+            When when = null;
+            InvocationConfig evaluatorConfig = stateTransition.evaluatorConfig();
+            if (null != evaluatorConfig) {
+                TransitionEvaluator transitionEvaluator = getTransitionEvaluator(evaluatorConfig);
+                when = on.when(new Condition() {
+                    @Override
+                    public boolean isSatisfied(Object context) {
+                        try {
+                            return transitionEvaluator.evaluate(evaluatorConfig, null != context ? (StateMachineExecutionContext) context : null);
+                        } catch (Exception e) {
+                            logger.warn("detected errors was occurred when transition evaluator. please never throw any exception from this. you must explicitly returned TRUE or FALSE: ", e);
+                            return false;
+                        }
+                    }
+
+                    @Override
+                    public String name() {
+                        return evaluatorConfig.invocationImplementation();
+                    }
+                });
+            }
+
+            InvocationConfig actionConfig = stateTransition.actionConfig();
+            if (null != actionConfig) {
+                if (null == when) {
+                    on.perform(createAction(actionConfig));
+                } else {
+                    when.perform(createAction(actionConfig));
+                }
+            }
+            if (logger.isDebugEnabled())
+                logger.debug("build transition from: {} to: {} on: {}", squirrelFrom.name(), squirrelTo.name(), squirrelEvent.name());
+        });
+        return smb;
     }
 
     protected void setActionToSquirrelState(StateMachineBuilder stateMachineBuilder, State localState, SquirrelState squirrelState) {

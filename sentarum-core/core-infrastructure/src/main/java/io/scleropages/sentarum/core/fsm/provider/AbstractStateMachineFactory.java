@@ -114,7 +114,15 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     @Override
     @Transactional
     public StateMachine getStateMachine(Long machineId) {
-        return null;
+        Assert.notNull(machineId, "machine id must not be null.");
+        StateMachineExecutionEntity stateMachineExecution = getStateMachineExecution(machineId);
+        StateMachineDefinitionEntity stateMachineDefinitionEntity = stateMachineExecution.getStateMachineDefinition();
+        List<StateTransitionEntity> stateTransitionEntities = transitionRepository.findAllByStateMachineDefinition_Id(stateMachineDefinitionEntity.getId(), definitionRepository, stateRepository, eventDefinitionRepository);
+        if (logger.isDebugEnabled()) {
+            logger.debug("building state machine from exists state: {}", machineId);
+        }
+        ProviderStateMachine providerStateMachine = createStateMachineInternal(map(stateMachineDefinitionEntity), map(stateTransitionEntities));
+        return new DelegatingStateMachine(providerStateMachine, stateMachineExecution);
     }
 
 
@@ -200,6 +208,16 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         return executionEntity;
     }
 
+    /**
+     * return a exists state machine execution entity.
+     *
+     * @param id id of state machine execution.
+     * @return
+     */
+    protected StateMachineExecutionEntity getStateMachineExecution(Long id) {
+        return stateMachineExecutionRepository.getById(id, definitionRepository, stateRepository);
+    }
+
 
     /**
      * a default implementation of {@link StateMachine}
@@ -215,11 +233,33 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         private AtomicBoolean started = new AtomicBoolean(false);
 
 
+        /**
+         * this constructor used for first state machine creating call.
+         *
+         * @param providerStateMachine
+         * @param stateMachineDefinitionEntity
+         * @param bizType
+         * @param bizId
+         */
         public DelegatingStateMachine(ProviderStateMachine providerStateMachine, StateMachineDefinitionEntity stateMachineDefinitionEntity, Integer bizType, Long bizId) {
             this.providerStateMachine = providerStateMachine;
             this.stateMachineDefinitionEntity = stateMachineDefinitionEntity;
             this.bizType = bizType;
             this.bizId = bizId;
+        }
+
+        /**
+         * this constructor used for exists state machine building call.
+         *
+         * @param providerStateMachine
+         * @param stateMachineExecutionEntity
+         */
+        public DelegatingStateMachine(ProviderStateMachine providerStateMachine, StateMachineExecutionEntity stateMachineExecutionEntity) {
+            this.providerStateMachine = providerStateMachine;
+            this.stateMachineExecutionEntity = stateMachineExecutionEntity;
+            this.stateMachineDefinitionEntity = stateMachineExecutionEntity.getStateMachineDefinition();
+            this.bizType = null;
+            this.bizId = null;
         }
 
         @Override
@@ -238,12 +278,19 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         public void start(Map<String, Object> contextAttributes) {
             if (started.compareAndSet(false, true)) {
                 //create execution for this state machine.
-                this.stateMachineExecutionEntity = createStateMachineExecution(bizType, bizId, stateMachineDefinitionEntity, contextAttributes);
-                this.stateMachineExecution = stateMachineExecutionEntityMapper.mapForRead(stateMachineExecutionEntity);
-
-                postStateMachineExecutionCreation(stateMachineExecution);
-                providerStateMachine.start(stateMachineExecution.getExecutionContext());
+                startInternal(contextAttributes);
             }
+        }
+
+        private void startInternal(Map<String, Object> contextAttributes) {
+            //create execution for this state machine.
+            if (null == this.stateMachineExecutionEntity) {
+                this.stateMachineExecutionEntity = createStateMachineExecution(bizType, bizId, stateMachineDefinitionEntity, contextAttributes);
+            }
+            this.stateMachineExecution = stateMachineExecutionEntityMapper.mapForRead(stateMachineExecutionEntity);
+
+            postStateMachineExecutionCreation(stateMachineExecution);
+            providerStateMachine.start(stateMachineExecution.getExecutionContext());
         }
 
         @Override
