@@ -54,7 +54,7 @@ public interface StateTransitionRepository extends GenericRepository<StateTransi
         List<StateTransitionEntity> stateTransitions = Lists.newArrayList();
         dslContext().select(fields).from(FSM_TRANSITION)
                 .leftJoin(evaluatorConfig).on(FSM_TRANSITION.EVAL_INVOCATION_CONF_ID.eq(evaluatorConfig.ID))
-                .leftJoin(actionConfig).on(FSM_TRANSITION.EVAL_INVOCATION_CONF_ID.eq(actionConfig.ID))
+                .leftJoin(actionConfig).on(FSM_TRANSITION.ACTION_INVOCATION_CONF_ID.eq(actionConfig.ID))
                 .where(FSM_TRANSITION.FSM_DEF_ID.eq(id)).fetch().forEach(record -> {
 
             StateTransitionEntity stateTransitionEntity = new StateTransitionEntity();
@@ -64,7 +64,7 @@ public interface StateTransitionRepository extends GenericRepository<StateTransi
             stateTransitionEntity.setFrom(stateRepository.getById(record.getValue(fsmTransition.STATE_FROM_ID)));
             stateTransitionEntity.setTo(stateRepository.getById(record.getValue(fsmTransition.STATE_TO_ID)));
             stateTransitionEntity.setEvaluatorConfig(createInvocationConfigEntity(evaluatorConfig, record));
-            stateTransitionEntity.setEvaluatorConfig(createInvocationConfigEntity(actionConfig, record));
+            stateTransitionEntity.setActionConfig(createInvocationConfigEntity(actionConfig, record));
             stateTransitions.add(stateTransitionEntity);
         });
         return stateTransitions;

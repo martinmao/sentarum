@@ -34,7 +34,9 @@ public interface InvocationConfigEntityMapper extends ModelMapper<InvocationConf
         if (!isEntityInitialized(entity))
             return null;
         try {
-            return JsonMapper2.fromJson(entity.getConfigPayload(), Reflections2.getClass(entity.getConfigImplementation()));
+            InvocationConfigModel model = JsonMapper2.fromJson(entity.getConfigPayload(), Reflections2.getClass(entity.getConfigImplementation()));
+            model.setId(entity.getId());
+            return model;
         } catch (Exception e) {
             throw new IllegalStateException("failure to create InvocationConfig by entity: " + entity.getId(), e);
         }

@@ -96,6 +96,9 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         //read state machine definition and transitions for state machine building.
         StateMachineDefinitionEntity stateMachineDefinitionEntity = definitionRepository.getById(definitionId).orElseThrow(() -> new IllegalArgumentException("no state machine definition id found: " + definitionId));
         List<StateTransitionEntity> stateTransitionEntities = transitionRepository.findAllByStateMachineDefinition_Id(definitionId, definitionRepository, stateRepository, eventDefinitionRepository);
+        if (logger.isDebugEnabled()) {
+            logger.debug("building state machine from definition: {}", stateMachineDefinitionEntity.getName());
+        }
         ProviderStateMachine providerStateMachine = createStateMachineInternal(map(stateMachineDefinitionEntity), map(stateTransitionEntities));
 
         //create state machine ready for servicing.

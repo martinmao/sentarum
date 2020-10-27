@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Map;
@@ -35,7 +36,7 @@ import java.util.Map;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-
+//@Transactional
 public class StateMachineTests {
 
     @Autowired
@@ -43,11 +44,26 @@ public class StateMachineTests {
 
     @Test
     public void test() {
+        TestStateAction stateChangeActionConfig = new TestStateAction();
+        stateChangeActionConfig.setInvocationImplementation("testStateAction");
+
+        TestAction transitionActionConfig=new TestAction();
+        transitionActionConfig.setA1("a1");
+        transitionActionConfig.setA2(2);
+        transitionActionConfig.setInvocationImplementation("testAction");
+
+        TestTransitionEvaluator transitionEvaluatorConfig=new TestTransitionEvaluator();
+        transitionEvaluatorConfig.setE1("e1");
+        transitionEvaluatorConfig.setE2(2);
+        transitionEvaluatorConfig.setInvocationImplementation("testTransitionEvaluator");
+
+
         StateModel locked = new StateModel();
         locked.setValue(1001);
         locked.setName("LOCKED");
         locked.setTag("锁定");
         locked.setDesc("门禁系统处于锁定状态");
+        locked.setEnteredActionConfig(stateChangeActionConfig);
         stateMachineManager.createState(locked);
 
         StateModel unlocked = new StateModel();
@@ -55,6 +71,7 @@ public class StateMachineTests {
         unlocked.setName("UNLOCKED");
         unlocked.setTag("解锁");
         unlocked.setDesc("门禁系统处于解锁状态");
+        unlocked.setExitActionConfig(stateChangeActionConfig);
         stateMachineManager.createState(unlocked);
 
         EventDefinitionModel card = new EventDefinitionModel();
@@ -77,7 +94,8 @@ public class StateMachineTests {
         stateMachineManager.createStateMachineDefinition(cardPush, stateMachineManager.getStateByName("LOCKED").id());
 
         StateTransitionModel transition = new StateTransitionModel();
-
+        transition.setActionConfig(transitionActionConfig);
+        transition.setEvaluatorConfig(transitionEvaluatorConfig);
         //        CARD
         //LOCKED------->UNLOCKED
         stateMachineManager.createStateTransition(transition,

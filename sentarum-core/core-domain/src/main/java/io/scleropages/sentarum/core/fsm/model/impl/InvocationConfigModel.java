@@ -31,6 +31,9 @@ public class InvocationConfigModel implements InvocationConfig {
     }
 
     public String getConfigImplementation() {
+        if (null == configImplementation) {
+            configImplementation = getClass().getName();
+        }
         return configImplementation;
     }
 
