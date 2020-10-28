@@ -52,6 +52,8 @@ import io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateMachineExecutionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateTransitionRepository;
+import org.apache.commons.collections.MapUtils;
+import org.scleropages.core.mapper.JsonMapper2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -489,7 +491,12 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
 
         @Override
         public String getContextPayload() {
-            return nativeContext.getContextPayload();
+            Map<String, Object> attributes = getAttributes();
+            if (MapUtils.isNotEmpty(attributes)) {
+                return JsonMapper2.toJson(attributes);
+            } else {
+                return EMPTY_CONTEXT_PAYLOAD;
+            }
         }
 
         private void change() {

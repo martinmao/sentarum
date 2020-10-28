@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class StateMachineExecutionContextModel implements StateMachineExecutionContext {
 
-    private static final String EMPTY_CONTEXT_PAYLOAD = "{}";
+    protected static final String EMPTY_CONTEXT_PAYLOAD = "{}";
 
     private final Map<String, Object> context;
 
