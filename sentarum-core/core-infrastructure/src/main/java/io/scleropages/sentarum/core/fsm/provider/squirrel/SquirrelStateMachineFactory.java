@@ -318,41 +318,37 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory {
     static class DefaultSquirrelStateMachine extends AbstractUntypedStateMachine {
 
 
-        protected void afterTransitionCausedException(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            //默认情况下：状态机异常将会终止状态机执行，此处进行重置
-//            setStatus(StateMachineStatus.IDLE);
-            //super.afterTransitionCausedException(fromState, toState, event, context);
-            System.out.println("afterTransitionCausedException: " + event + "(" + fromState + "->" + toState + "): [" + context + "]");
-
+        protected void afterTransitionCausedException(Object fromState, Object toState, Object event, Object context) {
+//            afterTransitionCausedExceptionInternal((SquirrelState) fromState, (SquirrelState) toState, (SquirrelEvent) event, (StateMachineExecutionContext) context);
         }
 
 
-        protected void beforeTransitionBegin(SquirrelState fromState, SquirrelEvent event, StateMachineExecutionContext context) {
-            System.out.println("beforeTransitionBegin: " + event + "(" + fromState + "->" + null + "): [" + context + "]");
+        protected void beforeTransitionBegin(Object fromState, Object event, Object context) {
+//            beforeTransitionBeginInternal((SquirrelState) fromState, (SquirrelEvent) event, (StateMachineExecutionContext) context);
         }
 
-        protected void afterTransitionCompleted(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            System.out.println("afterTransitionCompleted: " + event + "(" + fromState + "->" + toState + "): [" + context + "]");
-        }
-
-
-        protected void afterTransitionEnd(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            System.out.println("afterTransitionEnd: " + event + "(" + fromState + "->" + toState + "): [" + context + "]");
+        protected void afterTransitionCompleted(Object fromState, Object toState, Object event, Object context) {
+//            afterTransitionCompletedInternal((SquirrelState) fromState, (SquirrelState) toState, (SquirrelEvent) event, (StateMachineExecutionContext) context);
         }
 
 
-        protected void afterTransitionDeclined(SquirrelState fromState, SquirrelEvent event, StateMachineExecutionContext context) {
-            System.out.println("afterTransitionDeclined: " + event + "(" + fromState + "->" + null + "): [" + context + "]");
+        protected void afterTransitionEnd(Object fromState, Object toState, Object event, Object context) {
+//            afterTransitionEndInternal((SquirrelState) fromState, (SquirrelState) toState, (SquirrelEvent) event, (StateMachineExecutionContext) context);
         }
 
 
-        protected void beforeActionInvoked(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            System.out.println("beforeActionInvoked: " + event + "(" + fromState + "->" + null + "): [" + context + "]");
+        protected void afterTransitionDeclined(Object fromState, Object event, Object context) {
+//            afterTransitionDeclinedInternal((SquirrelState) fromState, (SquirrelEvent) event, (StateMachineExecutionContext) context);
         }
 
 
-        protected void afterActionInvoked(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
-            System.out.println("afterActionInvoked: " + event + "(" + fromState + "->" + null + "): [" + context + "]");
+        protected void beforeActionInvoked(Object fromState, Object toState, Object event, Object context) {
+//            beforeActionInvokedInternal((SquirrelState) fromState, (SquirrelState) toState, (SquirrelEvent) event, (StateMachineExecutionContext) context);
+        }
+
+
+        protected void afterActionInvoked(Object fromState, Object toState, Object event, Object context) {
+//            afterActionInvokedInternal((SquirrelState) fromState, (SquirrelState) toState, (SquirrelEvent) event, (StateMachineExecutionContext) context);
         }
 
     }
@@ -360,6 +356,43 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory {
     @Override
     protected void afterPropertiesSetInternal() throws Exception {
         stateMachineBuilderCache = CacheBuilder.newBuilder().expireAfterWrite(cacheTimeoutInMinutes, TimeUnit.MINUTES).build();
+    }
+
+
+    protected void afterTransitionCausedExceptionInternal(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
+        //默认情况下：状态机异常将会终止状态机执行，此处进行重置
+//            setStatus(StateMachineStatus.IDLE);
+        //super.afterTransitionCausedException(fromState, toState, event, context);
+        System.out.println("afterTransitionCausedException: " + event + "(" + fromState + "->" + toState + "): [" + context + "]");
+    }
+
+
+    protected void beforeTransitionBeginInternal(SquirrelState fromState, SquirrelEvent event, StateMachineExecutionContext context) {
+        System.out.println("beforeTransitionBegin: " + event + "(" + fromState + "->" + null + "): [" + context + "]");
+    }
+
+    protected void afterTransitionCompletedInternal(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
+        System.out.println("afterTransitionCompleted: " + event + "(" + fromState + "->" + toState + "): [" + context + "]");
+    }
+
+
+    protected void afterTransitionEndInternal(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
+        System.out.println("afterTransitionEnd: " + event + "(" + fromState + "->" + toState + "): [" + context + "]");
+    }
+
+
+    protected void afterTransitionDeclinedInternal(SquirrelState fromState, SquirrelEvent event, StateMachineExecutionContext context) {
+        System.out.println("afterTransitionDeclined: " + event + "(" + fromState + "->" + null + "): [" + context + "]");
+    }
+
+
+    protected void beforeActionInvokedInternal(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
+        System.out.println("beforeActionInvoked: " + event + "(" + fromState + "->" + toState + "): [" + context + "]");
+    }
+
+
+    protected void afterActionInvokedInternal(SquirrelState fromState, SquirrelState toState, SquirrelEvent event, StateMachineExecutionContext context) {
+        System.out.println("afterActionInvoked: " + event + "(" + fromState + "->" + toState + "): [" + context + "]");
     }
 
 }
