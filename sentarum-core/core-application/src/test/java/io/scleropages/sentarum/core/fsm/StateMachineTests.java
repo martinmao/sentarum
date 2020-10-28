@@ -148,7 +148,7 @@ public class StateMachineTests {
         Map<String, Object> contextAttributes = Maps.newHashMap();
         contextAttributes.put("test_2_2", "test_2_2");
 
-        Map<String, Object> eventBody= Maps.newHashMap();
+        Map<String, Object> eventBody = Maps.newHashMap();
         eventBody.put("test_2_x", 1);
         eventBody.put("test_2_x", "zzzzzzzzz");
         eventBody.put("test_2_x", new Date());
