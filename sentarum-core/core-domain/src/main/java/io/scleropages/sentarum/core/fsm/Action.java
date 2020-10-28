@@ -22,6 +22,8 @@ import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 
 /**
  * The action performed of fsm (Finite-state machine) lifecycle.
+ * <p><B>
+ * NOTE: action 实现必须确保幂等性 f(x)=f(f(x))
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

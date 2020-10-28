@@ -20,6 +20,7 @@ import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 import io.scleropages.sentarum.core.fsm.model.impl.InvocationConfigModel;
+import io.scleropages.sentarum.core.fsm.model.impl.StateMachineExecutionContextModel;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,11 +30,24 @@ import org.springframework.stereotype.Component;
 public class TestStateAction extends InvocationConfigModel implements Action {
     @Override
     public void execute(InvocationConfig invocationConfig, State from, State to, Event event, StateMachineExecutionContext executionContext) {
-        System.out.println("enter/exit state: from: " + from + " to: " + to + " on: " + event + " with: " + executionContext);
+        System.out.println("enter/exit state: from: " + toString(from) + " to: " + toString(to) + " on: " + toString(event) + " with: " + toString(executionContext));
     }
 
     @Override
     public Class invocationConfigClass() {
         return getClass();
+    }
+
+
+    public static String toString(State state) {
+        return null != state ? state.name() : null;
+    }
+
+    public static  String toString(Event event) {
+        return null != event ? event.name() : null;
+    }
+
+    public static String toString(StateMachineExecutionContext executionContext) {
+        return null != executionContext ? ((StateMachineExecutionContextModel) executionContext).getContextPayload() : null;
     }
 }

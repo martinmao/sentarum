@@ -17,6 +17,7 @@ package io.scleropages.sentarum.core.fsm.provider.squirrel;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.core.fsm.TransitionEvaluator;
 import io.scleropages.sentarum.core.fsm.model.Event;
 import io.scleropages.sentarum.core.fsm.model.EventDefinition;
@@ -42,6 +43,7 @@ import org.squirrelframework.foundation.fsm.builder.When;
 import org.squirrelframework.foundation.fsm.impl.AbstractUntypedStateMachine;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -147,11 +149,14 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory {
      * @return
      */
     protected StateMachineBuilder createStateMachineBuilderInternal(List<StateTransition> stateTransitions) {
+
         StateMachineBuilder smb = StateMachineBuilderFactory.create(DefaultSquirrelStateMachine.class);
+
+        Map<String, SquirrelState> createdSquirrelStates = Maps.newHashMap();//避免 A->B,B->C 创建两次 state B 绑定两次entered/exit action.
         stateTransitions.forEach(stateTransition -> {
 
-            SquirrelState squirrelFrom = createSquirrelState(stateTransition.from(), true, smb);
-            SquirrelState squirrelTo = createSquirrelState(stateTransition.to(), true, smb);
+            SquirrelState squirrelFrom = createdSquirrelStates.computeIfAbsent(stateTransition.from().name(), name -> createSquirrelState(stateTransition.from(), true, smb));
+            SquirrelState squirrelTo = createdSquirrelStates.computeIfAbsent(stateTransition.to().name(), name -> createSquirrelState(stateTransition.to(), true, smb));
             SquirrelEvent squirrelEvent = createSquirrelEvent(stateTransition.event());
 
             On on = smb.externalTransition().from(squirrelFrom).to(squirrelTo).on(squirrelEvent);

@@ -33,7 +33,7 @@ public class TestTransitionEvaluator extends InvocationConfigModel implements Tr
     @Override
     public boolean evaluate(InvocationConfig invocationConfig, StateMachineExecutionContext executionContext) {
         System.out.println(invocationConfig.toString());
-        System.out.println(executionContext);
+        System.out.println(TestStateAction.toString(executionContext));
         return true;
     }
 
