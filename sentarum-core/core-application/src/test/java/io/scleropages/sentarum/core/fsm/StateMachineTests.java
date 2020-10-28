@@ -17,6 +17,8 @@ package io.scleropages.sentarum.core.fsm;
 
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.core.fsm.mgmt.StateMachineManager;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 import io.scleropages.sentarum.core.fsm.model.impl.EventDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateModel;
@@ -26,7 +28,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Map;
@@ -43,16 +44,16 @@ public class StateMachineTests {
     private StateMachineManager stateMachineManager;
 
     @Test
-    public void test() {
+    public void _1_test() {
         TestStateAction stateChangeActionConfig = new TestStateAction();
         stateChangeActionConfig.setInvocationImplementation("testStateAction");
 
-        TestAction transitionActionConfig=new TestAction();
+        TestAction transitionActionConfig = new TestAction();
         transitionActionConfig.setA1("a1");
         transitionActionConfig.setA2(2);
         transitionActionConfig.setInvocationImplementation("testAction");
 
-        TestTransitionEvaluator transitionEvaluatorConfig=new TestTransitionEvaluator();
+        TestTransitionEvaluator transitionEvaluatorConfig = new TestTransitionEvaluator();
         transitionEvaluatorConfig.setE1("e1");
         transitionEvaluatorConfig.setE2(2);
         transitionEvaluatorConfig.setInvocationImplementation("testTransitionEvaluator");
@@ -128,7 +129,33 @@ public class StateMachineTests {
         contextAttributes.remove("2");
         contextAttributes.put("3", "3");
         stateMachine.sendEvent(stateMachineManager.createEvent("CARD", cardEventBody), contextAttributes);
+    }
 
+    @Test
+    public void _2_test() {
+        StateMachine stateMachine = stateMachineManager.getStateMachine(1, 1l);
 
+        StateMachineExecution stateMachineExecution = stateMachine.stateMachineExecution();
+
+        System.out.println(stateMachineExecution.currentState().name());
+
+        StateMachineExecutionContext executionContext = stateMachineExecution.executionContext();
+
+        executionContext.setAttribute("test_2_1", "test_2_1");
+        executionContext.removeAttribute("3");
+//        executionContext.save();
+
+        Map<String, Object> contextAttributes = Maps.newHashMap();
+        contextAttributes.put("test_2_2", "test_2_2");
+
+        Map<String, Object> eventBody= Maps.newHashMap();
+        eventBody.put("test_2_x", 1);
+        eventBody.put("test_2_x", "zzzzzzzzz");
+        eventBody.put("test_2_x", new Date());
+
+        stateMachine.sendEvent(stateMachineManager.createEvent("CARD", eventBody), contextAttributes);
+        contextAttributes.remove("test_2_2");
+        contextAttributes.put("test_2_3", "test_2_3");
+        stateMachine.sendEvent(stateMachineManager.createEvent("PUSH", eventBody), contextAttributes);
     }
 }

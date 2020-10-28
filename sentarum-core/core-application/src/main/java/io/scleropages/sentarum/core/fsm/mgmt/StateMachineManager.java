@@ -80,7 +80,6 @@ public interface StateMachineManager {
      */
     StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes);
 
-
     /**
      * create new event for sending to statemachine.
      *
@@ -91,12 +90,21 @@ public interface StateMachineManager {
     Event createEvent(String name, Map<String, Object> body);
 
     /**
-     * return state machine
+     * return exists state machine
      *
      * @param id id of state machine.
      * @return
      */
     StateMachine getStateMachine(Long id);
+
+    /**
+     * return exists state machine
+     *
+     * @param bizType type of business model.
+     * @param bizId   id of business model.
+     * @return
+     */
+    StateMachine getStateMachine(Integer bizType, Long bizId);
 
     /**
      * return state machine execution by id.

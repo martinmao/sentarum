@@ -24,11 +24,11 @@ import io.scleropages.sentarum.core.fsm.model.InvocationConfig;
 import io.scleropages.sentarum.core.fsm.model.RollbackOnError;
 import io.scleropages.sentarum.core.fsm.model.State;
 import io.scleropages.sentarum.core.fsm.model.StateMachineDefinition;
+import io.scleropages.sentarum.core.fsm.model.StateMachineExecution;
 import io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext;
 import io.scleropages.sentarum.core.fsm.model.StateTransition;
 import io.scleropages.sentarum.core.fsm.provider.AbstractStateMachineFactory;
 import io.scleropages.sentarum.core.fsm.provider.ProviderStateMachine;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.squirrelframework.foundation.fsm.Action;
@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
-public class SquirrelStateMachineFactory extends AbstractStateMachineFactory implements InitializingBean {
+public class SquirrelStateMachineFactory extends AbstractStateMachineFactory {
 
 
     @Value("#{ @environment['statemachine.squirrel.builder-cache-timeout-minutes'] ?: 30 }")
@@ -61,20 +61,25 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
 
     @Override
     protected ProviderStateMachine createStateMachineInternal(StateMachineDefinition stateMachineDefinition, List<StateTransition> stateTransitions) {
-        StateMachineBuilder builder;
-        try {
-            builder = stateMachineBuilderCache.get(stateMachineDefinition.id(), () -> createStateMachineBuilder(stateTransitions));
-        } catch (ExecutionException e) {
-            throw new IllegalStateException("failure to create state machine builder. ", e);
-        }
-        org.squirrelframework.foundation.fsm.StateMachine stateMachine = builder.newStateMachine(createSquirrelState(stateMachineDefinition.initialState(), false, null));
-        stateMachine.addStateMachineListener(event -> {
-            //System.out.println(event);
-        });
-        return createProviderStateMachine(stateMachine);
+        return createProviderStateMachine(stateMachineDefinition, stateTransitions, stateMachineDefinition.initialState());
     }
 
-    protected ProviderStateMachine createProviderStateMachine(org.squirrelframework.foundation.fsm.StateMachine stateMachine) {
+    @Override
+    protected ProviderStateMachine buildStateMachineInternal(StateMachineDefinition stateMachineDefinition, List<StateTransition> stateTransitions, StateMachineExecution stateMachineExecution) {
+        return createProviderStateMachine(stateMachineDefinition, stateTransitions, stateMachineExecution.currentState());
+    }
+
+    /**
+     * create provider state machine.
+     *
+     * @param stateMachineDefinition
+     * @param stateTransitions
+     * @param initialState
+     * @return
+     */
+    protected ProviderStateMachine createProviderStateMachine(StateMachineDefinition stateMachineDefinition, List<StateTransition> stateTransitions, State initialState) {
+        org.squirrelframework.foundation.fsm.StateMachine stateMachine = createStateMachineBuilder(stateMachineDefinition, stateTransitions).newStateMachine(createSquirrelState(initialState, false, null));
+        postStateMachineCreation(stateMachine);
         return new ProviderStateMachine() {
             @Override
             public boolean sendEvent(Event event, StateMachineExecutionContext executionContext) {
@@ -98,8 +103,50 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         };
     }
 
+    /**
+     * post operations for state machine after creation.
+     *
+     * @param stateMachine
+     */
+    protected void postStateMachineCreation(org.squirrelframework.foundation.fsm.StateMachine stateMachine) {
+        stateMachine.addStateMachineListener(event -> {
+            //System.out.println(event);
+        });
+    }
 
-    protected StateMachineBuilder createStateMachineBuilder(List<StateTransition> stateTransitions) {
+    /**
+     * create {@link StateMachineBuilder}.
+     * <p>
+     * by default. use guava caches {@link StateMachineBuilder} for each state machine definition.
+     *
+     * @param stateMachineDefinition
+     * @param stateTransitions
+     * @return
+     */
+    protected StateMachineBuilder createStateMachineBuilder(StateMachineDefinition stateMachineDefinition, List<StateTransition> stateTransitions) {
+        try {
+            return stateMachineBuilderCache.get(stateMachineDefinition.id(), () -> createStateMachineBuilderInternal(stateTransitions));
+        } catch (ExecutionException e) {
+            throw new IllegalStateException("failure to create state machine builder. ", e);
+        }
+    }
+
+
+    /**
+     * <pre>
+     *     create transitions for each {@link StateTransition}
+     *          1.apply from state.
+     *          2.apply to state.
+     *          3.apply fired event.
+     *          4.apply condition if necessary.
+     *          5.apply action if necessary.
+     *     for other applying else override {@link #postStateMachineBuilderCreation(StateMachineBuilder)}
+     * </pre>
+     *
+     * @param stateTransitions
+     * @return
+     */
+    protected StateMachineBuilder createStateMachineBuilderInternal(List<StateTransition> stateTransitions) {
         StateMachineBuilder smb = StateMachineBuilderFactory.create(DefaultSquirrelStateMachine.class);
         stateTransitions.forEach(stateTransition -> {
 
@@ -144,6 +191,23 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         return smb;
     }
 
+
+    /**
+     * called after {@link StateMachineBuilder} created.
+     *
+     * @param stateMachineBuilder
+     */
+    protected void postStateMachineBuilderCreation(StateMachineBuilder stateMachineBuilder) {
+
+    }
+
+    /**
+     * applying configured {@link io.scleropages.sentarum.core.fsm.Action} from local state to squirrel state.
+     *
+     * @param stateMachineBuilder
+     * @param localState
+     * @param squirrelState
+     */
     protected void setActionToSquirrelState(StateMachineBuilder stateMachineBuilder, State localState, SquirrelState squirrelState) {
         InvocationConfig enteredActionConfig = localState.enteredActionConfig();
         InvocationConfig exitActionConfig = localState.exitActionConfig();
@@ -155,6 +219,12 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         }
     }
 
+    /**
+     * create squirrel action and invocation bridged to {@link io.scleropages.sentarum.core.fsm.Action}
+     *
+     * @param invocationConfig
+     * @return
+     */
     protected Action createAction(InvocationConfig invocationConfig) {
         io.scleropages.sentarum.core.fsm.Action action = getAction(invocationConfig);
         return new Action() {
@@ -204,6 +274,14 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
     }
 
 
+    /**
+     * map local state to squirrel state.
+     *
+     * @param state               local state.
+     * @param applyAction         true if apply configured {@link io.scleropages.sentarum.core.fsm.Action} to
+     * @param stateMachineBuilder
+     * @return
+     */
     protected SquirrelState createSquirrelState(State state, boolean applyAction, StateMachineBuilder stateMachineBuilder) {
         SquirrelState squirrelState = new SquirrelState(state);
         if (applyAction)
@@ -211,10 +289,22 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
         return squirrelState;
     }
 
+    /**
+     * map event definition to squirrel event.
+     *
+     * @param event
+     * @return
+     */
     protected SquirrelEvent createSquirrelEvent(EventDefinition event) {
         return new SquirrelEvent(event);
     }
 
+    /**
+     * map local event to squirrel event.
+     *
+     * @param event
+     * @return
+     */
     protected SquirrelEvent createSquirrelEvent(Event event) {
         return new SquirrelEvent(event);
     }
@@ -263,7 +353,8 @@ public class SquirrelStateMachineFactory extends AbstractStateMachineFactory imp
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    protected void afterPropertiesSetInternal() throws Exception {
         stateMachineBuilderCache = CacheBuilder.newBuilder().expireAfterWrite(cacheTimeoutInMinutes, TimeUnit.MINUTES).build();
     }
+
 }

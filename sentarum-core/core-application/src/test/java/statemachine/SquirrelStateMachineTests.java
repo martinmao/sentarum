@@ -198,6 +198,8 @@ public class SquirrelStateMachineTests {
         System.out.println(fsm.isTerminated());
 
         fsm = builder.newStateMachine("S5");
+        fsm.start();
+        System.out.println(fsm.getCurrentState());
         fsm.fire("E5_1");
         System.out.println(fsm.isTerminated());
         fsm.fire("E5_2");

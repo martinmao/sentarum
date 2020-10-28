@@ -57,6 +57,13 @@
         <heap>1000</heap>
     </cache>
 
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.StateMachineExecutionRepository.getIdByBizTypeAndBizId">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
     <cache-template name="heap-cache">
         <expiry>
             <ttl unit="minutes">30</ttl>

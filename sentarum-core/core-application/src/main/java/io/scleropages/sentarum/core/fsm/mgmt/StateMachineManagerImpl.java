@@ -39,6 +39,7 @@ import io.scleropages.sentarum.core.fsm.provider.StateMachineFactory;
 import io.scleropages.sentarum.core.fsm.repo.EventDefinitionRepository;
 import io.scleropages.sentarum.core.fsm.repo.InvocationConfigRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository;
+import io.scleropages.sentarum.core.fsm.repo.StateMachineExecutionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateTransitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,7 @@ public class StateMachineManagerImpl implements StateMachineManager {
     private StateRepository stateRepository;
     private StateTransitionRepository transitionRepository;
     private InvocationConfigRepository invocationConfigRepository;
+    private StateMachineExecutionRepository stateMachineExecutionRepository;
 
     private StateMachineFactory stateMachineFactory;
 
@@ -133,8 +135,16 @@ public class StateMachineManagerImpl implements StateMachineManager {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public StateMachine getStateMachine(Long id) {
-        return null;
+        return stateMachineFactory.getStateMachine(id);
+    }
+
+    @Override
+    public StateMachine getStateMachine(Integer bizType, Long bizId) {
+        Assert.notNull(bizType, "bizType must not be null.");
+        Assert.notNull(bizId, "bizId must not be null.");
+        return getStateMachine(stateMachineExecutionRepository.getIdByBizTypeAndBizId(bizType, bizId));
     }
 
     @Override
@@ -227,6 +237,11 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @Autowired
     public void setInvocationConfigRepository(InvocationConfigRepository invocationConfigRepository) {
         this.invocationConfigRepository = invocationConfigRepository;
+    }
+
+    @Autowired
+    public void setStateMachineExecutionRepository(StateMachineExecutionRepository stateMachineExecutionRepository) {
+        this.stateMachineExecutionRepository = stateMachineExecutionRepository;
     }
 
     @Autowired

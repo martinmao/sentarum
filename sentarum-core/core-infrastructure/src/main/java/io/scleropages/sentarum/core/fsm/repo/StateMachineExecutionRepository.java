@@ -21,6 +21,7 @@ import io.scleropages.sentarum.jooq.tables.records.FsmExecutionRecord;
 import org.jooq.Field;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.metamodel.Attribute;
 
@@ -29,6 +30,17 @@ import javax.persistence.metamodel.Attribute;
  */
 public interface StateMachineExecutionRepository extends GenericRepository<StateMachineExecutionEntity, Long>, JooqRepository<FsmExecution, FsmExecutionRecord, StateMachineExecutionEntity> {
 
+
+    @Cacheable
+    default Long getIdByBizTypeAndBizId(Integer bizType, Long bizId) {
+        FsmExecution fsmExecution = dslTable();
+        return dslContext().select(fsmExecution.ID).from(fsmExecution)
+                .where(fsmExecution.BIZ_TYPE.eq(bizType))
+                .and(fsmExecution.BIZ_ID.eq(bizId))
+                .fetchOptional(fsmExecution.ID)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("no state machine execution found by biz type: " + bizType + " and biz id: " + bizId));
+    }
 
     default void saveContextPayload(Long id, String contextPayload) {
         FsmExecution fsmExecution = dslTable();
@@ -50,5 +62,15 @@ public interface StateMachineExecutionRepository extends GenericRepository<State
         Long currentStateId = fsmExecutionRecord.getCurrentStateId();
         executionEntity.setCurrentState(stateRepository.getById(currentStateId));
         return executionEntity;
+    }
+
+    default void updateStateMachineState(Long id, Long stateId) {
+        FsmExecution fsmExecution = dslTable();
+        dslContext().update(fsmExecution).set(fsmExecution.CURRENT_STATE_ID, stateId).where(fsmExecution.ID.eq(id)).execute();
+    }
+
+    default void updateStateMachineExecutionState(Long id, Integer executionState) {
+        FsmExecution fsmExecution = dslTable();
+        dslContext().update(fsmExecution).set(fsmExecution.EXECUTION_STATE, executionState).where(fsmExecution.ID.eq(id)).execute();
     }
 }
