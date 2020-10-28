@@ -72,8 +72,9 @@ public class StateMachineExecutionContextModel implements StateMachineExecutionC
 
 
     public String getContextPayload() {
-        if (MapUtils.isNotEmpty(context)) {
-            return JsonMapper2.toJson(context);
+        Map<String, Object> attributes = getAttributes();
+        if (MapUtils.isNotEmpty(attributes)) {
+            return JsonMapper2.toJson(attributes);
         } else {
             return EMPTY_CONTEXT_PAYLOAD;
         }

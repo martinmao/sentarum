@@ -76,6 +76,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    ///~~repositories declaring
     private StateMachineDefinitionRepository definitionRepository;
     private StateTransitionRepository transitionRepository;
     private EventDefinitionRepository eventDefinitionRepository;
@@ -84,14 +85,13 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     private StateRepository stateRepository;
     private HistoricTransitionExecutionRepository historicTransitionExecutionRepository;
 
-    private InvocationContainer invocationContainer;
-
+    ///~~ mappers declaring
     private StateMachineDefinitionEntityMapper definitionEntityMapper;
     private StateTransitionEntityMapper transitionEntityMapper;
     private StateMachineExecutionEntityMapper stateMachineExecutionEntityMapper;
     private EventEntityMapper eventEntityMapper;
 
-
+    private InvocationContainer invocationContainer;
     private PlatformTransactionManager transactionManager;
     private TransactionTemplate transactionTemplate;
 
@@ -152,7 +152,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         State stateFrom = providerStateMachine.currentState();
         ObservableStateMachineExecutionContext executionContext = (ObservableStateMachineExecutionContext) execution.getExecutionContext();
         executionContext.addAttributes(contextAttributes, true);
-        boolean accepted = providerStateMachine.sendEvent(event, execution.getExecutionContext());
+        boolean accepted = providerStateMachine.sendEvent(event, executionContext);
         String note = accepted ? null : String.format("statemachine execution %s[%s] with state [%s] reject event [%s]. ", stateMachine.stateMachineDefinition.name(), execution.id(), execution.currentState().name(), event.name());
         EventEntity eventEntity = createEventEntity(event, accepted, note);
 
@@ -319,6 +319,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
                 postStateMachineExecutionCreation(stateMachineExecution);
             }
             providerStateMachine.start(stateMachineExecution.getExecutionContext());
+            logger.debug("state machine [{}--{}] started.", stateMachineDefinition.name(), stateMachineExecution.id());
         }
 
         @Override
@@ -417,6 +418,8 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         @Override
         public void setAttribute(String name, Object attribute) {
             writingBuffer.put(name, attribute);
+            if (removingBuffer.contains(name))
+                removingBuffer.remove(name);
             change();
         }
 
@@ -428,22 +431,37 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
 
         @Override
         public Object getAttribute(String name) {
-            return nativeContext.getAttribute(name);
+            if (removingBuffer.contains(name))
+                return null;
+            Object attribute = nativeContext.getAttribute(name);
+            if (null != attribute)
+                return attribute;
+            return writingBuffer.get(name);
         }
 
         @Override
         public Map<String, Object> getAttributes() {
-            return nativeContext.getAttributes();
+            Map<String, Object> map = Maps.newHashMap(nativeContext.getAttributes());
+            map.putAll(writingBuffer);
+            removingBuffer.forEach(key -> map.remove(key));
+            return Collections.unmodifiableMap(map);
         }
 
         @Override
         public boolean hasAttribute(String name) {
-            return nativeContext.hasAttribute(name);
+            boolean exists = nativeContext.hasAttribute(name) && !removingBuffer.contains(name);
+            if (exists)
+                return true;
+            return writingBuffer.containsKey(name) && !removingBuffer.contains(name);
         }
 
         @Override
         public void addAttributes(Map<String, Object> contextAttributes, boolean force) {
             writingBuffer.putAll(contextAttributes);
+            contextAttributes.keySet().forEach(k -> {
+                if (removingBuffer.contains(k))
+                    removingBuffer.remove(k);
+            });
             change();
         }
 
@@ -477,6 +495,9 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
             });
         }
 
+        /**
+         * flushing buffered attributes to native context.
+         */
         private void flush() {
             if (!writingBuffer.isEmpty()) {
                 nativeContext.addAttributes(writingBuffer, true);
@@ -583,62 +604,49 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     public void setDefinitionRepository(StateMachineDefinitionRepository definitionRepository) {
         this.definitionRepository = definitionRepository;
     }
-
     @Autowired
     public void setTransitionRepository(StateTransitionRepository transitionRepository) {
         this.transitionRepository = transitionRepository;
     }
-
     @Autowired
     public void setEventDefinitionRepository(EventDefinitionRepository eventDefinitionRepository) {
         this.eventDefinitionRepository = eventDefinitionRepository;
     }
-
     @Autowired
     public void setEventRepository(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
-
-    @Autowired
-    public void setInvocationContainer(InvocationContainer invocationContainer) {
-        this.invocationContainer = invocationContainer;
-    }
-
     @Autowired
     public void setStateMachineExecutionRepository(StateMachineExecutionRepository stateMachineExecutionRepository) {
         this.stateMachineExecutionRepository = stateMachineExecutionRepository;
     }
-
-    @Autowired
-    public void setDefinitionEntityMapper(StateMachineDefinitionEntityMapper definitionEntityMapper) {
-        this.definitionEntityMapper = definitionEntityMapper;
-    }
-
-    @Autowired
-    public void setTransitionEntityMapper(StateTransitionEntityMapper transitionEntityMapper) {
-        this.transitionEntityMapper = transitionEntityMapper;
-    }
-
-    @Autowired
-    public void setStateMachineExecutionEntityMapper(StateMachineExecutionEntityMapper
-                                                             stateMachineExecutionEntityMapper) {
-        this.stateMachineExecutionEntityMapper = stateMachineExecutionEntityMapper;
-    }
-
-    @Autowired
-    public void setEventEntityMapper(EventEntityMapper eventEntityMapper) {
-        this.eventEntityMapper = eventEntityMapper;
-    }
-
     @Autowired
     public void setStateRepository(StateRepository stateRepository) {
         this.stateRepository = stateRepository;
     }
-
     @Autowired
-    public void setHistoricTransitionExecutionRepository(HistoricTransitionExecutionRepository
-                                                                 historicTransitionExecutionRepository) {
+    public void setHistoricTransitionExecutionRepository(HistoricTransitionExecutionRepository historicTransitionExecutionRepository) {
         this.historicTransitionExecutionRepository = historicTransitionExecutionRepository;
+    }
+    @Autowired
+    public void setDefinitionEntityMapper(StateMachineDefinitionEntityMapper definitionEntityMapper) {
+        this.definitionEntityMapper = definitionEntityMapper;
+    }
+    @Autowired
+    public void setTransitionEntityMapper(StateTransitionEntityMapper transitionEntityMapper) {
+        this.transitionEntityMapper = transitionEntityMapper;
+    }
+    @Autowired
+    public void setStateMachineExecutionEntityMapper(StateMachineExecutionEntityMapper stateMachineExecutionEntityMapper) {
+        this.stateMachineExecutionEntityMapper = stateMachineExecutionEntityMapper;
+    }
+    @Autowired
+    public void setEventEntityMapper(EventEntityMapper eventEntityMapper) {
+        this.eventEntityMapper = eventEntityMapper;
+    }
+    @Autowired
+    public void setInvocationContainer(InvocationContainer invocationContainer) {
+        this.invocationContainer = invocationContainer;
     }
 
     @Autowired

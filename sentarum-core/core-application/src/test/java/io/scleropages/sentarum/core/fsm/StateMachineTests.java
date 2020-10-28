@@ -126,7 +126,7 @@ public class StateMachineTests {
         contextAttributes.remove("1");
         contextAttributes.put("2", "2");
         stateMachine.sendEvent(stateMachineManager.createEvent("PUSH", null), contextAttributes);
-        contextAttributes.remove("2");
+        contextAttributes.clear();
         contextAttributes.put("3", "3");
         stateMachine.sendEvent(stateMachineManager.createEvent("CARD", cardEventBody), contextAttributes);
     }
