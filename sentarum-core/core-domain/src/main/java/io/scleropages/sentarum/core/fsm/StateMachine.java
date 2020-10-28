@@ -46,6 +46,32 @@ public interface StateMachine {
 
 
     /**
+     * send event to this state machine
+     *
+     * @param eventName         name of event to sent.
+     * @param eventBody         business body of event to sent.
+     * @param contextAttributes attributes of context. theses attribute will applying to {@link io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext}
+     */
+    void sendEvent(String eventName, Map<String, Object> eventBody, Map<String, Object> contextAttributes);
+
+
+    /**
+     * send event to this state machine
+     *
+     * @param eventName         name of event to sent.
+     * @param contextAttributes attributes of context. theses attribute will applying to {@link io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext}
+     */
+    void sendEvent(String eventName, Map<String, Object> contextAttributes);
+
+    /**
+     * send event to this state machine
+     *
+     * @param eventName name of event to sent.
+     */
+    void sendEvent(String eventName);
+
+
+    /**
      * start this state machine.
      *
      * @param contextAttributes attributes of context. theses attribute will applying to {@link io.scleropages.sentarum.core.fsm.model.StateMachineExecutionContext}

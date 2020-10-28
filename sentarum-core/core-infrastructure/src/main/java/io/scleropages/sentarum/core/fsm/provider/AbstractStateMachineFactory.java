@@ -26,6 +26,7 @@ import io.scleropages.sentarum.core.fsm.entity.HistoricTransitionExecutionEntity
 import io.scleropages.sentarum.core.fsm.entity.StateMachineDefinitionEntity;
 import io.scleropages.sentarum.core.fsm.entity.StateMachineExecutionEntity;
 import io.scleropages.sentarum.core.fsm.entity.StateTransitionEntity;
+import io.scleropages.sentarum.core.fsm.entity.mapper.EventDefinitionEntityMapper;
 import io.scleropages.sentarum.core.fsm.entity.mapper.EventEntityMapper;
 import io.scleropages.sentarum.core.fsm.entity.mapper.StateMachineDefinitionEntityMapper;
 import io.scleropages.sentarum.core.fsm.entity.mapper.StateMachineExecutionEntityMapper;
@@ -90,6 +91,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     private StateTransitionEntityMapper transitionEntityMapper;
     private StateMachineExecutionEntityMapper stateMachineExecutionEntityMapper;
     private EventEntityMapper eventEntityMapper;
+    private EventDefinitionEntityMapper eventDefinitionEntityMapper;
 
     private InvocationContainer invocationContainer;
     private PlatformTransactionManager transactionManager;
@@ -298,6 +300,26 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
                 sendEventInternal(this, event, contextAttributes);
                 return null;
             });
+        }
+
+        @Override
+        public void sendEvent(String name, Map<String, Object> body, Map<String, Object> contextAttributes) {
+            Assert.hasText(name, "event name must not empty.");
+            EventDefinition eventDefinition = eventDefinitionEntityMapper.mapForRead(
+                    eventDefinitionRepository.getById(
+                            eventDefinitionRepository.getIdByName(name).orElseThrow(() -> new IllegalArgumentException("no event definition found by name: " + name))
+                    ).orElseThrow(() -> new IllegalArgumentException("no event definition found by name: " + name)));
+            sendEvent(new EventModel(eventDefinition, body), contextAttributes);
+        }
+
+        @Override
+        public void sendEvent(String eventName, Map<String, Object> contextAttributes) {
+            sendEvent(eventName, null, contextAttributes);
+        }
+
+        @Override
+        public void sendEvent(String eventName) {
+            sendEvent(eventName, null, null);
         }
 
         @Override
@@ -604,46 +626,62 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     public void setDefinitionRepository(StateMachineDefinitionRepository definitionRepository) {
         this.definitionRepository = definitionRepository;
     }
+
     @Autowired
     public void setTransitionRepository(StateTransitionRepository transitionRepository) {
         this.transitionRepository = transitionRepository;
     }
+
     @Autowired
     public void setEventDefinitionRepository(EventDefinitionRepository eventDefinitionRepository) {
         this.eventDefinitionRepository = eventDefinitionRepository;
     }
+
     @Autowired
     public void setEventRepository(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
+
     @Autowired
     public void setStateMachineExecutionRepository(StateMachineExecutionRepository stateMachineExecutionRepository) {
         this.stateMachineExecutionRepository = stateMachineExecutionRepository;
     }
+
     @Autowired
     public void setStateRepository(StateRepository stateRepository) {
         this.stateRepository = stateRepository;
     }
+
     @Autowired
     public void setHistoricTransitionExecutionRepository(HistoricTransitionExecutionRepository historicTransitionExecutionRepository) {
         this.historicTransitionExecutionRepository = historicTransitionExecutionRepository;
     }
+
     @Autowired
     public void setDefinitionEntityMapper(StateMachineDefinitionEntityMapper definitionEntityMapper) {
         this.definitionEntityMapper = definitionEntityMapper;
     }
+
     @Autowired
     public void setTransitionEntityMapper(StateTransitionEntityMapper transitionEntityMapper) {
         this.transitionEntityMapper = transitionEntityMapper;
     }
+
     @Autowired
     public void setStateMachineExecutionEntityMapper(StateMachineExecutionEntityMapper stateMachineExecutionEntityMapper) {
         this.stateMachineExecutionEntityMapper = stateMachineExecutionEntityMapper;
     }
+
+    @Autowired
+    public void setEventDefinitionEntityMapper(EventDefinitionEntityMapper eventDefinitionEntityMapper) {
+        this.eventDefinitionEntityMapper = eventDefinitionEntityMapper;
+    }
+
     @Autowired
     public void setEventEntityMapper(EventEntityMapper eventEntityMapper) {
         this.eventEntityMapper = eventEntityMapper;
     }
+
     @Autowired
     public void setInvocationContainer(InvocationContainer invocationContainer) {
         this.invocationContainer = invocationContainer;
