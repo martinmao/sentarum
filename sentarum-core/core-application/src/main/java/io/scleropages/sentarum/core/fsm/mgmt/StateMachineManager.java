@@ -54,9 +54,9 @@ public interface StateMachineManager {
     /**
      * create new state machine definition.
      *
-     * @param stateMachineDefinition
+     * @param stateMachineDefinition definition of state machine.
      * @param initialState           required initial state
-     * @param endState               optional end state.
+     * @param endState               optional end state. if not specified. the state machine will running forever
      */
     void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState, Long endState);
 
