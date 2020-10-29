@@ -170,6 +170,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
             State endState = stateMachine.stateMachineDefinition.endState();
             if (null != endState && Objects.equals(endState.id(), stateTo.id())) {
                 updateStateMachineExecutionState(execution.id(), ExecutionState.FINISHED, "finished.");
+                logger.debug("state machine {}[{}] finished with state: {}", stateMachine.stateMachineDefinition.name(), execution.id(), endState.name());
             }
         } else {
             executionContext.resetChange();

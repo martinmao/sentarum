@@ -92,7 +92,7 @@ public class StateMachineTests {
         cardPush.setTag("门禁状态机");
         cardPush.setDesc("门禁状态机");
         cardPush.setAutoStartup(true);
-        stateMachineManager.createStateMachineDefinition(cardPush, stateMachineManager.getStateByName("LOCKED").id());
+        stateMachineManager.createStateMachineDefinition(cardPush, stateMachineManager.getStateByName("LOCKED").id(),null);
 
         StateTransitionModel transition = new StateTransitionModel();
         transition.setActionConfig(transitionActionConfig);
