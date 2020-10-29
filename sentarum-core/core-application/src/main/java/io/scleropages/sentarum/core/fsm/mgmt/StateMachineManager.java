@@ -55,9 +55,10 @@ public interface StateMachineManager {
      * create new state machine definition.
      *
      * @param stateMachineDefinition
-     * @param initialState
+     * @param initialState           required initial state
+     * @param endState               optional end state.
      */
-    void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState);
+    void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState, Long endState);
 
     /**
      * create new state transition

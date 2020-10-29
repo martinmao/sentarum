@@ -35,6 +35,7 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
     private String tag;
     private String desc;
     private State initialState;
+    private State endState;
     private List<StateTransition> transitions;
     private Boolean autoStartup;
     private StateMachineExecutionListener executionListener;
@@ -64,6 +65,11 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
     @Null
     public State getInitialState() {
         return initialState;
+    }
+
+    @Null
+    public State getEndState() {
+        return endState;
     }
 
     @Null
@@ -98,6 +104,10 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
 
     public void setInitialState(State initialState) {
         this.initialState = initialState;
+    }
+
+    public void setEndState(State endState) {
+        this.endState = endState;
     }
 
     public void setTransitions(List<StateTransition> transitions) {
@@ -135,6 +145,11 @@ public class StateMachineDefinitionModel implements StateMachineDefinition {
     @Override
     public State initialState() {
         return getInitialState();
+    }
+
+    @Override
+    public State endState() {
+        return getEndState();
     }
 
     @Override

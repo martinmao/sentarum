@@ -32,7 +32,6 @@ public interface StateMachineDefinitionEntityMapper extends ModelMapper<StateMac
     default State toState(StateEntity entity) {
         if (!isEntityInitialized(entity)) {
             return null;
-
         }
         return (State) ModelMapperRepository.getRequiredModelMapper(StateEntityMapper.class).mapForRead(entity);
     }

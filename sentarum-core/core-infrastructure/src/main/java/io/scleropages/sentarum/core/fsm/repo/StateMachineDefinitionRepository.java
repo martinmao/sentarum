@@ -38,6 +38,9 @@ public interface StateMachineDefinitionRepository extends GenericRepository<Stat
             Fetch<Object, Object> initialStateFetch = root.fetch("initialState", JoinType.LEFT);
             initialStateFetch.fetch("enteredActionConfig", JoinType.LEFT);
             initialStateFetch.fetch("exitActionConfig", JoinType.LEFT);
+            Fetch<Object, Object> endStateFetch = root.fetch("endState", JoinType.LEFT);
+            endStateFetch.fetch("enteredActionConfig", JoinType.LEFT);
+            endStateFetch.fetch("exitActionConfig", JoinType.LEFT);
 //            }
             return builder.equal(root.get("id"), id);
         });

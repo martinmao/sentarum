@@ -63,6 +63,14 @@ public interface StateMachineDefinition {
 
 
     /**
+     * the end state of this fms definition.
+     *
+     * @return
+     */
+    State endState();
+
+
+    /**
      * a list of state transitions of this fsm definition.
      *
      * @return

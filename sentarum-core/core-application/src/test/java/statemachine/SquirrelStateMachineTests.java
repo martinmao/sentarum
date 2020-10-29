@@ -202,6 +202,7 @@ public class SquirrelStateMachineTests {
         System.out.println(fsm.getCurrentState());
         fsm.fire("E5_1");
         System.out.println(fsm.isTerminated());
+
         fsm.fire("E5_2");
         System.out.println(fsm.isTerminated());
 //      System.out.println(fsm.exportXMLDefinition(true));

@@ -39,6 +39,7 @@ public class StateMachineDefinitionEntity extends IdEntity {
     private String tag;
     private String desc;
     private StateEntity initialState;
+    private StateEntity endState;
     private Boolean autoStartup;
 
     @Column(name = "name_", nullable = false, unique = true)
@@ -63,6 +64,12 @@ public class StateMachineDefinitionEntity extends IdEntity {
         return initialState;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_state_id")
+    public StateEntity getEndState() {
+        return endState;
+    }
+
     @Column(name = "auto_startup", nullable = false)
     public Boolean getAutoStartup() {
         return autoStartup;
@@ -82,6 +89,10 @@ public class StateMachineDefinitionEntity extends IdEntity {
 
     public void setInitialState(StateEntity initialState) {
         this.initialState = initialState;
+    }
+
+    public void setEndState(StateEntity endState) {
+        this.endState = endState;
     }
 
     public void setAutoStartup(Boolean autoStartup) {

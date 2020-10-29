@@ -92,10 +92,15 @@ public class StateMachineManagerImpl implements StateMachineManager {
 
     @Override
     @Transactional
-    public void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState) {
-        StateEntity stateEntity = stateRepository.get(initialState).orElseThrow(() -> new IllegalArgumentException("no initialState found: " + initialState));
+    public void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState, Long endState) {
+        StateEntity initialStateEntity = stateRepository.get(initialState).orElseThrow(() -> new IllegalArgumentException("no initialState found: " + initialState));
+
         StateMachineDefinitionEntity stateMachineDefinitionEntity = stateMachineDefinitionEntityMapper.mapForSave(stateMachineDefinition);
-        stateMachineDefinitionEntity.setInitialState(stateEntity);
+        stateMachineDefinitionEntity.setInitialState(initialStateEntity);
+        if (null != endState) {
+            StateEntity endStateEntity = stateRepository.get(endState).orElseThrow(() -> new IllegalArgumentException("no endState found: " + initialState));
+            stateMachineDefinitionEntity.setEndState(endStateEntity);
+        }
         stateMachineDefinitionRepository.save(stateMachineDefinitionEntity);
     }
 

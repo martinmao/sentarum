@@ -67,6 +67,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -160,12 +161,16 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
         String note = accepted ? null : String.format("statemachine execution %s[%s] with state [%s] reject event [%s]. ", stateMachine.stateMachineDefinition.name(), execution.id(), execution.currentState().name(), event.name());
         EventEntity eventEntity = createEventEntity(event, accepted, note);
 
-        //if events was accepted write back execution context and create transition execution...
+        //if events was accepted write back execution state,context and create transition execution...
         if (accepted) {
             State stateTo = providerStateMachine.currentState();
             stateMachineExecutionRepository.updateStateMachineState(execution.id(), stateTo.id());
             saveContextPayloadInternal(execution.id(), executionContext);
             createHistoricTransitionExecution(stateMachine, stateFrom, stateTo, eventEntity);
+            State endState = stateMachine.stateMachineDefinition.endState();
+            if (null != endState && Objects.equals(endState.id(), stateTo.id())) {
+                updateStateMachineExecutionState(execution.id(), ExecutionState.FINISHED, "finished.");
+            }
         } else {
             executionContext.resetChange();
             logger.warn(note);
