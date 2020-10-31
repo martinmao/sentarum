@@ -21,7 +21,7 @@ import io.scleropages.sentarum.core.model.primitive.Amount;
  * 优惠信息，其对应一个优惠活动的核销，每一笔交易单包含多个优惠核销，按类型分为：
  * <pre>
  *     {@link OrderPromotion}: 订单级优惠，优惠作用于整单中所有商品。适用于：满减、优惠套餐（打包价）、订单返现、通用优惠卡券、整单优惠等场景
- *     {@link OrderLinePromotion}：商品级优惠，优惠仅限于单一商品。适用于：一口价、秒杀、单品优惠券等场景
+ *     {@link LinePromotion}：商品级优惠，优惠仅限于单一商品。适用于：一口价、秒杀、单品优惠券等场景
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>

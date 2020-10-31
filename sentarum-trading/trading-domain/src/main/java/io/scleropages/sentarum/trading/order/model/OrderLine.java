@@ -84,7 +84,7 @@ public interface OrderLine {
 
 
     /**
-     * 订单明细应付金额= {@link #price()} * {@link #num()} - sum({@link OrderLinePromotion#discountFee()}) - others...
+     * 订单明细应付金额= {@link #price()} * {@link #num()} - sum({@link LinePromotion#discountFee()}) - others...
      *
      * @return
      */

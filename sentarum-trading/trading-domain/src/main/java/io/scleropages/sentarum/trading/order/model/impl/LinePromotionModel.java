@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.order.model;
+package io.scleropages.sentarum.trading.order.model.impl;
+
+import io.scleropages.sentarum.trading.order.model.LinePromotion;
+import io.scleropages.sentarum.trading.order.model.Order;
+import io.scleropages.sentarum.trading.order.model.OrderLine;
 
 /**
- * 订单明细优惠信息
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface OrderLinePromotion extends Promotion {
+public class LinePromotionModel extends PromotionModel implements LinePromotion {
 
+    @Override
+    public Order order() {
+        return null;
+    }
 
-    /**
-     * 关联的订单
-     *
-     * @return
-     */
-    Order order();
-
-
-    /**
-     * 关联的订单明细
-     *
-     * @return
-     */
-    OrderLine orderLine();
-
+    @Override
+    public OrderLine orderLine() {
+        return null;
+    }
 }

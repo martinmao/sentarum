@@ -41,7 +41,7 @@ public interface OrderPay {
 
 
     /**
-     * 整单应付金额={@link #totalFee()} - sum({@link OrderPromotion#discountFee()} ()} - sum({@link OrderLinePromotion#discountFee()}) + {@link #deliveryFee()} + {@link #adjustFee()} <br>
+     * 整单应付金额={@link #totalFee()} - sum({@link OrderPromotion#discountFee()} ()} - sum({@link LinePromotion#discountFee()}) + {@link #deliveryFee()} + {@link #adjustFee()} <br>
      *
      * @return
      */
@@ -79,7 +79,7 @@ public interface OrderPay {
 
     /**
      * 商品级优惠总金额
-     * 计算规则： sum({@link OrderLinePromotion#discountFee()})
+     * 计算规则： sum({@link LinePromotion#discountFee()})
      *
      * @return
      */
