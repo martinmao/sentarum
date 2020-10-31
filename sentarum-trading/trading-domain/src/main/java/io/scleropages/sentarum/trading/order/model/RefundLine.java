@@ -51,8 +51,24 @@ public interface RefundLine {
 
     /**
      * 退款状态：0.处理中 1.退款成功
+     *
      * @return
      */
     Integer state();
 
+
+    /**
+     * 关联的退款单
+     *
+     * @return
+     */
+    OrderRefund orderRefund();
+
+
+    /**
+     * 关联的订单
+     *
+     * @return
+     */
+    Order order();
 }
