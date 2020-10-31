@@ -15,14 +15,19 @@
  */
 package io.scleropages.sentarum.trading.order.model;
 
+import io.scleropages.sentarum.core.model.primitive.Address;
+import io.scleropages.sentarum.core.model.primitive.Amount;
+import io.scleropages.sentarum.core.model.primitive.Geo;
+import io.scleropages.sentarum.core.model.primitive.Tel;
+
 import java.util.Date;
 
 /**
- * 订单
+ * 描述订单交付信息(收货人信息)
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Order {
+public interface OrderConsignee {
 
     /**
      * 唯一标识
@@ -31,90 +36,83 @@ public interface Order {
      */
     Long id();
 
-
     /**
-     * 父订单唯一标识
+     * 配送开始时间
      *
      * @return
      */
-    Long parentId();
-
+    Date startTime();
 
     /**
-     * 外部订单编码
+     * 配送结束时间
      *
      * @return
      */
-    String outerId();
-
+    Date endTime();
 
     /**
-     * 商家类型，由商品中心确定
-     * <pre>
-     *         SUPPLIER(1, "供应商", "位于供应链上游"),
-     *         VENDOR(2, "厂商(品牌商)", "售卖产品或服务"),
-     *         RETAIL(3, "零售商", "其往往是一个商业综合体，包含多家门店"),
-     *         STORE(4, "门店", "终端场所销售"),
-     *         PLATFORM(5, "平台", "自营");
-     * </pre>
+     * 配送交付时间
      *
      * @return
      */
-    Integer sellerType();
+    Date deliveredTime();
 
     /**
-     * 商家唯一标识（商业综合体标识）
+     * 配送金额
      *
      * @return
      */
-    Long sellerUnionId();
+    Amount deliveryAmount();
 
     /**
-     * 商家唯一标识 (商业综合体内具体销售场所，例如店铺标识)
+     * 收货人姓名
      *
      * @return
      */
-    Long sellerId();
+    String name();
+
 
     /**
-     * 买家唯一标识
+     * 收货人电话
      *
      * @return
      */
-    Long buyerId();
+    Tel tel();
 
     /**
-     * 买家名称
+     * 收货人地址
      *
      * @return
      */
-    String buyerName();
+    Address address();
 
     /**
-     * 订单创建时间
+     * 收货人详细地址
      *
      * @return
      */
-    Date createTime();
+    String detailAddress();
+
 
     /**
-     * 支付时间
+     * 邮编
      *
      * @return
      */
-    Date payTime();
+    String postalCode();
+
 
     /**
-     * 交付时间
+     * 配送地理信息
      *
      * @return
      */
-    Date deliveryTime();
+    Geo geo();
 
     /**
-     * 交付确认时间
+     * 关联的订单
      *
      * @return
      */
-    Date deliveryConfirmTime();
+    Order order();
 }

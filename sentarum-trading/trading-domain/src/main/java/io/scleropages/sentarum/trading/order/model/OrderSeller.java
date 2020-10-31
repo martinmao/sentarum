@@ -15,38 +15,12 @@
  */
 package io.scleropages.sentarum.trading.order.model;
 
-import java.util.Date;
-
 /**
- * 订单
+ * 订单卖家信息
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Order {
-
-    /**
-     * 唯一标识
-     *
-     * @return
-     */
-    Long id();
-
-
-    /**
-     * 父订单唯一标识
-     *
-     * @return
-     */
-    Long parentId();
-
-
-    /**
-     * 外部订单编码
-     *
-     * @return
-     */
-    String outerId();
-
+public interface OrderSeller {
 
     /**
      * 商家类型，由商品中心确定
@@ -77,44 +51,9 @@ public interface Order {
     Long sellerId();
 
     /**
-     * 买家唯一标识
+     * 关联的订单
      *
      * @return
      */
-    Long buyerId();
-
-    /**
-     * 买家名称
-     *
-     * @return
-     */
-    String buyerName();
-
-    /**
-     * 订单创建时间
-     *
-     * @return
-     */
-    Date createTime();
-
-    /**
-     * 支付时间
-     *
-     * @return
-     */
-    Date payTime();
-
-    /**
-     * 交付时间
-     *
-     * @return
-     */
-    Date deliveryTime();
-
-    /**
-     * 交付确认时间
-     *
-     * @return
-     */
-    Date deliveryConfirmTime();
+    Order order();
 }

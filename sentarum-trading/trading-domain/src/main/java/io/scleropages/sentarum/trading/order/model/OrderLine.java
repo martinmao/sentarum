@@ -15,14 +15,14 @@
  */
 package io.scleropages.sentarum.trading.order.model;
 
-import java.util.Date;
+import io.scleropages.sentarum.core.model.primitive.Amount;
 
 /**
- * 订单
+ * 订单明细
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Order {
+public interface OrderLine {
 
     /**
      * 唯一标识
@@ -33,88 +33,75 @@ public interface Order {
 
 
     /**
-     * 父订单唯一标识
+     * 商品唯一标识
      *
      * @return
      */
-    Long parentId();
+    Long itemId();
+
+    /**
+     * sku 唯一标识
+     *
+     * @return
+     */
+    Long skuId();
+
+    /**
+     * 外部商品编码
+     *
+     * @return
+     */
+    String outerItemId();
+
+    /**
+     * 外部sku编码
+     *
+     * @return
+     */
+    String outerSkuId();
+
+    /**
+     * 购买单价
+     *
+     * @return
+     */
+    Long price();
+
+    /**
+     * 购买数量
+     *
+     * @return
+     */
+    Integer num();
 
 
     /**
-     * 外部订单编码
+     * 单品总价 = {@link #price()} * {@link #num()}
      *
      * @return
      */
-    String outerId();
+    Amount totalFee();
 
 
     /**
-     * 商家类型，由商品中心确定
-     * <pre>
-     *         SUPPLIER(1, "供应商", "位于供应链上游"),
-     *         VENDOR(2, "厂商(品牌商)", "售卖产品或服务"),
-     *         RETAIL(3, "零售商", "其往往是一个商业综合体，包含多家门店"),
-     *         STORE(4, "门店", "终端场所销售"),
-     *         PLATFORM(5, "平台", "自营");
-     * </pre>
+     * 订单明细应付金额= {@link #price()} * {@link #num()} - sum({@link OrderLinePromotion#discountFee()}) - others...
      *
      * @return
      */
-    Integer sellerType();
+    Amount payment();
+
 
     /**
-     * 商家唯一标识（商业综合体标识）
+     * 是否为赠品
      *
      * @return
      */
-    Long sellerUnionId();
+    Boolean present();
 
     /**
-     * 商家唯一标识 (商业综合体内具体销售场所，例如店铺标识)
+     * 关联的订单.
      *
      * @return
      */
-    Long sellerId();
-
-    /**
-     * 买家唯一标识
-     *
-     * @return
-     */
-    Long buyerId();
-
-    /**
-     * 买家名称
-     *
-     * @return
-     */
-    String buyerName();
-
-    /**
-     * 订单创建时间
-     *
-     * @return
-     */
-    Date createTime();
-
-    /**
-     * 支付时间
-     *
-     * @return
-     */
-    Date payTime();
-
-    /**
-     * 交付时间
-     *
-     * @return
-     */
-    Date deliveryTime();
-
-    /**
-     * 交付确认时间
-     *
-     * @return
-     */
-    Date deliveryConfirmTime();
+    Order order();
 }

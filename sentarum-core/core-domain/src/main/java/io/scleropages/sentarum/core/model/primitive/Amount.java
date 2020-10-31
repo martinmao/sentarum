@@ -40,6 +40,18 @@ public class Amount {
         this.currency = Currency.getInstance(Locale.SIMPLIFIED_CHINESE);
     }
 
+    public Amount(String amount, Currency currency) {
+        this(new BigDecimal(amount), currency);
+    }
+
+    public Amount(String amount) {
+        this(new BigDecimal(amount));
+    }
+
+    public String getAmountText() {
+        return String.valueOf(amount);
+    }
+
     public BigDecimal getAmount() {
         return amount;
     }

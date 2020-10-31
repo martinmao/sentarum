@@ -15,14 +15,14 @@
  */
 package io.scleropages.sentarum.trading.order.model;
 
-import java.util.Date;
+import io.scleropages.sentarum.core.model.primitive.Amount;
 
 /**
- * 订单
+ * 订单支付信息(支付单)
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Order {
+public interface OrderPay {
 
     /**
      * 唯一标识
@@ -33,15 +33,7 @@ public interface Order {
 
 
     /**
-     * 父订单唯一标识
-     *
-     * @return
-     */
-    Long parentId();
-
-
-    /**
-     * 外部订单编码
+     * 外部支付单号
      *
      * @return
      */
@@ -49,72 +41,71 @@ public interface Order {
 
 
     /**
-     * 商家类型，由商品中心确定
+     * 整单应付金额={@link #totalFee()} - sum({@link OrderPromotion#discountFee()} ()} - sum({@link OrderLinePromotion#discountFee()}) + {@link #deliveryFee()} + {@link #adjustFee()} <br>
+     *
+     * @return
+     */
+    Amount payment();
+
+
+    /**
+     * 实付金额，正常情况下于 {@link #payment()}保持一致，但存在以下例外：
      * <pre>
-     *         SUPPLIER(1, "供应商", "位于供应链上游"),
-     *         VENDOR(2, "厂商(品牌商)", "售卖产品或服务"),
-     *         RETAIL(3, "零售商", "其往往是一个商业综合体，包含多家门店"),
-     *         STORE(4, "门店", "终端场所销售"),
-     *         PLATFORM(5, "平台", "自营");
+     *  定金预售时为定金金额
+     *  未支付时为0
+     *  货到付款为0
      * </pre>
      *
      * @return
      */
-    Integer sellerType();
+    Amount actualPayment();
+
 
     /**
-     * 商家唯一标识（商业综合体标识）
+     * 订单总金额(商品总价)= sum({@link OrderLine#totalFee()})
      *
      * @return
      */
-    Long sellerUnionId();
+    Amount totalFee();
+
 
     /**
-     * 商家唯一标识 (商业综合体内具体销售场所，例如店铺标识)
+     * 订单级优惠总金额
+     * 计算规则：sum({@link OrderPromotion#discountFee()} ()})
      *
      * @return
      */
-    Long sellerId();
+    Amount totalOrderDiscountFee();
 
     /**
-     * 买家唯一标识
+     * 商品级优惠总金额
+     * 计算规则： sum({@link OrderLinePromotion#discountFee()})
      *
      * @return
      */
-    Long buyerId();
+    Amount totalItemDiscountFee();
+
 
     /**
-     * 买家名称
+     * 改价金额（卖家改价补邮费...）
      *
      * @return
      */
-    String buyerName();
+    Amount adjustFee();
+
 
     /**
-     * 订单创建时间
+     * 总配送金额(快递费)
+     * 计算规则: sum({@link DeliveryPackage#expressFee()})
      *
      * @return
      */
-    Date createTime();
+    Amount deliveryFee();
 
     /**
-     * 支付时间
+     * 关联订单
      *
      * @return
      */
-    Date payTime();
-
-    /**
-     * 交付时间
-     *
-     * @return
-     */
-    Date deliveryTime();
-
-    /**
-     * 交付确认时间
-     *
-     * @return
-     */
-    Date deliveryConfirmTime();
+    Order order();
 }
