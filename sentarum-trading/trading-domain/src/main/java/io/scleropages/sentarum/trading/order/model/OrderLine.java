@@ -104,4 +104,12 @@ public interface OrderLine {
      * @return
      */
     Order order();
+
+
+    /**
+     * sku 快照.
+     *
+     * @return
+     */
+    SkuSnapshot sku();
 }

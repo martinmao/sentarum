@@ -18,6 +18,7 @@ package io.scleropages.sentarum.trading.order.model.impl;
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderLine;
+import io.scleropages.sentarum.trading.order.model.SkuSnapshot;
 
 /**
  *
@@ -77,6 +78,11 @@ public class OrderLineModel implements OrderLine {
 
     @Override
     public Order order() {
+        return null;
+    }
+
+    @Override
+    public SkuSnapshot sku() {
         return null;
     }
 }
