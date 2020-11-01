@@ -30,11 +30,25 @@ public class Amount {
     private Currency currency;
 
 
+    public Amount() {
+        this("0.00");
+    }
+
+    /**
+     * NOTE: 建议使用 {@link #Amount(String, Currency)}.
+     *
+     * @param amount
+     * @param currency
+     */
     public Amount(BigDecimal amount, Currency currency) {
         this.amount = amount;
         this.currency = currency;
     }
 
+    /**
+     * NOTE: 建议使用 {@link #Amount(String)}.
+     * @param amount
+     */
     public Amount(BigDecimal amount) {
         this.amount = amount;
         this.currency = Currency.getInstance(Locale.SIMPLIFIED_CHINESE);
@@ -66,5 +80,46 @@ public class Amount {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
+    }
+
+
+    /**
+     * this + augend
+     *
+     * @param augend
+     * @return this + augend
+     */
+    public Amount add(Amount augend) {
+        return new Amount(getAmount().add(augend.getAmount()));
+    }
+
+    /**
+     * this - subtrahend
+     *
+     * @param subtrahend
+     * @return this - subtrahend
+     */
+    public Amount subtract(Amount subtrahend) {
+        return new Amount(getAmount().subtract(subtrahend.getAmount()));
+    }
+
+    /**
+     * this * multiplicand
+     *
+     * @param multiplicand
+     * @return this * multiplicand
+     */
+    public Amount multiply(Amount multiplicand) {
+        return new Amount(getAmount().multiply(multiplicand.getAmount()));
+    }
+
+    /**
+     * this / divisor
+     *
+     * @param divisor
+     * @return this / divisor
+     */
+    public Amount divide(Amount divisor) {
+        return new Amount(getAmount().divide(divisor.getAmount()));
     }
 }
