@@ -23,8 +23,18 @@ import io.scleropages.sentarum.trading.order.model.OrderPromotion;
  */
 public class OrderPromotionModel extends PromotionModel implements OrderPromotion {
 
+    private Order order;
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

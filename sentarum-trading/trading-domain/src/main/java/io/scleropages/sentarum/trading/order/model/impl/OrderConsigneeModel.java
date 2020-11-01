@@ -28,63 +28,174 @@ import java.util.Date;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class OrderConsigneeModel implements OrderConsignee {
+
+    private Long id;
+    private Date startTime;
+    private Date endTime;
+    private Date deliveredTime;
+    private Amount deliveryAmount;
+    private String name;
+    private Tel tel;
+    private Address address;
+    private String detailAddress;
+    private String postalCode;
+    private Geo geo;
+    private Order order;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public Date getDeliveredTime() {
+        return deliveredTime;
+    }
+
+    public Amount getDeliveryAmount() {
+        return deliveryAmount;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Tel getTel() {
+        return tel;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public Geo getGeo() {
+        return geo;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setDeliveredTime(Date deliveredTime) {
+        this.deliveredTime = deliveredTime;
+    }
+
+    public void setDeliveryAmount(Amount deliveryAmount) {
+        this.deliveryAmount = deliveryAmount;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTel(Tel tel) {
+        this.tel = tel;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public void setGeo(Geo geo) {
+        this.geo = geo;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public Long id() {
-        return null;
+        return getId();
     }
 
     @Override
     public Date startTime() {
-        return null;
+        return getStartTime();
     }
 
     @Override
     public Date endTime() {
-        return null;
+        return getEndTime();
     }
 
     @Override
     public Date deliveredTime() {
-        return null;
+        return getDeliveredTime();
     }
 
     @Override
     public Amount deliveryAmount() {
-        return null;
+        return getDeliveryAmount();
     }
 
     @Override
     public String name() {
-        return null;
+        return getName();
     }
 
     @Override
     public Tel tel() {
-        return null;
+        return getTel();
     }
 
     @Override
     public Address address() {
-        return null;
+        return getAddress();
     }
 
     @Override
     public String detailAddress() {
-        return null;
+        return getDetailAddress();
     }
 
     @Override
     public String postalCode() {
-        return null;
+        return getPostalCode();
     }
 
     @Override
     public Geo geo() {
-        return null;
+        return getGeo();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.trading.order.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单
@@ -30,14 +31,6 @@ public interface Order {
      * @return
      */
     Long id();
-
-
-    /**
-     * 父订单唯一标识
-     *
-     * @return
-     */
-    Long parentId();
 
 
     /**
@@ -117,4 +110,86 @@ public interface Order {
      * @return
      */
     Date deliveryConfirmTime();
+
+    /**
+     * 卖家信息
+     *
+     * @return
+     */
+    OrderSeller orderSeller();
+
+    /**
+     * 买家信息
+     *
+     * @return
+     */
+    OrderBuyer orderBuyer();
+
+    /**
+     * 订单交付信息
+     *
+     * @return
+     */
+    OrderDelivery orderDelivery();
+
+    /**
+     * 订单渠道，来源信息
+     *
+     * @return
+     */
+    OrderChannel orderChannel();
+
+
+    /**
+     * 收货人信息
+     *
+     * @return
+     */
+    OrderConsignee orderConsignee();
+
+    /**
+     * 订单发票信息
+     *
+     * @return
+     */
+    OrderInvoice orderInvoice();
+
+    /**
+     * 订单支付信息
+     *
+     * @return
+     */
+    OrderPay orderPay();
+
+    /**
+     * 退款单信息
+     *
+     * @return
+     */
+    OrderRefund orderRefund();
+
+    /**
+     * 订单备注信息.
+     *
+     * @return
+     */
+    OrderRemark orderRemark();
+
+    /**
+     * 订单明细信息
+     *
+     * @return
+     */
+    List<? extends OrderLine> orderLines();
+
+
+    /**
+     * 整单优惠信息
+     *
+     * @return
+     */
+    List<? extends OrderPromotion> orderPromotions();
+
+
+
 }

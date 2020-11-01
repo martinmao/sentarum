@@ -22,38 +22,92 @@ import io.scleropages.sentarum.trading.order.model.OrderLine;
 import io.scleropages.sentarum.trading.order.model.PackageLine;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class PackageLineModel implements PackageLine {
+
+    private Long id;
+    private OrderLine orderLine;
+    private DeliveryPackage orderDeliveryPackage;
+    private OrderDelivery orderDelivery;
+    private Integer num;
+    private Order order;
+
+    public Long getId() {
+        return id;
+    }
+
+    public OrderLine getOrderLine() {
+        return orderLine;
+    }
+
+    public DeliveryPackage getOrderDeliveryPackage() {
+        return orderDeliveryPackage;
+    }
+
+    public OrderDelivery getOrderDelivery() {
+        return orderDelivery;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOrderLine(OrderLine orderLine) {
+        this.orderLine = orderLine;
+    }
+
+    public void setOrderDeliveryPackage(DeliveryPackage orderDeliveryPackage) {
+        this.orderDeliveryPackage = orderDeliveryPackage;
+    }
+
+    public void setOrderDelivery(OrderDelivery orderDelivery) {
+        this.orderDelivery = orderDelivery;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public Long id() {
-        return null;
+        return getId();
     }
 
     @Override
     public OrderLine orderLine() {
-        return null;
+        return getOrderLine();
     }
 
     @Override
     public DeliveryPackage orderDeliveryPackage() {
-        return null;
+        return getOrderDeliveryPackage();
     }
 
     @Override
     public OrderDelivery orderDelivery() {
-        return null;
+        return getOrderDelivery();
     }
 
     @Override
-    public String num() {
-        return null;
+    public Integer num() {
+        return getNum();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

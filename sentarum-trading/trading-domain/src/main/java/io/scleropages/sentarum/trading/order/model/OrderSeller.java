@@ -22,6 +22,14 @@ package io.scleropages.sentarum.trading.order.model;
  */
 public interface OrderSeller {
 
+
+    /**
+     * 唯一标识
+     *
+     * @return
+     */
+    Long id();
+
     /**
      * 商家类型，由商品中心确定
      * <pre>

@@ -20,43 +20,107 @@ import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderBuyer;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class OrderBuyerModel implements OrderBuyer {
+
+    private Long id;
+    private Long buyerId;
+    private Tel tel;
+    private String name;
+    private String outerUnionId;
+    private String outerId;
+    private Order order;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getBuyerId() {
+        return buyerId;
+    }
+
+    public Tel getTel() {
+        return tel;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getOuterUnionId() {
+        return outerUnionId;
+    }
+
+    public String getOuterId() {
+        return outerId;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setBuyerId(Long buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public void setTel(Tel tel) {
+        this.tel = tel;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOuterUnionId(String outerUnionId) {
+        this.outerUnionId = outerUnionId;
+    }
+
+    public void setOuterId(String outerId) {
+        this.outerId = outerId;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public Long id() {
-        return null;
+        return getId();
     }
 
     @Override
     public Long buyerId() {
-        return null;
+        return getBuyerId();
     }
 
     @Override
     public Tel tel() {
-        return null;
+        return getTel();
     }
 
     @Override
     public String name() {
-        return null;
+        return getName();
     }
 
     @Override
     public String outerUnionId() {
-        return null;
+        return getOuterUnionId();
     }
 
     @Override
     public String outerId() {
-        return null;
+        return getOuterId();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

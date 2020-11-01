@@ -58,7 +58,7 @@ public interface PackageLine {
      *
      * @return
      */
-    String num();
+    Integer num();
 
 
     /**

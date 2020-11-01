@@ -19,43 +19,107 @@ import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderInvoice;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class OrderInvoiceModel implements OrderInvoice {
+
+    private Long id;
+    private String taxpayerId;
+    private String tittle;
+    private Integer tittleType;
+    private String taxpayerEmail;
+    private Integer detailType;
+    private Order order;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTaxpayerId() {
+        return taxpayerId;
+    }
+
+    public String getTittle() {
+        return tittle;
+    }
+
+    public Integer getTittleType() {
+        return tittleType;
+    }
+
+    public String getTaxpayerEmail() {
+        return taxpayerEmail;
+    }
+
+    public Integer getDetailType() {
+        return detailType;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTaxpayerId(String taxpayerId) {
+        this.taxpayerId = taxpayerId;
+    }
+
+    public void setTittle(String tittle) {
+        this.tittle = tittle;
+    }
+
+    public void setTittleType(Integer tittleType) {
+        this.tittleType = tittleType;
+    }
+
+    public void setTaxpayerEmail(String taxpayerEmail) {
+        this.taxpayerEmail = taxpayerEmail;
+    }
+
+    public void setDetailType(Integer detailType) {
+        this.detailType = detailType;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public Long id() {
-        return null;
+        return getId();
     }
 
     @Override
     public String taxpayerId() {
-        return null;
+        return getTaxpayerId();
     }
 
     @Override
     public String tittle() {
-        return null;
+        return getTittle();
     }
 
     @Override
     public Integer tittleType() {
-        return null;
+        return getTittleType();
     }
 
     @Override
     public String taxpayerEmail() {
-        return null;
+        return getTaxpayerEmail();
     }
 
     @Override
     public Integer detailType() {
-        return null;
+        return getDetailType();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

@@ -19,28 +19,64 @@ import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderRemark;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class OrderRemarkModel implements OrderRemark {
+
+    private Long id;
+    private String buyerRemark;
+    private String sellerRemark;
+    private Order order;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getBuyerRemark() {
+        return buyerRemark;
+    }
+
+    public String getSellerRemark() {
+        return sellerRemark;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setBuyerRemark(String buyerRemark) {
+        this.buyerRemark = buyerRemark;
+    }
+
+    public void setSellerRemark(String sellerRemark) {
+        this.sellerRemark = sellerRemark;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public Long id() {
-        return null;
+        return getId();
     }
 
     @Override
     public String buyerRemark() {
-        return null;
+        return getBuyerRemark();
     }
 
     @Override
     public String sellerRemark() {
-        return null;
+        return getSellerRemark();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

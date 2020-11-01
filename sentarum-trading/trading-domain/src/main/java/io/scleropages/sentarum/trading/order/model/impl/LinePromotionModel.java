@@ -23,14 +23,33 @@ import io.scleropages.sentarum.trading.order.model.OrderLine;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class LinePromotionModel extends PromotionModel implements LinePromotion {
+    
+    private Order order;
+    private OrderLine orderLine;
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public OrderLine getOrderLine() {
+        return orderLine;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void setOrderLine(OrderLine orderLine) {
+        this.orderLine = orderLine;
+    }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 
     @Override
     public OrderLine orderLine() {
-        return null;
+        return getOrderLine();
     }
 }

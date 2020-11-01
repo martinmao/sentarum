@@ -24,23 +24,76 @@ import io.scleropages.sentarum.trading.order.model.OrderSeller;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class OrderSellerModel implements OrderSeller {
+
+
+    private Long id;
+    private Integer sellerType;
+    private Long sellerUnionId;
+    private Long sellerId;
+    private Order order;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getSellerType() {
+        return sellerType;
+    }
+
+    public Long getSellerUnionId() {
+        return sellerUnionId;
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSellerType(Integer sellerType) {
+        this.sellerType = sellerType;
+    }
+
+    public void setSellerUnionId(Long sellerUnionId) {
+        this.sellerUnionId = sellerUnionId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    @Override
+    public Long id() {
+        return getId();
+    }
+
     @Override
     public Integer sellerType() {
-        return null;
+        return getSellerType();
     }
 
     @Override
     public Long sellerUnionId() {
-        return null;
+        return getSellerUnionId();
     }
 
     @Override
     public Long sellerId() {
-        return null;
+        return getSellerId();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

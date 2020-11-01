@@ -22,38 +22,104 @@ import io.scleropages.sentarum.trading.order.model.OrderChannel;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class OrderChannelModel implements OrderChannel {
+
+
+    private Long id;
+    private Boolean offlineOrder;
+    private Integer channelId;
+    private String name;
+    private Integer secondaryChannelId;
+    private String secondaryName;
+    private Order order;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Boolean getOfflineOrder() {
+        return offlineOrder;
+    }
+
+    public Integer getChannelId() {
+        return channelId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getSecondaryChannelId() {
+        return secondaryChannelId;
+    }
+
+    public String getSecondaryName() {
+        return secondaryName;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOfflineOrder(Boolean offlineOrder) {
+        this.offlineOrder = offlineOrder;
+    }
+
+    public void setChannelId(Integer channelId) {
+        this.channelId = channelId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSecondaryChannelId(Integer secondaryChannelId) {
+        this.secondaryChannelId = secondaryChannelId;
+    }
+
+    public void setSecondaryName(String secondaryName) {
+        this.secondaryName = secondaryName;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public Long id() {
-        return null;
+        return getId();
     }
 
     @Override
     public Boolean offlineOrder() {
-        return null;
+        return getOfflineOrder();
     }
 
     @Override
     public Integer channelId() {
-        return null;
+        return getChannelId();
     }
 
     @Override
     public String name() {
-        return null;
+        return getName();
     }
 
     @Override
     public Integer secondaryChannelId() {
-        return null;
+        return getSecondaryChannelId();
     }
 
     @Override
     public String secondaryName() {
-        return null;
+        return getSecondaryName();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

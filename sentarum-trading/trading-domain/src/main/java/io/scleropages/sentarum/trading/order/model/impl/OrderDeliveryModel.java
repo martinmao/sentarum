@@ -19,28 +19,64 @@ import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderDelivery;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class OrderDeliveryModel implements OrderDelivery {
+
+    private Long id;
+    private Integer state;
+    private Integer type;
+    private Order order;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public Long id() {
-        return null;
+        return getId();
     }
 
     @Override
     public Integer state() {
-        return null;
+        return getState();
     }
 
     @Override
     public Integer type() {
-        return null;
+        return getType();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 }

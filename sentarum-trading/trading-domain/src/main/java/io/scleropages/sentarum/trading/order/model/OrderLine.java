@@ -17,6 +17,8 @@ package io.scleropages.sentarum.trading.order.model;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
 
+import java.util.List;
+
 /**
  * 订单明细
  *
@@ -65,7 +67,7 @@ public interface OrderLine {
      *
      * @return
      */
-    Long price();
+    Amount price();
 
     /**
      * 购买数量
@@ -112,4 +114,11 @@ public interface OrderLine {
      * @return
      */
     SkuSnapshot sku();
+
+    /**
+     * 商品级优惠信息
+     *
+     * @return
+     */
+    List<LinePromotion> linePromotions();
 }

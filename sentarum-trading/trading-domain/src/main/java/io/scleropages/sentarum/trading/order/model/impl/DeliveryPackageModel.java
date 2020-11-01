@@ -21,53 +21,136 @@ import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderDelivery;
 
 /**
- *
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class DeliveryPackageModel implements DeliveryPackage {
+
+    private Long id;
+    private String expressNo;
+    private Integer expressId;
+    private String expressName;
+    private String remark;
+    private Order order;
+    private OrderDelivery orderDelivery;
+    private Integer expressState;
+    private Amount expressFee;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getExpressNo() {
+        return expressNo;
+    }
+
+    public Integer getExpressId() {
+        return expressId;
+    }
+
+    public String getExpressName() {
+        return expressName;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public OrderDelivery getOrderDelivery() {
+        return orderDelivery;
+    }
+
+    public Integer getExpressState() {
+        return expressState;
+    }
+
+    public Amount getExpressFee() {
+        return expressFee;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setExpressNo(String expressNo) {
+        this.expressNo = expressNo;
+    }
+
+    public void setExpressId(Integer expressId) {
+        this.expressId = expressId;
+    }
+
+    public void setExpressName(String expressName) {
+        this.expressName = expressName;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void setOrderDelivery(OrderDelivery orderDelivery) {
+        this.orderDelivery = orderDelivery;
+    }
+
+    public void setExpressState(Integer expressState) {
+        this.expressState = expressState;
+    }
+
+    public void setExpressFee(Amount expressFee) {
+        this.expressFee = expressFee;
+    }
+
     @Override
     public Long id() {
-        return null;
+        return getId();
     }
 
     @Override
     public String expressNo() {
-        return null;
+        return getExpressNo();
     }
 
     @Override
     public Integer expressId() {
-        return null;
+        return getExpressId();
     }
 
     @Override
     public String expressName() {
-        return null;
+        return getExpressName();
     }
 
     @Override
     public String remark() {
-        return null;
+        return getRemark();
     }
 
     @Override
     public Order order() {
-        return null;
+        return getOrder();
     }
 
     @Override
     public OrderDelivery orderDelivery() {
-        return null;
+        return getOrderDelivery();
     }
 
     @Override
     public Integer expressState() {
-        return null;
+        return getExpressState();
     }
 
     @Override
     public Amount expressFee() {
-        return null;
+        return getExpressFee();
     }
 }
