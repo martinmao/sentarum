@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.trading.order.model;
 
 /**
- * 订单明细优惠信息
+ * 订单明细优惠信息，适用于商品维度的优惠活动，例如：一口价、秒杀、单品优惠券等场景
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
