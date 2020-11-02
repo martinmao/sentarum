@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.entity.embeddable.Amount;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.AttributeOverride;
@@ -39,13 +39,13 @@ import javax.persistence.Table;
 public class OrderPayEntity extends IdEntity {
 
     private String outerId;
-    private Amount payment;
-    private Amount actualPayment;
-    private Amount totalFee;
-    private Amount totalOrderDiscountFee;
-    private Amount totalItemDiscountFee;
-    private Amount adjustFee;
-    private Amount deliveryFee;
+    private EmbeddableAmount payment;
+    private EmbeddableAmount actualPayment;
+    private EmbeddableAmount totalFee;
+    private EmbeddableAmount totalOrderDiscountFee;
+    private EmbeddableAmount totalItemDiscountFee;
+    private EmbeddableAmount adjustFee;
+    private EmbeddableAmount deliveryFee;
     private OrderEntity order;
 
     @Column(name = "outer_id", nullable = false)
@@ -55,43 +55,43 @@ public class OrderPayEntity extends IdEntity {
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "payment_", nullable = false))
-    public Amount getPayment() {
+    public EmbeddableAmount getPayment() {
         return payment;
     }
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "actual_payment", nullable = false))
-    public Amount getActualPayment() {
+    public EmbeddableAmount getActualPayment() {
         return actualPayment;
     }
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "total_fee", nullable = false))
-    public Amount getTotalFee() {
+    public EmbeddableAmount getTotalFee() {
         return totalFee;
     }
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "total_order_discount_fee", nullable = false))
-    public Amount getTotalOrderDiscountFee() {
+    public EmbeddableAmount getTotalOrderDiscountFee() {
         return totalOrderDiscountFee;
     }
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "total_item_discount_fee", nullable = false))
-    public Amount getTotalItemDiscountFee() {
+    public EmbeddableAmount getTotalItemDiscountFee() {
         return totalItemDiscountFee;
     }
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "adjust_fee", nullable = false))
-    public Amount getAdjustFee() {
+    public EmbeddableAmount getAdjustFee() {
         return adjustFee;
     }
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "delivery_fee", nullable = false))
-    public Amount getDeliveryFee() {
+    public EmbeddableAmount getDeliveryFee() {
         return deliveryFee;
     }
 
@@ -105,31 +105,31 @@ public class OrderPayEntity extends IdEntity {
         this.outerId = outerId;
     }
 
-    public void setPayment(Amount payment) {
+    public void setPayment(EmbeddableAmount payment) {
         this.payment = payment;
     }
 
-    public void setActualPayment(Amount actualPayment) {
+    public void setActualPayment(EmbeddableAmount actualPayment) {
         this.actualPayment = actualPayment;
     }
 
-    public void setTotalFee(Amount totalFee) {
+    public void setTotalFee(EmbeddableAmount totalFee) {
         this.totalFee = totalFee;
     }
 
-    public void setTotalOrderDiscountFee(Amount totalOrderDiscountFee) {
+    public void setTotalOrderDiscountFee(EmbeddableAmount totalOrderDiscountFee) {
         this.totalOrderDiscountFee = totalOrderDiscountFee;
     }
 
-    public void setTotalItemDiscountFee(Amount totalItemDiscountFee) {
+    public void setTotalItemDiscountFee(EmbeddableAmount totalItemDiscountFee) {
         this.totalItemDiscountFee = totalItemDiscountFee;
     }
 
-    public void setAdjustFee(Amount adjustFee) {
+    public void setAdjustFee(EmbeddableAmount adjustFee) {
         this.adjustFee = adjustFee;
     }
 
-    public void setDeliveryFee(Amount deliveryFee) {
+    public void setDeliveryFee(EmbeddableAmount deliveryFee) {
         this.deliveryFee = deliveryFee;
     }
 

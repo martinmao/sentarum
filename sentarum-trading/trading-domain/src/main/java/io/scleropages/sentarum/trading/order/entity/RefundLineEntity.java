@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.entity.embeddable.Amount;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
 import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderRefund;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
@@ -35,7 +35,7 @@ import java.util.Date;
  */
 public class RefundLineEntity extends IdEntity {
 
-    private Amount refundFee;
+    private EmbeddableAmount refundFee;
     private Date time;
     private Integer state;
     private OrderRefund orderRefund;
@@ -43,7 +43,7 @@ public class RefundLineEntity extends IdEntity {
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "refund_fee", nullable = false))
-    public Amount getRefundFee() {
+    public EmbeddableAmount getRefundFee() {
         return refundFee;
     }
 
@@ -69,7 +69,7 @@ public class RefundLineEntity extends IdEntity {
         return order;
     }
 
-    public void setRefundFee(Amount refundFee) {
+    public void setRefundFee(EmbeddableAmount refundFee) {
         this.refundFee = refundFee;
     }
 

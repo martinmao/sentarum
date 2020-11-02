@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.entity.embeddable.Amount;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -41,7 +41,7 @@ public class DeliveryPackageEntity extends IdEntity {
     private String expressName;
     private String remark;
     private Integer expressState;
-    private Amount expressFee;
+    private EmbeddableAmount expressFee;
 
     private OrderEntity order;
     private OrderDeliveryEntity orderDelivery;
@@ -72,7 +72,7 @@ public class DeliveryPackageEntity extends IdEntity {
     }
 
     @Column(name = "express_fee", nullable = false)
-    public Amount getExpressFee() {
+    public EmbeddableAmount getExpressFee() {
         return expressFee;
     }
 
@@ -108,7 +108,7 @@ public class DeliveryPackageEntity extends IdEntity {
         this.expressState = expressState;
     }
 
-    public void setExpressFee(Amount expressFee) {
+    public void setExpressFee(EmbeddableAmount expressFee) {
         this.expressFee = expressFee;
     }
 

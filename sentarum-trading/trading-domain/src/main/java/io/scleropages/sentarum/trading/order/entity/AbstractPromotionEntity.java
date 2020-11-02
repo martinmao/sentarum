@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.entity.embeddable.Amount;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.AttributeOverride;
@@ -36,7 +36,7 @@ public class AbstractPromotionEntity extends IdEntity {
     private Long activityId;
     private String activityName;
     private Long couponId;
-    private Amount discountFee;
+    private EmbeddableAmount discountFee;
 
     @Column(name = "activity_type_id", nullable = false)
     public Long getActivityTypeId() {
@@ -65,7 +65,7 @@ public class AbstractPromotionEntity extends IdEntity {
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "discount_fee", nullable = false))
-    public Amount getDiscountFee() {
+    public EmbeddableAmount getDiscountFee() {
         return discountFee;
     }
 
@@ -89,7 +89,7 @@ public class AbstractPromotionEntity extends IdEntity {
         this.couponId = couponId;
     }
 
-    public void setDiscountFee(Amount discountFee) {
+    public void setDiscountFee(EmbeddableAmount discountFee) {
         this.discountFee = discountFee;
     }
 }

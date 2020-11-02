@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.scleropages.sentarum.core.boot.autoconfigure.StateMachineApplicationAutoConfiguration
+io.scleropages.sentarum.core.boot.autoconfigure.StateMachineApplicationAutoConfiguration,\
+io.scleropages.sentarum.core.boot.autoconfigure.CoreApplicationAutoConfiguration

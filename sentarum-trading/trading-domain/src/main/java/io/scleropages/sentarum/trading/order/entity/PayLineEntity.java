@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.entity.embeddable.Amount;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -38,7 +38,7 @@ import java.util.Date;
 public class PayLineEntity extends IdEntity {
 
     private String outerId;
-    private Amount payment;
+    private EmbeddableAmount payment;
     private Date startTime;
     private Date endTime;
     private OrderPayEntity orderPay;
@@ -50,7 +50,7 @@ public class PayLineEntity extends IdEntity {
     }
 
     @Column(name = "payment", nullable = false)
-    public Amount getPayment() {
+    public EmbeddableAmount getPayment() {
         return payment;
     }
 
@@ -80,7 +80,7 @@ public class PayLineEntity extends IdEntity {
         this.outerId = outerId;
     }
 
-    public void setPayment(Amount payment) {
+    public void setPayment(EmbeddableAmount payment) {
         this.payment = payment;
     }
 

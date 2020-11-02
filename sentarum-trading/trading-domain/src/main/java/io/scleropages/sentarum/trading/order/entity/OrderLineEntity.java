@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.entity.embeddable.Amount;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.*;
@@ -34,10 +34,10 @@ public class OrderLineEntity extends IdEntity {
     private Long skuId;
     private String outerItemId;
     private String outerSkuId;
-    private Amount price;
+    private EmbeddableAmount price;
     private Integer num;
-    private Amount totalFee;
-    private Amount payment;
+    private EmbeddableAmount totalFee;
+    private EmbeddableAmount payment;
     private Boolean present;
     private OrderEntity order;
 
@@ -63,7 +63,7 @@ public class OrderLineEntity extends IdEntity {
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "price_", nullable = false))
-    public Amount getPrice() {
+    public EmbeddableAmount getPrice() {
         return price;
     }
 
@@ -76,7 +76,7 @@ public class OrderLineEntity extends IdEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "amount", column = @Column(name = "total_fee", nullable = false))
     })
-    public Amount getTotalFee() {
+    public EmbeddableAmount getTotalFee() {
         return totalFee;
     }
 
@@ -84,7 +84,7 @@ public class OrderLineEntity extends IdEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "amount", column = @Column(name = "payment_", nullable = false))
     })
-    public Amount getPayment() {
+    public EmbeddableAmount getPayment() {
         return payment;
     }
 
@@ -115,7 +115,7 @@ public class OrderLineEntity extends IdEntity {
         this.outerSkuId = outerSkuId;
     }
 
-    public void setPrice(Amount price) {
+    public void setPrice(EmbeddableAmount price) {
         this.price = price;
     }
 
@@ -123,11 +123,11 @@ public class OrderLineEntity extends IdEntity {
         this.num = num;
     }
 
-    public void setTotalFee(Amount totalFee) {
+    public void setTotalFee(EmbeddableAmount totalFee) {
         this.totalFee = totalFee;
     }
 
-    public void setPayment(Amount payment) {
+    public void setPayment(EmbeddableAmount payment) {
         this.payment = payment;
     }
 

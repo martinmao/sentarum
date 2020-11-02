@@ -21,4 +21,6 @@ package io.scleropages.sentarum.core.model.primitive;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class Address {
+
+
 }

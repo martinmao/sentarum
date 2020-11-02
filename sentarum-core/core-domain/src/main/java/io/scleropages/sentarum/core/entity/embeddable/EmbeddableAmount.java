@@ -24,7 +24,7 @@ import java.math.BigDecimal;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Embeddable
-public class Amount {
+public class EmbeddableAmount {
 
     private BigDecimal amount;
     private String currencyCode;

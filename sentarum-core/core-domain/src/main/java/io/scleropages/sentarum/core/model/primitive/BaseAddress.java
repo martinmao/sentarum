@@ -29,28 +29,28 @@ public interface BaseAddress {
      *
      * @return
      */
-    Long id();
+    Integer id();
 
     /**
      * 上级标识
      *
      * @return
      */
-    Long parentId();
+    Integer parentId();
 
     /**
-     * 短编码
+     * 短编码,2位
      *
      * @return
      */
-    String shortCode();
+    Integer shortCode();
 
     /**
-     * 编码
+     * 编码,6位
      *
      * @return
      */
-    String code();
+    Integer code();
 
     /**
      * 显示名
@@ -60,11 +60,11 @@ public interface BaseAddress {
     String name();
 
     /**
-     * 区号
+     * 电话区号
      *
      * @return
      */
-    String areaCode();
+    String telAreaCode();
 
     /**
      * 显示名后缀，例如：省，市，区...
@@ -100,6 +100,13 @@ public interface BaseAddress {
     default boolean isArea() {
         return nameSuffix() == AREA;
     }
+
+    /**
+     * 范围true时代表当前地址是标准地址.
+     *
+     * @return
+     */
+    boolean isStandard();
 
 
     enum NameSuffix {

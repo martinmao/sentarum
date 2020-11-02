@@ -26,17 +26,17 @@ import java.util.Currency;
  */
 public abstract class EmbeddableMappers {
 
-    public static io.scleropages.sentarum.core.entity.embeddable.Amount toEmbeddable(Amount amount) {
+    public static EmbeddableAmount toEmbeddable(Amount amount) {
         if (null == amount)
             return null;
-        io.scleropages.sentarum.core.entity.embeddable.Amount target = new io.scleropages.sentarum.core.entity.embeddable.Amount();
+        EmbeddableAmount target = new EmbeddableAmount();
         target.setAmount(amount.getAmount());
         if (null != amount.getCurrency())
             target.setCurrencyCode(amount.getCurrency().getCurrencyCode());
         return target;
     }
 
-    public static Amount toPrimitive(io.scleropages.sentarum.core.entity.embeddable.Amount amount) {
+    public static Amount toPrimitive(EmbeddableAmount amount) {
         if (null == amount)
             return null;
         Amount target = new Amount();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item;
+package io.scleropages.sentarum.trading;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,16 +24,16 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @SpringBootApplication
-public class ApplicationStarter extends SpringBootServletInitializer {
+public class TradingApplicationStarter extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication springApplication = new SpringApplication(ApplicationStarter.class);
+        SpringApplication springApplication = new SpringApplication(TradingApplicationStarter.class);
         springApplication.run(args);
     }
 
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(ApplicationStarter.class);
+        return application.sources(TradingApplicationStarter.class);
     }
 }

@@ -16,7 +16,6 @@
 package io.scleropages.sentarum.core.model.primitive;
 
 import com.google.common.collect.Maps;
-import org.scleropages.crud.FrameworkContext;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -31,21 +30,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class BaseAddresses {
 
-    private static final Map<String, BaseAddress> CODE_TO_ADDRESS = Maps.newHashMap();
+    private static final Map<Integer, BaseAddress> CODE_TO_ADDRESS = Maps.newHashMap();
 
     private static final Map<String, BaseAddress> AREA_CODE_TO_ADDRESS = Maps.newHashMap();
 
-    private static final AtomicBoolean INIT_FLAG = new AtomicBoolean(false);
+    private static final AtomicBoolean READ_FLAG = new AtomicBoolean(false);
 
 
-    public static final void initIfNecessary() {
-        if (INIT_FLAG.compareAndSet(false, true)) {
-            BaseAddressReader reader = FrameworkContext.getBean(BaseAddressReader.class);
+    public static final void initIfNecessary(BaseAddressReader reader) {
+        if (READ_FLAG.compareAndSet(false, true)) {
             List<BaseAddress> reads = reader.read();
             reads.forEach(baseAddress -> {
                 CODE_TO_ADDRESS.put(baseAddress.code(), baseAddress);
                 if (baseAddress.isCity())
-                    AREA_CODE_TO_ADDRESS.put(baseAddress.areaCode(), baseAddress);
+                    AREA_CODE_TO_ADDRESS.put(baseAddress.telAreaCode(), baseAddress);
             });
         }
     }
@@ -59,7 +57,7 @@ public abstract class BaseAddresses {
      */
     public static final BaseAddress getBaseAddress(String code) {
         Assert.hasText(code, "code must not empty.");
-        Assert.isTrue(INIT_FLAG.get(), "call initIfNecessary first.");
+        assertInitialized();
         return Optional.of(CODE_TO_ADDRESS.get(code)).orElseThrow(() -> new IllegalArgumentException("no such base address found for given code: " + code));
     }
 
@@ -71,8 +69,12 @@ public abstract class BaseAddresses {
      */
     public static final BaseAddress getBaseAddressByArea(String areaCode) {
         Assert.hasText(areaCode, "areaCode must not empty.");
-        Assert.isTrue(INIT_FLAG.get(), "call initIfNecessary first.");
+        assertInitialized();
         return Optional.of(AREA_CODE_TO_ADDRESS.get(areaCode)).orElseThrow(() -> new IllegalArgumentException("no such base address found for given area code: " + areaCode));
+    }
+
+    private static void assertInitialized() {
+        Assert.isTrue(READ_FLAG.get(), "not initialized. call initIfNecessary first.");
     }
 
     /**
@@ -83,5 +85,4 @@ public abstract class BaseAddresses {
     public static final boolean isAreaCode(String areaCode) {
         return AREA_CODE_TO_ADDRESS.containsKey(areaCode);
     }
-
 }

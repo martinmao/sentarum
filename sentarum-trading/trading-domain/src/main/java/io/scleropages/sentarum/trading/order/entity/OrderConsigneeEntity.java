@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.entity.embeddable.Amount;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
 import io.scleropages.sentarum.core.model.primitive.Address;
 import io.scleropages.sentarum.core.model.primitive.Geo;
 import io.scleropages.sentarum.core.model.primitive.Tel;
@@ -42,9 +42,9 @@ public class OrderConsigneeEntity extends IdEntity {
     private Date startTime;
     private Date endTime;
     private Date deliveredTime;
-    private Amount deliveryAmount;
+    private EmbeddableAmount deliveryAmount;
     private String name;
-    private Tel tel;
+    private String tel;
     private Address address;
     private String detailAddress;
     private String postalCode;

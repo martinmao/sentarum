@@ -13,6 +13,7 @@
         <module>trading-domain</module>
         <module>trading-infrastructure</module>
         <module>trading-application</module>
+        <module>trading-application-starter</module>
     </modules>
     <artifactId>sentarum-trading</artifactId>
 
