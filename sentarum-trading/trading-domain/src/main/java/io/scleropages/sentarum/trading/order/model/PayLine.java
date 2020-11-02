@@ -17,12 +17,14 @@ package io.scleropages.sentarum.trading.order.model;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
 
+import java.util.Date;
+
 /**
- * 订单支付信息
+ * 支付单明细，类似预售等场景下: 将付款分为两个阶段（订金，尾款），此时将会产生两条子支付信息
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface OrderPay {
+public interface PayLine {
 
     /**
      * 唯一标识
@@ -31,7 +33,6 @@ public interface OrderPay {
      */
     Long id();
 
-
     /**
      * 外部支付单号
      *
@@ -39,71 +40,36 @@ public interface OrderPay {
      */
     String outerId();
 
-
     /**
-     * 整单应付金额={@link #totalFee()} - sum({@link OrderPromotion#discountFee()} ()} - sum({@link LinePromotion#discountFee()}) + {@link #deliveryFee()} + {@link #adjustFee()} <br>
+     * 支付金额
      *
      * @return
      */
     Amount payment();
 
-
     /**
-     * 实付金额，正常情况下于 {@link #payment()}保持一致，但存在以下例外：
-     * <pre>
-     *  定金预售时为定金金额
-     *  未支付时为0
-     *  货到付款为0
-     * </pre>
+     * 支付开始时间
      *
      * @return
      */
-    Amount actualPayment();
-
+    Date startTime();
 
     /**
-     * 订单总金额(商品总价)= sum({@link OrderLine#totalFee()})
+     * 支付结束时间
      *
      * @return
      */
-    Amount totalFee();
-
+    Date endTime();
 
     /**
-     * 订单级优惠总金额
-     * 计算规则：sum({@link OrderPromotion#discountFee()} ()})
+     * 关联订单支付
      *
      * @return
      */
-    Amount totalOrderDiscountFee();
+    OrderPay orderPay();
 
     /**
-     * 商品级优惠总金额
-     * 计算规则： sum({@link LinePromotion#discountFee()})
-     *
-     * @return
-     */
-    Amount totalItemDiscountFee();
-
-
-    /**
-     * 改价金额（卖家改价补邮费...）
-     *
-     * @return
-     */
-    Amount adjustFee();
-
-
-    /**
-     * 总配送金额(快递费)
-     * 计算规则: sum({@link DeliveryPackage#expressFee()})
-     *
-     * @return
-     */
-    Amount deliveryFee();
-
-    /**
-     * 关联订单
+     * 关联的订单
      *
      * @return
      */
