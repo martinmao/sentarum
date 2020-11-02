@@ -33,13 +33,6 @@ public interface OrderRefund {
      */
     Long id();
 
-    /**
-     * 关联订单
-     *
-     * @return
-     */
-    Order order();
-
 
     /**
      * 申请退款时间
@@ -93,4 +86,11 @@ public interface OrderRefund {
      * @return
      */
     String refundTypeRemark();
+
+    /**
+     * 关联订单
+     *
+     * @return
+     */
+    Order order();
 }

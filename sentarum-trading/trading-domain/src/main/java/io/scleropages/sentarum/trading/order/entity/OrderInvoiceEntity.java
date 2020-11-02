@@ -13,56 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.order.model.impl;
+package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.trading.order.model.Order;
-import io.scleropages.sentarum.trading.order.model.OrderInvoice;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
+ * referenced from: {@link io.scleropages.sentarum.trading.order.model.impl.OrderInvoiceModel}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OrderInvoiceModel implements OrderInvoice {
+public class OrderInvoiceEntity extends IdEntity {
 
-    private Long id;
     private String taxpayerId;
     private String title;
     private Integer titleType;
     private String taxpayerEmail;
     private Integer detailType;
-    private Order order;
+    private OrderEntity order;
 
 
-    public Long getId() {
-        return id;
-    }
-
+    @Column(name = "taxpayer_id", nullable = false)
     public String getTaxpayerId() {
         return taxpayerId;
     }
 
-
+    @Column(name = "title_", nullable = false)
     public String getTitle() {
         return title;
     }
 
+    @Column(name = "title_type", nullable = false)
     public Integer getTitleType() {
         return titleType;
     }
 
+    @Column(name = "taxpayer_email", nullable = false)
     public String getTaxpayerEmail() {
         return taxpayerEmail;
     }
 
+    @Column(name = "detail_type", nullable = false)
     public Integer getDetailType() {
         return detailType;
     }
 
-    public Order getOrder() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    public OrderEntity getOrder() {
         return order;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setTaxpayerId(String taxpayerId) {
@@ -85,42 +88,7 @@ public class OrderInvoiceModel implements OrderInvoice {
         this.detailType = detailType;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderEntity order) {
         this.order = order;
-    }
-
-    @Override
-    public Long id() {
-        return getId();
-    }
-
-    @Override
-    public String taxpayerId() {
-        return getTaxpayerId();
-    }
-
-    @Override
-    public String title() {
-        return getTitle();
-    }
-
-    @Override
-    public Integer titleType() {
-        return getTitleType();
-    }
-
-    @Override
-    public String taxpayerEmail() {
-        return getTaxpayerEmail();
-    }
-
-    @Override
-    public Integer detailType() {
-        return getDetailType();
-    }
-
-    @Override
-    public Order order() {
-        return getOrder();
     }
 }

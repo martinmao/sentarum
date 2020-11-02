@@ -13,62 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.trading.order.model.impl;
+package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.model.primitive.Amount;
-import io.scleropages.sentarum.trading.order.model.Order;
-import io.scleropages.sentarum.trading.order.model.OrderRefund;
+import io.scleropages.sentarum.core.entity.embeddable.Amount;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Date;
 
 /**
+ * referenced from: {@link io.scleropages.sentarum.trading.order.model.impl.OrderRefundModel}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OrderRefundModel implements OrderRefund {
+public class OrderRefundEntity extends IdEntity {
 
-    private Long id;
     private Date requestTime;
     private String requestContent;
     private Amount totalRefundFee;
     private Integer refundState;
     private Integer refundType;
     private String refundTypeRemark;
-    private Order order;
+    private OrderEntity order;
 
-    public Long getId() {
-        return id;
-    }
-
+    @Column(name = "request_time", nullable = false)
     public Date getRequestTime() {
         return requestTime;
     }
 
+    @Column(name = "request_content", nullable = false)
     public String getRequestContent() {
         return requestContent;
     }
 
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "total_refund_fee", nullable = false))
     public Amount getTotalRefundFee() {
         return totalRefundFee;
     }
 
+    @Column(name = "refund_state", nullable = false)
     public Integer getRefundState() {
         return refundState;
     }
 
+    @Column(name = "refund_type", nullable = false)
     public Integer getRefundType() {
         return refundType;
     }
 
+    @Column(name = "refund_type_remark", nullable = false)
     public String getRefundTypeRemark() {
         return refundTypeRemark;
     }
 
-    public Order getOrder() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    public OrderEntity getOrder() {
         return order;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setRequestTime(Date requestTime) {
@@ -95,48 +102,7 @@ public class OrderRefundModel implements OrderRefund {
         this.refundTypeRemark = refundTypeRemark;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderEntity order) {
         this.order = order;
-    }
-
-
-    @Override
-    public Long id() {
-        return getId();
-    }
-
-    @Override
-    public Date requestTime() {
-        return getRequestTime();
-    }
-
-    @Override
-    public String requestContent() {
-        return getRequestContent();
-    }
-
-    @Override
-    public Amount totalRefundFee() {
-        return getTotalRefundFee();
-    }
-
-    @Override
-    public Integer refundState() {
-        return getRefundState();
-    }
-
-    @Override
-    public Integer refundType() {
-        return getRefundType();
-    }
-
-    @Override
-    public String refundTypeRemark() {
-        return getRefundTypeRemark();
-    }
-
-    @Override
-    public Order order() {
-        return getOrder();
     }
 }

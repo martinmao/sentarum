@@ -42,14 +42,14 @@ public interface OrderInvoice {
      *
      * @return
      */
-    String tittle();
+    String title();
 
     /**
      * 抬头类型：personal 个人=0, enterprise 企业=1
      *
      * @return
      */
-    Integer tittleType();
+    Integer titleType();
 
     /**
      * 买家邮箱
