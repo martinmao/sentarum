@@ -43,14 +43,14 @@ public interface BaseAddress {
      *
      * @return
      */
-    Integer shortCode();
+    String shortCode();
 
     /**
      * 编码,6位
      *
      * @return
      */
-    Integer code();
+    String code();
 
     /**
      * 显示名

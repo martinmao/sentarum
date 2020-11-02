@@ -15,8 +15,10 @@
  */
 package io.scleropages.sentarum.core.model.primitive;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -30,9 +32,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class BaseAddresses {
 
-    private static final Map<Integer, BaseAddress> CODE_TO_ADDRESS = Maps.newHashMap();
-
+    //6位编码地址表
+    private static final Map<String, BaseAddress> CODE_TO_ADDRESS = Maps.newHashMap();
+    //区号地址表
     private static final Map<String, BaseAddress> AREA_CODE_TO_ADDRESS = Maps.newHashMap();
+    //重复区号地址表,存在多个市使用相同区号的情况
+    private static final Map<String, List<BaseAddress>> REDUPLICATE_AREA_CODE_TO_ADDRESS = Maps.newHashMap();
+
 
     private static final AtomicBoolean READ_FLAG = new AtomicBoolean(false);
 
@@ -42,8 +48,16 @@ public abstract class BaseAddresses {
             List<BaseAddress> reads = reader.read();
             reads.forEach(baseAddress -> {
                 CODE_TO_ADDRESS.put(baseAddress.code(), baseAddress);
-                if (baseAddress.isCity())
-                    AREA_CODE_TO_ADDRESS.put(baseAddress.telAreaCode(), baseAddress);
+                if (baseAddress.isCity()) {
+                    String telAreaCode = baseAddress.telAreaCode();
+                    if (!StringUtils.hasText(telAreaCode))
+                        return;
+                    BaseAddress associated = AREA_CODE_TO_ADDRESS.putIfAbsent(telAreaCode, baseAddress);
+                    if (null != associated) {//存在多个市使用相同区号的情况，重复区号的城市将放入 REDUPLICATE_AREA_CODE_TO_ADDRESS
+                        List<BaseAddress> reduplicate = REDUPLICATE_AREA_CODE_TO_ADDRESS.computeIfAbsent(telAreaCode, key -> Lists.newArrayList());
+                        reduplicate.add(baseAddress);
+                    }
+                }
             });
         }
     }
@@ -64,13 +78,24 @@ public abstract class BaseAddresses {
     /**
      * return city base address by area code (区号,三位010 或 四位0571)
      *
-     * @param areaCode
+     * @param telAreaCode
      * @return
      */
-    public static final BaseAddress getBaseAddressByArea(String areaCode) {
-        Assert.hasText(areaCode, "areaCode must not empty.");
+    public static final BaseAddress getBaseAddressByTelArea(String telAreaCode) {
+        Assert.hasText(telAreaCode, "tel areaCode must not empty.");
         assertInitialized();
-        return Optional.of(AREA_CODE_TO_ADDRESS.get(areaCode)).orElseThrow(() -> new IllegalArgumentException("no such base address found for given area code: " + areaCode));
+        return Optional.of(AREA_CODE_TO_ADDRESS.get(telAreaCode)).orElseThrow(() -> new IllegalArgumentException("no such base address found for given tel area code: " + telAreaCode));
+    }
+
+    public static final List<BaseAddress> getBaseAddressesByTelArea(String telAreaCode) {
+        BaseAddress baseAddress = getBaseAddressByTelArea(telAreaCode);
+        List<BaseAddress> reduplicateAddresses = REDUPLICATE_AREA_CODE_TO_ADDRESS.get(telAreaCode);
+        List<BaseAddress> baseAddresses = Lists.newArrayList();
+        if (null != reduplicateAddresses) {
+            baseAddresses.addAll(reduplicateAddresses);
+        }
+        baseAddresses.add(baseAddress);
+        return baseAddresses;
     }
 
     private static void assertInitialized() {
