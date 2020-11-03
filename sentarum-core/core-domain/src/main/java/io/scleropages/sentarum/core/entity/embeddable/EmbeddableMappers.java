@@ -77,7 +77,7 @@ public abstract class EmbeddableMappers {
         return embeddableAddress;
     }
 
-    public Address toPrimitive(EmbeddableAddress address) {
+    public static Address toPrimitive(EmbeddableAddress address) {
         if (null == address)
             return null;
         return new Address(address.getCode(), address.getDetailAddress());
