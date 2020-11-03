@@ -18,15 +18,21 @@ package io.scleropages.sentarum.trading.order.entity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.trading.order.model.impl.OrderSellerModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
+@Entity
+@Table(name = "td_order_seller")
+@SequenceGenerator(name = "td_order_seller_id", sequenceName = "seq_td_order_seller", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class OrderSellerEntity extends IdEntity {
 
     private Integer sellerType;

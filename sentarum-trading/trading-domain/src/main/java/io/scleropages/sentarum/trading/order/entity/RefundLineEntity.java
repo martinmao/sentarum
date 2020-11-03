@@ -16,16 +16,18 @@
 package io.scleropages.sentarum.trading.order.entity;
 
 import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
-import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderRefund;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -33,13 +35,16 @@ import java.util.Date;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
+@Entity
+@Table(name = "td_order_refund_line")
+@SequenceGenerator(name = "td_order_refund_line_id", sequenceName = "seq_td_order_refund_line", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class RefundLineEntity extends IdEntity {
 
     private EmbeddableAmount refundFee;
     private Date time;
     private Integer state;
-    private OrderRefund orderRefund;
-    private Order order;
+    private OrderRefundEntity orderRefund;
+    private OrderEntity order;
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "refund_fee", nullable = false))
@@ -59,13 +64,13 @@ public class RefundLineEntity extends IdEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_refund_id", nullable = false)
-    public OrderRefund getOrderRefund() {
+    public OrderRefundEntity getOrderRefund() {
         return orderRefund;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    public Order getOrder() {
+    public OrderEntity getOrder() {
         return order;
     }
 
@@ -81,11 +86,11 @@ public class RefundLineEntity extends IdEntity {
         this.state = state;
     }
 
-    public void setOrderRefund(OrderRefund orderRefund) {
+    public void setOrderRefund(OrderRefundEntity orderRefund) {
         this.orderRefund = orderRefund;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderEntity order) {
         this.order = order;
     }
 }

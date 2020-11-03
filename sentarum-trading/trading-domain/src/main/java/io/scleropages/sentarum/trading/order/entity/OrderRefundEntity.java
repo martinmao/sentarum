@@ -21,9 +21,12 @@ import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -31,6 +34,9 @@ import java.util.Date;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
+@Entity
+@Table(name = "td_order_refund")
+@SequenceGenerator(name = "td_order_refund_id", sequenceName = "seq_td_order_refund", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class OrderRefundEntity extends IdEntity {
 
     private Date requestTime;

@@ -12,8 +12,6 @@
     <artifactId>trading-domain</artifactId>
 
     <dependencies>
-
-
         <dependency>
             <groupId>org.scleropages.sentarum</groupId>
             <artifactId>core-domain</artifactId>
@@ -65,6 +63,13 @@
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.scleropages.sentarum</groupId>
+                        <artifactId>core-domain</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
