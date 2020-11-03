@@ -17,37 +17,33 @@ package io.scleropages.sentarum.core.entity.embeddable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
-import java.math.BigDecimal;
 
 /**
- * referenced from: {@link io.scleropages.sentarum.core.model.primitive.Amount}
+ * referenced from: {@link io.scleropages.sentarum.core.model.primitive.BaseAddress}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Embeddable
-public class EmbeddableAmount {
+public class EmbeddableBaseAddress {
 
-    private BigDecimal amount;
-    private String currencyCode;
+    private String code;
+    private String name;
 
-    @Column(name = "amount")
-    public BigDecimal getAmount() {
-        return amount;
+    @Column(name = "district_code", nullable = false, length = 16)
+    public String getCode() {
+        return code;
     }
 
-    @Transient
-    //当前无需支持货币化表示
-    //@Column(name = "amount_currency")
-    public String getCurrencyCode() {
-        return currencyCode;
+    @Column(name = "district_", nullable = false, length = 16)
+    public String getName() {
+        return name;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
+    public void setName(String name) {
+        this.name = name;
     }
 }

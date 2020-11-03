@@ -76,7 +76,7 @@ public abstract class BaseAddresses {
     }
 
     /**
-     * return city base address by area code (区号,三位010 或 四位0571)
+     * return city base address by tel area code
      *
      * @param telAreaCode
      * @return
@@ -87,6 +87,12 @@ public abstract class BaseAddresses {
         return Optional.of(AREA_CODE_TO_ADDRESS.get(telAreaCode)).orElseThrow(() -> new IllegalArgumentException("no such base address found for given tel area code: " + telAreaCode));
     }
 
+    /**
+     * return all city base address(s) by tel area code
+     *
+     * @param telAreaCode
+     * @return
+     */
     public static final List<BaseAddress> getBaseAddressesByTelArea(String telAreaCode) {
         BaseAddress baseAddress = getBaseAddressByTelArea(telAreaCode);
         List<BaseAddress> reduplicateAddresses = REDUPLICATE_AREA_CODE_TO_ADDRESS.get(telAreaCode);

@@ -60,6 +60,13 @@ public interface BaseAddress {
     String name();
 
     /**
+     * 完整省市区显示名','号分隔.
+     *
+     * @return
+     */
+    String fullName();
+
+    /**
      * 电话区号
      *
      * @return
@@ -100,13 +107,6 @@ public interface BaseAddress {
     default boolean isArea() {
         return nameSuffix() == AREA;
     }
-
-    /**
-     * 范围true时代表当前地址是标准地址.
-     *
-     * @return
-     */
-    boolean isStandard();
 
 
     enum NameSuffix {

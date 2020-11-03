@@ -17,6 +17,7 @@ package io.scleropages.sentarum.core.model.primitive.impl;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.core.model.primitive.BaseAddress;
 import io.scleropages.sentarum.core.model.primitive.BaseAddressReader;
 import org.apache.commons.io.IOUtils;
@@ -31,6 +32,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import static io.scleropages.sentarum.core.model.primitive.BaseAddress.NameSuffix.*;
 
@@ -80,17 +82,23 @@ public class ResourceBaseAddressReader implements BaseAddressReader, ResourceLoa
         try {
             List<String> strings = IOUtils.readLines(in, "utf-8");
             List<String> noStandards = Lists.newArrayList();
+            Map<Integer, BaseAddressImpl> allAddress = Maps.newHashMap();
             strings.forEach(s -> {
-                BaseAddress baseAddress = createBaseAddress(s);
+                BaseAddressImpl baseAddress = createBaseAddress(s);
                 if (null == baseAddress)
                     return;
-                if (!baseAddress.isStandard()) {
+                if (!baseAddress.standard) {
                     noStandards.add(baseAddress.name());
                     return;
                 }
                 addresses.add(baseAddress);
+                allAddress.putIfAbsent(baseAddress.id(), baseAddress);
             });
 
+            allAddress.forEach((key, baseAddress) -> {
+                baseAddress.fullName = baseAddress.name;
+                baseAddress.fullName = computeFullName(allAddress, baseAddress);
+            });
             logger.info("successfully loaded divisions data in {}. entries size: total({})=read({})+ignored({}). detail ignored: [{}]", stopwatch.stop(), strings.size(), addresses.size(), noStandards.size(), StringUtils.collectionToDelimitedString(noStandards, ","));
         } catch (Exception e) {
             throw new IllegalStateException("failure to read divisions data file.", e);
@@ -98,6 +106,19 @@ public class ResourceBaseAddressReader implements BaseAddressReader, ResourceLoa
             IOUtils.closeQuietly(in);
         }
         return addresses;
+    }
+
+
+    protected String computeFullName(Map<Integer, BaseAddressImpl> allAddress, BaseAddressImpl currentAddress) {
+        Integer parentId = currentAddress.parentId();
+        if (null != parentId && parentId != 0) {
+            BaseAddress parent = allAddress.get(parentId);
+            if (null != parent) {
+                String parentName = computeFullName(allAddress, (BaseAddressImpl) parent);
+                return StringUtils.hasText(parentName) ? parentName + "," + currentAddress.name : currentAddress.name;
+            }
+        }
+        return currentAddress.name;
     }
 
 
@@ -120,7 +141,7 @@ public class ResourceBaseAddressReader implements BaseAddressReader, ResourceLoa
      * @param row
      * @return
      */
-    protected BaseAddress createBaseAddress(String row) {
+    protected BaseAddressImpl createBaseAddress(String row) {
         if (row.startsWith("#")) {
             return null;
         }
@@ -177,6 +198,7 @@ public class ResourceBaseAddressReader implements BaseAddressReader, ResourceLoa
         private String code;
         private String name;
         private String telAreaCode;
+        private String fullName;
         private NameSuffix nameSuffix;
         private boolean standard = false;
 
@@ -207,6 +229,11 @@ public class ResourceBaseAddressReader implements BaseAddressReader, ResourceLoa
         }
 
         @Override
+        public String fullName() {
+            return fullName;
+        }
+
+        @Override
         public String telAreaCode() {
             return telAreaCode;
         }
@@ -214,11 +241,6 @@ public class ResourceBaseAddressReader implements BaseAddressReader, ResourceLoa
         @Override
         public NameSuffix nameSuffix() {
             return nameSuffix;
-        }
-
-        @Override
-        public boolean isStandard() {
-            return standard;
         }
 
         private void markAsStandard() {

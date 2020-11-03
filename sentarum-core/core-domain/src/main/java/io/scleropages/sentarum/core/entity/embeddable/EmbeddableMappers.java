@@ -16,6 +16,8 @@
 package io.scleropages.sentarum.core.entity.embeddable;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
+import io.scleropages.sentarum.core.model.primitive.BaseAddress;
+import io.scleropages.sentarum.core.model.primitive.BaseAddresses;
 
 import java.util.Currency;
 
@@ -45,6 +47,21 @@ public abstract class EmbeddableMappers {
             target.setCurrency(Currency.getInstance(amount.getCurrencyCode()));
 
         return target;
+    }
+
+    public static EmbeddableBaseAddress toEmbeddable(BaseAddress baseAddress) {
+        if (null == baseAddress)
+            return null;
+        EmbeddableBaseAddress address = new EmbeddableBaseAddress();
+        address.setCode(baseAddress.code());
+        address.setName(baseAddress.fullName());
+        return address;
+    }
+
+    public BaseAddress toPrimitive(EmbeddableBaseAddress baseAddress) {
+        if (null == baseAddress)
+            return null;
+        return BaseAddresses.getBaseAddress(baseAddress.getCode());
     }
 
 }
