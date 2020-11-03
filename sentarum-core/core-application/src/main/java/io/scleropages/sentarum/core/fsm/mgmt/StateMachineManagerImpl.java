@@ -104,7 +104,6 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @BizError("12")
     public void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState, Long endState) {
         Assert.notNull(initialState, "initialState must not null;");
-        Assert.notNull(endState, "endState must not null;");
 
         StateEntity initialStateEntity = stateRepository.get(initialState).orElseThrow(() -> new IllegalArgumentException("no initialState found: " + initialState));
 
