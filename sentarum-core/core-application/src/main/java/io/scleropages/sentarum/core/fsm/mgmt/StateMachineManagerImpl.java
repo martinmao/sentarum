@@ -42,10 +42,12 @@ import io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateMachineExecutionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateTransitionRepository;
+import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Map;
@@ -55,7 +57,9 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Component
+@Service
+@Validated
+@BizError("91")
 public class StateMachineManagerImpl implements StateMachineManager {
 
     private StateMachineDefinitionEntityMapper stateMachineDefinitionEntityMapper;
@@ -73,7 +77,9 @@ public class StateMachineManagerImpl implements StateMachineManager {
     private StateMachineFactory stateMachineFactory;
 
     @Override
+    @Validated({StateModel.CreateModel.class})
     @Transactional
+    @BizError("10")
     public void createState(StateModel state) {
         StateEntity stateEntity = stateEntityMapper.mapForSave(state);
         if (null != stateEntity.getEnteredActionConfig())
@@ -84,15 +90,22 @@ public class StateMachineManagerImpl implements StateMachineManager {
     }
 
     @Override
+    @Validated({EventDefinitionModel.CreateModel.class})
     @Transactional
+    @BizError("11")
     public void createEventDefinition(EventDefinitionModel eventDefinition) {
         EventDefinitionEntity eventDefinitionEntity = eventDefinitionEntityMapper.mapForSave(eventDefinition);
         eventDefinitionRepository.save(eventDefinitionEntity);
     }
 
     @Override
+    @Validated({StateMachineDefinitionModel.CreateModel.class})
     @Transactional
+    @BizError("12")
     public void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState, Long endState) {
+        Assert.notNull(initialState, "initialState must not null;");
+        Assert.notNull(endState, "endState must not null;");
+
         StateEntity initialStateEntity = stateRepository.get(initialState).orElseThrow(() -> new IllegalArgumentException("no initialState found: " + initialState));
 
         StateMachineDefinitionEntity stateMachineDefinitionEntity = stateMachineDefinitionEntityMapper.mapForSave(stateMachineDefinition);
@@ -105,8 +118,14 @@ public class StateMachineManagerImpl implements StateMachineManager {
     }
 
     @Override
+    @Validated({StateTransitionModel.CreateModel.class})
     @Transactional
+    @BizError("13")
     public void createStateTransition(StateTransitionModel stateTransition, Long stateMachineDefinitionId, Long fromStateId, Long toStateId, Long eventDefinitionId) {
+        Assert.notNull(stateMachineDefinitionId, "stateMachineDefinitionId must not null;");
+        Assert.notNull(toStateId, "toStateId must not null;");
+        Assert.notNull(eventDefinitionId, "eventDefinitionId must not null;");
+
         StateMachineDefinitionEntity stateMachineDefinitionEntity = stateMachineDefinitionRepository.get(stateMachineDefinitionId).orElseThrow(() -> new IllegalArgumentException("no state machine definition found: " + stateMachineDefinitionId));
         StateEntity fromStateEntity = stateRepository.get(fromStateId).orElseThrow(() -> new IllegalArgumentException("no state found: " + fromStateId));
         StateEntity toStateEntity = stateRepository.get(toStateId).orElseThrow(() -> new IllegalArgumentException("no state found: " + toStateId));
@@ -127,7 +146,12 @@ public class StateMachineManagerImpl implements StateMachineManager {
 
     @Override
     @Transactional
+    @BizError("14")
     public StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes) {
+        Assert.notNull(definitionId, "definitionId must not null;");
+        Assert.notNull(bizType, "bizType must not null;");
+        Assert.notNull(bizId, "bizId must not null;");
+
         return stateMachineFactory.createStateMachine(definitionId, bizType, bizId, contextAttributes);
     }
 

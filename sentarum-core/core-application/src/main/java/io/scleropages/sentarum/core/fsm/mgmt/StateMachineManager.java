@@ -27,6 +27,7 @@ import io.scleropages.sentarum.core.fsm.model.impl.StateMachineDefinitionModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateModel;
 import io.scleropages.sentarum.core.fsm.model.impl.StateTransitionModel;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -42,14 +43,14 @@ public interface StateMachineManager {
      *
      * @param state state to create
      */
-    void createState(StateModel state);
+    void createState(@Valid StateModel state);
 
     /**
      * create new event definition.
      *
      * @param eventDefinition
      */
-    void createEventDefinition(EventDefinitionModel eventDefinition);
+    void createEventDefinition(@Valid EventDefinitionModel eventDefinition);
 
     /**
      * create new state machine definition.
@@ -58,7 +59,7 @@ public interface StateMachineManager {
      * @param initialState           required initial state
      * @param endState               optional end state. if not specified. the state machine will running forever
      */
-    void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState, Long endState);
+    void createStateMachineDefinition(@Valid StateMachineDefinitionModel stateMachineDefinition, Long initialState, Long endState);
 
     /**
      * create new state transition
@@ -69,7 +70,7 @@ public interface StateMachineManager {
      * @param toStateId                id of target to state
      * @param eventDefinitionId        id of event definition
      */
-    void createStateTransition(StateTransitionModel stateTransition, Long stateMachineDefinitionId, Long fromStateId, Long toStateId, Long eventDefinitionId);
+    void createStateTransition(@Valid StateTransitionModel stateTransition, Long stateMachineDefinitionId, Long fromStateId, Long toStateId, Long eventDefinitionId);
 
     /**
      * create new state machine.
