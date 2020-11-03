@@ -15,20 +15,20 @@
  */
 package io.scleropages.sentarum.trading.order.entity;
 
-import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
-import io.scleropages.sentarum.core.model.primitive.Address;
-import io.scleropages.sentarum.core.model.primitive.Geo;
-import io.scleropages.sentarum.core.model.primitive.Tel;
-import io.scleropages.sentarum.trading.order.model.Order;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAddress;
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableGeo;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.util.Date;
 
 /**
- *
  * referenced from: {@link io.scleropages.sentarum.trading.order.model.impl.OrderConsigneeModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -39,15 +39,65 @@ import java.util.Date;
 public class OrderConsigneeEntity extends IdEntity {
 
 
-    private Date startTime;
-    private Date endTime;
-    private Date deliveredTime;
-    private EmbeddableAmount deliveryAmount;
     private String name;
     private String tel;
-    private Address address;
-    private String detailAddress;
+    private EmbeddableAddress address;
     private String postalCode;
-    private Geo geo;
-    private Order order;
+    private EmbeddableGeo geo;
+    private OrderEntity order;
+
+    @Column(name = "name_", nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    @Column(name = "tel_", nullable = false)
+    public String getTel() {
+        return tel;
+    }
+
+    @Embedded
+    public EmbeddableAddress getAddress() {
+        return address;
+    }
+
+    @Column(name = "postal_code", nullable = false)
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    @Embedded
+    public EmbeddableGeo getGeo() {
+        return geo;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    public OrderEntity getOrder() {
+        return order;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public void setAddress(EmbeddableAddress address) {
+        this.address = address;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public void setGeo(EmbeddableGeo geo) {
+        this.geo = geo;
+    }
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
+    }
 }

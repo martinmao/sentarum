@@ -16,11 +16,8 @@
 package io.scleropages.sentarum.trading.order.model;
 
 import io.scleropages.sentarum.core.model.primitive.Address;
-import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Geo;
 import io.scleropages.sentarum.core.model.primitive.Tel;
-
-import java.util.Date;
 
 /**
  * 描述订单交付信息(收货人信息)
@@ -35,34 +32,6 @@ public interface OrderConsignee {
      * @return
      */
     Long id();
-
-    /**
-     * 配送开始时间
-     *
-     * @return
-     */
-    Date startTime();
-
-    /**
-     * 配送结束时间
-     *
-     * @return
-     */
-    Date endTime();
-
-    /**
-     * 配送交付时间
-     *
-     * @return
-     */
-    Date deliveredTime();
-
-    /**
-     * 配送金额
-     *
-     * @return
-     */
-    Amount deliveryAmount();
 
     /**
      * 收货人姓名
@@ -85,14 +54,6 @@ public interface OrderConsignee {
      * @return
      */
     Address address();
-
-    /**
-     * 收货人详细地址
-     *
-     * @return
-     */
-    String detailAddress();
-
 
     /**
      * 邮编

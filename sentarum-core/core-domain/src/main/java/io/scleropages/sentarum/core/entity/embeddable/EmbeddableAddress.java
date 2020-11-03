@@ -19,31 +19,33 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
- * referenced from: {@link io.scleropages.sentarum.core.model.primitive.BaseAddress}
+ * referenced from: {@link io.scleropages.sentarum.core.model.primitive.Address}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Embeddable
-public class EmbeddableBaseAddress {
+public class EmbeddableAddress extends EmbeddableBaseAddress {
 
-    private String code;
-    private String name;
+    private String detailAddress;
 
+    @Column(name = "address_detail", nullable = false)
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    @Override
     @Column(name = "district_code", nullable = false, length = 16)
     public String getCode() {
-        return code;
+        return super.getCode();
     }
 
+    @Override
     @Column(name = "district_", nullable = false, length = 32)
     public String getName() {
-        return name;
+        return super.getName();
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
     }
 }

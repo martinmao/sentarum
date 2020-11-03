@@ -22,5 +22,52 @@ package io.scleropages.sentarum.core.model.primitive;
  */
 public class Address {
 
+    private BaseAddress baseAddress;
 
+    private String detailAddress;
+
+    private String districtCode;
+
+    public Address() {
+    }
+
+    public Address(String districtCode) {
+        this(districtCode, null);
+    }
+
+    public Address(String districtCode, String detailAddress) {
+        this.districtCode = districtCode;
+        this.baseAddress = BaseAddresses.getBaseAddress(districtCode);
+        this.detailAddress = detailAddress;
+    }
+
+
+    public Address(BaseAddress baseAddress, String detailAddress) {
+        this.baseAddress = baseAddress;
+        this.detailAddress = detailAddress;
+    }
+
+    public BaseAddress getBaseAddress() {
+        return baseAddress;
+    }
+
+    public String getDetailAddress() {
+        return detailAddress;
+    }
+
+    public String getDistrictCode() {
+        return districtCode;
+    }
+
+    public void setBaseAddress(BaseAddress baseAddress) {
+        this.baseAddress = baseAddress;
+    }
+
+    public void setDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public void setDistrictCode(String districtCode) {
+        this.districtCode = districtCode;
+    }
 }

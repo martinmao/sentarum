@@ -17,6 +17,8 @@ package io.scleropages.sentarum.trading.order.model;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
 
+import java.util.Date;
+
 /**
  * 订单交付（物流）打包信息
  *
@@ -30,6 +32,28 @@ public interface DeliveryPackage {
      * @return
      */
     Long id();
+
+    /**
+     * 配送开始时间
+     *
+     * @return
+     */
+    Date startTime();
+
+    /**
+     * 配送结束时间
+     *
+     * @return
+     */
+    Date endTime();
+
+    /**
+     * 配送交付时间
+     *
+     * @return
+     */
+    Date deliveredTime();
+
 
     /**
      * 物流单号

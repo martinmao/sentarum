@@ -18,13 +18,16 @@ package io.scleropages.sentarum.trading.order.entity;
 import io.scleropages.sentarum.core.entity.embeddable.EmbeddableAmount;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * referenced {@link io.scleropages.sentarum.trading.order.model.impl.DeliveryPackageModel}
@@ -36,6 +39,9 @@ import javax.persistence.Table;
 @SequenceGenerator(name = "td_order_delivery_package_id", sequenceName = "seq_td_order_delivery_package", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class DeliveryPackageEntity extends IdEntity {
 
+    private Date startTime;
+    private Date endTime;
+    private Date deliveredTime;
     private String expressNo;
     private Integer expressId;
     private String expressName;
@@ -45,6 +51,21 @@ public class DeliveryPackageEntity extends IdEntity {
 
     private OrderEntity order;
     private OrderDeliveryEntity orderDelivery;
+
+    @Column(name = "start_time", nullable = false)
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    @Column(name = "end_time")
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    @Column(name = "delivered_time")
+    public Date getDeliveredTime() {
+        return deliveredTime;
+    }
 
     @Column(name = "express_no", nullable = false)
     public String getExpressNo() {
@@ -71,7 +92,8 @@ public class DeliveryPackageEntity extends IdEntity {
         return expressState;
     }
 
-    @Column(name = "express_fee", nullable = false)
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "express_fee", nullable = false))
     public EmbeddableAmount getExpressFee() {
         return expressFee;
     }
@@ -86,6 +108,18 @@ public class DeliveryPackageEntity extends IdEntity {
     @JoinColumn(name = "order_delivery_id", nullable = false)
     public OrderDeliveryEntity getOrderDelivery() {
         return orderDelivery;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setDeliveredTime(Date deliveredTime) {
+        this.deliveredTime = deliveredTime;
     }
 
     public void setExpressNo(String expressNo) {

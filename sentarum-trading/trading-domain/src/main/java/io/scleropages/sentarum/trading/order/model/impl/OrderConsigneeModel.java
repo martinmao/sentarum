@@ -30,14 +30,9 @@ import java.util.Date;
 public class OrderConsigneeModel implements OrderConsignee {
 
     private Long id;
-    private Date startTime;
-    private Date endTime;
-    private Date deliveredTime;
-    private Amount deliveryAmount;
     private String name;
     private Tel tel;
     private Address address;
-    private String detailAddress;
     private String postalCode;
     private Geo geo;
     private Order order;
@@ -46,21 +41,6 @@ public class OrderConsigneeModel implements OrderConsignee {
         return id;
     }
 
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public Date getDeliveredTime() {
-        return deliveredTime;
-    }
-
-    public Amount getDeliveryAmount() {
-        return deliveryAmount;
-    }
 
     public String getName() {
         return name;
@@ -72,10 +52,6 @@ public class OrderConsigneeModel implements OrderConsignee {
 
     public Address getAddress() {
         return address;
-    }
-
-    public String getDetailAddress() {
-        return detailAddress;
     }
 
     public String getPostalCode() {
@@ -95,21 +71,6 @@ public class OrderConsigneeModel implements OrderConsignee {
         this.id = id;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public void setDeliveredTime(Date deliveredTime) {
-        this.deliveredTime = deliveredTime;
-    }
-
-    public void setDeliveryAmount(Amount deliveryAmount) {
-        this.deliveryAmount = deliveryAmount;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -121,10 +82,6 @@ public class OrderConsigneeModel implements OrderConsignee {
 
     public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public void setDetailAddress(String detailAddress) {
-        this.detailAddress = detailAddress;
     }
 
     public void setPostalCode(String postalCode) {
@@ -145,26 +102,6 @@ public class OrderConsigneeModel implements OrderConsignee {
     }
 
     @Override
-    public Date startTime() {
-        return getStartTime();
-    }
-
-    @Override
-    public Date endTime() {
-        return getEndTime();
-    }
-
-    @Override
-    public Date deliveredTime() {
-        return getDeliveredTime();
-    }
-
-    @Override
-    public Amount deliveryAmount() {
-        return getDeliveryAmount();
-    }
-
-    @Override
     public String name() {
         return getName();
     }
@@ -177,11 +114,6 @@ public class OrderConsigneeModel implements OrderConsignee {
     @Override
     public Address address() {
         return getAddress();
-    }
-
-    @Override
-    public String detailAddress() {
-        return getDetailAddress();
     }
 
     @Override

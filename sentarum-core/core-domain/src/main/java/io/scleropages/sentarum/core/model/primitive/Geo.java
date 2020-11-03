@@ -24,6 +24,19 @@ public class Geo {
 
     private LonLat lonLat;
 
+    public Geo() {
+    }
+
+    public Geo(LonLat lonLat) {
+        this.lonLat = lonLat;
+    }
+
+
+    public Geo(double latitude, double longitude) {
+        this(new LonLat(latitude, longitude));
+    }
+
+
     public LonLat getLonLat() {
         return lonLat;
     }

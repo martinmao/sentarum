@@ -15,9 +15,11 @@
  */
 package io.scleropages.sentarum.core.entity.embeddable;
 
+import io.scleropages.sentarum.core.model.primitive.Address;
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.BaseAddress;
 import io.scleropages.sentarum.core.model.primitive.BaseAddresses;
+import io.scleropages.sentarum.core.model.primitive.Geo;
 
 import java.util.Currency;
 
@@ -62,6 +64,41 @@ public abstract class EmbeddableMappers {
         if (null == baseAddress)
             return null;
         return BaseAddresses.getBaseAddress(baseAddress.getCode());
+    }
+
+
+    public static EmbeddableAddress toEmbeddable(Address address) {
+        if (null == address)
+            return null;
+        EmbeddableAddress embeddableAddress = new EmbeddableAddress();
+        BaseAddress baseAddress = address.getBaseAddress();
+        embeddableAddress.setCode(baseAddress.code());
+        embeddableAddress.setName(baseAddress.fullName());
+        return embeddableAddress;
+    }
+
+    public Address toPrimitive(EmbeddableAddress address) {
+        if (null == address)
+            return null;
+        return new Address(address.getCode(), address.getDetailAddress());
+    }
+
+    public static EmbeddableGeo toEmbeddable(Geo geo) {
+        if (null == geo)
+            return null;
+        Geo.LonLat lonLat = geo.getLonLat();
+        if (null == lonLat)
+            return null;
+        EmbeddableGeo embeddableGeo = new EmbeddableGeo();
+        embeddableGeo.setLatitude(lonLat.getLatitude());
+        embeddableGeo.setLongitude(lonLat.getLongitude());
+        return embeddableGeo;
+    }
+
+    public static Geo toPrimitive(EmbeddableGeo geo) {
+        if (null == geo)
+            return null;
+        return new Geo(geo.getLatitude(), geo.getLongitude());
     }
 
 }

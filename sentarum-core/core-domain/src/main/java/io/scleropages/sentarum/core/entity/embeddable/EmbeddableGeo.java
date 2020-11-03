@@ -19,31 +19,31 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
- * referenced from: {@link io.scleropages.sentarum.core.model.primitive.BaseAddress}
+ * referenced from: {@link io.scleropages.sentarum.core.model.primitive.Geo}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Embeddable
-public class EmbeddableBaseAddress {
+public class EmbeddableGeo {
 
-    private String code;
-    private String name;
+    private Double latitude;
+    private Double longitude;
 
-    @Column(name = "district_code", nullable = false, length = 16)
-    public String getCode() {
-        return code;
+    @Column(name = "geo_latitude", nullable = false)
+    public Double getLatitude() {
+        return latitude;
     }
 
-    @Column(name = "district_", nullable = false, length = 32)
-    public String getName() {
-        return name;
+    @Column(name = "geo_longitude", nullable = false)
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

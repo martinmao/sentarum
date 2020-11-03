@@ -20,12 +20,17 @@ import io.scleropages.sentarum.trading.order.model.DeliveryPackage;
 import io.scleropages.sentarum.trading.order.model.Order;
 import io.scleropages.sentarum.trading.order.model.OrderDelivery;
 
+import java.util.Date;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class DeliveryPackageModel implements DeliveryPackage {
 
     private Long id;
+    private Date startTime;
+    private Date endTime;
+    private Date deliveredTime;
     private String expressNo;
     private Integer expressId;
     private String expressName;
@@ -38,6 +43,19 @@ public class DeliveryPackageModel implements DeliveryPackage {
 
     public Long getId() {
         return id;
+    }
+
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public Date getDeliveredTime() {
+        return deliveredTime;
     }
 
     public String getExpressNo() {
@@ -72,9 +90,20 @@ public class DeliveryPackageModel implements DeliveryPackage {
         return expressFee;
     }
 
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setDeliveredTime(Date deliveredTime) {
+        this.deliveredTime = deliveredTime;
     }
 
     public void setExpressNo(String expressNo) {
@@ -112,6 +141,21 @@ public class DeliveryPackageModel implements DeliveryPackage {
     @Override
     public Long id() {
         return getId();
+    }
+
+    @Override
+    public Date startTime() {
+        return getStartTime();
+    }
+
+    @Override
+    public Date endTime() {
+        return getEndTime();
+    }
+
+    @Override
+    public Date deliveredTime() {
+        return getDeliveredTime();
     }
 
     @Override
