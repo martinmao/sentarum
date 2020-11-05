@@ -20,6 +20,7 @@ import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +43,13 @@ public interface Activity {
      * @return
      */
     String name();
+
+    /**
+     * 活动标题
+     *
+     * @return
+     */
+    String tag();
 
     /**
      * 活动描述
@@ -102,11 +110,11 @@ public interface Activity {
 
 
     /**
-     * 促销规则
+     * 活动规则
      *
      * @return
      */
-    Rule promotionRule();
+    List<Rule> rules();
 
 
     /**

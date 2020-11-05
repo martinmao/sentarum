@@ -20,7 +20,7 @@ package io.scleropages.sentarum.promotion.rule;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface RuleEvaluator {
+public interface RuleEvaluator extends RuleInvocation{
 
 
     /**

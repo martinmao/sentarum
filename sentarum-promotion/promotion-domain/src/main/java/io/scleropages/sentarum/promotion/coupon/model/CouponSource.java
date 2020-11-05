@@ -66,11 +66,19 @@ public interface CouponSource {
 
 
     /**
-     * num of coupon per user.
+     * num of coupons per user.
      *
      * @return
      */
     Integer userNum();
+
+
+    /**
+     * num of coupons sent per day.
+     *
+     * @return
+     */
+    Integer dayNum();
 
 
     /**

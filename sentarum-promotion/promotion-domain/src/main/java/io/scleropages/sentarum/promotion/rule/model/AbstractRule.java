@@ -16,44 +16,50 @@
 package io.scleropages.sentarum.promotion.rule.model;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.rule.EvaluationContext;
-import io.scleropages.sentarum.promotion.rule.EvaluationLevel;
-import io.scleropages.sentarum.promotion.rule.RuleEvaluatorChain;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public abstract class AbstractRule implements Rule {
 
-
     private Long id;
 
     private Activity activity;
 
-    private EvaluationLevel evaluationLevel;
+    private String ruleInvocationImplementation;
+
+    private String description;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Activity getActivity() {
         return activity;
     }
 
+    public String getRuleInvocationImplementation() {
+        return ruleInvocationImplementation;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setActivity(Activity activity) {
         this.activity = activity;
     }
 
-    public EvaluationLevel getEvaluationLevel() {
-        return evaluationLevel;
+    public void setRuleInvocationImplementation(String ruleInvocationImplementation) {
+        this.ruleInvocationImplementation = ruleInvocationImplementation;
     }
 
-    public void setEvaluationLevel(EvaluationLevel evaluationLevel) {
-        this.evaluationLevel = evaluationLevel;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -66,18 +72,14 @@ public abstract class AbstractRule implements Rule {
         return getActivity();
     }
 
-    @Override
-    public void evaluate(EvaluationContext evaluateContext, RuleEvaluatorChain chain) {
 
+    @Override
+    public String ruleInvocationImplementation() {
+        return getRuleInvocationImplementation();
     }
 
     @Override
-    public String desc() {
-        return null;
-    }
-
-    @Override
-    public EvaluationLevel evaluationLevel() {
-        return getEvaluationLevel();
+    public String description() {
+        return getDescription();
     }
 }

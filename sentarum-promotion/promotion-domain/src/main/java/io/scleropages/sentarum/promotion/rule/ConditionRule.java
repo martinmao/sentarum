@@ -13,44 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model;
+package io.scleropages.sentarum.promotion.rule;
 
-import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
- * 描述一个规则，将规则的描述统一抽象，每一种规则都有对应model及其entity
+ * 条件规则：特殊的规则调用，其直接返回一个布尔值来确定是否执行后续规则.
+ * 可用于促销参与规则判定
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Rule {
+public interface ConditionRule extends RuleInvocation {
 
-    /**
-     * 唯一标识
-     *
-     * @return
-     */
-    Long id();
 
-    /**
-     * 关联的活动
-     *
-     * @return
-     */
-    Activity activity();
+    @Override
+    default void execute(Rule rule, InvocationContext invocationContext, InvocationChain chain) {
+        if (match(rule, invocationContext, chain)) {
+            chain.next(invocationContext);
+        }
+    }
 
 
     /**
-     * 规则执行实现
-     *
+     * 返回TRUE则调用链继续执行
+     * @param rule
+     * @param invocationContext
+     * @param chain
      * @return
      */
-    String ruleInvocationImplementation();
-
-
-    /**
-     * 规则描述.
-     *
-     * @return
-     */
-    String description();
+    boolean match(Rule rule, InvocationContext invocationContext, InvocationChain chain);
 }

@@ -13,44 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model;
-
-import io.scleropages.sentarum.promotion.activity.model.Activity;
+package io.scleropages.sentarum.promotion.rule;
 
 /**
- * 描述一个规则，将规则的描述统一抽象，每一种规则都有对应model及其entity
+ * 规则调用链，通常情况下，一个促销规则计算链包括n个 {@link ConditionRule} 以及特定的
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Rule {
-
-    /**
-     * 唯一标识
-     *
-     * @return
-     */
-    Long id();
-
-    /**
-     * 关联的活动
-     *
-     * @return
-     */
-    Activity activity();
+public interface InvocationChain {
 
 
     /**
-     * 规则执行实现
+     * 基于当前所处位置，调用下一个规则.
      *
-     * @return
+     * @param invocationContext
      */
-    String ruleInvocationImplementation();
-
-
-    /**
-     * 规则描述.
-     *
-     * @return
-     */
-    String description();
+    void next(InvocationContext invocationContext);
 }
