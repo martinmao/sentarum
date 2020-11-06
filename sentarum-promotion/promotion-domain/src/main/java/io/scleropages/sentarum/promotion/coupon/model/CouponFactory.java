@@ -24,7 +24,7 @@ import java.util.Date;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CouponSource {
+public interface CouponFactory {
 
     /**
      * 唯一标识
@@ -103,5 +103,4 @@ public interface CouponSource {
      * @return
      */
     Date endTime();
-
 }

@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.impl;
 
 import io.scleropages.sentarum.promotion.rule.EvaluationContext;
-import io.scleropages.sentarum.promotion.rule.RuleEvaluator;
+import io.scleropages.sentarum.promotion.rule.PromotionEvaluator;
 import io.scleropages.sentarum.promotion.rule.RuleEvaluatorChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class SimpleRuleEvaluatorChain implements RuleEvaluatorChain {
 
     protected static final Logger logger = LoggerFactory.getLogger(RuleEvaluatorChain.class);
 
-    private final List<RuleEvaluator> evaluators;
+    private final List<PromotionEvaluator> evaluators;
 
     private final RuleEvaluatorChain nextEvaluatorChain;
 
@@ -42,7 +42,7 @@ public class SimpleRuleEvaluatorChain implements RuleEvaluatorChain {
 
     private int currentPosition = 0;
 
-    public SimpleRuleEvaluatorChain(String name, List<RuleEvaluator> evaluators, RuleEvaluatorChain nextEvaluatorChain) {
+    public SimpleRuleEvaluatorChain(String name, List<PromotionEvaluator> evaluators, RuleEvaluatorChain nextEvaluatorChain) {
         this.name = name;
         if (null == evaluators)
             evaluators = Collections.emptyList();
@@ -60,7 +60,7 @@ public class SimpleRuleEvaluatorChain implements RuleEvaluatorChain {
                 nextEvaluatorChain.evaluate(evaluateContext);
             }
         } else {
-            final RuleEvaluator next = evaluators.get(currentPosition++);
+            final PromotionEvaluator next = evaluators.get(currentPosition++);
             if (logger.isDebugEnabled()) {
                 logger.debug("invoking rule evaluator [{}]: {}", next.getClass().getSimpleName(), next.desc());
             }

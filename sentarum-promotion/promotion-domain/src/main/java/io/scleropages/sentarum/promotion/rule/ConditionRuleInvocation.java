@@ -15,29 +15,31 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.model.Rule;
+
 /**
- * 促销规则计算器.每个计算规则都需要实现该接口，完成计算后将结果写入{@link EvaluationContext}.最终由一系列连续计算规则构成 {@link RuleEvaluatorChain} 进行顺序计算
+ * 条件规则：特殊的规则调用，其直接返回一个布尔值来确定是否执行后续规则.
+ * 可用于促销参与规则判定
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface RuleEvaluator extends RuleInvocation{
+public interface ConditionRuleInvocation extends RuleInvocation {
 
+
+    @Override
+    default void execute(Rule rule, InvocationContext invocationContext, InvocationChain chain) {
+        if (match(rule, invocationContext, chain)) {
+            chain.next(invocationContext);
+        }
+    }
 
     /**
-     * 计算规则所处级别,同级互斥，低级可与高级叠加
+     * 返回TRUE则调用链继续执行
      *
+     * @param rule
+     * @param invocationContext
+     * @param chain
      * @return
      */
-    EvaluationLevel evaluationLevel();
-
-    /**
-     * @param evaluateContext
-     * @param chain
-     */
-    void evaluate(EvaluationContext evaluateContext, RuleEvaluatorChain chain);
-
-    /**
-     * 计算规则描述
-     */
-    String desc();
+    boolean match(Rule rule, InvocationContext invocationContext, InvocationChain chain);
 }

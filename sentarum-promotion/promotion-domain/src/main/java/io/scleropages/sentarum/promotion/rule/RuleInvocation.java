@@ -16,6 +16,8 @@
 package io.scleropages.sentarum.promotion.rule;
 
 import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.participation.ChannelInvocation;
+import io.scleropages.sentarum.promotion.rule.participation.UserInvocation;
 
 /**
  * 规则调用，将所有规则调用统一抽象.使其基于{@link Rule} 执行规则.
@@ -26,19 +28,19 @@ public interface RuleInvocation {
 
 
     /**
-     * 促销参与渠道规则id {@link io.scleropages.sentarum.promotion.rule.participation.ChannelCondition}
+     * 促销参与渠道规则id {@link ChannelInvocation}
      */
-    Integer CHANNEL_CONDITION_RULE_ID = 10;
+    Integer CHANNEL_INVOCATION_ID = 10;
 
     /**
-     * 促销参与用户规则id {@link io.scleropages.sentarum.promotion.rule.participation.UserCondition}
+     * 促销参与用户规则id {@link UserInvocation}
      */
-    Integer USER_CONDITION_RULE_ID = 20;
+    Integer USER_INVOCATION_ID = 20;
 
     /**
-     * 促销规则
+     * 促销规则 id
      */
-    Integer PROMOTION_RULE_ID_START = 30;
+    Integer PROMOTION_INVOCATION_ID = 30;
 
 
     /**

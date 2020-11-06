@@ -15,7 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.rule.participation;
 
-import io.scleropages.sentarum.promotion.rule.ConditionRule;
+import io.scleropages.sentarum.promotion.activity.model.participator.channel.ChannelRule;
+import io.scleropages.sentarum.promotion.rule.ConditionRuleInvocation;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
@@ -25,7 +26,7 @@ import io.scleropages.sentarum.promotion.rule.model.Rule;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ChannelCondition implements ConditionRule {
+public class ChannelInvocation implements ConditionRuleInvocation {
 
 
     @Override
@@ -35,12 +36,12 @@ public class ChannelCondition implements ConditionRule {
 
     @Override
     public Class<? extends Rule> ruleClass() {
-        return null;
+        return ChannelRule.class;
     }
 
     @Override
     public Integer id() {
-        return CHANNEL_CONDITION_RULE_ID;
+        return CHANNEL_INVOCATION_ID;
     }
 
     @Override

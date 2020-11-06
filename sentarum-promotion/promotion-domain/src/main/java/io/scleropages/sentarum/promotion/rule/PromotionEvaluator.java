@@ -13,66 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.coupon.model;
-
-import io.scleropages.sentarum.promotion.activity.model.Activity;
-
-import java.util.Date;
+package io.scleropages.sentarum.promotion.rule;
 
 /**
+ * 促销优惠计算.每个计算规则都需要实现该接口，完成计算后将结果写入{@link EvaluationContext}.最终由一系列连续计算规则构成 {@link RuleEvaluatorChain} 进行顺序计算
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Coupon {
+public interface PromotionEvaluator extends RuleInvocation{
+
 
     /**
-     * 唯一标识
+     * 计算规则所处级别,同级互斥，低级可与高级叠加
      *
      * @return
      */
-    Long id();
+    PromotionLevel evaluationLevel();
 
     /**
-     * id of {@link CouponFactory}
-     *
-     * @return
+     * @param evaluateContext
+     * @param chain
      */
-    CouponFactory couponFactory();
+    void evaluate(EvaluationContext evaluateContext, RuleEvaluatorChain chain);
 
     /**
-     * 持有人id
-     *
-     * @return
+     * 计算规则描述
      */
-    Long holderId();
-
-    /**
-     * 优惠券状态
-     *
-     * @return
-     */
-    Status status();
-
-
-    /**
-     * 券关联的活动.
-     *
-     * @return
-     */
-    Activity activity();
-
-
-    /**
-     * 创建时间
-     *
-     * @return
-     */
-    Date createTime();
-
-
-    /**
-     * 券状态
-     */
-    enum Status {
-
-    }
+    String desc();
 }

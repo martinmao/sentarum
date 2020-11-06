@@ -13,66 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.coupon.model;
+package io.scleropages.sentarum.promotion.rule.context;
 
-import io.scleropages.sentarum.promotion.activity.model.Activity;
-
-import java.util.Date;
+import java.util.List;
 
 /**
+ * 订单级促销(整单优惠)已与特定商业主体关联，并按商品维度 {@link ItemPromotionContext} 进行拆分。
+ * 其处于整个促销计算第二级别.但实际执行顺序应对订单级促销结果进行兜底.即计算完商品级促销规则后合并计算order级别优惠.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Coupon {
+public interface OrderPromotionContext extends PromotionContext {
+
 
     /**
-     * 唯一标识
+     * 商家唯一标识（商业综合体).
      *
      * @return
      */
-    Long id();
+    Long sellerUnionId();
 
     /**
-     * id of {@link CouponFactory}
+     * 商家唯一标识(单店).
      *
      * @return
      */
-    CouponFactory couponFactory();
+    Long sellerId();
+
 
     /**
-     * 持有人id
+     * 当前订单中所有商品优惠计算结果.
      *
      * @return
      */
-    Long holderId();
-
-    /**
-     * 优惠券状态
-     *
-     * @return
-     */
-    Status status();
-
-
-    /**
-     * 券关联的活动.
-     *
-     * @return
-     */
-    Activity activity();
-
-
-    /**
-     * 创建时间
-     *
-     * @return
-     */
-    Date createTime();
-
-
-    /**
-     * 券状态
-     */
-    enum Status {
-
-    }
+    List<ItemPromotionContext> itemPromotions();
 }

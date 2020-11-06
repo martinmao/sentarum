@@ -13,66 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.coupon.model;
-
-import io.scleropages.sentarum.promotion.activity.model.Activity;
-
-import java.util.Date;
+package io.scleropages.sentarum.promotion.rule.context;
 
 /**
+ * 商品级促销
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Coupon {
+public interface ItemPromotionContext extends OrderPromotionContext {
 
     /**
-     * 唯一标识
+     * 商品唯一标识
      *
      * @return
      */
-    Long id();
+    Long itemId();
 
     /**
-     * id of {@link CouponFactory}
+     * 外部商品唯一标识
      *
      * @return
      */
-    CouponFactory couponFactory();
+    String outerItemId();
 
     /**
-     * 持有人id
+     * sku 唯一标识
      *
      * @return
      */
-    Long holderId();
+    Long skuId();
 
     /**
-     * 优惠券状态
+     * 外部sku唯一标识
      *
      * @return
      */
-    Status status();
-
+    String outerSkuId();
 
     /**
-     * 券关联的活动.
+     * 买家唯一标识
      *
      * @return
      */
-    Activity activity();
-
+    Long buyerId();
 
     /**
-     * 创建时间
+     * 购买数量
      *
      * @return
      */
-    Date createTime();
-
-
-    /**
-     * 券状态
-     */
-    enum Status {
-
-    }
+    Integer num();
 }

@@ -13,33 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule;
+package io.scleropages.sentarum.promotion.rule.context;
 
-import io.scleropages.sentarum.promotion.rule.model.Rule;
+import java.util.List;
 
 /**
- * 条件规则：特殊的规则调用，其直接返回一个布尔值来确定是否执行后续规则.
- * 可用于促销参与规则判定
+ * 购物车级别促销，购物车内商品需要根据卖家商业主体（商家、平台、三方等）、或仓储区域进行拆车. 产生一组 {@link OrderPromotionContext}（订单维度的促销结果）.<br>
+ * 其所处维度处于整个促销计算过程的顶级. 但在计算执行中使其进行兜底，即计算完所有订单级促销规则后合并计算cart级别优惠.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ConditionRule extends RuleInvocation {
-
-
-    @Override
-    default void execute(Rule rule, InvocationContext invocationContext, InvocationChain chain) {
-        if (match(rule, invocationContext, chain)) {
-            chain.next(invocationContext);
-        }
-    }
+public interface CartPromotionContext extends PromotionContext {
 
 
     /**
-     * 返回TRUE则调用链继续执行
-     * @param rule
-     * @param invocationContext
-     * @param chain
+     * 返回拆车后订单维度促销结果集.
+     *
      * @return
      */
-    boolean match(Rule rule, InvocationContext invocationContext, InvocationChain chain);
+    List<OrderPromotionContext> orderPromotions();
 }

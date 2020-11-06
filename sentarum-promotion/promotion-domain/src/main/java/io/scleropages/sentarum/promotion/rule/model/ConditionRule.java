@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule;
+package io.scleropages.sentarum.promotion.rule.model;
 
 /**
- * 规则调用链，通常情况下，一个促销规则计算链包括n个 {@link ConditionRuleInvocation} 以及特定的
+ * 标识当前接口为条件规则
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface InvocationChain {
+public interface ConditionRule extends Rule {
 
+    ConditionRule or(ConditionRule conditionRule);
 
-    /**
-     * 基于当前所处位置，调用下一个规则.
-     *
-     * @param invocationContext
-     */
-    void next(InvocationContext invocationContext);
+    ConditionRule and(ConditionRule conditionRule);
 }

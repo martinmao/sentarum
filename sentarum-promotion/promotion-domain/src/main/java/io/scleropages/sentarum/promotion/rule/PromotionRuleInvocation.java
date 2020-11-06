@@ -16,17 +16,9 @@
 package io.scleropages.sentarum.promotion.rule;
 
 /**
- * 规则调用链，通常情况下，一个促销规则计算链包括n个 {@link ConditionRuleInvocation} 以及特定的
+ * 促销规则调用
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface InvocationChain {
-
-
-    /**
-     * 基于当前所处位置，调用下一个规则.
-     *
-     * @param invocationContext
-     */
-    void next(InvocationContext invocationContext);
+public interface PromotionRuleInvocation extends RuleInvocation {
 }

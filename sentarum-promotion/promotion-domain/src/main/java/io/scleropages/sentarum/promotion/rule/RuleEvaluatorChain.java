@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.rule;
 
 /**
- * 规则计算链，按顺序执行 {@link RuleEvaluator}
+ * 规则计算链，按顺序执行 {@link PromotionEvaluator}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

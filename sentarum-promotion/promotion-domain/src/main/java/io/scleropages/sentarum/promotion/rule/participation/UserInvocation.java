@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.participation;
 
-import io.scleropages.sentarum.promotion.rule.ConditionRule;
+import io.scleropages.sentarum.promotion.rule.ConditionRuleInvocation;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
@@ -25,7 +25,7 @@ import io.scleropages.sentarum.promotion.rule.model.Rule;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class UserCondition implements ConditionRule {
+public class UserInvocation implements ConditionRuleInvocation {
 
 
     @Override
@@ -40,7 +40,7 @@ public class UserCondition implements ConditionRule {
 
     @Override
     public Integer id() {
-        return USER_CONDITION_RULE_ID;
+        return USER_INVOCATION_ID;
     }
 
     @Override
@@ -50,6 +50,6 @@ public class UserCondition implements ConditionRule {
 
     @Override
     public String description() {
-        return "限定性规则：将促销活动中关联的商品限定为某一用户类型.（例如，会员等级，用户标签等）";
+        return "限定性规则：将促销活动限定为某一用户类型.（例如，会员等级，用户标签等）";
     }
 }

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 计算级别，同级互斥，下级可叠加计算,当前根据促销规则如下:
+ * 促销级别，同级互斥，下级可叠加计算,当前根据促销规则如下:
  * <p>
  * 对活动设置计算级别可以对不同活动的叠加关系进行定义.
  * 活动叠加存在的先后次序，同样可以按照级别进行定义，后面的促销结果计算基于前面的促销结果
@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public enum EvaluationLevel {
+public enum PromotionLevel {
 
 
     FIXED_PRICE(1, "固定金额", "场景：直降价、秒杀、拼团、预购、一口价等."),
@@ -54,7 +54,7 @@ public enum EvaluationLevel {
      */
     private final String desc;
 
-    EvaluationLevel(int ordinal, String tag, String desc) {
+    PromotionLevel(int ordinal, String tag, String desc) {
         this.ordinal = ordinal;
         this.tag = tag;
         this.desc = desc;
@@ -73,22 +73,22 @@ public enum EvaluationLevel {
     }
 
 
-    private static final Map<String, EvaluationLevel> nameMappings = new HashMap<>();
-    private static final Map<Integer, EvaluationLevel> ordinalMappings = new HashMap<>();
+    private static final Map<String, PromotionLevel> nameMappings = new HashMap<>();
+    private static final Map<Integer, PromotionLevel> ordinalMappings = new HashMap<>();
 
     static {
-        for (EvaluationLevel level : EvaluationLevel.values()) {
+        for (PromotionLevel level : PromotionLevel.values()) {
             nameMappings.put(level.name(), level);
             ordinalMappings.put(level.getOrdinal(), level);
         }
     }
 
 
-    public static EvaluationLevel getByName(String name) {
+    public static PromotionLevel getByName(String name) {
         return (name != null ? nameMappings.get(name) : null);
     }
 
-    public static EvaluationLevel getByOrdinal(int ordinal) {
+    public static PromotionLevel getByOrdinal(int ordinal) {
         return ordinalMappings.get(ordinal);
     }
 }
