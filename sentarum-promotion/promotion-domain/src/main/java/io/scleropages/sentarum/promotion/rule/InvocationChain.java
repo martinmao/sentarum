@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.rule;
 
 /**
- * 规则调用链，通常情况下，一个促销规则计算链包括n个 {@link ConditionRuleInvocation} 以及特定的
+ * 规则调用链，通常情况下，一个促销规则计算链包括n个参与规则{@link Condition} 及1个促销规则（{@link PromotionEvaluator}）
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

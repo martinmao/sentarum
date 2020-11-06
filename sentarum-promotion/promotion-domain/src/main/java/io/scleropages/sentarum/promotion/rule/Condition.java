@@ -15,25 +15,31 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.model.Rule;
+
 /**
- * 规则计算链，按顺序执行 {@link PromotionEvaluator}
+ * 条件规则：特殊的规则调用，其直接返回一个布尔值来确定是否执行后续规则.
+ * 可用于促销参与规则判定
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface RuleEvaluatorChain {
+public interface Condition<R extends Rule, C extends InvocationContext> extends RuleInvocation<R, C> {
 
+
+    @Override
+    default void execute(R rule, C invocationContext, InvocationChain chain) {
+        if (match(rule, invocationContext, chain)) {
+            chain.next(invocationContext);
+        }
+    }
 
     /**
-     * 执行下一个计算
+     * 返回TRUE则调用链继续执行
      *
-     * @param evaluateContext
-     */
-    void evaluate(EvaluationContext evaluateContext);
-
-    /**
-     * return a name identify this evaluator chain.
-     *
+     * @param rule
+     * @param invocationContext
+     * @param chain
      * @return
      */
-    String name();
+    boolean match(R rule, C invocationContext, InvocationChain chain);
 }

@@ -15,32 +15,32 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.condition.ChannelCondition;
+import io.scleropages.sentarum.promotion.rule.condition.UserCondition;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
-import io.scleropages.sentarum.promotion.rule.participation.ChannelInvocation;
-import io.scleropages.sentarum.promotion.rule.participation.UserInvocation;
 
 /**
  * 规则调用，将所有规则调用统一抽象.使其基于{@link Rule} 执行规则.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface RuleInvocation {
+public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
 
 
     /**
-     * 促销参与渠道规则id {@link ChannelInvocation}
+     * 促销参与渠道规则id {@link ChannelCondition}
      */
     Integer CHANNEL_INVOCATION_ID = 10;
 
     /**
-     * 促销参与用户规则id {@link UserInvocation}
+     * 促销参与用户规则id {@link UserCondition}
      */
-    Integer USER_INVOCATION_ID = 20;
+    Integer USER_INVOCATION_ID = 30;
 
     /**
      * 促销规则 id
      */
-    Integer PROMOTION_INVOCATION_ID = 30;
+    Integer PROMOTION_INVOCATION_ID = 60;
 
 
     /**
@@ -48,7 +48,7 @@ public interface RuleInvocation {
      *
      * @return
      */
-    Class<? extends Rule> ruleClass();
+    Class<R> ruleClass();
 
 
     /**
@@ -58,7 +58,7 @@ public interface RuleInvocation {
      * @param invocationContext 当前调用上下文
      * @param chain             当前的调用链.
      */
-    void execute(Rule rule, InvocationContext invocationContext, InvocationChain chain);
+    void execute(R rule, C invocationContext, InvocationChain chain);
 
 
     /**
@@ -69,14 +69,14 @@ public interface RuleInvocation {
     Integer id();
 
     /**
-     * 名称
+     * 规则名称
      *
      * @return
      */
     String name();
 
     /**
-     * 描述
+     * 规则描述
      *
      * @return
      */

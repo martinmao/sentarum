@@ -20,7 +20,7 @@ import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.impl.ChannelRule.ChannelType;
 
 /**
- * base促销上下文
+ * base interface of promotion context.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

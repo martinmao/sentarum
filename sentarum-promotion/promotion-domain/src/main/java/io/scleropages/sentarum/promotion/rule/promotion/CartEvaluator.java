@@ -13,33 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule;
+package io.scleropages.sentarum.promotion.rule.promotion;
 
+import io.scleropages.sentarum.promotion.rule.PromotionEvaluator;
+import io.scleropages.sentarum.promotion.rule.context.CartPromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
- * 条件规则：特殊的规则调用，其直接返回一个布尔值来确定是否执行后续规则.
- * 可用于促销参与规则判定
+ * 购物车级别促销计算，购物车内商品需要根据卖家商业主体（商家、平台、三方等）、或仓储区域进行拆车.
+ * 其所处维度处于整个促销计算过程的顶级. 但在计算执行中使其进行兜底，即计算完所有订单级促销规则后合并计算cart级别优惠.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ConditionRuleInvocation extends RuleInvocation {
-
-
-    @Override
-    default void execute(Rule rule, InvocationContext invocationContext, InvocationChain chain) {
-        if (match(rule, invocationContext, chain)) {
-            chain.next(invocationContext);
-        }
-    }
-
-    /**
-     * 返回TRUE则调用链继续执行
-     *
-     * @param rule
-     * @param invocationContext
-     * @param chain
-     * @return
-     */
-    boolean match(Rule rule, InvocationContext invocationContext, InvocationChain chain);
+public interface CartEvaluator<R extends Rule> extends PromotionEvaluator<R, CartPromotionContext> {
 }

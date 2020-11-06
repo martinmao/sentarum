@@ -15,29 +15,28 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.Rule;
+
 /**
- * 促销优惠计算.每个计算规则都需要实现该接口，完成计算后将结果写入{@link EvaluationContext}.最终由一系列连续计算规则构成 {@link RuleEvaluatorChain} 进行顺序计算
+ * 标识接口，促销规则调用
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PromotionEvaluator extends RuleInvocation{
+public interface PromotionEvaluator<R extends Rule, C extends PromotionContext> extends RuleInvocation<R, C> {
+
+    @Override
+    default void execute(R rule, C invocationContext, InvocationChain chain) {
+        evaluate(rule, invocationContext, chain);
+    }
 
 
     /**
-     * 计算规则所处级别,同级互斥，低级可与高级叠加
+     * 基于的规则进行促销金额计算.
      *
-     * @return
+     * @param rule             促销规则
+     * @param promotionContext 促销上下文
+     * @param chain            规则调用链
      */
-    PromotionLevel evaluationLevel();
-
-    /**
-     * @param evaluateContext
-     * @param chain
-     */
-    void evaluate(EvaluationContext evaluateContext, RuleEvaluatorChain chain);
-
-    /**
-     * 计算规则描述
-     */
-    String desc();
+    void evaluate(R rule, C promotionContext, InvocationChain chain);
 }

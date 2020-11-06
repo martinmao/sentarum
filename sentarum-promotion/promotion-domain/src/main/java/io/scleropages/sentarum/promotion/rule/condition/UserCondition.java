@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.participation;
+package io.scleropages.sentarum.promotion.rule.condition;
 
-import io.scleropages.sentarum.promotion.rule.ConditionRuleInvocation;
+import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
@@ -25,7 +25,7 @@ import io.scleropages.sentarum.promotion.rule.model.Rule;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class UserInvocation implements ConditionRuleInvocation {
+public class UserCondition implements Condition {
 
 
     @Override

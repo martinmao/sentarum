@@ -21,6 +21,4 @@ package io.scleropages.sentarum.promotion.rule;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface InvocationContext {
-
-
 }

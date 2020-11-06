@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.context;
 
 /**
- * 商品级促销
+ * 商品级促销上下文
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
