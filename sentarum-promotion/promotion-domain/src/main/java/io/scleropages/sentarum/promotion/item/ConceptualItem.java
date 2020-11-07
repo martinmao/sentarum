@@ -25,11 +25,25 @@ import java.util.List;
 public interface ConceptualItem {
 
     /**
-     * id of item.
+     * unique id.
      *
      * @return
      */
     Long id();
+
+    /**
+     * id of item.
+     *
+     * @return
+     */
+    Long itemId();
+
+    /**
+     * outer id of item.
+     *
+     * @return
+     */
+    String outerItemId();
 
     /**
      * name of item.
@@ -41,7 +55,6 @@ public interface ConceptualItem {
 
     /**
      * conceptual sku list of this item.
-     * 该限定并非必须的，只有活动商品粒度细分到具体的sku才需设置.
      *
      * @return
      */

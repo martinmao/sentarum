@@ -23,11 +23,25 @@ package io.scleropages.sentarum.promotion.item;
 public interface ConceptualSku {
 
     /**
-     * id of sku
+     * id of sku.
      *
      * @return
      */
     Long id();
+
+    /**
+     * id of sku.
+     *
+     * @return
+     */
+    Long skuId();
+
+    /**
+     * outer id of sku.
+     *
+     * @return
+     */
+    String outerSkuId();
 
 
     /**
