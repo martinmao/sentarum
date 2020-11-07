@@ -26,7 +26,6 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class SellerItemSourceEntity extends AbstractItemSourceEntity {
 
-
     /**
      * 商家类型
      *
