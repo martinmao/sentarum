@@ -15,6 +15,9 @@
  */
 package io.scleropages.sentarum.promotion.item;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * represent a item source.
  * 商品来源是一个配置接口，其将商品来源的配置（某一品牌，某一类目，某一三方平台，某些选定商品等）与某一业务进行绑定（例如促销），
@@ -33,9 +36,91 @@ public interface ItemSource {
     Long id();
 
     /**
+     * 商品来源类型
+     *
+     * @return
+     */
+    ItemSourceType itemSourceType();
+
+    /**
+     * 与此商品来源关联的业务类型.
+     *
+     * @return
+     */
+    Integer bizType();
+
+    /**
+     * 与此商品来源关联的业务模型标识.
+     *
+     * @return
+     */
+    Long bizId();
+
+    /**
      * reader of this item source.
      *
      * @return
      */
     ItemSourceReader itemSourceReader();
+
+    /**
+     * 商品来源类型
+     */
+    enum ItemSourceType {
+
+        ALL(0, "全部参与", "平台所有商品"),
+        ITEM(1, "指定商品", "指定部分商品"),
+        BRAND(2, "指定品牌", "品牌内所有商品"),
+        CATEGORY(3, "指定营销类目", "类目内所有商品"),
+        SELLER(4, "指定商家", "商家所有商品");
+
+        private final int ordinal;
+        /**
+         * 显示名.
+         */
+        private final String tag;
+        /**
+         * 描述
+         */
+        private final String desc;
+
+        ItemSourceType(int ordinal, String tag, String desc) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+            this.desc = desc;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+
+        private static final Map<String, ItemSourceType> nameMappings = new HashMap<>();
+        private static final Map<Integer, ItemSourceType> ordinalMappings = new HashMap<>();
+
+        static {
+            for (ItemSourceType itemSourceType : ItemSourceType.values()) {
+                nameMappings.put(itemSourceType.name(), itemSourceType);
+                ordinalMappings.put(itemSourceType.getOrdinal(), itemSourceType);
+            }
+        }
+
+
+        public static ItemSourceType getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static ItemSourceType getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
+    }
+
 }

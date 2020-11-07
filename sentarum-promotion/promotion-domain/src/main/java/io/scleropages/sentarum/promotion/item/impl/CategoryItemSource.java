@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.impl;
+package io.scleropages.sentarum.promotion.item.impl;
+
+import io.scleropages.sentarum.promotion.item.AbstractItemSource;
 
 /**
  * 类目商品来源，本地不会落快照，实时从商品中心获取品类商品.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CategoryItemSource extends AbstractActivityItemSource {
+public class CategoryItemSource extends AbstractItemSource {
 
     /**
      * 类目id
