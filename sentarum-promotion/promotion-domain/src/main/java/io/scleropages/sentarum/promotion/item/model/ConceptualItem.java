@@ -13,40 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.impl;
+package io.scleropages.sentarum.promotion.item.model;
 
-import io.scleropages.sentarum.promotion.item.AbstractItemSource;
+import java.util.List;
 
 /**
- * 品牌商商品来源，本地不会落快照，实时从商品中心获取品牌商品.
+ * represent a conceptual item.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class BrandItemSource extends AbstractItemSource {
+public interface ConceptualItem {
 
     /**
-     * 品牌id
+     * unique id.
+     *
+     * @return
      */
-    private Long brandId;
+    Long id();
 
     /**
-     * 品牌名称
+     * id of item.
+     *
+     * @return
      */
-    private String brandName;
+    Long itemId();
 
-    public Long getBrandId() {
-        return brandId;
-    }
+    /**
+     * outer id of item.
+     *
+     * @return
+     */
+    String outerItemId();
 
-    public String getBrandName() {
-        return brandName;
-    }
+    /**
+     * name of item.
+     *
+     * @return
+     */
+    String name();
 
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
-    }
 
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
+    /**
+     * conceptual sku list of this item.
+     *
+     * @return
+     */
+    List<ConceptualSku> skuList();
 }

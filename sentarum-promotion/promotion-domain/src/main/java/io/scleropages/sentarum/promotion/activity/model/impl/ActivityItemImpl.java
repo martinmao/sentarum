@@ -17,7 +17,7 @@ package io.scleropages.sentarum.promotion.activity.model.impl;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityItem;
-import io.scleropages.sentarum.promotion.item.impl.AbstractConceptualItem;
+import io.scleropages.sentarum.promotion.item.model.impl.AbstractConceptualItem;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>

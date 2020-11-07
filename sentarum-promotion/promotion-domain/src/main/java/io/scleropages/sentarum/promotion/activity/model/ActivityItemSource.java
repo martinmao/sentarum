@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.item.ItemSource;
+import io.scleropages.sentarum.promotion.item.model.ItemSource;
 
 /**
  * 活动商品来源.

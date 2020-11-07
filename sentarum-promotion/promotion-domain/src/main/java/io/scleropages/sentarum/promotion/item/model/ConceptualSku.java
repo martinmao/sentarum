@@ -13,15 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.impl;
-
-import io.scleropages.sentarum.promotion.item.AbstractItemSource;
+package io.scleropages.sentarum.promotion.item.model;
 
 /**
- * 本地商品来源，对于特定的商品，将外部来源的商品落盘到本地.
+ * represent a conceptual item sku.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class NativeItemSource extends AbstractItemSource {
+public interface ConceptualSku {
 
+    /**
+     * id of sku.
+     *
+     * @return
+     */
+    Long id();
+
+    /**
+     * id of sku.
+     *
+     * @return
+     */
+    Long skuId();
+
+    /**
+     * outer id of sku.
+     *
+     * @return
+     */
+    String outerSkuId();
+
+
+    /**
+     * name of sku.
+     *
+     * @return
+     */
+    String name();
+
+    /**
+     * associated item.
+     *
+     * @return
+     */
+    ConceptualItem item();
 }

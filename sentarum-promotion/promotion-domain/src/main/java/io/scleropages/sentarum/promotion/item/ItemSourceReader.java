@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.item;
 
+import io.scleropages.sentarum.promotion.item.model.ConceptualItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

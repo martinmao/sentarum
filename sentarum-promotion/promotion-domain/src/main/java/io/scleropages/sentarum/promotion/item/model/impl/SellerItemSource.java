@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.impl;
-
-import io.scleropages.sentarum.promotion.item.AbstractItemSource;
+package io.scleropages.sentarum.promotion.item.model.impl;
 
 /**
  * 卖家商品来源，本地不会落快照，实时从商品中心获取卖家商品

@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.item.ConceptualSku;
+import io.scleropages.sentarum.promotion.item.model.ConceptualSku;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>

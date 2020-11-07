@@ -13,45 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item;
+package io.scleropages.sentarum.promotion.item.entity;
+
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 
 /**
+ * referenced from: {@link io.scleropages.sentarum.promotion.item.model.impl.AbstractItemSource}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class AbstractItemSource implements ItemSource {
+@MappedSuperclass
+public class AbstractItemSourceEntity extends IdEntity {
 
-    private Long id;
-
-    private ItemSourceType itemSourceType;
+    private Integer itemSourceType;
 
     private Integer bizType;
 
     private Long bizId;
 
-    public Long getId() {
-        return id;
-    }
-
-    public ItemSourceType getItemSourceType() {
+    @Column(name = "item_source_type", nullable = false)
+    public Integer getItemSourceType() {
         return itemSourceType;
     }
 
+    @Column(name = "biz_type", nullable = false)
     public Integer getBizType() {
         return bizType;
     }
 
+    @Column(name = "biz_id", nullable = false)
     public Long getBizId() {
         return bizId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setItemSourceType(ItemSourceType itemSourceType) {
+    public void setItemSourceType(Integer itemSourceType) {
         this.itemSourceType = itemSourceType;
     }
-
 
     public void setBizType(Integer bizType) {
         this.bizType = bizType;
@@ -59,38 +59,5 @@ public abstract class AbstractItemSource implements ItemSource {
 
     public void setBizId(Long bizId) {
         this.bizId = bizId;
-    }
-
-    @Override
-    public Long id() {
-        return getId();
-    }
-
-
-    @Override
-    public ItemSourceType itemSourceType() {
-        return getItemSourceType();
-    }
-
-
-    @Override
-    public Integer bizType() {
-        return getBizType();
-    }
-
-    @Override
-    public Long bizId() {
-        return getBizId();
-    }
-
-
-    /**
-     * 子类必须覆写的方法，执行数据读取的逻辑.
-     *
-     * @return
-     */
-    @Override
-    public ItemSourceReader itemSourceReader() {
-        throw new IllegalStateException("item source not initialized.");
     }
 }
