@@ -15,14 +15,14 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.item.model.ItemSource;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
 
 /**
- * 活动商品来源.
+ * represent promotional goods source.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ActivityItemSource extends ItemSource {
+public interface ActivityGoodsSource extends GoodsSource {
 
     /**
      * 与商品来源关联的的活动.

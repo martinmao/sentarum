@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.entity;
-
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+package io.scleropages.sentarum.promotion.goods.model.impl;
 
 /**
- * referenced from: {@link io.scleropages.sentarum.promotion.item.model.impl.BrandItemSource}
+ * 品牌商商品来源，本地不会落快照，实时从商品中心获取品牌商品.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@MappedSuperclass
-public class BrandItemSourceEntity extends AbstractItemSourceEntity {
+public class BrandGoodsSource extends AbstractGoodsSource {
 
     /**
      * 品牌id
@@ -36,17 +32,13 @@ public class BrandItemSourceEntity extends AbstractItemSourceEntity {
      */
     private String brandName;
 
-
-    @Column(name = "brand_id", nullable = false)
     public Long getBrandId() {
         return brandId;
     }
 
-    @Column(name = "brand_name", nullable = false)
     public String getBrandName() {
         return brandName;
     }
-
 
     public void setBrandId(Long brandId) {
         this.brandId = brandId;

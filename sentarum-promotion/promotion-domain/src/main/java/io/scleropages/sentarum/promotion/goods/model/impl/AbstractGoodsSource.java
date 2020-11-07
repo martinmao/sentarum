@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.model.impl;
+package io.scleropages.sentarum.promotion.goods.model.impl;
 
-import io.scleropages.sentarum.promotion.item.ItemSourceReader;
-import io.scleropages.sentarum.promotion.item.model.ItemSource;
+import io.scleropages.sentarum.promotion.goods.GoodsSourceReader;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class AbstractItemSource implements ItemSource {
+public abstract class AbstractGoodsSource implements GoodsSource {
 
     private Long id;
 
-    private ItemSourceType itemSourceType;
+    private GoodsSourceType goodsSourceType;
 
     private Integer bizType;
 
@@ -35,8 +35,8 @@ public abstract class AbstractItemSource implements ItemSource {
         return id;
     }
 
-    public ItemSourceType getItemSourceType() {
-        return itemSourceType;
+    public GoodsSourceType getGoodsSourceType() {
+        return goodsSourceType;
     }
 
     public Integer getBizType() {
@@ -51,10 +51,9 @@ public abstract class AbstractItemSource implements ItemSource {
         this.id = id;
     }
 
-    public void setItemSourceType(ItemSourceType itemSourceType) {
-        this.itemSourceType = itemSourceType;
+    public void setGoodsSourceType(GoodsSourceType goodsSourceType) {
+        this.goodsSourceType = goodsSourceType;
     }
-
 
     public void setBizType(Integer bizType) {
         this.bizType = bizType;
@@ -71,10 +70,9 @@ public abstract class AbstractItemSource implements ItemSource {
 
 
     @Override
-    public ItemSourceType itemSourceType() {
-        return getItemSourceType();
+    public GoodsSourceType goodsSourceType() {
+        return getGoodsSourceType();
     }
-
 
     @Override
     public Integer bizType() {
@@ -87,14 +85,14 @@ public abstract class AbstractItemSource implements ItemSource {
     }
 
 
-
     /**
      * 子类必须覆写的方法，执行数据读取的逻辑.
      *
      * @return
      */
     @Override
-    public ItemSourceReader itemSourceReader() {
-        throw new IllegalStateException("item source not initialized.");
+    public GoodsSourceReader goodsSourceReader() {
+        throw new IllegalStateException("goods source not initialized.");
     }
+
 }

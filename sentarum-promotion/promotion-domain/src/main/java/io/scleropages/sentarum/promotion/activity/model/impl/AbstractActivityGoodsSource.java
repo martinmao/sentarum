@@ -16,51 +16,22 @@
 package io.scleropages.sentarum.promotion.activity.model.impl;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.ActivityItem;
-import io.scleropages.sentarum.promotion.item.model.impl.AbstractConceptualItem;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ActivityItemImpl extends AbstractConceptualItem implements ActivityItem {
+public abstract class AbstractActivityGoodsSource extends AbstractGoodsSource implements ActivityGoodsSource {
 
-
-    private Integer totalNum;
-    private Integer userNum;
     private Activity activity;
-
-    public Integer getTotalNum() {
-        return totalNum;
-    }
-
-    public Integer getUserNum() {
-        return userNum;
-    }
 
     public Activity getActivity() {
         return activity;
     }
 
-    public void setTotalNum(Integer totalNum) {
-        this.totalNum = totalNum;
-    }
-
-    public void setUserNum(Integer userNum) {
-        this.userNum = userNum;
-    }
-
     public void setActivity(Activity activity) {
         this.activity = activity;
-    }
-
-    @Override
-    public Integer totalNum() {
-        return getTotalNum();
-    }
-
-    @Override
-    public Integer userNum() {
-        return getUserNum();
     }
 
     @Override

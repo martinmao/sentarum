@@ -13,50 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.model;
+package io.scleropages.sentarum.promotion.activity.model;
 
-import java.util.List;
+import io.scleropages.sentarum.promotion.goods.model.Goods;
 
 /**
- * represent a conceptual item.
+ * 活动商品
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ConceptualItem {
-
-    /**
-     * unique id.
-     *
-     * @return
-     */
-    Long id();
-
-    /**
-     * id of item.
-     *
-     * @return
-     */
-    Long itemId();
-
-    /**
-     * outer id of item.
-     *
-     * @return
-     */
-    String outerItemId();
-
-    /**
-     * name of item.
-     *
-     * @return
-     */
-    String name();
+public interface ActivityGoods extends Goods {
 
 
     /**
-     * conceptual sku list of this item.
+     * total num of goods in promotion.可做促销库存
      *
      * @return
      */
-    List<ConceptualSku> skuList();
+    Integer totalNum();
+
+
+    /**
+     * num of goods in promotion per user.可做促销用户限购
+     *
+     * @return
+     */
+    Integer userNum();
+
+
+    /**
+     * associated activity.
+     *
+     * @return
+     */
+    Activity activity();
 }

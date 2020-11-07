@@ -13,64 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.model.impl;
+package io.scleropages.sentarum.promotion.goods.model.impl;
 
-import io.scleropages.sentarum.promotion.item.model.ConceptualItem;
-import io.scleropages.sentarum.promotion.item.model.ConceptualSku;
-
-import java.util.List;
+import io.scleropages.sentarum.promotion.goods.model.Goods;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class AbstractConceptualItem implements ConceptualItem {
-
+public abstract class AbstractGoodsSpecs implements GoodsSpecs {
 
     private Long id;
-    private Long itemId;
-    private String outerItemId;
+    private Long specsId;
+    private String outerSpecsId;
     private String name;
-    private List<ConceptualSku> skuList;
-
+    private Goods goods;
 
     public Long getId() {
         return id;
     }
 
-    public Long getItemId() {
-        return itemId;
+    public Long getSpecsId() {
+        return specsId;
     }
 
-    public String getOuterItemId() {
-        return outerItemId;
+    public String getOuterSpecsId() {
+        return outerSpecsId;
     }
 
     public String getName() {
         return name;
     }
 
-    public List<ConceptualSku> getSkuList() {
-        return skuList;
+    public Goods getGoods() {
+        return goods;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
+    public void setSpecsId(Long specsId) {
+        this.specsId = specsId;
     }
 
-    public void setOuterItemId(String outerItemId) {
-        this.outerItemId = outerItemId;
+    public void setOuterSpecsId(String outerSpecsId) {
+        this.outerSpecsId = outerSpecsId;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setSkuList(List<ConceptualSku> skuList) {
-        this.skuList = skuList;
+    public void setGoods(Goods goods) {
+        this.goods = goods;
     }
 
     @Override
@@ -79,13 +75,13 @@ public abstract class AbstractConceptualItem implements ConceptualItem {
     }
 
     @Override
-    public Long itemId() {
-        return getItemId();
+    public Long specsId() {
+        return getSpecsId();
     }
 
     @Override
-    public String outerItemId() {
-        return getOuterItemId();
+    public String outerSpecsId() {
+        return getOuterSpecsId();
     }
 
     @Override
@@ -94,7 +90,7 @@ public abstract class AbstractConceptualItem implements ConceptualItem {
     }
 
     @Override
-    public List<ConceptualSku> skuList() {
-        return getSkuList();
+    public Goods goods() {
+        return getGoods();
     }
 }

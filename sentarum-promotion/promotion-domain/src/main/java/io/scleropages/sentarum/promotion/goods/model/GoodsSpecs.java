@@ -13,13 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.model.impl;
+package io.scleropages.sentarum.promotion.goods.model;
 
 /**
- * 本地商品来源，对于特定的商品，将外部来源的商品落盘到本地.
+ * represent a conceptual goods specs.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class NativeItemSource extends AbstractItemSource {
+public interface GoodsSpecs {
 
+    /**
+     * unique id.
+     *
+     * @return
+     */
+    Long id();
+
+    /**
+     * id of specs.
+     *
+     * @return
+     */
+    Long specsId();
+
+    /**
+     * outer id of specs.
+     *
+     * @return
+     */
+    String outerSpecsId();
+
+
+    /**
+     * name of specs.
+     *
+     * @return
+     */
+    String name();
+
+    /**
+     * associated goods.
+     *
+     * @return
+     */
+    Goods goods();
 }

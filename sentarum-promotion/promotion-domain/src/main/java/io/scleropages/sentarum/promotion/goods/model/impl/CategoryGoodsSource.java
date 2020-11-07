@@ -13,48 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.model;
+package io.scleropages.sentarum.promotion.goods.model.impl;
+
 
 /**
- * represent a conceptual item sku.
+ * 类目商品来源，本地不会落快照，实时从商品中心获取品类商品.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ConceptualSku {
+public class CategoryGoodsSource extends AbstractGoodsSource {
 
     /**
-     * id of sku.
-     *
-     * @return
+     * 类目id
      */
-    Long id();
-
+    private Long categoryId;
     /**
-     * id of sku.
-     *
-     * @return
+     * 类目名称
      */
-    Long skuId();
+    private String categoryName;
 
-    /**
-     * outer id of sku.
-     *
-     * @return
-     */
-    String outerSkuId();
+    public Long getCategoryId() {
+        return categoryId;
+    }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
 
-    /**
-     * name of sku.
-     *
-     * @return
-     */
-    String name();
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 
-    /**
-     * associated item.
-     *
-     * @return
-     */
-    ConceptualItem item();
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

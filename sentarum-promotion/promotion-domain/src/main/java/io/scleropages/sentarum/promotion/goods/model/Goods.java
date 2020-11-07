@@ -13,32 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item;
+package io.scleropages.sentarum.promotion.goods.model;
 
-import io.scleropages.sentarum.promotion.item.model.ConceptualItem;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 /**
- * spi strategy interface for item read.
+ * represent a conceptual goods.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSourceReader {
+public interface Goods {
 
     /**
-     * read a page of items.
+     * unique id.
      *
-     * @param pageable
      * @return
      */
-    Page<? extends ConceptualItem> readItemPage(Pageable pageable);
+    Long id();
 
     /**
-     * read a item by id.
+     * id of goods.
      *
-     * @param id
      * @return
      */
-    ConceptualItem readItem(Long id);
+    Long goodsId();
+
+    /**
+     * outer id of goods.
+     *
+     * @return
+     */
+    String outerGoodsId();
+
+    /**
+     * name of goods.
+     *
+     * @return
+     */
+    String name();
+
+
+    /**
+     * specs list of this goods.
+     *
+     * @return
+     */
+    List<GoodsSpecs> specs();
 }

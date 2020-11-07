@@ -15,16 +15,16 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.item.model.ConceptualSku;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ActivitySku extends ConceptualSku {
+public interface ActivityGoodsSpecs extends GoodsSpecs {
 
 
     /**
-     * total num of item in promotion.可做促销库存
+     * total num of goods specs in promotion.可做促销库存
      *
      * @return
      */
@@ -32,7 +32,7 @@ public interface ActivitySku extends ConceptualSku {
 
 
     /**
-     * num of item in promotion per user.可做促销用户限购
+     * num of goods specs in promotion per user.可做促销用户限购
      *
      * @return
      */

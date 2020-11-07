@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.entity;
+package io.scleropages.sentarum.promotion.goods.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
@@ -21,43 +21,41 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 /**
- * referenced from: {@link io.scleropages.sentarum.promotion.item.model.impl.AbstractItemSource}
+ * referenced from {@link io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
-public class AbstractItemSourceEntity extends IdEntity {
+public class GoodsEntity extends IdEntity {
 
-    private Integer itemSourceType;
+    private Long goodsId;
+    private String outerGoodsId;
+    private String name;
 
-    private Integer bizType;
-
-    private Long bizId;
-
-    @Column(name = "item_source_type", nullable = false)
-    public Integer getItemSourceType() {
-        return itemSourceType;
+    @Column(name = "goods_id", nullable = false)
+    public Long getGoodsId() {
+        return goodsId;
     }
 
-    @Column(name = "biz_type", nullable = false)
-    public Integer getBizType() {
-        return bizType;
+    @Column(name = "outer_goods_id", nullable = false)
+    public String getOuterGoodsId() {
+        return outerGoodsId;
     }
 
-    @Column(name = "biz_id", nullable = false)
-    public Long getBizId() {
-        return bizId;
+    @Column(name = "name_", nullable = false)
+    public String getName() {
+        return name;
     }
 
-    public void setItemSourceType(Integer itemSourceType) {
-        this.itemSourceType = itemSourceType;
+    public void setGoodsId(Long goodsId) {
+        this.goodsId = goodsId;
     }
 
-    public void setBizType(Integer bizType) {
-        this.bizType = bizType;
+    public void setOuterGoodsId(String outerGoodsId) {
+        this.outerGoodsId = outerGoodsId;
     }
 
-    public void setBizId(Long bizId) {
-        this.bizId = bizId;
+    public void setName(String name) {
+        this.name = name;
     }
 }

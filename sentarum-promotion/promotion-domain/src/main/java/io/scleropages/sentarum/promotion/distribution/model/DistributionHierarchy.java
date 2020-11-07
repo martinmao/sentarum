@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.distribution.model;
 
-import io.scleropages.sentarum.promotion.item.model.ItemSource;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
 
 import java.util.List;
 
@@ -53,6 +53,6 @@ public interface DistributionHierarchy {
      *
      * @return
      */
-    ItemSource itemSource();
+    GoodsSource itemSource();
 
 }

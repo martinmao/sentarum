@@ -16,13 +16,13 @@
 package io.scleropages.sentarum.promotion.activity.model.impl;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.ActivitySku;
-import io.scleropages.sentarum.promotion.item.model.impl.AbstractConceptualSku;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSpecs;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSpecs;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ActivitySkuImpl extends AbstractConceptualSku implements ActivitySku {
+public class ActivityGoodsSpecsModel extends AbstractGoodsSpecs implements ActivityGoodsSpecs {
 
     private Integer totalNum;
     private Integer userNum;

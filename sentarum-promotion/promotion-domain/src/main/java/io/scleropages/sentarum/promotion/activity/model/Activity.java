@@ -21,56 +21,56 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * The root domain class is defined base information about activity of promotion.
+ * The root domain class is defined base information about activity in promotion.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface Activity {
 
     /**
-     * 活动唯一标识
+     * unique id of this activity
      *
      * @return
      */
     Long id();
 
     /**
-     * 活动名称
+     * name of this activity
      *
      * @return
      */
     String name();
 
     /**
-     * 活动标题
+     * tag of this activity.
      *
      * @return
      */
     String tag();
 
     /**
-     * 活动描述
+     * description of this activity.
      *
      * @return
      */
     String description();
 
     /**
-     * 开始时间
+     * start time of this activity.
      *
      * @return
      */
     Date startTime();
 
     /**
-     * 结束时间
+     * end time of this activity.
      *
      * @return
      */
     Date endTime();
 
     /**
-     * 活动状态
+     * status of this activity.
      * <pre>
      *     SAVED->SUBMIT->APPROVING->READY->RUNNING->FINISHED
      *                        |               |
@@ -84,25 +84,25 @@ public interface Activity {
     Integer status();
 
     /**
-     * 条件规则
+     * condition rules of this activity.
      *
      * @return
      */
-    List<Rule> conditions();
+    List<Rule> conditionRules();
 
 
     /**
-     * 促销规则
+     * promotional rules of this activity.
      *
      * @return
      */
-    Rule promotion();
+    Rule promotionalRules();
 
 
     /**
-     * 促销商品来源
+     * promotional goods source of this activity.
      *
      * @return
      */
-    List<ActivityItemSource> itemSources();
+    List<ActivityGoodsSource> goodsSource();
 }

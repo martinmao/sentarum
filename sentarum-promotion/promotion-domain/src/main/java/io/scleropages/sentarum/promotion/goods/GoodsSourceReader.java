@@ -13,38 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
+package io.scleropages.sentarum.promotion.goods;
 
-import io.scleropages.sentarum.promotion.item.model.ConceptualItem;
+import io.scleropages.sentarum.promotion.goods.model.Goods;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
- * 活动商品
+ * spi strategy interface for goods reading.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ActivityItem extends ConceptualItem {
-
-
-    /**
-     * total num of item in promotion.可做促销库存
-     *
-     * @return
-     */
-    Integer totalNum();
-
+public interface GoodsSourceReader {
 
     /**
-     * num of item in promotion per user.可做促销用户限购
+     * read a page of goods.
      *
+     * @param pageable
      * @return
      */
-    Integer userNum();
-
+    Page<? extends Goods> pageOfGoods(Pageable pageable);
 
     /**
-     * associated activity.
+     * read a goods by id.
      *
+     * @param id
      * @return
      */
-    Activity activity();
+    Goods goods(Long id);
 }

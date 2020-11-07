@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item.entity;
+package io.scleropages.sentarum.promotion.goods.entity;
+
+import io.scleropages.sentarum.promotion.goods.model.impl.CategoryGoodsSource;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 /**
- * referenced from: {@link io.scleropages.sentarum.promotion.item.model.impl.CategoryItemSource}
+ * referenced from: {@link CategoryGoodsSource}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
-public class CategoryItemSourceEntity extends AbstractItemSourceEntity {
+public class CategoryGoodsSourceEntity extends AbstractGoodsSourceEntity {
     /**
      * 类目id
      */
