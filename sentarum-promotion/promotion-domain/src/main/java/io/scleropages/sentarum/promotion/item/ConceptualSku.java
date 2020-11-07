@@ -15,8 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.item;
 
-import io.scleropages.sentarum.promotion.activity.model.Activity;
-
 /**
  * represent a conceptual item sku.
  *
@@ -39,26 +37,10 @@ public interface ConceptualSku {
      */
     String name();
 
-
-    /**
-     * total num of item in promotion.可做促销库存
-     *
-     * @return
-     */
-    Integer totalNum();
-
     /**
      * associated item.
      *
      * @return
      */
     ConceptualItem item();
-
-
-    /**
-     * associated activity.
-     *
-     * @return
-     */
-    Activity activity();
 }

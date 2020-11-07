@@ -15,17 +15,24 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.item.ItemSource;
+import io.scleropages.sentarum.promotion.item.ConceptualSku;
 
 /**
- * 活动商品来源.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ActivityItemSource extends ItemSource {
+public interface ActivityItemSku extends ConceptualSku {
+
 
     /**
-     * 与商品来源关联的的活动.
+     * total num of item in promotion.可做促销库存
+     *
+     * @return
+     */
+    Integer totalNum();
+
+
+    /**
+     * associated activity.
      *
      * @return
      */
