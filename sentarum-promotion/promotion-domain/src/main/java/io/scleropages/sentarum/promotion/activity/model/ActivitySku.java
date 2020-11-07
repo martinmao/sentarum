@@ -20,7 +20,7 @@ import io.scleropages.sentarum.promotion.item.ConceptualSku;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ActivityItemSku extends ConceptualSku {
+public interface ActivitySku extends ConceptualSku {
 
 
     /**
@@ -30,6 +30,13 @@ public interface ActivityItemSku extends ConceptualSku {
      */
     Integer totalNum();
 
+
+    /**
+     * num of item in promotion per user.可做促销用户限购
+     *
+     * @return
+     */
+    Integer userNum();
 
     /**
      * associated activity.
