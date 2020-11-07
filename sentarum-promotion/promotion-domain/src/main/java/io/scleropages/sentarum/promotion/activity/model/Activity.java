@@ -116,6 +116,8 @@ public interface Activity {
 
 
     /**
+     * 条件规则
+     *
      * @return
      */
     List<Rule> conditions();
@@ -142,7 +144,8 @@ public interface Activity {
         ALL(0, "全部参与", "平台所有商品都参与活动"),
         ITEM(1, "指定商品", "指定商品参与活动"),
         BRAND(2, "指定品牌", "指定品牌参与活动"),
-        CATEGORY(3, "指定营销类目", "指定营销类目参与的活动");
+        CATEGORY(3, "指定营销类目", "指定营销类目参与的活动"),
+        SELLER(4, "指定商家", "指定商家参与活动");
 
         private final int ordinal;
         /**
