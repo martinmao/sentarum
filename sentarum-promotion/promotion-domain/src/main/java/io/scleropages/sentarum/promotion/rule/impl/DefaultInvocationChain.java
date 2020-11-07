@@ -36,7 +36,7 @@ public class DefaultInvocationChain implements InvocationChain {
 
     //sequential invocations of this chain.
     private final List<RuleInvocation> invocations;
-    //next chain if current sequential invocations finished.
+    //next chain if sequential invocations finished.
     private final InvocationChain nextInvocationChain;
     //position of current invocation in this chain.
     private int currentPosition = 0;

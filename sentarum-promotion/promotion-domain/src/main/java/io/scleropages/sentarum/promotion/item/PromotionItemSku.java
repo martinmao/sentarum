@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.participator;
+package io.scleropages.sentarum.promotion.item;
 
-import java.util.List;
+import io.scleropages.sentarum.promotion.activity.model.Activity;
 
 /**
- * the capture snapshot of item in promotion.
+ * represent a conceptual item sku in promotion activity.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSnapshot {
+public interface PromotionItemSku {
 
     /**
-     * id of item.
+     * id of sku
      *
      * @return
      */
     Long id();
 
+
     /**
-     * name of item.
+     * name of sku.
      *
      * @return
      */
@@ -46,20 +47,18 @@ public interface ItemSnapshot {
      */
     Integer totalNum();
 
-
     /**
-     * num of item in promotion per user.可做促销用户限购
+     * associated item.
      *
      * @return
      */
-    Integer userNum();
+    PromotionItem promotionItem();
 
 
     /**
-     * conceptual sku list of this item.
-     * 该限定并非必须的，只有活动商品粒度细分到具体的sku才需设置.
+     * associated activity.
      *
      * @return
      */
-    List<SkuSnapshot> skuList();
+    Activity activity();
 }

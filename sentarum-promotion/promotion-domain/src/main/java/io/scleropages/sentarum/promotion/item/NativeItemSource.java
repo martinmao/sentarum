@@ -13,43 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.participator;
+package io.scleropages.sentarum.promotion.item;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
- * the capture snapshot of sku in promotion.
+ * 指定单品参与促销
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface SkuSnapshot {
+public class NativeItemSource extends AbstractItemSource {
 
-    /**
-     * id of sku
-     *
-     * @return
-     */
-    Long id();
+    @Override
+    public Page<? extends PromotionItem> readItems(Pageable pageable) {
+        return null;
+    }
 
-
-    /**
-     * name of sku.
-     *
-     * @return
-     */
-    String name();
-
-
-    /**
-     * total num of item in promotion.可做促销库存
-     *
-     * @return
-     */
-    Integer totalNum();
-
-
-    /**
-     * num of item in promotion per user.可做促销用户限购
-     *
-     * @return
-     */
-    Integer userNum();
+    @Override
+    public PromotionItem readItem(Long id) {
+        return null;
+    }
 }

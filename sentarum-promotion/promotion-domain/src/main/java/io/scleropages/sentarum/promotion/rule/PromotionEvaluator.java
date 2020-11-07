@@ -19,7 +19,7 @@ import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
- * 标识接口，促销规则调用
+ * 促销规则调用
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

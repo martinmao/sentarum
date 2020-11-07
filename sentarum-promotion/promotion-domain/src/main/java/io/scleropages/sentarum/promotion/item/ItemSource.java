@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.distribution.model;
+package io.scleropages.sentarum.promotion.item;
 
-import io.scleropages.sentarum.promotion.item.ItemSource;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
- * 分销体系
- * <p>
- * 分销体系源于一种营销策略，随着社会发展及市场趋于饱和，用户难以触达、流量贵、资金流等问题凸显.
- * 而平台将广告、渠道营销等投入直接让利给终端用户，通过一系列的激励策略使其通过推荐、引导其圈子内用户进行裂变、购买等行为获得收益的营销手段.
- * 受限于法律相关规定分销级别一般在三级以内
- * <p>
+ * implementation this for item source from associated domain object.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface DistributionHierarchy {
-
+public interface ItemSource {
 
     /**
      * 唯一标识
@@ -39,20 +32,19 @@ public interface DistributionHierarchy {
      */
     Long id();
 
-
     /**
-     * distribution levels connections of this hierarchy.
+     * read a page of items.
      *
+     * @param pageable
      * @return
      */
-    List<HierarchyLevelConnecting> hierarchyLevels();
-
+    Page<? extends PromotionItem> readItems(Pageable pageable);
 
     /**
-     * 应用于当前分销体系的商品源
+     * read a item by id.
      *
+     * @param id
      * @return
      */
-    ItemSource itemSource();
-
+    PromotionItem readItem(Long id);
 }

@@ -15,11 +15,11 @@
  */
 package io.scleropages.sentarum.promotion.rule.condition;
 
-import io.scleropages.sentarum.promotion.activity.model.participator.channel.ChannelRule;
 import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.impl.ChannelRule;
 
 /**
  * 促销参与渠道规则

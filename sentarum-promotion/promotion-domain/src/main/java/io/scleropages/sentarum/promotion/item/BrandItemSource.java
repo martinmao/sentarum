@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.participator.item;
+package io.scleropages.sentarum.promotion.item;
 
-import io.scleropages.sentarum.promotion.activity.model.participator.ItemSnapshot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,12 +24,12 @@ import org.springframework.data.domain.Pageable;
 public class BrandItemSource extends AbstractItemSource {
 
     @Override
-    public Page<? extends ItemSnapshot> readItems(Pageable pageable) {
+    public Page<? extends PromotionItem> readItems(Pageable pageable) {
         return null;
     }
 
     @Override
-    public ItemSnapshot readItem(Long id) {
+    public PromotionItem readItem(Long id) {
         return null;
     }
 }

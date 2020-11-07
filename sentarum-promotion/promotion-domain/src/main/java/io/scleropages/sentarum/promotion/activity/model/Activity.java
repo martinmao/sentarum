@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.activity.model.participator.ItemSource;
+import io.scleropages.sentarum.promotion.item.ItemSource;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
@@ -74,10 +74,17 @@ public interface Activity {
 
     /**
      * 活动状态
+     * <pre>
+     *     SAVED->SUBMIT->APPROVING->READY->RUNNING->FINISHED
+     *                        |               |
+     *                        |->REJECT       |->SUSPEND->RUNNING
+     *                                        |
+     *                                        |->TERMINATE
+     * </pre>
      *
      * @return
      */
-    Status status();
+    Integer status();
 
     /**
      * 参与商品范围
@@ -110,11 +117,17 @@ public interface Activity {
 
 
     /**
-     * 活动规则
+     * @return
+     */
+    List<Rule> conditions();
+
+
+    /**
+     * 促销规则
      *
      * @return
      */
-    List<Rule> rules();
+    List<Rule> promotions();
 
 
     /**
@@ -233,78 +246,6 @@ public interface Activity {
         }
 
         public static ParticipateUserType getByOrdinal(int ordinal) {
-            return ordinalMappings.get(ordinal);
-        }
-    }
-
-
-    /**
-     * 活动状态
-     * <pre>
-     *     SAVED->SUBMIT->APPROVING->READY->RUNNING->FINISHED
-     *                        |               |
-     *                        |->REJECT       |->SUSPEND->RUNNING
-     *                                        |
-     *                                        |->TERMINATE
-     * </pre>
-     */
-    enum Status {
-
-        SAVED(0, "已保存", "活动已保存"),
-        SUBMIT(1, "提交", "活动提交审核"),
-        APPROVING(2, "审核中", "活动正在审核中..."),
-        READY(3, "就绪", "审核通过，活动就绪"),
-        REJECT(4, "拒绝", "审核不通过，活动被驳回"),
-        RUNNING(5, "进行中", "活动在进行中"),
-        SUSPEND(6, "暂停", "活动被暂停"),
-        TERMINATE(7, "终止", "活动被终止"),
-        FINISHED(8, "完成", "活动已结束");
-
-        private final int ordinal;
-        /**
-         * 显示名.
-         */
-        private final String tag;
-        /**
-         * 描述
-         */
-        private final String desc;
-
-        Status(int ordinal, String tag, String desc) {
-            this.ordinal = ordinal;
-            this.tag = tag;
-            this.desc = desc;
-        }
-
-        public int getOrdinal() {
-            return ordinal;
-        }
-
-        public String getTag() {
-            return tag;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-
-        private static final Map<String, Status> nameMappings = new HashMap<>();
-        private static final Map<Integer, Status> ordinalMappings = new HashMap<>();
-
-        static {
-            for (Status status : Status.values()) {
-                nameMappings.put(status.name(), status);
-                ordinalMappings.put(status.getOrdinal(), status);
-            }
-        }
-
-
-        public static Status getByName(String name) {
-            return (name != null ? nameMappings.get(name) : null);
-        }
-
-        public static Status getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
         }
     }

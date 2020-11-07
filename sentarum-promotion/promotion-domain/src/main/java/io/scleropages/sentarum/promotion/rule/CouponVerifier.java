@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.participator.item;
-
-import io.scleropages.sentarum.promotion.activity.model.participator.ItemSnapshot;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+package io.scleropages.sentarum.promotion.rule;
 
 /**
- * 指定单品参与促销
+ * 负责卡券核销规则的实施
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class NativeItemSource extends AbstractItemSource {
+public interface CouponVerifier extends RuleInvocation {
 
-    @Override
-    public Page<? extends ItemSnapshot> readItems(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public ItemSnapshot readItem(Long id) {
-        return null;
-    }
 }
