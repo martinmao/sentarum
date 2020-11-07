@@ -15,24 +15,61 @@
  */
 package io.scleropages.sentarum.promotion.item;
 
+import io.scleropages.sentarum.promotion.activity.model.Activity;
+
+import java.util.List;
+
 /**
- * represent a item source.
+ * represent a conceptual item.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemSource {
+public interface ConceptualItem {
 
     /**
-     * id of this item source.
+     * id of item.
      *
      * @return
      */
     Long id();
 
     /**
-     * reader of this item source.
+     * name of item.
      *
      * @return
      */
-    ItemSourceReader itemSourceReader();
+    String name();
+
+
+    /**
+     * total num of item in promotion.可做促销库存
+     *
+     * @return
+     */
+    Integer totalNum();
+
+
+    /**
+     * num of item in promotion per user.可做促销用户限购
+     *
+     * @return
+     */
+    Integer userNum();
+
+
+    /**
+     * associated activity.
+     *
+     * @return
+     */
+    Activity activity();
+
+
+    /**
+     * conceptual sku list of this item.
+     * 该限定并非必须的，只有活动商品粒度细分到具体的sku才需设置.
+     *
+     * @return
+     */
+    List<ConceptualSku> skuList();
 }

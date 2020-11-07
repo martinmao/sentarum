@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.item.ItemSource;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
@@ -135,7 +134,7 @@ public interface Activity {
      *
      * @return
      */
-    ItemSource itemSource();
+    List<ActivityItemSource> itemSources();
 
 
     enum ParticipateItemRange {

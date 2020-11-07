@@ -13,50 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item;
+package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.item.ItemSource;
 
 /**
- * represent a conceptual item sku in promotion activity.
+ * 活动商品
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PromotionItemSku {
+public interface ActivityItemSource extends ItemSource {
 
     /**
-     * id of sku
-     *
-     * @return
-     */
-    Long id();
-
-
-    /**
-     * name of sku.
-     *
-     * @return
-     */
-    String name();
-
-
-    /**
-     * total num of item in promotion.可做促销库存
-     *
-     * @return
-     */
-    Integer totalNum();
-
-    /**
-     * associated item.
-     *
-     * @return
-     */
-    PromotionItem promotionItem();
-
-
-    /**
-     * associated activity.
+     * 与商品来源关联的的活动.
      *
      * @return
      */

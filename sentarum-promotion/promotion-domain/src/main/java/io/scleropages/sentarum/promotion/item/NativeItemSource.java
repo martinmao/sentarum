@@ -15,23 +15,11 @@
  */
 package io.scleropages.sentarum.promotion.item;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 /**
- * 指定单品参与促销
+ * 本地商品来源，商品会在本地落快照, 直接从本地读取.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class NativeItemSource extends AbstractItemSource {
 
-    @Override
-    public Page<? extends PromotionItem> readItems(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public PromotionItem readItem(Long id) {
-        return null;
-    }
 }

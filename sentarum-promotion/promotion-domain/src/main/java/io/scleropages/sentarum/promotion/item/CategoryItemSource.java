@@ -15,21 +15,35 @@
  */
 package io.scleropages.sentarum.promotion.item;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 /**
+ * 类目商品来源，本地不会落快照，实时从商品中心获取品类商品.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class CategoryItemSource extends AbstractItemSource {
 
-    @Override
-    public Page<? extends PromotionItem> readItems(Pageable pageable) {
-        return null;
+    /**
+     * 类目id
+     */
+    private Long categoryId;
+    /**
+     * 类目名称
+     */
+    private String categoryName;
+
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    @Override
-    public PromotionItem readItem(Long id) {
-        return null;
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

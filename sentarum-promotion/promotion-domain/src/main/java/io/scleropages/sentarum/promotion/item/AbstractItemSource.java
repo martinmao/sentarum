@@ -15,18 +15,12 @@
  */
 package io.scleropages.sentarum.promotion.item;
 
-import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.item.ItemSource;
-
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public abstract class AbstractItemSource implements ItemSource {
 
     private Long id;
-
-    private Activity activity;
-
 
     public Long getId() {
         return id;
@@ -36,16 +30,13 @@ public abstract class AbstractItemSource implements ItemSource {
         this.id = id;
     }
 
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
-
     @Override
     public Long id() {
         return getId();
+    }
+
+    @Override
+    public ItemSourceReader itemSourceReader() {
+        throw new IllegalStateException("item source not initialized.");
     }
 }

@@ -15,36 +15,29 @@
  */
 package io.scleropages.sentarum.promotion.item;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 /**
- * 品牌商商品来源，本地不会落快照，实时从商品中心获取品牌商品.
+ * spi strategy interface for item read.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class BrandItemSource extends AbstractItemSource {
+public interface ItemSourceReader {
 
     /**
-     * 品牌id
+     * read a page of items.
+     *
+     * @param pageable
+     * @return
      */
-    private Long brandId;
+    Page<? extends ConceptualItem> readItemPage(Pageable pageable);
 
     /**
-     * 品牌名称
+     * read a item by id.
+     *
+     * @param id
+     * @return
      */
-    private String brandName;
-
-    public Long getBrandId() {
-        return brandId;
-    }
-
-    public String getBrandName() {
-        return brandName;
-    }
-
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
-    }
-
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
+    ConceptualItem readItem(Long id);
 }
