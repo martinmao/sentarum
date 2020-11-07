@@ -72,9 +72,12 @@ public interface Activity {
     /**
      * status of this activity.
      * <pre>
-     *     SAVED->SUBMIT->APPROVING->READY->RUNNING->FINISHED
-     *                        |               |
-     *                        |->REJECT       |->SUSPEND->RUNNING
+     *                                        |---------------------|
+     *                                        |                     |
+     *                                        V                     |
+     *     SAVED->SUBMIT->APPROVING->READY->RUNNING->FINISHED       |
+     *                        |               |                     |
+     *                        |->REJECT       |->SUSPEND->RUNNING---|
      *                                        |
      *                                        |->TERMINATE
      * </pre>
@@ -84,7 +87,7 @@ public interface Activity {
     Integer status();
 
     /**
-     * condition rules of this activity.
+     * participation condition rules of this activity.
      *
      * @return
      */
@@ -92,11 +95,11 @@ public interface Activity {
 
 
     /**
-     * promotional rules of this activity.
+     * promotional rule of this activity.
      *
      * @return
      */
-    Rule promotionalRules();
+    Rule promotionalRule();
 
 
     /**
