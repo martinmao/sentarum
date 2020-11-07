@@ -13,13 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item;
+package io.scleropages.sentarum.promotion.activity.model.impl;
 
 /**
- * 本地商品来源，商品会在本地落快照, 直接从本地读取.
+ * 类目商品来源，本地不会落快照，实时从商品中心获取品类商品.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class NativeItemSource extends AbstractItemSource {
+public class CategoryItemSource extends AbstractActivityItemSource {
 
+    /**
+     * 类目id
+     */
+    private Long categoryId;
+    /**
+     * 类目名称
+     */
+    private String categoryName;
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

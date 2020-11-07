@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item;
+package io.scleropages.sentarum.promotion.activity.model.impl;
 
 /**
  * 卖家商品来源，本地不会落快照，实时从商品中心获取卖家商品
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SellerItemSource extends AbstractItemSource {
+public class SellerItemSource extends AbstractActivityItemSource {
 
     /**
      * 商家类型

@@ -13,38 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.item;
+package io.scleropages.sentarum.promotion.rule.model.impl;
+
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 
 /**
- * 品牌商商品来源，本地不会落快照，实时从商品中心获取品牌商品.
+ * 促销参与用户级别设置
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class BrandItemSource extends AbstractItemSource {
+public class UserLevelRule extends AbstractRule {
 
     /**
-     * 品牌id
+     * 用户级别id
      */
-    private Long brandId;
+    private Integer levelId;
 
     /**
-     * 品牌名称
+     * 用户级别名称
      */
-    private String brandName;
+    private String levelName;
 
-    public Long getBrandId() {
-        return brandId;
+
+    public Integer getLevelId() {
+        return levelId;
     }
 
-    public String getBrandName() {
-        return brandName;
+    public String getLevelName() {
+        return levelName;
     }
 
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
+    public void setLevelId(Integer levelId) {
+        this.levelId = levelId;
     }
 
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
+    public void setLevelName(String levelName) {
+        this.levelName = levelName;
     }
 }

@@ -19,13 +19,14 @@ import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.impl.UserLevelRule;
 
 /**
  * 促销参与用户规则
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class UserCondition implements Condition {
+public class UserLevelCondition implements Condition {
 
 
     @Override
@@ -35,21 +36,21 @@ public class UserCondition implements Condition {
 
     @Override
     public Class<? extends Rule> ruleClass() {
-        return null;
+        return UserLevelRule.class;
     }
 
     @Override
     public Integer id() {
-        return USER_INVOCATION_ID;
+        return USER_INVOCATION_ID + 1;
     }
 
     @Override
     public String name() {
-        return "促销参与用户";
+        return "促销参与用户级别";
     }
 
     @Override
     public String description() {
-        return "限定性规则：将促销活动限定为某一用户类型.（例如，会员等级，用户标签等）";
+        return "限定性规则：将促销活动限定为具备特定级别的用户人群.";
     }
 }

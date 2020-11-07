@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.rule;
 
 import io.scleropages.sentarum.promotion.rule.condition.ChannelCondition;
-import io.scleropages.sentarum.promotion.rule.condition.UserCondition;
+import io.scleropages.sentarum.promotion.rule.condition.UserLevelCondition;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
@@ -33,7 +33,7 @@ public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
     Integer CHANNEL_INVOCATION_ID = 10;
 
     /**
-     * 促销参与用户规则id {@link UserCondition}
+     * 促销参与用户规则id {@link UserLevelCondition}
      */
     Integer USER_INVOCATION_ID = 30;
 

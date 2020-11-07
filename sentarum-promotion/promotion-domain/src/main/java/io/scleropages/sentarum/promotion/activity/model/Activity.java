@@ -86,36 +86,6 @@ public interface Activity {
     Integer status();
 
     /**
-     * 参与商品范围
-     *
-     * @return
-     */
-    ParticipateItemRange participateItemRange();
-
-    /**
-     * 参与用户类型
-     *
-     * @return
-     */
-    ParticipateUserType participateUserType();
-
-
-    /**
-     * 匹配的会员级别
-     *
-     * @return
-     */
-    String memberLevel();
-
-    /**
-     * 用户标签，被标记标签的用户才能参与活动. {@link #participateUserType()}=={@link ParticipateUserType#TAG_USER}时才有效
-     *
-     * @return
-     */
-    String userTag();
-
-
-    /**
      * 条件规则
      *
      * @return
@@ -132,7 +102,7 @@ public interface Activity {
 
 
     /**
-     * 促销主商品来源
+     * 促销商品来源
      *
      * @return
      */
