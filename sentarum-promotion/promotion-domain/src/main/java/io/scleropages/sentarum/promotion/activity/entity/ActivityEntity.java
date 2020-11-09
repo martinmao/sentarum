@@ -17,11 +17,18 @@ package io.scleropages.sentarum.promotion.activity.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
+import javax.persistence.Entity;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
+@Entity
+@Table(name = "promotion_activity")
+@SequenceGenerator(name = "promotion_activity_id", sequenceName = "seq_promotion_activity", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityEntity extends IdEntity {
 
 

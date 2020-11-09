@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.goods.model.impl;
 
 /**
- * 卖家商品来源，本地不会落快照，实时从商品中心获取卖家商品
+ * 卖家商品来源，只记录关系。本地不会落快照，实时从商品中心获取卖家商品
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

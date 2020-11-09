@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.goods.model.impl;
 
 /**
- * 本地商品来源，对于特定的商品，将外部来源的商品落盘到本地形成快照.
+ * 本地商品来源，对于已知明确数量的商品，将外部来源的商品落盘到本地形成快照.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
