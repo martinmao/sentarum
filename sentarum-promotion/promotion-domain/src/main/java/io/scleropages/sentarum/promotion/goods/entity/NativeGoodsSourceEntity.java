@@ -23,6 +23,6 @@ import javax.persistence.MappedSuperclass;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
-public class NativeGoodsSourceEntity extends AbstractGoodsSourceEntity {
+public abstract class NativeGoodsSourceEntity extends AbstractGoodsSourceEntity {
 
 }

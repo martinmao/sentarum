@@ -13,38 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.model.impl;
+package io.scleropages.sentarum.promotion.goods.entity.mapper;
+
+import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.entity.GoodsEntity;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
+import org.scleropages.crud.ModelMapper;
 
 /**
- * 品牌商商品来源，只记录关系，本地不会落快照，实时从商品中心获取品牌商品.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class BrandGoodsSource extends AbstractGoodsSource {
+public interface GoodsEntityMapper<T extends GoodsEntity, M extends AbstractGoods> extends ModelMapper<T, M> {
 
-    /**
-     * 品牌id
-     */
-    private Long brandId;
 
-    /**
-     * 品牌名称
-     */
-    private String brandName;
-
-    public Long getBrandId() {
-        return brandId;
+    default AbstractGoodsSourceEntity toEntity(AbstractGoodsSource goodsSource) {
+        return null;
     }
 
-    public String getBrandName() {
-        return brandName;
-    }
-
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
-    }
-
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
+    default AbstractGoodsSource toModel(AbstractGoodsSourceEntity entity) {
+        return null;
     }
 }

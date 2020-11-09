@@ -13,38 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.model.impl;
+package io.scleropages.sentarum.promotion.goods.entity.mapper;
 
+import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSource.GoodsSourceType;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
+import org.scleropages.crud.ModelMapper;
 
 /**
- * 类目商品来源，只记录关系，本地不会落快照，实时从商品中心获取品类商品.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class CategoryGoodsSource extends AbstractGoodsSource {
+public interface AbstractGoodsSourceEntityMapper<T extends AbstractGoodsSourceEntity, M extends AbstractGoodsSource> extends ModelMapper<T, M> {
 
-    /**
-     * 类目id
-     */
-    private Long categoryId;
-    /**
-     * 类目名称
-     */
-    private String categoryName;
 
-    public Long getCategoryId() {
-        return categoryId;
+    default Integer toOrdinal(GoodsSourceType goodsSourceType) {
+        return goodsSourceType.getOrdinal();
     }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    default GoodsSourceType toGoodsSourceType(Integer ordinal) {
+        return GoodsSourceType.getByOrdinal(ordinal);
     }
 }
