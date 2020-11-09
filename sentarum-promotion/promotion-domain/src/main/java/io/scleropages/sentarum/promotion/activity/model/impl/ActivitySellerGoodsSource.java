@@ -17,12 +17,13 @@ package io.scleropages.sentarum.promotion.activity.model.impl;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
-import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.SellerGoodsSource;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class AbstractActivityGoodsSource extends AbstractGoodsSource implements ActivityGoodsSource {
+public class ActivitySellerGoodsSource extends SellerGoodsSource implements ActivityGoodsSource {
+
 
     private Activity activity;
 

@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.entity;
 
+import io.scleropages.sentarum.promotion.goods.entity.BrandGoodsSourceEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
@@ -22,13 +23,12 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel}
+ * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityBrandGoodsSource}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prom_activity")
-@SequenceGenerator(name = "prom_activity_id", sequenceName = "seq_prom_activity", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class ActivityEntity extends IdEntity {
-
+@Table(name = "prom_act_brand_goods_source")
+@SequenceGenerator(name = "prom_act_brand_goods_source_id", sequenceName = "seq_prom_act_brand_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class ActivityBrandGoodsSourceEntity extends BrandGoodsSourceEntity {
 }

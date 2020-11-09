@@ -58,6 +58,35 @@ public interface GoodsSource {
      */
     Long bizId();
 
+//    /**
+//     * 目标id
+//     * <pre>
+//     * {@link #goodsSourceType()}== {@link GoodsSourceType#ALL} 固定为-1
+//     * {@link #goodsSourceType()}== {@link GoodsSourceType#GOODS} 固定为0
+//     * {@link #goodsSourceType()}== {@link GoodsSourceType#BRAND} 为品牌id
+//     * {@link #goodsSourceType()}== {@link GoodsSourceType#CATEGORY} 为类目id
+//     * {@link #goodsSourceType()}== {@link GoodsSourceType#SELLER} 为卖家id
+//     * </pre>
+//     *
+//     * @return
+//     */
+//    Long targetId();
+//
+//    /**
+//     * 目标综合id
+//     * 仅{@link #goodsSourceType()}== {@link GoodsSourceType#SELLER} 有效，为商家unionSellerId.
+//     *
+//     * @return
+//     */
+//    Long targetUnionId();
+
+//    /**
+//     * 目标名称
+//     *
+//     * @return
+//     */
+//    String targetName();
+
     /**
      * reader of this goods source.
      *
@@ -70,8 +99,8 @@ public interface GoodsSource {
      */
     enum GoodsSourceType {
 
-        ALL(0, "全部参与", "平台所有商品"),
-        GOODS(1, "指定商品", "选定特定的商品"),
+        ALL(0, "全部商品", "平台所有商品"),
+        GOODS(1, "指定商品", "选定的商品"),
         BRAND(2, "指定品牌", "品牌内所有商品"),
         CATEGORY(3, "指定营销类目", "类目内所有商品"),
         SELLER(4, "指定商家", "商家所有商品");

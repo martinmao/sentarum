@@ -11,6 +11,9 @@
     <packaging>pom</packaging>
     <modules>
         <module>promotion-domain</module>
+        <module>promotion-infrastructure</module>
+        <module>promotion-application</module>
+        <module>promotion-application-starter</module>
     </modules>
 
     <artifactId>sentarum-promotion</artifactId>
