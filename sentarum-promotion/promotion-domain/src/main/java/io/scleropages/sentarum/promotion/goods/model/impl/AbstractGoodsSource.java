@@ -27,6 +27,8 @@ public abstract class AbstractGoodsSource implements GoodsSource {
 
     private GoodsSourceType goodsSourceType;
 
+    private String comment;
+
     private Integer bizType;
 
     private Long bizId;
@@ -37,6 +39,10 @@ public abstract class AbstractGoodsSource implements GoodsSource {
 
     public GoodsSourceType getGoodsSourceType() {
         return goodsSourceType;
+    }
+
+    public String getComment() {
+        return comment;
     }
 
     public Integer getBizType() {
@@ -53,6 +59,10 @@ public abstract class AbstractGoodsSource implements GoodsSource {
 
     public void setGoodsSourceType(GoodsSourceType goodsSourceType) {
         this.goodsSourceType = goodsSourceType;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public void setBizType(Integer bizType) {
@@ -72,6 +82,11 @@ public abstract class AbstractGoodsSource implements GoodsSource {
     @Override
     public GoodsSourceType goodsSourceType() {
         return getGoodsSourceType();
+    }
+
+    @Override
+    public String comment() {
+        return getComment();
     }
 
     @Override

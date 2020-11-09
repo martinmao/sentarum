@@ -15,24 +15,40 @@
  */
 package io.scleropages.sentarum.promotion.activity.entity;
 
+import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsEntity;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
+@Entity
+@Table(name = "prom_act_goods")
+@SequenceGenerator(name = "prom_act_goods_id", sequenceName = "seq_prom_act_goods", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityGoodsEntity extends GoodsEntity {
 
 
     private Integer totalNum;
     private Integer userNum;
     private ActivityEntity activity;
+
+
+    @Override
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ActivityGoodsSourceEntity.class)
+    @JoinColumn(name = "goods_source_id", nullable = false)
+    public AbstractGoodsSourceEntity getGoodsSource() {
+        return super.getGoodsSource();
+    }
 
     @Column(name = "total_num", nullable = false)
     public Integer getTotalNum() {

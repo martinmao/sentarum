@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.goods.model.impl;
 
 import io.scleropages.sentarum.promotion.goods.model.Goods;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public abstract class AbstractGoods implements Goods {
 
 
     private Long id;
+    private GoodsSource goodsSource;
     private Long goodsId;
     private String outerGoodsId;
     private String name;
@@ -35,6 +37,10 @@ public abstract class AbstractGoods implements Goods {
 
     public Long getId() {
         return id;
+    }
+
+    public GoodsSource getGoodsSource() {
+        return goodsSource;
     }
 
     public Long getGoodsId() {
@@ -57,6 +63,10 @@ public abstract class AbstractGoods implements Goods {
         this.id = id;
     }
 
+    public void setGoodsSource(GoodsSource goodsSource) {
+        this.goodsSource = goodsSource;
+    }
+
     public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
     }
@@ -76,6 +86,11 @@ public abstract class AbstractGoods implements Goods {
     @Override
     public Long id() {
         return getId();
+    }
+
+    @Override
+    public GoodsSource goodsSource() {
+        return getGoodsSource();
     }
 
     @Override

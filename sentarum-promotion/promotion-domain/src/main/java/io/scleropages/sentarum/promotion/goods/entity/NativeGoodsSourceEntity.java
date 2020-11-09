@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model;
+package io.scleropages.sentarum.promotion.goods.entity;
 
-import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
+import javax.persistence.MappedSuperclass;
 
 /**
- * represent promotional goods source.
+ * referenced from: {@link io.scleropages.sentarum.promotion.goods.model.impl.NativeGoodsSource}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ActivityGoodsSource extends GoodsSource {
+@MappedSuperclass
+public class NativeGoodsSourceEntity extends AbstractGoodsSourceEntity {
 
-    /**
-     * associated activity.
-     *
-     * @return
-     */
-    Activity activity();
 }

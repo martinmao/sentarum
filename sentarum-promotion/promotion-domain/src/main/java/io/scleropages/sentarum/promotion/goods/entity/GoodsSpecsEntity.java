@@ -22,6 +22,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSpecs}
@@ -53,6 +54,7 @@ public abstract class GoodsSpecsEntity extends IdEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id", nullable = false)
+    @Transient
     public GoodsEntity getGoods() {
         return goods;
     }

@@ -31,6 +31,8 @@ public abstract class AbstractGoodsSourceEntity extends IdEntity {
 
     private Integer goodsSourceType;
 
+    private String comment;
+
     private Integer bizType;
 
     private Long bizId;
@@ -38,6 +40,11 @@ public abstract class AbstractGoodsSourceEntity extends IdEntity {
     @Column(name = "goods_source_type", nullable = false)
     public Integer getGoodsSourceType() {
         return goodsSourceType;
+    }
+
+    @Column(name = "comment_", nullable = false)
+    public String getComment() {
+        return comment;
     }
 
     @Column(name = "biz_type", nullable = false)
@@ -48,6 +55,10 @@ public abstract class AbstractGoodsSourceEntity extends IdEntity {
     @Column(name = "biz_id", nullable = false)
     public Long getBizId() {
         return bizId;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public void setGoodsSourceType(Integer goodsSourceType) {

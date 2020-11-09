@@ -15,18 +15,26 @@
  */
 package io.scleropages.sentarum.promotion.activity.entity;
 
+import io.scleropages.sentarum.promotion.goods.entity.GoodsEntity;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsSpecsEntity;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsSpecsModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
+@Entity
+@Table(name = "prom_act_goods_specs")
+@SequenceGenerator(name = "prom_act_goods_specs_id", sequenceName = "seq_prom_act_goods_specs", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityGoodsSpecsEntity extends GoodsSpecsEntity {
 
     private Integer totalNum;
@@ -48,6 +56,13 @@ public class ActivityGoodsSpecsEntity extends GoodsSpecsEntity {
     @JoinColumn(name = "activity_id", nullable = false)
     public ActivityEntity getActivity() {
         return activity;
+    }
+
+    @Override
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ActivityGoodsEntity.class)
+    @JoinColumn(name = "goods_id", nullable = false)
+    public GoodsEntity getGoods() {
+        return super.getGoods();
     }
 
     public void setTotalNum(Integer totalNum) {

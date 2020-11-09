@@ -15,28 +15,11 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.impl;
 
-import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.impl.CategoryGoodsSource;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ActivityCategoryGoodsSource extends CategoryGoodsSource implements ActivityGoodsSource {
+public class ActivityCategoryGoodsSource extends CategoryGoodsSource {
 
-
-    private Activity activity;
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
-
-    @Override
-    public Activity activity() {
-        return getActivity();
-    }
 }

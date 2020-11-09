@@ -15,11 +15,13 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.impl;
 
-import io.scleropages.sentarum.promotion.goods.model.impl.BrandGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
 
 /**
+ * represent promotional goods source.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ActivityBrandGoodsSource extends BrandGoodsSource {
+public class ActivityGoodsSource extends AbstractGoodsSource {
 
 }

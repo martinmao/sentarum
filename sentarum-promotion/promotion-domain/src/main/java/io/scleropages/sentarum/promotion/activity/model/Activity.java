@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;

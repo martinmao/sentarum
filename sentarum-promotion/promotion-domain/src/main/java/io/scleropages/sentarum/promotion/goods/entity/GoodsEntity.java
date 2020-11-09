@@ -18,7 +18,11 @@ package io.scleropages.sentarum.promotion.goods.entity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 /**
  * referenced from {@link io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods}
@@ -28,9 +32,17 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class GoodsEntity extends IdEntity {
 
+    private AbstractGoodsSourceEntity goodsSource;
     private Long goodsId;
     private String outerGoodsId;
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "goods_source_id", nullable = false)
+    @Transient
+    public AbstractGoodsSourceEntity getGoodsSource() {
+        return goodsSource;
+    }
 
     @Column(name = "goods_id", nullable = false)
     public Long getGoodsId() {
@@ -45,6 +57,10 @@ public abstract class GoodsEntity extends IdEntity {
     @Column(name = "name_", nullable = false)
     public String getName() {
         return name;
+    }
+
+    public void setGoodsSource(AbstractGoodsSourceEntity goodsSource) {
+        this.goodsSource = goodsSource;
     }
 
     public void setGoodsId(Long goodsId) {
