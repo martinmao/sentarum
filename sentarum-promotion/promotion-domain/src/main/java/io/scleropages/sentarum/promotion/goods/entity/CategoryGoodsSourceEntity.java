@@ -26,7 +26,7 @@ import javax.persistence.MappedSuperclass;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
-public class CategoryGoodsSourceEntity extends AbstractGoodsSourceEntity {
+public abstract class CategoryGoodsSourceEntity extends AbstractGoodsSourceEntity {
     /**
      * 类目id
      */

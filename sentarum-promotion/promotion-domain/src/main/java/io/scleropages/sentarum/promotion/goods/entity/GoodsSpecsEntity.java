@@ -29,7 +29,7 @@ import javax.persistence.MappedSuperclass;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
-public class GoodsSpecsEntity extends IdEntity {
+public abstract class GoodsSpecsEntity extends IdEntity {
 
     private Long specsId;
     private String outerSpecsId;
