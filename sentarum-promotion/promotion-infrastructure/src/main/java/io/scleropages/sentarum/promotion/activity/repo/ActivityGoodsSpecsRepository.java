@@ -15,13 +15,13 @@
  */
 package io.scleropages.sentarum.promotion.activity.repo;
 
-import io.scleropages.sentarum.jooq.tables.PromActGoodsSource;
-import io.scleropages.sentarum.jooq.tables.records.PromActGoodsSourceRecord;
-import io.scleropages.sentarum.promotion.activity.entity.ActivityNativeGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.goods.repo.NativeGoodsSourceRepository;
+import io.scleropages.sentarum.jooq.tables.PromActGoodsSpecs;
+import io.scleropages.sentarum.jooq.tables.records.PromActGoodsSpecsRecord;
+import io.scleropages.sentarum.promotion.activity.entity.ActivityGoodsSpecsEntity;
+import io.scleropages.sentarum.promotion.goods.repo.GoodsSpecsRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ActivityNativeGoodsSourceRepository extends NativeGoodsSourceRepository<ActivityNativeGoodsSourceEntity, PromActGoodsSource, PromActGoodsSourceRecord> {
+public interface ActivityGoodsSpecsRepository extends GoodsSpecsRepository<ActivityGoodsSpecsEntity, PromActGoodsSpecs, PromActGoodsSpecsRecord> {
 }
