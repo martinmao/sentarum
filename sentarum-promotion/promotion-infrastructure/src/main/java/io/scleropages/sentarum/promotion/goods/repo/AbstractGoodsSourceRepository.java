@@ -20,10 +20,15 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.SelectQuery;
 import org.jooq.Table;
+import org.scleropages.crud.dao.orm.SearchFilter;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.JpaContexts;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.scleropages.crud.dao.orm.jpa.complement.JpaSupportJooqConditions;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.util.Assert;
+
+import java.util.Map;
 
 import static org.jooq.impl.DSL.*;
 
@@ -33,17 +38,23 @@ import static org.jooq.impl.DSL.*;
 @NoRepositoryBean
 public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
 
+    abstract class JoinQueryAssembler {
 
-    abstract class QueryJoinAssembler {
-
-        public static void applyJoin(Table actualGoodsSourceTable, Integer bizType, SelectQuery<Record> baseQuery, JpaContexts.ManagedTypeModel<?> bizEntityModel) {
+        public static void applyJoinQuery(Table actualGoodsSourceTable, Integer bizType, SelectQuery<Record> baseQuery, Map<String, SearchFilter> searchFilters, JpaContexts.ManagedTypeModel<?> bizEntityModel) {
 
             Table bizTable = dslNameToTable(bizEntityModel.table().toUpperCase());
             Field bizTableId = dslNameToField(bizTable.getName(), bizEntityModel.getColumnOfId().toUpperCase());
-            Field actualGoodsSourceBizTypeField = dslNameToField(actualGoodsSourceTable.getName(), "biz_type".toUpperCase());
-            Field actualGoodsSourceBizIdField = dslNameToField(actualGoodsSourceTable.getName(), "biz_id".toUpperCase());
+            String actualGoodsSourceTableName = actualGoodsSourceTable.getName().toUpperCase();
+            Field actualGoodsSourceBizTypeField = dslNameToField(actualGoodsSourceTableName, "BIZ_TYPE");
+            Field actualGoodsSourceBizIdField = dslNameToField(actualGoodsSourceTableName, "BIZ_ID");
             baseQuery.addJoin(actualGoodsSourceTable, actualGoodsSourceBizTypeField.eq(bizType).and(actualGoodsSourceBizIdField.eq(bizTableId)));
 
+            JpaContexts.ManagedTypeModel managedTypeModel = JpaContexts.getManagedTypeModel(actualGoodsSourceTable.getName().toLowerCase());
+            searchFilters.forEach((s, searchFilter) -> {
+                String[] columns = managedTypeModel.databaseColumnByAttribute(managedTypeModel.attribute(s));
+                Assert.isTrue(null != columns && columns.length == 1, () -> "attribute " + s + " from [" + managedTypeModel.managedType().getJavaType().getSimpleName() + "] has no(or more than one) mapped column.");
+                baseQuery.addConditions(JpaSupportJooqConditions.bySearchFilter(dslNameToField(actualGoodsSourceTableName, columns[0].toUpperCase()), searchFilter));
+            });
         }
 
         private static Field dslNameToField(String... qualifiedNames) {

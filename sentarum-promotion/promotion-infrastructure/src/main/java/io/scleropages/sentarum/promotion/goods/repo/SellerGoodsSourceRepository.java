@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.goods.repo;
 
-import io.scleropages.sentarum.promotion.goods.entity.BrandGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.entity.SellerGoodsSourceEntity;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -24,6 +24,6 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @NoRepositoryBean
-public interface BrandGoodsSourceRepository<E extends BrandGoodsSourceEntity, T extends Table, R extends Record> extends AbstractGoodsSourceRepository<E, T, R> {
+public interface SellerGoodsSourceRepository<E extends SellerGoodsSourceEntity, T extends Table, R extends Record> extends AbstractGoodsSourceRepository<E, T, R> {
 
 }

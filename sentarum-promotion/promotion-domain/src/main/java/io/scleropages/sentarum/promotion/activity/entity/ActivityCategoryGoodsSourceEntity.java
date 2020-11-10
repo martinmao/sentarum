@@ -19,6 +19,7 @@ import io.scleropages.sentarum.promotion.goods.entity.CategoryGoodsSourceEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -28,7 +29,11 @@ import javax.persistence.Table;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prom_act_category_goods_source")
+@Table(name = "prom_act_category_goods_source",
+        indexes = {
+                @Index(columnList = "biz_type,biz_id")
+        }
+)
 @SequenceGenerator(name = "prom_act_category_goods_source_id", sequenceName = "seq_prom_act_category_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityCategoryGoodsSourceEntity extends CategoryGoodsSourceEntity {
 }
