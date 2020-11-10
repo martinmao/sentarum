@@ -16,6 +16,10 @@
 package io.scleropages.sentarum.promotion.goods.model;
 
 import io.scleropages.sentarum.promotion.goods.GoodsSourceReader;
+import io.scleropages.sentarum.promotion.goods.model.impl.BrandGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.CategoryGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.NativeGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.SellerGoodsSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +30,10 @@ import java.util.Map;
  * 具体读取工作由策略接口 {@link GoodsSourceReader} 来实现，即reader接口根据来源的配置进行商品的读取.
  * 这在很多场景下可以使用，例如某一业务实体与商品的关系建模往往不是固定的，而是通过配置后形成的。
  * <pre>
- *     本地商品：{@link io.scleropages.sentarum.promotion.goods.model.impl.NativeGoodsSource}
- *     品牌商：{@link io.scleropages.sentarum.promotion.goods.model.impl.BrandGoodsSource}
- *     类目：{@link io.scleropages.sentarum.promotion.goods.model.impl.CategoryGoodsSource}
- *     卖家：{@link io.scleropages.sentarum.promotion.goods.model.impl.SellerGoodsSource}
+ *     本地商品：{@link NativeGoodsSource}
+ *     品牌商：{@link BrandGoodsSource}
+ *     类目：{@link CategoryGoodsSource}
+ *     卖家：{@link SellerGoodsSource}
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -57,19 +61,19 @@ public interface GoodsSource {
      */
     String comment();
 
-    /**
-     * 与此商品来源关联的业务类型.
-     *
-     * @return
-     */
-    Integer bizType();
-
-    /**
-     * 与此商品来源关联的业务模型标识.
-     *
-     * @return
-     */
-    Long bizId();
+//    /**
+//     * 与此商品来源关联的业务类型.
+//     *
+//     * @return
+//     */
+//    Integer bizType();
+//
+//    /**
+//     * 与此商品来源关联的业务模型标识.
+//     *
+//     * @return
+//     */
+//    Long bizId();
 
 //    /**
 //     * 目标id

@@ -25,5 +25,4 @@ import org.springframework.data.repository.NoRepositoryBean;
  */
 @NoRepositoryBean
 public interface NativeGoodsSourceRepository<E extends NativeGoodsSourceEntity, T extends Table, R extends Record> extends AbstractGoodsSourceRepository<E, T, R> {
-
 }

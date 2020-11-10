@@ -33,9 +33,9 @@ public abstract class AbstractGoodsSourceEntity extends IdEntity {
 
     private String comment;
 
-    private Integer bizType;
-
-    private Long bizId;
+//    private Integer bizType;
+//
+//    private Long bizId;
 
     @Column(name = "goods_source_type", nullable = false)
     public Integer getGoodsSourceType() {
@@ -47,15 +47,15 @@ public abstract class AbstractGoodsSourceEntity extends IdEntity {
         return comment;
     }
 
-    @Column(name = "biz_type", nullable = false)
-    public Integer getBizType() {
-        return bizType;
-    }
-
-    @Column(name = "biz_id", nullable = false)
-    public Long getBizId() {
-        return bizId;
-    }
+//    @Column(name = "biz_type", nullable = false)
+//    public Integer getBizType() {
+//        return bizType;
+//    }
+//
+//    @Column(name = "biz_id", nullable = false)
+//    public Long getBizId() {
+//        return bizId;
+//    }
 
     public void setComment(String comment) {
         this.comment = comment;
@@ -65,11 +65,11 @@ public abstract class AbstractGoodsSourceEntity extends IdEntity {
         this.goodsSourceType = goodsSourceType;
     }
 
-    public void setBizType(Integer bizType) {
-        this.bizType = bizType;
-    }
-
-    public void setBizId(Long bizId) {
-        this.bizId = bizId;
-    }
+//    public void setBizType(Integer bizType) {
+//        this.bizType = bizType;
+//    }
+//
+//    public void setBizId(Long bizId) {
+//        this.bizId = bizId;
+//    }
 }

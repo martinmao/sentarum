@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.repo;
+package io.scleropages.sentarum.promotion.goods.entity.mapper;
 
-import io.scleropages.sentarum.promotion.goods.entity.SellerGoodsSourceEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.promotion.goods.entity.RemotingGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.model.impl.RemotingGoodsSource;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface SellerGoodsSourceRepository<E extends SellerGoodsSourceEntity, T extends Table, R extends Record> extends AbstractGoodsSourceRepository<E, T, R> {
+public interface RemotingGoodsSourceEntityMapper<T extends RemotingGoodsSourceEntity, M extends RemotingGoodsSource> extends AbstractGoodsSourceEntityMapper<T, M> {
 }

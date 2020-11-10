@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.repo;
+package io.scleropages.sentarum.promotion.activity.entity.mapper;
 
-import io.scleropages.sentarum.promotion.goods.entity.SellerGoodsSourceEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.promotion.activity.entity.ActivityCategoryGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityCategoryGoodsSource;
+import io.scleropages.sentarum.promotion.goods.entity.mapper.CategoryGoodsSourceEntityMapper;
+import org.mapstruct.Mapper;
+import org.scleropages.crud.ModelMapper;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface SellerGoodsSourceRepository<E extends SellerGoodsSourceEntity, T extends Table, R extends Record> extends AbstractGoodsSourceRepository<E, T, R> {
+@Mapper(config = ModelMapper.DefaultConfig.class)
+public interface ActivityCategoryGoodsSourceEntityMapper extends CategoryGoodsSourceEntityMapper<ActivityCategoryGoodsSourceEntity, ActivityCategoryGoodsSource>, AbstractActivityEntityMapper {
 }

@@ -21,5 +21,5 @@ import io.scleropages.sentarum.promotion.goods.model.impl.BrandGoodsSource;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface BrandGoodsSourceEntityMapper extends AbstractGoodsSourceEntityMapper<BrandGoodsSourceEntity, BrandGoodsSource> {
+public interface BrandGoodsSourceEntityMapper<T extends BrandGoodsSourceEntity, M extends BrandGoodsSource> extends RemotingGoodsSourceEntityMapper<T, M> {
 }

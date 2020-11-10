@@ -13,16 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.repo;
+package io.scleropages.sentarum.promotion.activity.model.impl;
 
-import io.scleropages.sentarum.promotion.goods.entity.SellerGoodsSourceEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+
+import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.NativeGoodsSource;
 
 /**
+ * represent promotional goods source.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface SellerGoodsSourceRepository<E extends SellerGoodsSourceEntity, T extends Table, R extends Record> extends AbstractGoodsSourceRepository<E, T, R> {
+public class ActivityNativeGoodsSource extends NativeGoodsSource implements ActivityGoodsSource {
+
+    private Activity activity;
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
+
+    @Override
+    public Activity activity() {
+        return getActivity();
+    }
 }

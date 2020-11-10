@@ -28,7 +28,7 @@ public abstract class AbstractGoods implements Goods {
 
 
     private Long id;
-    private GoodsSource goodsSource;
+//    private GoodsSource goodsSource;
     private Long goodsId;
     private String outerGoodsId;
     private String name;
@@ -39,9 +39,9 @@ public abstract class AbstractGoods implements Goods {
         return id;
     }
 
-    public GoodsSource getGoodsSource() {
-        return goodsSource;
-    }
+//    public GoodsSource getGoodsSource() {
+//        return goodsSource;
+//    }
 
     public Long getGoodsId() {
         return goodsId;
@@ -63,9 +63,9 @@ public abstract class AbstractGoods implements Goods {
         this.id = id;
     }
 
-    public void setGoodsSource(GoodsSource goodsSource) {
-        this.goodsSource = goodsSource;
-    }
+//    public void setGoodsSource(GoodsSource goodsSource) {
+//        this.goodsSource = goodsSource;
+//    }
 
     public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
@@ -88,10 +88,10 @@ public abstract class AbstractGoods implements Goods {
         return getId();
     }
 
-    @Override
-    public GoodsSource goodsSource() {
-        return getGoodsSource();
-    }
+//    @Override
+//    public GoodsSource goodsSource() {
+//        return getGoodsSource();
+//    }
 
     @Override
     public Long goodsId() {

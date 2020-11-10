@@ -20,7 +20,7 @@ package io.scleropages.sentarum.promotion.goods.model.impl;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SellerGoodsSource extends AbstractGoodsSource {
+public class SellerGoodsSource extends RemotingGoodsSource {
 
     /**
      * 商家类型

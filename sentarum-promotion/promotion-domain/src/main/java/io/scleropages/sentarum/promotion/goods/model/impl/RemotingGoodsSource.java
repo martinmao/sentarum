@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.repo;
-
-import io.scleropages.sentarum.promotion.goods.entity.SellerGoodsSourceEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+package io.scleropages.sentarum.promotion.goods.model.impl;
 
 /**
+ * remoting goods source.商品来源于商品中心，本地不落快照，仅记录关系
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface SellerGoodsSourceRepository<E extends SellerGoodsSourceEntity, T extends Table, R extends Record> extends AbstractGoodsSourceRepository<E, T, R> {
+public abstract class RemotingGoodsSource extends AbstractGoodsSource {
+
+    /**
+     * query phrase from item center.
+     */
+    private String query;
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
 }

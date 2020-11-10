@@ -31,12 +31,12 @@ public interface Goods {
      */
     Long id();
 
-    /**
-     * associated good source of this goods.
-     *
-     * @return
-     */
-    GoodsSource goodsSource();
+//    /**
+//     * associated good source of this goods.
+//     *
+//     * @return
+//     */
+//    GoodsSource goodsSource();
 
     /**
      * id of goods.

@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.impl;
+package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
 
 /**
- * represent promotional goods source.
+ * represent a activity goods source.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ActivityGoodsSource extends AbstractGoodsSource {
+public interface ActivityGoodsSource extends GoodsSource {
 
+    /**
+     * associated activity of this goods source.
+     *
+     * @return
+     */
+    Activity activity();
 }

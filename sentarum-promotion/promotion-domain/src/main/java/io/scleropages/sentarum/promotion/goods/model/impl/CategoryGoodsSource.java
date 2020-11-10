@@ -21,7 +21,7 @@ package io.scleropages.sentarum.promotion.goods.model.impl;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class CategoryGoodsSource extends AbstractGoodsSource {
+public abstract class CategoryGoodsSource extends RemotingGoodsSource {
 
     /**
      * 类目id

@@ -29,9 +29,9 @@ public abstract class AbstractGoodsSource implements GoodsSource {
 
     private String comment;
 
-    private Integer bizType;
-
-    private Long bizId;
+//    private Integer bizType;
+//
+//    private Long bizId;
 
     public Long getId() {
         return id;
@@ -45,13 +45,13 @@ public abstract class AbstractGoodsSource implements GoodsSource {
         return comment;
     }
 
-    public Integer getBizType() {
-        return bizType;
-    }
-
-    public Long getBizId() {
-        return bizId;
-    }
+//    public Integer getBizType() {
+//        return bizType;
+//    }
+//
+//    public Long getBizId() {
+//        return bizId;
+//    }
 
     public void setId(Long id) {
         this.id = id;
@@ -65,13 +65,13 @@ public abstract class AbstractGoodsSource implements GoodsSource {
         this.comment = comment;
     }
 
-    public void setBizType(Integer bizType) {
-        this.bizType = bizType;
-    }
-
-    public void setBizId(Long bizId) {
-        this.bizId = bizId;
-    }
+//    public void setBizType(Integer bizType) {
+//        this.bizType = bizType;
+//    }
+//
+//    public void setBizId(Long bizId) {
+//        this.bizId = bizId;
+//    }
 
     @Override
     public Long id() {
@@ -89,15 +89,15 @@ public abstract class AbstractGoodsSource implements GoodsSource {
         return getComment();
     }
 
-    @Override
-    public Integer bizType() {
-        return getBizType();
-    }
-
-    @Override
-    public Long bizId() {
-        return getBizId();
-    }
+//    @Override
+//    public Integer bizType() {
+//        return getBizType();
+//    }
+//
+//    @Override
+//    public Long bizId() {
+//        return getBizId();
+//    }
 
 
     /**

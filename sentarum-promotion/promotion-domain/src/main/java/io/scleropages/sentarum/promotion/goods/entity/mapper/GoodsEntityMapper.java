@@ -15,10 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.goods.entity.mapper;
 
-import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsEntity;
 import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods;
-import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
 import org.scleropages.crud.ModelMapper;
 
 /**
@@ -26,12 +24,4 @@ import org.scleropages.crud.ModelMapper;
  */
 public interface GoodsEntityMapper<T extends GoodsEntity, M extends AbstractGoods> extends ModelMapper<T, M> {
 
-
-    default AbstractGoodsSourceEntity toEntity(AbstractGoodsSource goodsSource) {
-        return null;
-    }
-
-    default AbstractGoodsSource toModel(AbstractGoodsSourceEntity entity) {
-        return null;
-    }
 }

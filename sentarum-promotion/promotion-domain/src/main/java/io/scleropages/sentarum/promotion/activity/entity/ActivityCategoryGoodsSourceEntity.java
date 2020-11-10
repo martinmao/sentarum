@@ -19,9 +19,12 @@ import io.scleropages.sentarum.promotion.goods.entity.CategoryGoodsSourceEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
-import javax.persistence.Index;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityCategoryGoodsSource}
@@ -30,10 +33,20 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "prom_act_category_goods_source",
-        indexes = {
-                @Index(columnList = "biz_type,biz_id")
-        }
+        uniqueConstraints = @UniqueConstraint(columnNames = {"activity_id", "category_id"})
 )
 @SequenceGenerator(name = "prom_act_category_goods_source_id", sequenceName = "seq_prom_act_category_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityCategoryGoodsSourceEntity extends CategoryGoodsSourceEntity {
+    
+    private ActivityEntity activity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_id", nullable = false)
+    public ActivityEntity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(ActivityEntity activity) {
+        this.activity = activity;
+    }
 }

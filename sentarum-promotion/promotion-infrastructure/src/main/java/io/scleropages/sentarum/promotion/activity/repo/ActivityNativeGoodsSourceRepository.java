@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.repo;
+package io.scleropages.sentarum.promotion.activity.repo;
 
-import io.scleropages.sentarum.promotion.goods.entity.SellerGoodsSourceEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.jooq.tables.PromActGoodsSource;
+import io.scleropages.sentarum.jooq.tables.records.PromActGoodsSourceRecord;
+import io.scleropages.sentarum.promotion.activity.entity.ActivityNativeGoodsSourceEntity;
+import org.scleropages.crud.dao.orm.jpa.GenericRepository;
+import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface SellerGoodsSourceRepository<E extends SellerGoodsSourceEntity, T extends Table, R extends Record> extends AbstractGoodsSourceRepository<E, T, R> {
+public interface ActivityNativeGoodsSourceRepository extends GenericRepository<ActivityNativeGoodsSourceEntity, Long>, JooqRepository<PromActGoodsSource, PromActGoodsSourceRecord, ActivityNativeGoodsSourceEntity> {
 }

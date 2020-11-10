@@ -35,7 +35,7 @@ public class ActivityModel implements Activity {
     private Integer status;
     private List<Rule> conditionRules;
     private Rule promotionalRule;
-    private List<ActivityGoodsSource> goodsSource;
+    private List<ActivityNativeGoodsSource> goodsSource;
 
 
     public Long getId() {
@@ -74,7 +74,7 @@ public class ActivityModel implements Activity {
         return promotionalRule;
     }
 
-    public List<ActivityGoodsSource> getGoodsSource() {
+    public List<ActivityNativeGoodsSource> getGoodsSource() {
         return goodsSource;
     }
 
@@ -114,7 +114,7 @@ public class ActivityModel implements Activity {
         this.promotionalRule = promotionalRule;
     }
 
-    public void setGoodsSource(List<ActivityGoodsSource> goodsSource) {
+    public void setGoodsSource(List<ActivityNativeGoodsSource> goodsSource) {
         this.goodsSource = goodsSource;
     }
 
@@ -164,7 +164,7 @@ public class ActivityModel implements Activity {
     }
 
     @Override
-    public List<ActivityGoodsSource> goodsSource() {
+    public List<ActivityNativeGoodsSource> goodsSource() {
         return getGoodsSource();
     }
 }

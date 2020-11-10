@@ -25,12 +25,20 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 /**
- * referenced from {@link io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods}
+ * referenced from {@link io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods}.
+ * <p>
+ * <b color="red">
+ * important: for sub class implementation never change default column names.
+ * </p>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
 public abstract class GoodsEntity extends IdEntity {
+
+    public static final String COLUMN_ID = "ID";
+    public static final String COLUMN_GOODS_SOURCE_ID = "GOODS_SOURCE_ID";
+    public static final String COLUMN_GOODS_ID = "GOODS_ID";
 
     private AbstractGoodsSourceEntity goodsSource;
     private Long goodsId;
@@ -38,7 +46,7 @@ public abstract class GoodsEntity extends IdEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "goods_source_id", nullable = false)
+    @JoinColumn(name = COLUMN_GOODS_SOURCE_ID, nullable = false)
     @Transient
     public AbstractGoodsSourceEntity getGoodsSource() {
         return goodsSource;

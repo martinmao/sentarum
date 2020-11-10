@@ -15,8 +15,16 @@
  */
 package io.scleropages.sentarum.promotion.goods.model.impl;
 
+import io.scleropages.sentarum.promotion.goods.model.Goods;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
+
 /**
  * 本地商品来源，对于已知明确数量的商品，将外部来源的商品落盘到本地形成快照.
+ * 快照对应的结构为:
+ * <pre>
+ *     {@link Goods}
+ *     {@link GoodsSpecs}
+ * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

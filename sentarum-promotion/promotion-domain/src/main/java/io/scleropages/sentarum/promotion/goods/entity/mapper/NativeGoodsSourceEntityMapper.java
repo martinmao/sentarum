@@ -17,11 +17,9 @@ package io.scleropages.sentarum.promotion.goods.entity.mapper;
 
 import io.scleropages.sentarum.promotion.goods.entity.NativeGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.goods.model.impl.NativeGoodsSource;
-import org.mapstruct.Mapper;
-import org.scleropages.crud.ModelMapper;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface NativeGoodsSourceEntityMapper extends AbstractGoodsSourceEntityMapper<NativeGoodsSourceEntity, NativeGoodsSource> {
+public interface NativeGoodsSourceEntityMapper<T extends NativeGoodsSourceEntity, M extends NativeGoodsSource> extends AbstractGoodsSourceEntityMapper<T, M> {
 }
