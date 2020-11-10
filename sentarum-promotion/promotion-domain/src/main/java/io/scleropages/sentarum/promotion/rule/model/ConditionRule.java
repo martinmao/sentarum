@@ -15,14 +15,42 @@
  */
 package io.scleropages.sentarum.promotion.rule.model;
 
+import java.util.List;
+
 /**
- * 标识当前接口为条件规则
+ * base interface of condition rule.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface ConditionRule extends Rule {
 
-    ConditionRule or(ConditionRule conditionRule);
 
-    ConditionRule and(ConditionRule conditionRule);
+    /**
+     * return conjunction operator of this condition.
+     *
+     * @return
+     */
+    ConditionConjunction conditionConjunction();
+
+    /**
+     * enumerate of condition conjunction.
+     */
+    enum ConditionConjunction {
+        AND, OR
+    }
+
+    /**
+     * combine this condition with another one using {@link #conditionConjunction()}.
+     *
+     * @param conditionRule
+     * @return
+     */
+    void addCondition(ConditionRule conditionRule);
+
+    /**
+     * return all conditions combined from this with operator {@link #conditionConjunction()}.
+     *
+     * @return
+     */
+    List<ConditionRule> conditions();
 }

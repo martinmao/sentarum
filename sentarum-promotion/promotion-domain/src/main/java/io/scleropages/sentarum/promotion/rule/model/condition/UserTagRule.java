@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.impl;
+package io.scleropages.sentarum.promotion.rule.model.condition;
 
-import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
+import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 
 /**
  * 促销参与用户标签规则
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class UserTagRule extends AbstractRule {
-
+public class UserTagRule extends AbstractConditionRule {
 
     /**
      * 用户标签

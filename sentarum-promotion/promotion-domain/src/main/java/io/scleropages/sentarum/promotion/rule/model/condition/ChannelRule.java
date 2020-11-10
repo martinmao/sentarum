@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.impl;
+package io.scleropages.sentarum.promotion.rule.model.condition;
 
-import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
+import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ChannelRule extends AbstractRule {
+public class ChannelRule extends AbstractConditionRule {
 
 
     /**

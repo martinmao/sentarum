@@ -20,7 +20,9 @@ import io.scleropages.sentarum.promotion.goods.entity.NativeGoodsSourceEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
-import javax.persistence.Index;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -35,4 +37,15 @@ import javax.persistence.Table;
 @SequenceGenerator(name = "prom_act_goods_source_id", sequenceName = "seq_prom_act_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityNativeGoodsSourceEntity extends NativeGoodsSourceEntity {
 
+    private ActivityEntity activity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_id", nullable = false)
+    public ActivityEntity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(ActivityEntity activity) {
+        this.activity = activity;
+    }
 }

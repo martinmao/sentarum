@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.impl;
+package io.scleropages.sentarum.promotion.rule.model.condition;
 
 /**
  * 促销参与用户的店铺会员级别设置

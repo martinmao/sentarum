@@ -19,7 +19,7 @@ import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
-import io.scleropages.sentarum.promotion.rule.model.impl.UserLevelRule;
+import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelRule;
 
 /**
  * 促销参与用户规则
