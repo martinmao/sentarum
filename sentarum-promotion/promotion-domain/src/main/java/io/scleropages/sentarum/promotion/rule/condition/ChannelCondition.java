@@ -19,7 +19,7 @@ import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
-import io.scleropages.sentarum.promotion.rule.model.condition.ChannelRule;
+import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 
 /**
  * 促销参与渠道规则
@@ -36,7 +36,7 @@ public class ChannelCondition implements Condition {
 
     @Override
     public Class<? extends Rule> ruleClass() {
-        return ChannelRule.class;
+        return ChannelConditionRule.class;
     }
 
     @Override

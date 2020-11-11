@@ -17,7 +17,7 @@ package io.scleropages.sentarum.promotion.rule.context;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
-import io.scleropages.sentarum.promotion.rule.model.condition.ChannelRule.ChannelType;
+import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
 
 /**
  * base interface of promotion context.

@@ -13,41 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.condition;
+package io.scleropages.sentarum.promotion.rule.condition.repo;
 
-import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
+import io.scleropages.sentarum.jooq.tables.PromConditionUserLv;
+import io.scleropages.sentarum.jooq.tables.records.PromConditionUserLvRecord;
+import io.scleropages.sentarum.promotion.rule.entity.condition.UserLevelConditionRuleEntity;
+import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 
 /**
- * 促销参与用户级别设置
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class UserLevelRule extends AbstractConditionRule {
-
-    /**
-     * 用户级别id
-     */
-    private Integer levelId;
-
-    /**
-     * 用户级别名称
-     */
-    private String levelName;
-
-
-    public Integer getLevelId() {
-        return levelId;
-    }
-
-    public String getLevelName() {
-        return levelName;
-    }
-
-    public void setLevelId(Integer levelId) {
-        this.levelId = levelId;
-    }
-
-    public void setLevelName(String levelName) {
-        this.levelName = levelName;
-    }
+public interface UserLevelConditionRuleRepository extends AbstractConditionRuleRepository<UserLevelConditionRuleEntity, PromConditionUserLv, PromConditionUserLvRecord> {
 }

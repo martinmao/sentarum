@@ -17,9 +17,11 @@ package io.scleropages.sentarum.promotion.activity.entity;
 
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel}
@@ -31,4 +33,65 @@ import javax.persistence.Table;
 @SequenceGenerator(name = "prom_activity_id", sequenceName = "seq_prom_activity", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityEntity extends IdEntity {
 
+    private String name;
+    private String tag;
+    private String description;
+    private Date startTime;
+    private Date endTime;
+    private Integer status;
+
+
+    @Column(name = "name_", nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    @Column(name = "tag_", nullable = false)
+    public String getTag() {
+        return tag;
+    }
+
+    @Column(name = "desc_", nullable = false)
+    public String getDescription() {
+        return description;
+    }
+
+    @Column(name = "start_time", nullable = false)
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    @Column(name = "end_time", nullable = false)
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    @Column(name = "status", nullable = false)
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

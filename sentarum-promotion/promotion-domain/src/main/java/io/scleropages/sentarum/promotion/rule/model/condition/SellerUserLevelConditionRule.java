@@ -20,7 +20,7 @@ package io.scleropages.sentarum.promotion.rule.model.condition;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SellerUserLevelRule extends UserLevelRule {
+public class SellerUserLevelConditionRule extends UserLevelConditionRule {
 
     /**
      * 商家类型

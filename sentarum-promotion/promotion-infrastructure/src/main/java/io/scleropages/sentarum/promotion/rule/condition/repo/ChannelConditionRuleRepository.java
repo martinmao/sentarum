@@ -13,27 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.condition;
+package io.scleropages.sentarum.promotion.rule.condition.repo;
 
-import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
+import io.scleropages.sentarum.jooq.tables.PromConditionChannel;
+import io.scleropages.sentarum.jooq.tables.records.PromConditionChannelRecord;
+import io.scleropages.sentarum.promotion.rule.entity.condition.ChannelConditionRuleEntity;
+import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 
 /**
- * 促销参与用户标签规则
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class UserTagRule extends AbstractConditionRule {
-
-    /**
-     * 用户标签
-     */
-    private String tag;
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
+public interface ChannelConditionRuleRepository extends AbstractConditionRuleRepository<ChannelConditionRuleEntity, PromConditionChannel, PromConditionChannelRecord> {
 }

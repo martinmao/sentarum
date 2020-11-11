@@ -19,7 +19,7 @@ import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
-import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelRule;
+import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 
 /**
  * 促销参与用户规则
@@ -36,7 +36,7 @@ public class UserLevelCondition implements Condition {
 
     @Override
     public Class<? extends Rule> ruleClass() {
-        return UserLevelRule.class;
+        return UserLevelConditionRule.class;
     }
 
     @Override
