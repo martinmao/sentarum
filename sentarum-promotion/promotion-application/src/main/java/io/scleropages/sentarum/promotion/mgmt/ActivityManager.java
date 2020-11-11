@@ -41,6 +41,7 @@ import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsSpecsReposit
 import io.scleropages.sentarum.promotion.activity.repo.ActivityNativeGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivitySellerGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;

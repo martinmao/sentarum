@@ -13,10 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model;
+package io.scleropages.sentarum.promotion.rule.entity.condition.mapper;
+
+import io.scleropages.sentarum.promotion.rule.entity.condition.BaseConditionRuleEntity;
+import io.scleropages.sentarum.promotion.rule.entity.mapper.AbstractConditionRuleEntityMapper;
+import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
+import org.mapstruct.Mapper;
+import org.scleropages.crud.ModelMapper;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class AbstractConditionRule extends AbstractRule implements ConditionRule {
+@Mapper(config = ModelMapper.DefaultConfig.class)
+public interface BaseConditionRuleEntityMapper extends AbstractConditionRuleEntityMapper<BaseConditionRuleEntity, ConjunctionConditionRule> {
 }

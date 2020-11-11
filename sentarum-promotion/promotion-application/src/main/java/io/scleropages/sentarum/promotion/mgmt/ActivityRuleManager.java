@@ -13,10 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model;
+package io.scleropages.sentarum.promotion.mgmt;
+
+import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * 活动规则管理器.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class AbstractConditionRule extends AbstractRule implements ConditionRule {
+public class ActivityRuleManager {
+
+    private ChannelConditionRuleRepository channelConditionRuleRepository;
+
+    @Transactional
+    public void createChannelConditionRule(ChannelConditionRule conditionRule, Long activityId) {
+
+    }
 }

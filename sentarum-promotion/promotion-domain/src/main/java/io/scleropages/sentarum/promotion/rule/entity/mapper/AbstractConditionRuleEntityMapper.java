@@ -17,7 +17,7 @@ package io.scleropages.sentarum.promotion.rule.entity.mapper;
 
 import io.scleropages.sentarum.promotion.rule.entity.AbstractConditionRuleEntity;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
-import io.scleropages.sentarum.promotion.rule.model.ConditionRule.ConditionConjunction;
+import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>

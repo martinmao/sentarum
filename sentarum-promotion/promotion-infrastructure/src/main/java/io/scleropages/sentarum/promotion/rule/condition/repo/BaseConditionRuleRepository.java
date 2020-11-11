@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model;
+package io.scleropages.sentarum.promotion.rule.condition.repo;
+
+import io.scleropages.sentarum.jooq.tables.PromConditionBase;
+import io.scleropages.sentarum.jooq.tables.records.PromConditionBaseRecord;
+import io.scleropages.sentarum.promotion.rule.entity.condition.BaseConditionRuleEntity;
+import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class AbstractConditionRule extends AbstractRule implements ConditionRule {
+public interface BaseConditionRuleRepository extends AbstractConditionRuleRepository<BaseConditionRuleEntity, PromConditionBase, PromConditionBaseRecord> {
 }
