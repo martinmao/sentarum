@@ -15,33 +15,22 @@
  */
 package io.scleropages.sentarum.promotion.rule.entity.condition;
 
-import io.scleropages.sentarum.promotion.rule.model.condition.UserTagConditionRule;
+import io.scleropages.sentarum.promotion.rule.entity.AbstractConditionRuleEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * referenced from: {@link UserTagConditionRule}
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-//@DiscriminatorValue("2")
-@Table(name = "prom_condition_user_tag")
-@SequenceGenerator(name = "prom_condition_user_tag_id", sequenceName = "seq_prom_condition_user_tag", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class UserTagConditionRuleEntity extends BaseConditionRuleEntity {
-
-    private String tag;
-
-    @Column(name = "tag_")
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
+@Inheritance(strategy = InheritanceType.JOINED)
+//@DiscriminatorColumn(name = "type_", discriminatorType = DiscriminatorType.INTEGER)
+@Table(name = "prom_condition_base")
+@SequenceGenerator(name = "prom_condition_base_id", sequenceName = "seq_prom_condition_base", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class BaseConditionRuleEntity extends AbstractConditionRuleEntity {
 }

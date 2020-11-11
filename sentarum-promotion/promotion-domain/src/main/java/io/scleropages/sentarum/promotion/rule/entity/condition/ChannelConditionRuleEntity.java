@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.rule.entity.condition;
 
-import io.scleropages.sentarum.promotion.rule.entity.AbstractConditionRuleEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
@@ -29,9 +28,10 @@ import javax.persistence.Table;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
+//@DiscriminatorValue("1")
 @Table(name = "prom_condition_channel")
 @SequenceGenerator(name = "prom_condition_channel_id", sequenceName = "seq_prom_condition_channel", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class ChannelConditionRuleEntity extends AbstractConditionRuleEntity {
+public class ChannelConditionRuleEntity extends BaseConditionRuleEntity {
 
 
     private Integer channelId;

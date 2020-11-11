@@ -33,7 +33,7 @@ import static io.scleropages.sentarum.jooq.Tables.PROM_ACT_BRAND_GOODS_SOURCE;
  */
 public interface ActivityRepository extends GenericRepository<ActivityEntity, Long>, JooqRepository<PromActivity, PromActivityRecord, ActivityEntity> {
 
-    default List<ActivityEntity> findAllByGoodsSourceBrandId(Long brandId) {
+    default List<ActivityEntity> findAllFromGoodsSourceByBrandId(Long brandId) {
         PromActivity promActivity = dslTable();
 
         List<ActivityEntity> entities = Lists.newArrayList();

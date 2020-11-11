@@ -133,8 +133,9 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
 
 
     @Transactional(readOnly = true)
-    public List<Activity> findAllActivityByGoodsSourceBrandId(Long brandId) {
+    public List<Activity> findAllActivityFromGoodsSourceByBrandId(Long brandId) {
 //        activityBrandGoodsSourceRepository.findAllByBrandId(brandId);
+        activityRepository.findAllFromGoodsSourceByBrandId(brandId);
         return null;
     }
 
