@@ -22,4 +22,9 @@ package io.scleropages.sentarum.promotion.rule.model;
  */
 public interface ConditionRule extends Rule {
 
+    /**
+     * return parent condition rule of this.
+     * @return
+     */
+    ConditionRule parent();
 }

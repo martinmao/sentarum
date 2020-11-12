@@ -18,13 +18,14 @@ package io.scleropages.sentarum.promotion.rule.model.condition;
 import com.google.common.collect.Lists;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
+import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * represent a conjunction condition rule
+ * represent a conjunction condition rule. using {@link ConditionConjunction} as operator to combined group of rules.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -36,6 +37,9 @@ public class ConjunctionConditionRule extends AbstractConditionRule {
     private ConditionConjunction conditionConjunction;
 
 
+    /**
+     * combined conditions.
+     */
     private List<ConditionRule> conditions;
 
     /**
@@ -72,6 +76,10 @@ public class ConjunctionConditionRule extends AbstractConditionRule {
      * @param conditionRule
      */
     public void addCondition(ConditionRule conditionRule) {
+        Assert.notNull(conditionRule, "conditionRule must not be null.");
+        if (conditionRule instanceof AbstractConditionRule) {
+            ((AbstractConditionRule) conditionRule).setParent(this);
+        }
         getConditions().add(conditionRule);
     }
 

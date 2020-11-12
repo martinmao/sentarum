@@ -25,4 +25,6 @@ import org.scleropages.crud.ModelMapper;
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface ActivityEntityMapper extends ModelMapper<ActivityEntity, ActivityModel> {
+
+
 }

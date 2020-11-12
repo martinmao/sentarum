@@ -18,11 +18,19 @@ package io.scleropages.sentarum.promotion.rule.repo;
 import io.scleropages.sentarum.promotion.rule.entity.AbstractConditionRuleEntity;
 import org.jooq.Record;
 import org.jooq.Table;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @NoRepositoryBean
 public interface AbstractConditionRuleRepository<E extends AbstractConditionRuleEntity, T extends Table, R extends Record> extends AbstractRuleRepository<E, T, R> {
+
+    @Cacheable
+    List<E> findAllByActivity_Id(Long activityId);
+
+    Boolean existsByActivity_IdAndParentConditionIsNull(Long activityId);
 }

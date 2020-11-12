@@ -18,6 +18,7 @@ package io.scleropages.sentarum.promotion.rule.entity.condition;
 import io.scleropages.sentarum.promotion.rule.entity.AbstractConditionRuleEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -33,4 +34,26 @@ import javax.persistence.Table;
 @Table(name = "prom_condition_base")
 @SequenceGenerator(name = "prom_condition_base_id", sequenceName = "seq_prom_condition_base", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class BaseConditionRuleEntity extends AbstractConditionRuleEntity {
+
+    private String ruleClass;
+
+    private String rulePayload;
+
+    @Column(name = "rule_clazz")
+    public String getRuleClass() {
+        return ruleClass;
+    }
+
+    @Column(name = "rule_payload")
+    public String getRulePayload() {
+        return rulePayload;
+    }
+
+    public void setRuleClass(String ruleClass) {
+        this.ruleClass = ruleClass;
+    }
+
+    public void setRulePayload(String rulePayload) {
+        this.rulePayload = rulePayload;
+    }
 }

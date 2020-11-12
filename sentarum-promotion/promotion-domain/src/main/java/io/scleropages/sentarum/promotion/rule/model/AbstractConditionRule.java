@@ -18,5 +18,31 @@ package io.scleropages.sentarum.promotion.rule.model;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class AbstractConditionRule extends AbstractRule implements ConditionRule {
+public abstract class AbstractConditionRule extends AbstractRule implements ConditionRule {
+
+    private ConditionRule parent;
+
+    private Long parentId;
+
+
+    public ConditionRule getParent() {
+        return parent;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParent(ConditionRule parent) {
+        this.parent = parent;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    @Override
+    public ConditionRule parent() {
+        return getParent();
+    }
 }

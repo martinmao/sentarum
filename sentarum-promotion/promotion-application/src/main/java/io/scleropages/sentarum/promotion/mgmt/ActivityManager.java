@@ -41,7 +41,6 @@ import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsSpecsReposit
 import io.scleropages.sentarum.promotion.activity.repo.ActivityNativeGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivitySellerGoodsSourceRepository;
-import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,42 +93,53 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      */
     private ActivityGoodsEntityMapper activityGoodsEntityMapper;
 
+    @Transactional
+    public Long createActivity(ActivityModel model) {
+        ActivityEntity activityEntity = getModelMapper().mapForSave(model);
+        activityRepository.save(activityEntity);
+        return activityEntity.getId();
+    }
 
     @Transactional
-    public void createActivityBrandGoodsSource(ActivityBrandGoodsSource activityBrandGoodsSource, Long activityId) {
+    public Long createActivityBrandGoodsSource(ActivityBrandGoodsSource activityBrandGoodsSource, Long activityId) {
         ActivityBrandGoodsSourceEntity activityBrandGoodsSourceEntity = activityBrandGoodsSourceEntityMapper.mapForSave(activityBrandGoodsSource);
         activityBrandGoodsSourceEntity.setActivity(getRequiredActivityEntity(activityId));
         activityBrandGoodsSourceRepository.save(activityBrandGoodsSourceEntity);
+        return activityBrandGoodsSourceEntity.getId();
     }
 
     @Transactional
-    public void createActivityCategoryGoodsSource(ActivityCategoryGoodsSource activityCategoryGoodsSource, Long activityId) {
+    public Long createActivityCategoryGoodsSource(ActivityCategoryGoodsSource activityCategoryGoodsSource, Long activityId) {
         ActivityCategoryGoodsSourceEntity activityCategoryGoodsSourceEntity = activityCategoryGoodsSourceEntityMapper.mapForSave(activityCategoryGoodsSource);
         activityCategoryGoodsSourceEntity.setActivity(getRequiredActivityEntity(activityId));
         activityCategoryGoodsSourceRepository.save(activityCategoryGoodsSourceEntity);
+        return activityCategoryGoodsSourceEntity.getId();
     }
 
     @Transactional
-    public void createActivitySellerGoodsSource(ActivitySellerGoodsSource activitySellerGoodsSource, Long activityId) {
+    public Long createActivitySellerGoodsSource(ActivitySellerGoodsSource activitySellerGoodsSource, Long activityId) {
         ActivitySellerGoodsSourceEntity activitySellerGoodsSourceEntity = activitySellerGoodsSourceEntityMapper.mapForSave(activitySellerGoodsSource);
         activitySellerGoodsSourceEntity.setActivity(getRequiredActivityEntity(activityId));
         activitySellerGoodsSourceRepository.save(activitySellerGoodsSourceEntity);
+        return activitySellerGoodsSourceEntity.getId();
     }
 
     @Transactional
-    public void createActivityNativeGoodsSource(ActivityNativeGoodsSource activityNativeGoodsSource, Long activityId) {
+    public Long createActivityNativeGoodsSource(ActivityNativeGoodsSource activityNativeGoodsSource, Long activityId) {
         ActivityNativeGoodsSourceEntity activityNativeGoodsSourceEntity = activityNativeGoodsSourceEntityMapper.mapForSave(activityNativeGoodsSource);
         activityNativeGoodsSourceEntity.setActivity(getRequiredActivityEntity(activityId));
         activityNativeGoodsSourceRepository.save(activityNativeGoodsSourceEntity);
+        return activityNativeGoodsSourceEntity.getId();
     }
 
     @Transactional
-    public void createActivityGoods(ActivityGoodsModel model, Long goodsSourceId) {
+    public Long createActivityGoods(ActivityGoodsModel model, Long goodsSourceId) {
         ActivityGoodsEntity activityGoodsEntity = activityGoodsEntityMapper.mapForSave(model);
         ActivityNativeGoodsSourceEntity activityNativeGoodsSourceEntity = activityNativeGoodsSourceRepository.get(goodsSourceId).orElseThrow(() -> new IllegalArgumentException("no native goods source found: " + goodsSourceId));
         activityGoodsEntity.setGoodsSource(activityNativeGoodsSourceEntity);
         activityGoodsEntity.setActivity(activityNativeGoodsSourceEntity.getActivity());
         activityGoodsRepository.save(activityGoodsEntity);
+        return activityGoodsEntity.getId();
     }
 
 
