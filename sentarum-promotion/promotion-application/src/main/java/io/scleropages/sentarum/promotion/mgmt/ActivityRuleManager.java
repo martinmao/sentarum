@@ -18,6 +18,7 @@ package io.scleropages.sentarum.promotion.mgmt;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
+import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
@@ -38,6 +39,7 @@ import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
+import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
 import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserTagConditionRule;
@@ -127,19 +129,20 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     /**
      * read condition rules and merge rules to root of rule tree.
      *
-     * @param activityId
+     * @param activityId id of activity.
+     * @param activity   optional activity. if present it will apply to {@link ConditionRule#activity()}.
      * @return
      */
     @Transactional(readOnly = true)
-    public ConditionRule getConditionRule(Long activityId) {
+    public ConditionRule getConditionRule(Long activityId, Activity activity) {
         Map<Long, ConjunctionConditionRule> conjunctionRules = Maps.newHashMap();
         List<AbstractConditionRule> otherRules = Lists.newArrayList();
         List<BaseConditionRuleEntity> conditionEntities = baseConditionRuleRepository.findAllByActivity_Id(activityId);
         if (conditionEntities.size() == 1) {
-            return mapConditionRule(conditionEntities.get(0));
+            return mapConditionRule(conditionEntities.get(0), activity);
         }
         conditionEntities.forEach(entity -> {
-            AbstractConditionRule rule = mapConditionRule(entity);
+            AbstractConditionRule rule = mapConditionRule(entity, activity);
             Long parentId = entity.getParentCondition();
             rule.setParentId(parentId);
             if (rule instanceof ConjunctionConditionRule) {
@@ -183,7 +186,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return rootConjunctionConditionRule;
     }
 
-    private AbstractConditionRule mapConditionRule(BaseConditionRuleEntity entity) {
+    private AbstractConditionRule mapConditionRule(BaseConditionRuleEntity entity, Activity activity) {
         Class<?> ruleClass;
         try {
             ruleClass = ClassUtils.forName(entity.getRuleClass(), classLoader);
@@ -192,6 +195,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         }
         AbstractConditionRule conditionRule = JsonMapper2.fromJson(entity.getRulePayload(), ruleClass);
         conditionRule.setId(entity.getId());
+        conditionRule.setActivity(activity);
         return conditionRule;
     }
 
@@ -226,8 +230,11 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         if (null == parentId) {
             Assert.isTrue(!baseConditionRuleRepository.existsByActivity_IdAndParentConditionIsNull(activityId), "conditional rules only allow one root in activity tree.");
         } else {
-            BaseConditionRuleEntity baseConditionRuleEntity = baseConditionRuleRepository.get(parentId).orElseThrow(() -> new IllegalArgumentException("no parent condition found: " + parentId));
-            Assert.isTrue(Objects.equals(baseConditionRuleEntity.getRuleClass(), ConjunctionConditionRule.class.getName()), "parent condition must be conjunction condition: " + parentId);
+            BaseConditionRuleEntity parentCondition = baseConditionRuleRepository.get(parentId).orElseThrow(() -> new IllegalArgumentException("no parent condition found: " + parentId));
+            Assert.isTrue(Objects.equals(parentCondition.getRuleClass(), ConjunctionConditionRule.class.getName()), "parent condition must be conjunction condition: " + parentId);
+            if (ConditionConjunction.getByOrdinal(parentCondition.getConditionConjunction()) == ConditionConjunction.NOT) {
+                Assert.isTrue(baseConditionRuleRepository.countByParentCondition(parentId) == 0, "conjunction condition just allowed one child condition with operator 'NOT'");
+            }
         }
     }
 

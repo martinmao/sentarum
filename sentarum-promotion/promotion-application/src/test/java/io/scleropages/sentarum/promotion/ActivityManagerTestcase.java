@@ -94,7 +94,7 @@ public class ActivityManagerTestcase {
 
     @Test
     public void _2_readActivityRules() {
-        System.out.println(JsonMapper2.toJson(activityRuleManager.getConditionRule(1l)));
+        System.out.println(JsonMapper2.toJson(activityRuleManager.getConditionRule(1l, null)));
     }
 
 }

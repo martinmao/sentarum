@@ -32,5 +32,7 @@ public interface AbstractConditionRuleRepository<E extends AbstractConditionRule
     @Cacheable
     List<E> findAllByActivity_Id(Long activityId);
 
+    Integer countByParentCondition(Long parentCondition);
+
     Boolean existsByActivity_IdAndParentConditionIsNull(Long activityId);
 }

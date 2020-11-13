@@ -19,13 +19,20 @@ import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
  * 条件规则：特殊的规则调用，其直接返回一个布尔值来确定是否执行后续规则.
- * 可用于促销参与规则判定
+ * 该类不应该实现为有状态，状态信息需定义到 {@link Rule} 实现，或 {@link InvocationContext}中.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface Condition<R extends Rule, C extends InvocationContext> extends RuleInvocation<R, C> {
 
 
+    /**
+     * customer code never override this method. excepted framework condition.
+     *
+     * @param rule              当前调用的规则.
+     * @param invocationContext 当前调用上下文
+     * @param chain             当前的调用链.
+     */
     @Override
     default void execute(R rule, C invocationContext, InvocationChain chain) {
         if (match(rule, invocationContext)) {

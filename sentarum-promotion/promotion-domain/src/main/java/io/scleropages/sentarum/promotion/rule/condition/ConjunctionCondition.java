@@ -22,6 +22,8 @@ import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +38,8 @@ import static io.scleropages.sentarum.promotion.rule.model.condition.Conjunction
 @Component
 public class ConjunctionCondition implements Condition<ConjunctionConditionRule, InvocationContext> {
 
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
     private RuleContainer ruleContainer;
 
     @Override
@@ -44,7 +48,16 @@ public class ConjunctionCondition implements Condition<ConjunctionConditionRule,
         List<ConditionRule> conditions = rule.getConditions();
         List<Boolean> matches = Lists.newArrayList();
         if (Objects.equals(NOT, conjunction)) {
-            return !matchInternal(invocationContext, conditions.get(0));
+            if (conditions.isEmpty()) {
+                logger.warn("conjunction condition [{}] no child conditions found with operator 'NOT'. using true as result.", rule.id());
+                return true;
+            } else {
+                ConditionRule not = conditions.get(0);
+                if (conditions.size() > 1) {
+                    logger.warn("conjunction condition [{}] has more than one child conditions with operator 'NOT'. using first [{}] as result.", rule.id(), not.id());
+                }
+                return !matchInternal(invocationContext, not);
+            }
         }
         conditions.forEach(conditionRule -> matches.add(matchInternal(invocationContext, conditionRule)));
         if (Objects.equals(AND, conjunction)) {
