@@ -33,6 +33,8 @@ import java.util.Objects;
 import static io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction.*;
 
 /**
+ * conjunction condition is a condition container. and use {@link ConditionConjunction} as operator to process combinatorial logic operations
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component

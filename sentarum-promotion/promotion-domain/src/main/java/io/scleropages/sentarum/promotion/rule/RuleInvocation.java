@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.rule;
 
 import io.scleropages.sentarum.promotion.rule.condition.ChannelCondition;
+import io.scleropages.sentarum.promotion.rule.condition.ConjunctionCondition;
 import io.scleropages.sentarum.promotion.rule.condition.UserLevelCondition;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 import org.scleropages.core.util.GenericTypes;
@@ -30,7 +31,7 @@ public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
 
 
     /**
-     * 条件连接
+     * 条件连接 {@link ConjunctionCondition}
      */
     Integer CONJUNCTION_CONDITION_ID = 1;
     /**
