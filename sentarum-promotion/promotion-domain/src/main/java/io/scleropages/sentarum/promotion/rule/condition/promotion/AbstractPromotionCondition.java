@@ -15,36 +15,14 @@
  */
 package io.scleropages.sentarum.promotion.rule.condition.promotion;
 
+import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
-import org.springframework.stereotype.Component;
+import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 
 /**
- * 促销参与用户规则
+ * base abstract condition for promotion.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Component
-public class UserLevelCondition implements AbstractPromotionCondition<UserLevelConditionRule> {
-
-
-    @Override
-    public boolean match(UserLevelConditionRule rule, PromotionContext invocationContext) {
-        return false;
-    }
-
-    @Override
-    public Integer id() {
-        return USER_INVOCATION_ID + 1;
-    }
-
-    @Override
-    public String name() {
-        return "促销参与用户级别";
-    }
-
-    @Override
-    public String description() {
-        return "限定性规则：将促销活动限定为具备特定级别的用户人群.";
-    }
+public interface AbstractPromotionCondition<R extends ConditionRule> extends Condition<R, PromotionContext> {
 }

@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.rule.condition.promotion;
 
-import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,7 @@ import org.springframework.stereotype.Component;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
-public class UserTagCondition implements Condition<UserLevelConditionRule, PromotionContext> {
+public class UserTagCondition implements AbstractPromotionCondition<UserLevelConditionRule> {
 
 
     @Override
