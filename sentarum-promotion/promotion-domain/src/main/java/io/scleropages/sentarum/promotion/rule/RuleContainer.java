@@ -15,30 +15,30 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
-import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 
 /**
- * 条件规则：特殊的规则调用，其直接返回一个布尔值来确定是否执行后续规则.
- * 可用于促销参与规则判定
+ * spi strategy interface for lookup {@link io.scleropages.sentarum.promotion.rule.RuleInvocation} components.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Condition<R extends Rule, C extends InvocationContext> extends RuleInvocation<R, C> {
+public interface RuleContainer {
 
-
-    @Override
-    default void execute(R rule, C invocationContext, InvocationChain chain) {
-        if (match(rule, invocationContext)) {
-            chain.next(invocationContext);
-        }
-    }
 
     /**
-     * 返回TRUE则调用链继续执行
+     * return condition by condition rule.
      *
-     * @param rule
-     * @param invocationContext
+     * @param conditionRule
      * @return
      */
-    boolean match(R rule, C invocationContext);
+    Condition getCondition(ConditionRule conditionRule);
+
+
+    /**
+     * string array of action implementations.
+     *
+     * @return
+     */
+    String[] conditionImplementations();
+
 }

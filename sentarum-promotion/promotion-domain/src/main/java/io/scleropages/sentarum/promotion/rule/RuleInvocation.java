@@ -28,6 +28,10 @@ public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
 
 
     /**
+     * 条件连接
+     */
+    Integer CONJUNCTION_CONDITION_ID = 1;
+    /**
      * 促销参与渠道规则id {@link ChannelCondition}
      */
     Integer CHANNEL_INVOCATION_ID = 10;

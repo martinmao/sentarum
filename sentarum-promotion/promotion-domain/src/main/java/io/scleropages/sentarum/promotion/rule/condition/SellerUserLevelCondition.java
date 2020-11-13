@@ -16,7 +16,6 @@
 package io.scleropages.sentarum.promotion.rule.condition;
 
 import io.scleropages.sentarum.promotion.rule.Condition;
-import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
@@ -30,7 +29,7 @@ public class SellerUserLevelCondition implements Condition {
 
 
     @Override
-    public boolean match(Rule rule, InvocationContext invocationContext, InvocationChain chain) {
+    public boolean match(Rule rule, InvocationContext invocationContext) {
         return false;
     }
 
