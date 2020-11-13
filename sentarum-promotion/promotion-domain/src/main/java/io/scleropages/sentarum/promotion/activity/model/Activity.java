@@ -73,6 +73,7 @@ public interface Activity {
     /**
      * status of this activity.
      * <pre>
+     *     example:
      *                                        |---------------------|
      *                                        |                     |
      *                                        V                     |

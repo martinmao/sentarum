@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.impl;
+package io.scleropages.sentarum.promotion.rule.model.promotion;
 
 /**
  * <pre>
@@ -23,7 +23,7 @@ package io.scleropages.sentarum.promotion.rule.model.impl;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CombineItemRule extends ItemRule {
+public class CombineGoodsRule extends GoodsRule {
 
     /**
      * 仅适用于多买优惠促销

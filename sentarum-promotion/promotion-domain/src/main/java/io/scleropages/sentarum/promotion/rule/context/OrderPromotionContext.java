@@ -18,7 +18,7 @@ package io.scleropages.sentarum.promotion.rule.context;
 import java.util.List;
 
 /**
- * 订单级促销(整单优惠)已与特定商业主体关联，并按商品维度 {@link ItemPromotionContext} 进行拆分。
+ * 订单级促销(整单优惠)已与特定商业主体关联，并按商品维度 {@link GoodsPromotionContext} 进行拆分。
  * 其处于整个促销计算第二级别.但实际执行顺序应对订单级促销结果进行兜底.即计算完商品级促销规则后合并计算order级别优惠.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -46,5 +46,5 @@ public interface OrderPromotionContext extends PromotionContext {
      *
      * @return
      */
-    List<ItemPromotionContext> itemPromotions();
+    List<GoodsPromotionContext> goodsPromotions();
 }

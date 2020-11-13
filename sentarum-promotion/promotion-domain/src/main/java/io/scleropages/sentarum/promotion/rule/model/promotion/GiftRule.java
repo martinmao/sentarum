@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.impl;
+package io.scleropages.sentarum.promotion.rule.model.promotion;
 
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 

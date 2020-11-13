@@ -13,17 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.evaluator.promotion;
-
-import io.scleropages.sentarum.promotion.rule.PromotionEvaluator;
-import io.scleropages.sentarum.promotion.rule.context.ItemPromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.Rule;
+package io.scleropages.sentarum.promotion.rule.context;
 
 /**
- * 商品级促销
+ * 商品级促销上下文
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ItemEvaluator<R extends Rule> extends PromotionEvaluator<R, ItemPromotionContext> {
+public interface GoodsPromotionContext extends OrderPromotionContext {
 
+    /**
+     * 商品唯一标识
+     *
+     * @return
+     */
+    Long goodsId();
+
+    /**
+     * 外部商品唯一标识
+     *
+     * @return
+     */
+    String outerGoodsId();
+
+    /**
+     * 规格唯一标识
+     *
+     * @return
+     */
+    Long specsId();
+
+    /**
+     * 外部规格唯一标识
+     *
+     * @return
+     */
+    String outerSpecsId();
+
+    /**
+     * 购买数量
+     *
+     * @return
+     */
+    Integer num();
 }
