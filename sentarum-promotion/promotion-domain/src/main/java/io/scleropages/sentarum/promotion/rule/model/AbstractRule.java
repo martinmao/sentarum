@@ -16,6 +16,8 @@
 package io.scleropages.sentarum.promotion.rule.model;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.rule.RuleContainer;
+import org.scleropages.crud.FrameworkContext;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -26,7 +28,7 @@ public abstract class AbstractRule implements Rule {
 
     private Activity activity;
 
-    private String ruleInvocationImplementation;
+    private Integer ruleInvocationImplementation;
 
     private String description;
 
@@ -38,7 +40,10 @@ public abstract class AbstractRule implements Rule {
         return activity;
     }
 
-    public String getRuleInvocationImplementation() {
+    public Integer getRuleInvocationImplementation() {
+        if (null == ruleInvocationImplementation) {
+            ruleInvocationImplementation = FrameworkContext.getBean(RuleContainer.class).ruleInvocationImplementation((Class<AbstractRule>) getClass());
+        }
         return ruleInvocationImplementation;
     }
 
@@ -54,7 +59,7 @@ public abstract class AbstractRule implements Rule {
         this.activity = activity;
     }
 
-    public void setRuleInvocationImplementation(String ruleInvocationImplementation) {
+    public void setRuleInvocationImplementation(Integer ruleInvocationImplementation) {
         this.ruleInvocationImplementation = ruleInvocationImplementation;
     }
 
@@ -72,9 +77,8 @@ public abstract class AbstractRule implements Rule {
         return getActivity();
     }
 
-
     @Override
-    public String ruleInvocationImplementation() {
+    public Integer ruleInvocationImplementation() {
         return getRuleInvocationImplementation();
     }
 
@@ -82,4 +86,5 @@ public abstract class AbstractRule implements Rule {
     public String description() {
         return getDescription();
     }
+
 }

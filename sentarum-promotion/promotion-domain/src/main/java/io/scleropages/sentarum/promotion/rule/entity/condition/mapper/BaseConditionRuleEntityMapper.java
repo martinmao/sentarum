@@ -26,4 +26,7 @@ import org.scleropages.crud.ModelMapper;
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface BaseConditionRuleEntityMapper extends AbstractConditionRuleEntityMapper<BaseConditionRuleEntity, ConjunctionConditionRule> {
+
+
+
 }

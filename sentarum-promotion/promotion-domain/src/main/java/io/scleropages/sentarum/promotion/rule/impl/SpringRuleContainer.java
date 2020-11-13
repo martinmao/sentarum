@@ -15,8 +15,12 @@
  */
 package io.scleropages.sentarum.promotion.rule.impl;
 
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.rule.Condition;
+import io.scleropages.sentarum.promotion.rule.PromotionEvaluator;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
+import io.scleropages.sentarum.promotion.rule.RuleInvocation;
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +29,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.Map;
@@ -36,24 +41,54 @@ import java.util.Map;
 public class SpringRuleContainer implements RuleContainer, InitializingBean, ApplicationContextAware {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    private Map<String, Condition> conditions;
-    private ApplicationContext applicationContext;
+    private Map<Integer, RuleInvocation> ruleInvocations;
+    private Map<Integer, RuleInvocationDescriptor> conditionDescriptors;
+    private Map<Integer, RuleInvocationDescriptor> evaluatorDescriptors;
+    private Map<Class, Integer> ruleClasses;
 
     @Override
     public Condition getCondition(ConditionRule conditionRule) {
-        return conditions.get(conditionRule.ruleInvocationImplementation());
+        return (Condition) ruleInvocations.get(conditionRule.ruleInvocationImplementation());
     }
 
     @Override
-    public String[] conditionImplementations() {
-        return conditions.keySet().toArray(new String[conditions.size()]);
+    public Map<Integer, RuleInvocationDescriptor> conditionImplementations() {
+        return conditionDescriptors;
+    }
+
+    @Override
+    public Integer ruleInvocationImplementation(Class<AbstractRule> ruleClass) {
+        return ruleClasses.get(ruleClass);
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        conditions = Collections.unmodifiableMap(applicationContext.getBeansOfType(Condition.class));
-        logger.debug("successfully load conditions: {}", conditions);
+
+        Map<Integer, RuleInvocation> _ruleInvocations = Maps.newHashMap();
+        Map<Integer, RuleInvocationDescriptor> _conditionDescriptors = Maps.newHashMap();
+        Map<Integer, RuleInvocationDescriptor> _evaluatorDescriptors = Maps.newHashMap();
+        Map<Class, Integer> _ruleClasses = Maps.newHashMap();
+
+        applicationContext.getBeansOfType(Condition.class).forEach((s, condition) -> {
+            Integer conditionId = condition.id();
+            Assert.isNull(_ruleInvocations.put(conditionId, condition), () -> "condition with id: " + conditionId + " already exists. please specify another one.");
+            _conditionDescriptors.put(conditionId, new RuleInvocationDescriptor(condition));
+            _ruleClasses.put(condition.ruleClass(), conditionId);
+        });
+        applicationContext.getBeansOfType(PromotionEvaluator.class).forEach((s, evaluator) -> {
+            Integer evaluatorId = evaluator.id();
+            Assert.isNull(_ruleInvocations.put(evaluatorId, evaluator), () -> "evaluator with id: " + evaluatorId + " already exists. please specify another one.");
+            _evaluatorDescriptors.put(evaluatorId, new RuleInvocationDescriptor(evaluator));
+            _ruleClasses.put(evaluator.ruleClass(), evaluatorId);
+        });
+        ruleInvocations = Collections.unmodifiableMap(_ruleInvocations);
+        conditionDescriptors = Collections.unmodifiableMap(_conditionDescriptors);
+        evaluatorDescriptors = Collections.unmodifiableMap(_evaluatorDescriptors);
+        ruleClasses = Collections.unmodifiableMap(_ruleClasses);
+        logger.debug("successfully loaded rule invocations: {}", ruleInvocations);
     }
+
+    private ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

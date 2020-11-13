@@ -17,26 +17,23 @@ package io.scleropages.sentarum.promotion.rule.condition;
 
 import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
-import io.scleropages.sentarum.promotion.rule.model.Rule;
 import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
+import org.springframework.stereotype.Component;
 
 /**
  * 促销参与用户规则
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SellerUserLevelCondition implements Condition {
+@Component
+public class SellerUserLevelCondition implements Condition<SellerUserLevelConditionRule, InvocationContext> {
 
 
     @Override
-    public boolean match(Rule rule, InvocationContext invocationContext) {
+    public boolean match(SellerUserLevelConditionRule rule, InvocationContext invocationContext) {
         return false;
     }
 
-    @Override
-    public Class<? extends Rule> ruleClass() {
-        return SellerUserLevelConditionRule.class;
-    }
 
     @Override
     public Integer id() {

@@ -72,7 +72,6 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
 
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-
     /**
      * activity base repositories.
      */

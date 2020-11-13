@@ -85,11 +85,6 @@ public class ConjunctionCondition implements Condition<ConjunctionConditionRule,
     }
 
     @Override
-    public Class ruleClass() {
-        return ConjunctionConditionRule.class;
-    }
-
-    @Override
     public Integer id() {
         return CONJUNCTION_CONDITION_ID;
     }

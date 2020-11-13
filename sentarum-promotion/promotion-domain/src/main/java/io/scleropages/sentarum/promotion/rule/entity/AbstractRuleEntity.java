@@ -34,7 +34,7 @@ public class AbstractRuleEntity extends IdEntity {
 
     private ActivityEntity activity;
 
-    private String ruleInvocationImplementation;
+    private Integer ruleInvocationImplementation;
 
     private String description;
 
@@ -45,7 +45,7 @@ public class AbstractRuleEntity extends IdEntity {
     }
 
     @Column(name = "rule_invocation_impl", nullable = false)
-    public String getRuleInvocationImplementation() {
+    public Integer getRuleInvocationImplementation() {
         return ruleInvocationImplementation;
     }
 
@@ -58,7 +58,7 @@ public class AbstractRuleEntity extends IdEntity {
         this.activity = activity;
     }
 
-    public void setRuleInvocationImplementation(String ruleInvocationImplementation) {
+    public void setRuleInvocationImplementation(Integer ruleInvocationImplementation) {
         this.ruleInvocationImplementation = ruleInvocationImplementation;
     }
 

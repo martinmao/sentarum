@@ -45,7 +45,7 @@ public class ActivityManagerTestcase {
     @Autowired
     private ActivityRuleManager activityRuleManager;
 
-    //@Test
+    @Test
     public void _1_createSimpleActivity() {
 
         ActivityModel activity = new ActivityModel();
@@ -59,7 +59,6 @@ public class ActivityManagerTestcase {
         Long activityId = activityManager.createActivity(activity);
 
         ConjunctionConditionRule conjunctionConditionRule = new ConjunctionConditionRule();
-        conjunctionConditionRule.setRuleInvocationImplementation("xx");
         conjunctionConditionRule.setDescription("root");
         conjunctionConditionRule.setConditionConjunction(ConditionConjunction.AND);
 
@@ -72,7 +71,6 @@ public class ActivityManagerTestcase {
 
 
         ChannelConditionRule channelConditionRule = new ChannelConditionRule();
-        channelConditionRule.setRuleInvocationImplementation("xx");
         channelConditionRule.setDescription("sub3");
         channelConditionRule.setChannelId(1);
         channelConditionRule.setChannelName("渠道规则");

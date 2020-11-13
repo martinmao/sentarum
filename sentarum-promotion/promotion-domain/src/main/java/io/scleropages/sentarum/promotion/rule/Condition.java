@@ -27,7 +27,7 @@ public interface Condition<R extends Rule, C extends InvocationContext> extends 
 
 
     /**
-     * customer code never override this method. excepted framework condition.
+     * client code never override this method.
      *
      * @param rule              当前调用的规则.
      * @param invocationContext 当前调用上下文

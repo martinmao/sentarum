@@ -26,4 +26,5 @@ import org.scleropages.crud.ModelMapper;
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface ChannelConditionRuleEntityMapper extends AbstractConditionRuleEntityMapper<ChannelConditionRuleEntity, ChannelConditionRule> {
+
 }

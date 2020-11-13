@@ -18,6 +18,8 @@ package io.scleropages.sentarum.promotion.rule;
 import io.scleropages.sentarum.promotion.rule.condition.ChannelCondition;
 import io.scleropages.sentarum.promotion.rule.condition.UserLevelCondition;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
+import org.scleropages.core.util.GenericTypes;
+import org.springframework.util.Assert;
 
 /**
  * 规则调用，将所有规则调用统一抽象.使其基于{@link Rule} 执行规则.
@@ -52,7 +54,11 @@ public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
      *
      * @return
      */
-    Class<R> ruleClass();
+    default Class<R> ruleClass() {
+        Class<R> ruleClass = GenericTypes.getClassGenericType(getClass(), RuleInvocation.class, 0);
+        Assert.notNull(ruleClass, () -> "no generic type found from: " + getClass() + ". you must implementation you own #ruleClass.");
+        return ruleClass;
+    }
 
 
     /**

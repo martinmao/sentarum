@@ -15,7 +15,10 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
+
+import java.util.Map;
 
 /**
  * spi strategy interface for lookup {@link io.scleropages.sentarum.promotion.rule.RuleInvocation} components.
@@ -39,6 +42,59 @@ public interface RuleContainer {
      *
      * @return
      */
-    String[] conditionImplementations();
+    Map<Integer, RuleInvocationDescriptor> conditionImplementations();
+
+
+    /**
+     * return rule invocation implementation by given rule class.
+     *
+     * @param ruleClass
+     * @return
+     */
+    Integer ruleInvocationImplementation(Class<AbstractRule> ruleClass);
+
+
+    /**
+     * descriptor of rule invocation.
+     */
+    class RuleInvocationDescriptor {
+
+        private final Integer id;
+        private final String name;
+        private final String description;
+
+        public RuleInvocationDescriptor(RuleInvocation invocation) {
+            this.id = invocation.id();
+            this.name = invocation.name();
+            this.description = invocation.description();
+        }
+
+        /**
+         * return {@link RuleInvocation#id()}
+         *
+         * @return
+         */
+        public Integer getId() {
+            return id;
+        }
+
+        /**
+         * return {@link RuleInvocation#name()}
+         *
+         * @return
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * return {@link RuleInvocation#description()}
+         *
+         * @return
+         */
+        public String getDescription() {
+            return description;
+        }
+    }
 
 }

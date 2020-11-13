@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.model;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.rule.RuleInvocation;
 
 /**
  * 描述一个规则，将规则的描述统一抽象，每一种规则都有对应model及其entity
@@ -40,11 +41,11 @@ public interface Rule {
 
 
     /**
-     * 规则执行实现
+     * 规则执行实现 {@link RuleInvocation#id()}
      *
      * @return
      */
-    String ruleInvocationImplementation();
+    Integer ruleInvocationImplementation();
 
 
     /**
