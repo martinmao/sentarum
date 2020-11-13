@@ -15,9 +15,9 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
-import io.scleropages.sentarum.promotion.rule.condition.ChannelCondition;
+import io.scleropages.sentarum.promotion.rule.condition.promotion.ChannelCondition;
 import io.scleropages.sentarum.promotion.rule.condition.ConjunctionCondition;
-import io.scleropages.sentarum.promotion.rule.condition.UserLevelCondition;
+import io.scleropages.sentarum.promotion.rule.condition.promotion.UserLevelCondition;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 import org.scleropages.core.util.GenericTypes;
 import org.springframework.util.Assert;

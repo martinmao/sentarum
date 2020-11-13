@@ -51,13 +51,6 @@ public interface ItemPromotionContext extends OrderPromotionContext {
     String outerSkuId();
 
     /**
-     * 买家唯一标识
-     *
-     * @return
-     */
-    Long buyerId();
-
-    /**
      * 购买数量
      *
      * @return

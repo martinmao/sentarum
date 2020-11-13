@@ -42,6 +42,14 @@ public interface PromotionContext extends InvocationContext {
 
 
     /**
+     * 买家唯一标识
+     *
+     * @return
+     */
+    Long buyerId();
+
+
+    /**
      * return builder of {@link PromotionResult}
      *
      * @return

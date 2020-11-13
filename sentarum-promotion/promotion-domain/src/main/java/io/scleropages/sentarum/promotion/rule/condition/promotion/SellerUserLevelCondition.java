@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.condition;
+package io.scleropages.sentarum.promotion.rule.condition.promotion;
 
 import io.scleropages.sentarum.promotion.rule.Condition;
-import io.scleropages.sentarum.promotion.rule.InvocationContext;
+import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +26,11 @@ import org.springframework.stereotype.Component;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
-public class SellerUserLevelCondition implements Condition<SellerUserLevelConditionRule, InvocationContext> {
+public class SellerUserLevelCondition implements Condition<SellerUserLevelConditionRule, PromotionContext> {
 
 
     @Override
-    public boolean match(SellerUserLevelConditionRule rule, InvocationContext invocationContext) {
+    public boolean match(SellerUserLevelConditionRule rule, PromotionContext invocationContext) {
         return false;
     }
 
