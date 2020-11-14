@@ -22,11 +22,12 @@ import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
 import org.jooq.Field;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.metamodel.Attribute;
 import java.util.List;
 
-import static io.scleropages.sentarum.jooq.Tables.PROM_ACT_BRAND_GOODS_SOURCE;
+import static io.scleropages.sentarum.jooq.Tables.*;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -51,4 +52,51 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
         });
         return entities;
     }
+
+    /**
+     * return true if any activity has brand goods source with given status.
+     * 是否存在给定状态下的品牌活动.
+     *
+     * @return
+     */
+    @Cacheable
+    default Boolean existsBrandGoodsSourceActivityWithStatus(Integer status) {
+        PromActivity promActivity = dslTable();
+        return null != dslContext().select(promActivity.ID)
+                .from(promActivity)
+                .join(PROM_ACT_BRAND_GOODS_SOURCE).on(promActivity.ID.eq(PROM_ACT_BRAND_GOODS_SOURCE.ACTIVITY_ID))
+                .where(promActivity.STATUS.eq(status)).limit(1).fetchAny();
+    }
+
+    /**
+     * return true if any activity has category goods source with given status.
+     *
+     * @param status
+     * @return
+     */
+    @Cacheable
+    default Boolean existsCategoryGoodsSourceActivityWitStatus(Integer status) {
+        PromActivity promActivity = dslTable();
+        return null != dslContext().select(promActivity.ID)
+                .from(promActivity)
+                .join(PROM_ACT_CATEGORY_GOODS_SOURCE).on(promActivity.ID.eq(PROM_ACT_CATEGORY_GOODS_SOURCE.ACTIVITY_ID))
+                .where(promActivity.STATUS.eq(status)).limit(1).fetchAny();
+    }
+
+    /**
+     * return true if any activity has seller goods source with given status.
+     *
+     * @param status
+     * @return
+     */
+    @Cacheable
+    default Boolean existsSellerGoodsSourceActivityWitStatus(Integer status) {
+        PromActivity promActivity = dslTable();
+        return null != dslContext().select(promActivity.ID)
+                .from(promActivity)
+                .join(PROM_ACT_SELLER_GOODS_SOURCE).on(promActivity.ID.eq(PROM_ACT_SELLER_GOODS_SOURCE.ACTIVITY_ID))
+                .where(promActivity.STATUS.eq(status)).limit(1).fetchAny();
+    }
+
+
 }
