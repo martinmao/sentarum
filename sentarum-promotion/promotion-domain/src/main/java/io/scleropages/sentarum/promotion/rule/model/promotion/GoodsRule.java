@@ -17,6 +17,7 @@ package io.scleropages.sentarum.promotion.rule.model.promotion;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.rule.model.AbstractEvaluatorRule;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 
 import java.math.BigDecimal;
@@ -31,7 +32,7 @@ import java.math.BigDecimal;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class GoodsRule extends AbstractRule {
+public class GoodsRule extends AbstractEvaluatorRule {
 
     private Amount amount;
 

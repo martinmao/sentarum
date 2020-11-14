@@ -15,9 +15,12 @@
  */
 package io.scleropages.sentarum.core.model.primitive;
 
+import org.springframework.util.Assert;
+
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * domain primitive of amount.
@@ -31,27 +34,30 @@ public class Amount {
 
 
     public Amount() {
-        this("0.00");
+        this(0);
     }
 
     /**
-     * NOTE: 建议使用 {@link #Amount(String, Currency)}.
+     * 不推荐
      *
      * @param amount
      * @param currency
      */
     public Amount(BigDecimal amount, Currency currency) {
+        Assert.notNull(amount, "amount must not be null.");
+        Assert.notNull(currency, "currency must not be null.");
+        Assert.isTrue(amount.compareTo(new BigDecimal(0)) >= 0, "amount must more than 0.");
         this.amount = amount;
         this.currency = currency;
     }
 
     /**
-     * NOTE: 建议使用 {@link #Amount(String)}.
+     * 不推荐
+     *
      * @param amount
      */
     public Amount(BigDecimal amount) {
-        this.amount = amount;
-        this.currency = Currency.getInstance(Locale.SIMPLIFIED_CHINESE);
+        this(amount, Currency.getInstance(Locale.SIMPLIFIED_CHINESE));
     }
 
     public Amount(String amount, Currency currency) {
@@ -60,6 +66,30 @@ public class Amount {
 
     public Amount(String amount) {
         this(new BigDecimal(amount));
+    }
+
+    public Amount(Integer amount, Currency currency) {
+        this(new BigDecimal(amount), currency);
+    }
+
+    public Amount(Integer amount) {
+        this(new BigDecimal(amount));
+    }
+
+    public Amount(Float amount, Currency currency) {
+        this(new BigDecimal(String.valueOf(amount)), currency);
+    }
+
+    public Amount(Float amount) {
+        this(new BigDecimal(String.valueOf(amount)));
+    }
+
+    public Amount(Double amount, Currency currency) {
+        this(new BigDecimal(String.valueOf(amount)), currency);
+    }
+
+    public Amount(Double amount) {
+        this(new BigDecimal(String.valueOf(amount)));
     }
 
     public String getAmountText() {
@@ -109,17 +139,81 @@ public class Amount {
      * @param multiplicand
      * @return this * multiplicand
      */
-    public Amount multiply(Amount multiplicand) {
-        return new Amount(getAmount().multiply(multiplicand.getAmount()));
+    public Amount multiply(Amount multiplicand, boolean keepScale) {
+        return new Amount(getAmount().multiply(multiplicand.getAmount()).setScale(keepScale ? 2 : 0, BigDecimal.ROUND_HALF_UP));
     }
 
     /**
-     * this / divisor
+     * this / divisor (scale=2 and round half up)
      *
      * @param divisor
      * @return this / divisor
      */
     public Amount divide(Amount divisor) {
-        return new Amount(getAmount().divide(divisor.getAmount()));
+        return new Amount(getAmount().divide(divisor.getAmount(), 2, BigDecimal.ROUND_HALF_UP));
+    }
+
+    /**
+     * return true if this > compare
+     *
+     * @param compare
+     * @return
+     */
+    public Boolean gt(Amount compare) {
+        return compareTo(compare) > 0;
+    }
+
+    /**
+     * return true if this >= compare
+     *
+     * @param compare
+     * @return
+     */
+    public Boolean gte(Amount compare) {
+        return compareTo(compare) >= 0;
+    }
+
+    /**
+     * return true if this < compare
+     *
+     * @param compare
+     * @return
+     */
+    public Boolean lt(Amount compare) {
+        return compareTo(compare) < 0;
+    }
+
+    /**
+     * return true if this <= compare
+     *
+     * @param compare
+     * @return
+     */
+    public Boolean lte(Amount compare) {
+        return compareTo(compare) <= 0;
+    }
+
+    /**
+     * return true if this == compare
+     *
+     * @param compare
+     * @return
+     */
+    public Boolean eq(Amount compare) {
+        return compareTo(compare) == 0;
+    }
+
+
+    private int compareTo(Amount compare) {
+        Assert.isTrue(Objects.equals(getCurrency(), compare.getCurrency()), "currency not match.");
+        return getAmount().compareTo(compare.getAmount());
+    }
+
+    @Override
+    public String toString() {
+        return "Amount{" +
+                "amount=" + amount +
+                ", currency=" + currency +
+                '}';
     }
 }
