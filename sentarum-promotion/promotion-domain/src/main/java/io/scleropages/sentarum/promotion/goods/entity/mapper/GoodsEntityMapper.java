@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.goods.entity.mapper;
 
+import io.scleropages.sentarum.core.entity.mapper.MapAttributesMapper;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsEntity;
 import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods;
 import org.scleropages.crud.ModelMapper;
@@ -22,6 +23,6 @@ import org.scleropages.crud.ModelMapper;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsEntityMapper<T extends GoodsEntity, M extends AbstractGoods> extends ModelMapper<T, M> {
+public interface GoodsEntityMapper<T extends GoodsEntity, M extends AbstractGoods> extends ModelMapper<T, M>, MapAttributesMapper {
 
 }

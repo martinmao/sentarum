@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityNativeGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
@@ -106,8 +105,9 @@ public interface Activity {
 
     /**
      * promotional goods source of this activity.
+     * 活动可关联多个商品来源，例如多品牌、多类目、多店铺联合促销.
      *
      * @return
      */
-    List<ActivityNativeGoodsSource> goodsSource();
+    List<ActivityGoodsSource> goodsSource();
 }

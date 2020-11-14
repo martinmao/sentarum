@@ -23,7 +23,7 @@ package io.scleropages.sentarum.promotion.rule.model.promotion;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CombineGoodsRule extends GoodsRule {
+public class CombineGoodsRule extends GoodsDiscountRule {
 
     /**
      * 仅适用于多买优惠促销

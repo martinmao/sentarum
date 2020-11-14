@@ -13,58 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.model;
+package io.scleropages.sentarum.core.entity.mapper;
+
+import io.scleropages.sentarum.core.entity.embeddable.EmbeddableMappers;
 
 import java.util.Map;
 
 /**
- * represent a conceptual goods specs.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsSpecs {
+public interface MapAttributesMapper {
 
-    /**
-     * unique id.
-     *
-     * @return
-     */
-    Long id();
+    default String attributesToPayload(Map<String, Object> additionalAttributes) {
+        return EmbeddableMappers.toEmbeddable(additionalAttributes);
+    }
 
-    /**
-     * id of specs.
-     *
-     * @return
-     */
-    Long specsId();
-
-    /**
-     * outer id of specs.
-     *
-     * @return
-     */
-    String outerSpecsId();
-
-
-    /**
-     * name of specs.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * associated goods.
-     *
-     * @return
-     */
-    Goods goods();
-
-
-    /**
-     * additional attributes of this goods specs.
-     *
-     * @return
-     */
-    Map<String, Object> additionalAttributes();
+    default Map<String, Object> payloadToAttributes(String payload) {
+        return EmbeddableMappers.toPrimitive(payload);
+    }
 }

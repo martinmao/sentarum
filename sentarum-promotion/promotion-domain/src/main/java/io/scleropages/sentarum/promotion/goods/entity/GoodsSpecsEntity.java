@@ -36,6 +36,7 @@ public abstract class GoodsSpecsEntity extends IdEntity {
     private String outerSpecsId;
     private String name;
     private GoodsEntity goods;
+    private String additionalAttributes;
 
     @Column(name = "specs_id", nullable = false)
     public Long getSpecsId() {
@@ -59,6 +60,11 @@ public abstract class GoodsSpecsEntity extends IdEntity {
         return goods;
     }
 
+    @Column(name = "attrs_payload")
+    public String getAdditionalAttributes() {
+        return additionalAttributes;
+    }
+
     public void setSpecsId(Long specsId) {
         this.specsId = specsId;
     }
@@ -73,5 +79,9 @@ public abstract class GoodsSpecsEntity extends IdEntity {
 
     public void setGoods(GoodsEntity goods) {
         this.goods = goods;
+    }
+
+    public void setAdditionalAttributes(String additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
     }
 }

@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.activity.model.impl;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
@@ -35,7 +36,7 @@ public class ActivityModel implements Activity {
     private Integer status;
     private List<Rule> conditionRules;
     private Rule promotionalRule;
-    private List<ActivityNativeGoodsSource> goodsSource;
+    private List<ActivityGoodsSource> goodsSource;
 
 
     public Long getId() {
@@ -74,7 +75,7 @@ public class ActivityModel implements Activity {
         return promotionalRule;
     }
 
-    public List<ActivityNativeGoodsSource> getGoodsSource() {
+    public List<ActivityGoodsSource> getGoodsSource() {
         return goodsSource;
     }
 
@@ -114,7 +115,7 @@ public class ActivityModel implements Activity {
         this.promotionalRule = promotionalRule;
     }
 
-    public void setGoodsSource(List<ActivityNativeGoodsSource> goodsSource) {
+    public void setGoodsSource(List<ActivityGoodsSource> goodsSource) {
         this.goodsSource = goodsSource;
     }
 
@@ -164,7 +165,7 @@ public class ActivityModel implements Activity {
     }
 
     @Override
-    public List<ActivityNativeGoodsSource> goodsSource() {
+    public List<ActivityGoodsSource> goodsSource() {
         return getGoodsSource();
     }
 }

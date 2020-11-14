@@ -44,6 +44,7 @@ public abstract class GoodsEntity extends IdEntity {
     private Long goodsId;
     private String outerGoodsId;
     private String name;
+    private String additionalAttributes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = COLUMN_GOODS_SOURCE_ID, nullable = false)
@@ -67,6 +68,11 @@ public abstract class GoodsEntity extends IdEntity {
         return name;
     }
 
+    @Column(name = "attrs_payload")
+    public String getAdditionalAttributes() {
+        return additionalAttributes;
+    }
+
     public void setGoodsSource(AbstractGoodsSourceEntity goodsSource) {
         this.goodsSource = goodsSource;
     }
@@ -81,5 +87,9 @@ public abstract class GoodsEntity extends IdEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setAdditionalAttributes(String additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
     }
 }

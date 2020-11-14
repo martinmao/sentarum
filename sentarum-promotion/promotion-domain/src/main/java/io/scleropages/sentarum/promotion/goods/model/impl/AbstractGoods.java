@@ -20,6 +20,7 @@ import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -33,6 +34,8 @@ public abstract class AbstractGoods implements Goods {
     private String outerGoodsId;
     private String name;
     private List<GoodsSpecs> specs;
+    private Map<String, Object> additionalAttributes;
+
 
 
     public Long getId() {
@@ -59,6 +62,10 @@ public abstract class AbstractGoods implements Goods {
         return specs;
     }
 
+    public Map<String, Object> getAdditionalAttributes() {
+        return additionalAttributes;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -81,6 +88,10 @@ public abstract class AbstractGoods implements Goods {
 
     public void setSpecs(List<GoodsSpecs> specs) {
         this.specs = specs;
+    }
+
+    public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
     }
 
     @Override
@@ -111,5 +122,10 @@ public abstract class AbstractGoods implements Goods {
     @Override
     public List<GoodsSpecs> specs() {
         return getSpecs();
+    }
+
+    @Override
+    public Map<String, Object> additionalAttributes() {
+        return getAdditionalAttributes();
     }
 }

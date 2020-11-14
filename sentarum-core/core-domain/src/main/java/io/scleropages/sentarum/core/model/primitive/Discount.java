@@ -197,4 +197,13 @@ public class Discount {
             return ordinalMappings.get(ordinal);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Discount{" +
+                "discountType=" + discountType +
+                ", discountValue=" + discountValue +
+                ", originalPrice=" + originalPrice +
+                '}';
+    }
 }

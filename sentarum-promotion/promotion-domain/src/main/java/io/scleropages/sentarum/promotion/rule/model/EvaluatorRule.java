@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.model;
 
 /**
- * base interface of evaluator rule.
+ * base interface of promotional evaluator rule.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

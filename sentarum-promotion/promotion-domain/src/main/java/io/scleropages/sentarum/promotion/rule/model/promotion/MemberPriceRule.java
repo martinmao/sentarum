@@ -13,58 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.model;
-
-import java.util.Map;
+package io.scleropages.sentarum.promotion.rule.model.promotion;
 
 /**
- * represent a conceptual goods specs.
+ * 会员价促销规则.对不同级别会员设置不同的会员价格
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsSpecs {
-
-    /**
-     * unique id.
-     *
-     * @return
-     */
-    Long id();
-
-    /**
-     * id of specs.
-     *
-     * @return
-     */
-    Long specsId();
-
-    /**
-     * outer id of specs.
-     *
-     * @return
-     */
-    String outerSpecsId();
+public class MemberPriceRule extends GoodsDiscountRule {
 
 
-    /**
-     * name of specs.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * associated goods.
-     *
-     * @return
-     */
-    Goods goods();
-
-
-    /**
-     * additional attributes of this goods specs.
-     *
-     * @return
-     */
-    Map<String, Object> additionalAttributes();
 }

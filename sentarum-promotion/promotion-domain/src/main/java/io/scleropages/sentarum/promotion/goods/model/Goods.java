@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.goods.model;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * represent a conceptual goods.
@@ -66,4 +67,11 @@ public interface Goods {
      * @return
      */
     List<GoodsSpecs> specs();
+
+    /**
+     * additional attributes of this goods.
+     *
+     * @return
+     */
+    Map<String, Object> additionalAttributes();
 }

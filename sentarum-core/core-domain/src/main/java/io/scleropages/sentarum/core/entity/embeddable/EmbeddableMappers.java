@@ -20,8 +20,10 @@ import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.BaseAddress;
 import io.scleropages.sentarum.core.model.primitive.BaseAddresses;
 import io.scleropages.sentarum.core.model.primitive.Geo;
+import org.scleropages.core.mapper.JsonMapper2;
 
 import java.util.Currency;
+import java.util.Map;
 
 /**
  * utility facade class for map domain primitives <--to--> embeddable
@@ -101,4 +103,15 @@ public abstract class EmbeddableMappers {
         return new Geo(geo.getLatitude(), geo.getLongitude());
     }
 
+    public static String toEmbeddable(Map<String, Object> additionalAttributes) {
+        if (null == additionalAttributes)
+            return null;
+        return JsonMapper2.toJson(additionalAttributes);
+    }
+
+    public static Map<String, Object> toPrimitive(String payload) {
+        if (null == payload)
+            return null;
+        return JsonMapper2.fromJson(payload);
+    }
 }
