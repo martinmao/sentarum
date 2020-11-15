@@ -17,13 +17,13 @@ package io.scleropages.sentarum.promotion.rule.model.promotion;
 
 /**
  * <pre>
- * 套装促销，组合商品促销或打包促销，即指定一组商品设置一个总的促销价，其计算规则为总价按 {@link #getAmount()}计 或 (单价*数量+单价*数量...)* {@link #getDiscount()}记
+ * 打包购规则，
  * 多买优惠促销，线下促销场景较为多见，例如M元任选N件，或M件N折
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CombineGoodsRule extends GoodsDiscountRule {
+public class PackageGoodsDiscountRule extends GoodsDiscountRule {
 
     /**
      * 仅适用于多买优惠促销

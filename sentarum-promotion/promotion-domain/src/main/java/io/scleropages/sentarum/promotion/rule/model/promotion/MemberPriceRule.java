@@ -22,5 +22,4 @@ package io.scleropages.sentarum.promotion.rule.model.promotion;
  */
 public class MemberPriceRule extends GoodsDiscountRule {
 
-
 }
