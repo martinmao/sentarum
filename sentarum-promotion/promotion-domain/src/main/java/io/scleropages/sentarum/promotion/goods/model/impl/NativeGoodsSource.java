@@ -30,5 +30,4 @@ import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
  */
 public class NativeGoodsSource extends AbstractGoodsSource {
 
-    ///!!该实现仅为一个标识性配置无额外属性
 }

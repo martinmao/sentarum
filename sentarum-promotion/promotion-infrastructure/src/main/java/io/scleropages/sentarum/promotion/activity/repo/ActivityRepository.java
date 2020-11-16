@@ -34,13 +34,14 @@ import static io.scleropages.sentarum.jooq.Tables.*;
  */
 public interface ActivityRepository extends GenericRepository<ActivityEntity, Long>, JooqRepository<PromActivity, PromActivityRecord, ActivityEntity> {
 
-    default List<ActivityEntity> findAllFromGoodsSourceByBrandId(Long brandId) {
+    default List<ActivityEntity> findAllFromGoodsSourceByBrandId(Long brandId,Integer status) {
         PromActivity promActivity = dslTable();
 
         List<ActivityEntity> entities = Lists.newArrayList();
         dslContext().select(promActivity.fields()).from(promActivity)
                 .join(PROM_ACT_BRAND_GOODS_SOURCE).on(promActivity.ID.eq(PROM_ACT_BRAND_GOODS_SOURCE.ACTIVITY_ID))
-                .where(PROM_ACT_BRAND_GOODS_SOURCE.BRAND_ID.eq(brandId)).fetch().forEach(record -> {
+                .where(PROM_ACT_BRAND_GOODS_SOURCE.BRAND_ID.eq(brandId))
+                .and(promActivity.STATUS.eq(status)).fetch().forEach(record -> {
             ActivityEntity entity = new ActivityEntity();
             dslRecordInto(record, entity, new ReferenceEntityAssembler() {
                 @Override

@@ -198,6 +198,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @param nativeGoodsId
      * @return
      */
+    @Transactional
     public Long createActivityGoodsSpecs(ActivityGoodsSpecsModel model, Long nativeGoodsId) {
         ActivityGoodsSpecsEntity activityGoodsSpecsEntity = activityGoodsSpecsEntityMapper.mapForSave(model);
         ActivityGoodsEntity activityGoodsEntity = activityGoodsRepository.get(nativeGoodsId).orElseThrow(() -> new IllegalArgumentException("no activity goods found: " + nativeGoodsId));
@@ -209,43 +210,16 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
 
 
     /**
-     * 获取所有处于进行中的品牌商活动
+     * 获取所有品牌活动
      *
-     * @param brandId
+     * @param brandId 品牌id
+     * @param status  活动状态
      * @return
      */
     @Transactional(readOnly = true)
-    public List<? extends Activity> findAllRunningActivityByBrandId(Long brandId) {
-        if (activityRepository.existsBrandGoodsSourceActivityWithStatus(RUNNING_STATUS)) {
-            return (List<? extends Activity>) getModelMapper().mapForReads(activityRepository.findAllFromGoodsSourceByBrandId(brandId));
-        }
-        return Collections.emptyList();
-    }
-
-    /**
-     * 获取所有处于进行中的类目活动
-     *
-     * @param categoryId
-     * @return
-     */
-    @Transactional(readOnly = true)
-    public List<? extends Activity> findAllRunningActivityByCategoryId(Long categoryId) {
-        if (activityRepository.existsCategoryGoodsSourceActivityWitStatus(RUNNING_STATUS)) {
-            return (List<? extends Activity>) getModelMapper().mapForReads(activityRepository.findAllFromGoodsSourceByBrandId(categoryId));
-        }
-        return Collections.emptyList();
-    }
-
-    /**
-     * 获取所有处于进行中商家活动
-     *
-     * @param categoryId
-     * @return
-     */
-    @Transactional(readOnly = true)
-    public List<? extends Activity> findAllRunningActivityBySeller(Long categoryId) {
-        if (activityRepository.existsSellerGoodsSourceActivityWitStatus(RUNNING_STATUS)) {
-            return (List<? extends Activity>) getModelMapper().mapForReads(activityRepository.findAllFromGoodsSourceByBrandId(categoryId));
+    public List<? extends Activity> findAllActivityByBrandId(Long brandId, Integer status) {
+        if (activityRepository.existsBrandGoodsSourceActivityWithStatus(status)) {
+            return (List<? extends Activity>) getModelMapper().mapForReads(activityRepository.findAllFromGoodsSourceByBrandId(brandId, status));
         }
         return Collections.emptyList();
     }
