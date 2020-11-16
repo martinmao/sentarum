@@ -22,10 +22,18 @@ import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_ATTRS_PAYLOAD;
+import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_ID;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @NoRepositoryBean
 public interface GoodsRepository<E extends GoodsEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
-    
+
+
+    default void saveGoodsAttributes(Long id, String payload) {
+        T t = dslTable();
+        dslContext().update(t).set(t.field(COLUMN_ATTRS_PAYLOAD.toUpperCase()), payload).where(t.field(COLUMN_ID.toUpperCase()).eq(id)).execute();
+    }
 }

@@ -19,6 +19,8 @@ import io.scleropages.sentarum.core.model.primitive.Address;
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.BaseAddress;
 import io.scleropages.sentarum.core.model.primitive.BaseAddresses;
+import io.scleropages.sentarum.core.model.primitive.Discount;
+import io.scleropages.sentarum.core.model.primitive.Discount.DiscountType;
 import io.scleropages.sentarum.core.model.primitive.Geo;
 import org.scleropages.core.mapper.JsonMapper2;
 
@@ -50,6 +52,26 @@ public abstract class EmbeddableMappers {
         if (null != amount.getCurrencyCode())
             target.setCurrency(Currency.getInstance(amount.getCurrencyCode()));
 
+        return target;
+    }
+
+    public static EmbeddableDiscount toEmbeddable(Discount discount) {
+        if (null == discount)
+            return null;
+        EmbeddableDiscount target = new EmbeddableDiscount();
+        target.setDiscountType(discount.getDiscountType().getOrdinal());
+        target.setDiscountValue(discount.getDiscountValue());
+        target.setOriginalPrice(toEmbeddable(discount.getOriginalPrice()));
+        return target;
+    }
+
+    public static Discount toPrimitive(EmbeddableDiscount discount) {
+        if (null == discount)
+            return null;
+        Discount target = new Discount();
+        target.setDiscountType(DiscountType.getByOrdinal(discount.getDiscountType()));
+        target.setDiscountValue(discount.getDiscountValue());
+        target.setOriginalPrice(toPrimitive(discount.getOriginalPrice()));
         return target;
     }
 

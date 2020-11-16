@@ -36,9 +36,10 @@ import javax.persistence.Transient;
 @MappedSuperclass
 public abstract class GoodsEntity extends IdEntity {
 
-    public static final String COLUMN_ID = "ID";
-    public static final String COLUMN_GOODS_SOURCE_ID = "GOODS_SOURCE_ID";
-    public static final String COLUMN_GOODS_ID = "GOODS_ID";
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_GOODS_SOURCE_ID = "goods_source_id";
+    public static final String COLUMN_GOODS_ID = "goods_id";
+    public static final String COLUMN_ATTRS_PAYLOAD="attrs_payload";
 
     private AbstractGoodsSourceEntity goodsSource;
     private Long goodsId;
@@ -53,7 +54,7 @@ public abstract class GoodsEntity extends IdEntity {
         return goodsSource;
     }
 
-    @Column(name = "goods_id", nullable = false)
+    @Column(name = COLUMN_GOODS_ID, nullable = false)
     public Long getGoodsId() {
         return goodsId;
     }
@@ -68,7 +69,7 @@ public abstract class GoodsEntity extends IdEntity {
         return name;
     }
 
-    @Column(name = "attrs_payload")
+    @Column(name = COLUMN_ATTRS_PAYLOAD)
     public String getAdditionalAttributes() {
         return additionalAttributes;
     }

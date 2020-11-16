@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.promotion;
+package io.scleropages.sentarum.promotion.rule.promotion;
+
+import io.scleropages.sentarum.jooq.tables.PromEvalGoodsDiscount;
+import io.scleropages.sentarum.jooq.tables.records.PromEvalGoodsDiscountRecord;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.GoodsDiscountRuleEntity;
+import org.scleropages.crud.dao.orm.jpa.GenericRepository;
+import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
 /**
- * 会员价促销规则.对不同级别会员设置不同的会员价格
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class MemberPriceRule extends GoodsDiscountRule {
+public interface GoodsDiscountRuleRepository extends GenericRepository<GoodsDiscountRuleEntity, Long>, JooqRepository<PromEvalGoodsDiscount, PromEvalGoodsDiscountRecord, GoodsDiscountRuleEntity> {
 
 }

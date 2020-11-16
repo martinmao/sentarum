@@ -33,7 +33,7 @@ import java.util.List;
  *  当商品来源为 {@link CategoryGoodsSource} 时，可对所有关联品类下商品设置统一折扣({@link #discount}),不支持 {@link DiscountType#OVERRIDE_AMOUNT}.
  *  当商品来源为 {@link SellerGoodsSource} 时， 可对所有关联商家下商品设置统一折扣({@link #discount}),不支持 {@link DiscountType#OVERRIDE_AMOUNT}.
  *
- *  多品牌、多品类、多店联合促销场景下：其最终结算规则为在活动周期结束后: 品牌A卖出商品原价总和/(品牌A卖出商品原价总和+品牌B卖出商品原价总和)*总折扣金额=品牌A均摊金额
+ *  多品牌、多品类、多店联合促销场景下均摊规则为：品牌A卖出商品原价总和/(品牌A卖出商品原价总和+品牌B卖出商品原价总和)*总折扣金额=品牌A均摊金额
  *  单品牌，单品类，单店促销场景下：
  *
  *  当商品来源为一个 {@link NativeGoodsSource} 时，则可将规则设置到各个商品以及各个规格.

@@ -24,6 +24,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_ATTRS_PAYLOAD;
+
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSpecs}
  *
@@ -60,7 +62,7 @@ public abstract class GoodsSpecsEntity extends IdEntity {
         return goods;
     }
 
-    @Column(name = "attrs_payload")
+    @Column(name = COLUMN_ATTRS_PAYLOAD)
     public String getAdditionalAttributes() {
         return additionalAttributes;
     }

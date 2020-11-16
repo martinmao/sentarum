@@ -19,7 +19,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.activity.repo.ActivityBrandGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.activity.repo.ActivityCategoryGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsRepository;
+import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsSpecsRepository;
+import io.scleropages.sentarum.promotion.activity.repo.ActivityNativeGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
+import io.scleropages.sentarum.promotion.activity.repo.ActivitySellerGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.SellerUserLevelConditionRuleRepository;
@@ -35,6 +41,8 @@ import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.ChannelCon
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.SellerUserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserTagConditionRuleEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.GoodsDiscountRuleEntity;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.mapper.GoodsDiscountRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
@@ -43,6 +51,8 @@ import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditi
 import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserTagConditionRule;
+import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
+import io.scleropages.sentarum.promotion.rule.promotion.GoodsDiscountRuleRepository;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.exception.BizError;
@@ -78,6 +88,21 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     private ActivityRepository activityRepository;
 
     /**
+     * activity goods source repositories.
+     */
+    private ActivityBrandGoodsSourceRepository activityBrandGoodsSourceRepository;
+    private ActivityCategoryGoodsSourceRepository activityCategoryGoodsSourceRepository;
+    private ActivitySellerGoodsSourceRepository activitySellerGoodsSourceRepository;
+    private ActivityNativeGoodsSourceRepository activityNativeGoodsSourceRepository;
+
+    /**
+     * activity goods repositories.
+     */
+    private ActivityGoodsRepository activityGoodsRepository;
+    private ActivityGoodsSpecsRepository activityGoodsSpecsRepository;
+
+
+    /**
      * condition rule repositories.
      */
     private BaseConditionRuleRepository baseConditionRuleRepository;
@@ -87,6 +112,11 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     private SellerUserLevelConditionRuleRepository sellerUserLevelConditionRuleRepository;
 
     /**
+     * promotion rule repositories.
+     */
+    private GoodsDiscountRuleRepository goodsDiscountRuleRepository;
+
+    /**
      * condition rule mappers.
      */
     private BaseConditionRuleEntityMapper baseConditionRuleEntityMapper;
@@ -94,6 +124,11 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     private UserTagConditionRuleEntityMapper userTagConditionRuleEntityMapper;
     private UserLevelConditionRuleEntityMapper userLevelConditionRuleEntityMapper;
     private SellerUserLevelConditionRuleEntityMapper sellerUserLevelConditionRuleEntityMapper;
+
+    /**
+     * promotion rule mappers.
+     */
+    private GoodsDiscountRuleEntityMapper goodsDiscountRuleEntityMapper;
 
     @Transactional
     public Long createConjunctionConditionRule(ConjunctionConditionRule conditionRule, Long activityId, Long parentConditionId) {
@@ -124,6 +159,18 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         SellerUserLevelConditionRuleEntity entity = sellerUserLevelConditionRuleEntityMapper.mapForSave(conditionRule);
         return createConditionRuleInternal(conditionRule, entity, activityId, parentConditionId, sellerUserLevelConditionRuleRepository);
     }
+
+    @Transactional
+    public Long createGoodsDiscountRule(GoodsDiscountRule goodsDiscountRule, Long activityId) {
+        GoodsDiscountRuleEntity goodsDiscountRuleEntity = goodsDiscountRuleEntityMapper.mapForSave(goodsDiscountRule);
+        ActivityEntity requiredActivityEntity = getRequiredActivityEntity(activityId);
+        goodsDiscountRuleEntity.setActivity(requiredActivityEntity);
+        goodsDiscountRuleRepository.save(goodsDiscountRuleEntity);
+
+        
+        return goodsDiscountRuleEntity.getId();
+    }
+
 
     /**
      * read condition rules and merge rules to root of rule tree.
@@ -258,6 +305,36 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
+    public void setActivityBrandGoodsSourceRepository(ActivityBrandGoodsSourceRepository activityBrandGoodsSourceRepository) {
+        this.activityBrandGoodsSourceRepository = activityBrandGoodsSourceRepository;
+    }
+
+    @Autowired
+    public void setActivityCategoryGoodsSourceRepository(ActivityCategoryGoodsSourceRepository activityCategoryGoodsSourceRepository) {
+        this.activityCategoryGoodsSourceRepository = activityCategoryGoodsSourceRepository;
+    }
+
+    @Autowired
+    public void setActivitySellerGoodsSourceRepository(ActivitySellerGoodsSourceRepository activitySellerGoodsSourceRepository) {
+        this.activitySellerGoodsSourceRepository = activitySellerGoodsSourceRepository;
+    }
+
+    @Autowired
+    public void setActivityNativeGoodsSourceRepository(ActivityNativeGoodsSourceRepository activityNativeGoodsSourceRepository) {
+        this.activityNativeGoodsSourceRepository = activityNativeGoodsSourceRepository;
+    }
+
+    @Autowired
+    public void setActivityGoodsRepository(ActivityGoodsRepository activityGoodsRepository) {
+        this.activityGoodsRepository = activityGoodsRepository;
+    }
+
+    @Autowired
+    public void setActivityGoodsSpecsRepository(ActivityGoodsSpecsRepository activityGoodsSpecsRepository) {
+        this.activityGoodsSpecsRepository = activityGoodsSpecsRepository;
+    }
+
+    @Autowired
     public void setBaseConditionRuleRepository(BaseConditionRuleRepository baseConditionRuleRepository) {
         this.baseConditionRuleRepository = baseConditionRuleRepository;
     }
@@ -283,6 +360,11 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
+    public void setGoodsDiscountRuleRepository(GoodsDiscountRuleRepository goodsDiscountRuleRepository) {
+        this.goodsDiscountRuleRepository = goodsDiscountRuleRepository;
+    }
+
+    @Autowired
     public void setBaseConditionRuleEntityMapper(BaseConditionRuleEntityMapper baseConditionRuleEntityMapper) {
         this.baseConditionRuleEntityMapper = baseConditionRuleEntityMapper;
     }
@@ -305,6 +387,11 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     @Autowired
     public void setSellerUserLevelConditionRuleEntityMapper(SellerUserLevelConditionRuleEntityMapper sellerUserLevelConditionRuleEntityMapper) {
         this.sellerUserLevelConditionRuleEntityMapper = sellerUserLevelConditionRuleEntityMapper;
+    }
+
+    @Autowired
+    public void setGoodsDiscountRuleEntityMapper(GoodsDiscountRuleEntityMapper goodsDiscountRuleEntityMapper) {
+        this.goodsDiscountRuleEntityMapper = goodsDiscountRuleEntityMapper;
     }
 
     private ClassLoader classLoader;
