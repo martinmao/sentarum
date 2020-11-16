@@ -65,8 +65,6 @@ import java.util.List;
 public class ActivityManager implements GenericManager<ActivityModel, Long, ActivityEntityMapper> {
 
 
-    public static final Integer RUNNING_STATUS = 200;
-
     /**
      * activity base repositories.
      */
