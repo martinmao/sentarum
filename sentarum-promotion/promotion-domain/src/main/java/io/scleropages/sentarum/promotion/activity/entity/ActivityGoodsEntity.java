@@ -37,11 +37,9 @@ import javax.persistence.Table;
 @SequenceGenerator(name = "prom_act_goods_id", sequenceName = "seq_prom_act_goods", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityGoodsEntity extends GoodsEntity {
 
-
     private Integer totalNum;
     private Integer userNum;
     private ActivityEntity activity;
-
 
     @Override
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ActivityDetailedGoodsSourceEntity.class)

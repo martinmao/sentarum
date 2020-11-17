@@ -117,7 +117,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     public Long createActivityClassifiedGoodsSource(ActivityClassifiedGoodsSource goodsSource, Long activityId) {
         ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceEntityMapper.mapForSave(goodsSource);
         entity.setBizId(getRequiredActivityEntity(activityId).getId());
-        classifiedGoodsSourceRepository.getByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
+        classifiedGoodsSourceRepository.getTop1ByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
             Assert.isTrue(Objects.equals(activityClassifiedGoodsSourceEntity.getGoodsSourceType(), goodsSource.getGoodsSourceType()), () -> "not allowed difference goods source type in same activity. expected: " + activityClassifiedGoodsSourceEntity.getGoodsSourceType() + " actual:" + goodsSource.getGoodsSourceType());
         });
         classifiedGoodsSourceRepository.save(entity);
@@ -137,10 +137,10 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @BizError("20")
     public Long createActivityDetailedGoodsSource(ActivityDetailedGoodsSource goodsSource, Long activityId) {
         ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceEntityMapper.mapForSave(goodsSource);
-        classifiedGoodsSourceRepository.getByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
+        classifiedGoodsSourceRepository.getTop1ByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
             throw new IllegalArgumentException("given activity already configured as classified goods source: " + activityId);
         });
-        detailedGoodsSourceRepository.getByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityDetailedGoodsSourceEntity -> {
+        detailedGoodsSourceRepository.getTop1ByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityDetailedGoodsSourceEntity -> {
             throw new IllegalArgumentException("given activity already associated detailed goods source: " + activityId);
         });
         entity.setBizId(getRequiredActivityEntity(activityId).getId());

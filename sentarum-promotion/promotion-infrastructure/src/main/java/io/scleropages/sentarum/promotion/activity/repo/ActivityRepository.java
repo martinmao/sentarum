@@ -42,7 +42,7 @@ import static io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRe
 public interface ActivityRepository extends GenericRepository<ActivityEntity, Long>, JooqRepository<PromActivity, PromActivityRecord, ActivityEntity> {
 
 
-    @Cacheable
+    @Cacheable(key = "#activityStatus+'-'+#goodsSourceType+'-'+#goodsSourceId+'-'+#secondaryGoodsSourceId")
     default List<ActivityEntity> findAllByClassifiedGoodsSource(ActivityClassifiedGoodsSourceRepository repository, Integer activityStatus, Integer goodsSourceType, Long goodsSourceId, Long secondaryGoodsSourceId) {
 
         Assert.notNull(repository, "repository must not be null.");

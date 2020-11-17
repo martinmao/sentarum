@@ -43,7 +43,7 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
 
     List<E> findByBizTypeAndBizId(Integer bizType, Long bizId);
 
-    Optional<E> getByBizTypeAndBizId(Integer bizType, Long bizId);
+    Optional<E> getTop1ByBizTypeAndBizId(Integer bizType, Long bizId);
 
     Boolean existsByGoodsSourceType(Integer goodsSourceType);
 

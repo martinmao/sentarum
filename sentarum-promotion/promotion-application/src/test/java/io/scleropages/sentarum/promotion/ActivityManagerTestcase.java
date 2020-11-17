@@ -76,6 +76,9 @@ public class ActivityManagerTestcase {
 
         activityManager.createActivityClassifiedGoodsSource(brandGoodsSource, activityId);
 
+
+        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 1, null, null)));
+
         activity.setName("TEST2");
         activity.setTag("品类活动");
         activity.setDescription("品类活动测试1");
@@ -106,6 +109,8 @@ public class ActivityManagerTestcase {
         categoryGoodsSource.setComment("活动关联品类");
 
         activityManager.createActivityClassifiedGoodsSource(categoryGoodsSource, activityId);
+
+        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 2, null, null)));
 
 
         ConjunctionConditionRule conjunctionConditionRule = new ConjunctionConditionRule();

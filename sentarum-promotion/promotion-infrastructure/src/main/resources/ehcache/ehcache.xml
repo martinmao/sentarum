@@ -22,6 +22,13 @@
         <heap>1000</heap>
     </cache>
 
+    <cache alias="io.scleropages.sentarum.promotion.activity.repo.ActivityRepository.findAllByClassifiedGoodsSource">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
     <cache-template name="heap-cache">
         <expiry>
             <ttl unit="minutes">30</ttl>

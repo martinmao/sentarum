@@ -37,9 +37,9 @@ public interface ClassifiedGoodsSourceRepository<E extends ClassifiedGoodsSource
     default Condition conditionByGoodsSourceTypeAndGoodsSourceIdAndSecondaryGoodsSourceId(Integer goodsSourceType, Long goodsSourceId, Long secondaryGoodsSourceId) {
         Assert.notNull(goodsSourceType, "goodsSourceType must not be null.");
         T t = dslTable();
-        Condition goodsSourceTypeCondition = t.field(COLUMN_GOODS_SOURCE_TYPE).eq(goodsSourceType);
-        Condition goodsSourceIdCondition = t.field(COLUMN_GOODS_SOURCE_ID).eq(goodsSourceId);
-        Condition secondaryGoodsSourceIdCondition = t.field(COLUMN_SECONDARY_GOODS_SOURCE_ID).eq(secondaryGoodsSourceId);
+        Condition goodsSourceTypeCondition = t.field(COLUMN_GOODS_SOURCE_TYPE.toUpperCase()).eq(goodsSourceType);
+        Condition goodsSourceIdCondition = t.field(COLUMN_GOODS_SOURCE_ID.toUpperCase()).eq(goodsSourceId);
+        Condition secondaryGoodsSourceIdCondition = t.field(COLUMN_SECONDARY_GOODS_SOURCE_ID.toUpperCase()).eq(secondaryGoodsSourceId);
         return goodsSourceTypeCondition
                 .and(null != goodsSourceId ? goodsSourceIdCondition : dslConditionNo())
                 .and(null != secondaryGoodsSourceId ? secondaryGoodsSourceIdCondition : dslConditionNo());
