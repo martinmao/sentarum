@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.entity.mapper;
+package io.scleropages.sentarum.promotion.goods.entity;
 
-import io.scleropages.sentarum.promotion.activity.entity.ActivityBrandGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityBrandGoodsSource;
-import io.scleropages.sentarum.promotion.goods.entity.mapper.BrandGoodsSourceEntityMapper;
-import org.mapstruct.Mapper;
-import org.scleropages.crud.ModelMapper;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
+
+import javax.persistence.MappedSuperclass;
 
 /**
+ * referenced from: {@link AbstractDetailedGoodsSource}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Mapper(config = ModelMapper.DefaultConfig.class)
-public interface ActivityBrandGoodsSourceEntityMapper extends BrandGoodsSourceEntityMapper<ActivityBrandGoodsSourceEntity, ActivityBrandGoodsSource>, AbstractActivityEntityMapper {
+@MappedSuperclass
+public abstract class DetailedGoodsSourceEntity extends AbstractGoodsSourceEntity {
+
 }

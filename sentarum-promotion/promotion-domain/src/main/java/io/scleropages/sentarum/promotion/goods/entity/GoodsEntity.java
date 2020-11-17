@@ -26,10 +26,6 @@ import javax.persistence.Transient;
 
 /**
  * referenced from {@link io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods}.
- * <p>
- * <b color="red">
- * important: for sub class implementation never change default column names.
- * </p>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -39,7 +35,7 @@ public abstract class GoodsEntity extends IdEntity {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_GOODS_SOURCE_ID = "goods_source_id";
     public static final String COLUMN_GOODS_ID = "goods_id";
-    public static final String COLUMN_ATTRS_PAYLOAD="attrs_payload";
+    public static final String COLUMN_ATTRS_PAYLOAD = "attrs_payload";
 
     private AbstractGoodsSourceEntity goodsSource;
     private Long goodsId;

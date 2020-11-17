@@ -19,6 +19,9 @@ import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.List;
 
@@ -39,42 +42,53 @@ public class ActivityModel implements Activity {
     private List<ActivityGoodsSource> goodsSource;
 
 
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getName() {
         return name;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getTag() {
         return tag;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getDescription() {
         return description;
     }
 
+    @NotNull(groups = Create.class)
     public Date getStartTime() {
         return startTime;
     }
 
+    @NotNull(groups = Create.class)
     public Date getEndTime() {
         return endTime;
     }
 
+    @NotNull(groups = Create.class)
     public Integer getStatus() {
         return status;
     }
 
+    @Null
     public List<Rule> getConditionRules() {
         return conditionRules;
     }
 
+    @Null
     public Rule getPromotionalRule() {
         return promotionalRule;
     }
 
+    @Null
     public List<ActivityGoodsSource> getGoodsSource() {
         return goodsSource;
     }
@@ -167,5 +181,14 @@ public class ActivityModel implements Activity {
     @Override
     public List<ActivityGoodsSource> goodsSource() {
         return getGoodsSource();
+    }
+
+
+    public interface Create {
+
+    }
+
+    public interface Update {
+
     }
 }

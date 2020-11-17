@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
-import io.scleropages.sentarum.promotion.goods.model.impl.NativeGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
@@ -108,7 +108,7 @@ public interface Activity {
      * a group of promotional goods source of this activity.
      * 活动可关联多个商品来源，例如多品牌、多品类、多店联合促销场景.
      * 但不允许跨维度组合。即一组 {@link ActivityGoodsSource} 类型必须相同.
-     * 如要设置到商品，sku维度，则需关联（仅一个） {@link NativeGoodsSource}.
+     * 如要设置到商品，sku维度，则需关联（仅一个） {@link AbstractDetailedGoodsSource}.
      *
      * @return
      */

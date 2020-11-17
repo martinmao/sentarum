@@ -13,13 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.entity.mapper;
+package io.scleropages.sentarum.promotion.goods;
 
-import io.scleropages.sentarum.promotion.goods.entity.BrandGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.goods.model.impl.BrandGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.Goods;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
+ * spi strategy interface for detailed goods reading.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface BrandGoodsSourceEntityMapper<T extends BrandGoodsSourceEntity, M extends BrandGoodsSource> extends RemotingGoodsSourceEntityMapper<T, M> {
+public interface DetailedGoodsSourceReader {
+
+    /**
+     * read a page of goods.
+     *
+     * @param pageable
+     * @return
+     */
+    Page<? extends Goods> pageOfGoods(Pageable pageable);
+
+    /**
+     * read a goods by id.
+     *
+     * @param id
+     * @return
+     */
+    Goods goods(Long id);
 }

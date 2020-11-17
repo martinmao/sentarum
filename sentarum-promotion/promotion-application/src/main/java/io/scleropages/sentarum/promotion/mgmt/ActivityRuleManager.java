@@ -19,13 +19,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.repo.ActivityBrandGoodsSourceRepository;
-import io.scleropages.sentarum.promotion.activity.repo.ActivityCategoryGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsSpecsRepository;
-import io.scleropages.sentarum.promotion.activity.repo.ActivityNativeGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.activity.repo.ActivityDetailedGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
-import io.scleropages.sentarum.promotion.activity.repo.ActivitySellerGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.SellerUserLevelConditionRuleRepository;
@@ -90,10 +87,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     /**
      * activity goods source repositories.
      */
-    private ActivityBrandGoodsSourceRepository activityBrandGoodsSourceRepository;
-    private ActivityCategoryGoodsSourceRepository activityCategoryGoodsSourceRepository;
-    private ActivitySellerGoodsSourceRepository activitySellerGoodsSourceRepository;
-    private ActivityNativeGoodsSourceRepository activityNativeGoodsSourceRepository;
+    private ActivityDetailedGoodsSourceRepository activityNativeGoodsSourceRepository;
 
     /**
      * activity goods repositories.
@@ -167,7 +161,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         goodsDiscountRuleEntity.setActivity(requiredActivityEntity);
         goodsDiscountRuleRepository.save(goodsDiscountRuleEntity);
 
-        
+
         return goodsDiscountRuleEntity.getId();
     }
 
@@ -304,23 +298,9 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         this.activityRepository = activityRepository;
     }
 
-    @Autowired
-    public void setActivityBrandGoodsSourceRepository(ActivityBrandGoodsSourceRepository activityBrandGoodsSourceRepository) {
-        this.activityBrandGoodsSourceRepository = activityBrandGoodsSourceRepository;
-    }
 
     @Autowired
-    public void setActivityCategoryGoodsSourceRepository(ActivityCategoryGoodsSourceRepository activityCategoryGoodsSourceRepository) {
-        this.activityCategoryGoodsSourceRepository = activityCategoryGoodsSourceRepository;
-    }
-
-    @Autowired
-    public void setActivitySellerGoodsSourceRepository(ActivitySellerGoodsSourceRepository activitySellerGoodsSourceRepository) {
-        this.activitySellerGoodsSourceRepository = activitySellerGoodsSourceRepository;
-    }
-
-    @Autowired
-    public void setActivityNativeGoodsSourceRepository(ActivityNativeGoodsSourceRepository activityNativeGoodsSourceRepository) {
+    public void setActivityNativeGoodsSourceRepository(ActivityDetailedGoodsSourceRepository activityNativeGoodsSourceRepository) {
         this.activityNativeGoodsSourceRepository = activityNativeGoodsSourceRepository;
     }
 

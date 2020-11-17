@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.goods.model;
 
-import java.util.Map;
+import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
 
 /**
  * represent a conceptual goods specs.
@@ -66,5 +66,7 @@ public interface GoodsSpecs {
      *
      * @return
      */
-    Map<String, Object> additionalAttributes();
+    default AdditionalAttributes additionalAttributes() {
+        throw new IllegalStateException("not initialized.");
+    }
 }

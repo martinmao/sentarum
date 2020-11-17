@@ -13,29 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.model.impl;
+package io.scleropages.sentarum.promotion.activity.repo;
 
-import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
-import io.scleropages.sentarum.promotion.goods.model.impl.BrandGoodsSource;
+import io.scleropages.sentarum.jooq.tables.PromActClassifiedGoodsSource;
+import io.scleropages.sentarum.jooq.tables.records.PromActClassifiedGoodsSourceRecord;
+import io.scleropages.sentarum.promotion.activity.entity.ActivityClassifiedGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.repo.ClassifiedGoodsSourceRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ActivityBrandGoodsSource extends BrandGoodsSource implements ActivityGoodsSource {
-
-    private Activity activity;
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
+public interface ActivityClassifiedGoodsSourceRepository extends ClassifiedGoodsSourceRepository<ActivityClassifiedGoodsSourceEntity, PromActClassifiedGoodsSource, PromActClassifiedGoodsSourceRecord> {
 
     @Override
-    public Activity activity() {
-        return getActivity();
+    default ActivityClassifiedGoodsSourceEntity createEntity() {
+        return new ActivityClassifiedGoodsSourceEntity();
     }
 }

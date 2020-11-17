@@ -16,7 +16,6 @@
 package io.scleropages.sentarum.promotion.goods.entity.mapper;
 
 import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.goods.model.GoodsSource.GoodsSourceType;
 import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
 import org.scleropages.crud.ModelMapper;
 
@@ -25,12 +24,4 @@ import org.scleropages.crud.ModelMapper;
  */
 public interface AbstractGoodsSourceEntityMapper<T extends AbstractGoodsSourceEntity, M extends AbstractGoodsSource> extends ModelMapper<T, M> {
 
-
-    default Integer toOrdinal(GoodsSourceType goodsSourceType) {
-        return goodsSourceType.getOrdinal();
-    }
-
-    default GoodsSourceType toGoodsSourceType(Integer ordinal) {
-        return GoodsSourceType.getByOrdinal(ordinal);
-    }
 }

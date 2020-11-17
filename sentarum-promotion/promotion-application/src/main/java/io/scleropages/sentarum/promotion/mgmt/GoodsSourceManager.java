@@ -13,32 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods;
-
-import io.scleropages.sentarum.promotion.goods.model.Goods;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+package io.scleropages.sentarum.promotion.mgmt;
 
 /**
- * spi strategy interface for goods reading.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsSourceReader {
+public class GoodsSourceManager {
 
-    /**
-     * read a page of goods.
-     *
-     * @param pageable
-     * @return
-     */
-    Page<? extends Goods> pageOfGoods(Pageable pageable);
 
-    /**
-     * read a goods by id.
-     *
-     * @param id
-     * @return
-     */
-    Goods goods(Long id);
 }

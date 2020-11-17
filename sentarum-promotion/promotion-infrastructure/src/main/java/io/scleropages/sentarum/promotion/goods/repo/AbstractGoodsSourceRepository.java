@@ -16,16 +16,66 @@
 package io.scleropages.sentarum.promotion.goods.repo;
 
 import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.JoinType;
 import org.jooq.Record;
+import org.jooq.SelectQuery;
 import org.jooq.Table;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @NoRepositoryBean
 public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
+
+
+    default E createEntity() {
+        throw new IllegalStateException("not implement.");
+    }
+
+
+    List<E> findByBizTypeAndBizId(Integer bizType, Long bizId);
+
+    Optional<E> getByBizTypeAndBizId(Integer bizType, Long bizId);
+
+    Boolean existsByGoodsSourceType(Integer goodsSourceType);
+
+
+    class GoodsSourceConditionsAssembler {
+
+        public static void applyConditions(SelectQuery<Record> baseQuery, GoodsSourceJoin goodsSourceJoin) {
+            baseQuery.addJoin(
+                    goodsSourceJoin.goodsSourceTable,
+                    goodsSourceJoin.joinType,
+                    goodsSourceJoin.goodsSourceTable.field(AbstractGoodsSourceEntity.COLUMN_BIZ_TYPE.toUpperCase()).eq(goodsSourceJoin.bizType)
+                            .and(goodsSourceJoin.baseJoinField.eq(goodsSourceJoin.goodsSourceTable.field(AbstractGoodsSourceEntity.COLUMN_BIZ_ID.toUpperCase()))),
+                    goodsSourceJoin.otherCondition);
+        }
+    }
+
+
+    class GoodsSourceJoin {
+        private final Table goodsSourceTable;
+        private final JoinType joinType;
+        private final Field baseJoinField;
+        private final Condition otherCondition;
+        private final Integer bizType;
+
+        public GoodsSourceJoin(Table goodsSourceTable, JoinType joinType, Field baseJoinField, Condition otherCondition, Integer bizType) {
+            this.goodsSourceTable = goodsSourceTable;
+            this.joinType = joinType;
+            this.baseJoinField = baseJoinField;
+            this.otherCondition = otherCondition;
+            this.bizType = bizType;
+        }
+    }
+
 
 }

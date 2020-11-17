@@ -15,11 +15,11 @@
  */
 package io.scleropages.sentarum.promotion.goods.entity.mapper;
 
-import io.scleropages.sentarum.promotion.goods.entity.RemotingGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.goods.model.impl.RemotingGoodsSource;
+import io.scleropages.sentarum.promotion.goods.entity.DetailedGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface RemotingGoodsSourceEntityMapper<T extends RemotingGoodsSourceEntity, M extends RemotingGoodsSource> extends AbstractGoodsSourceEntityMapper<T, M> {
+public interface DetailedGoodsSourceEntityMapper<T extends DetailedGoodsSourceEntity, M extends AbstractDetailedGoodsSource> extends AbstractGoodsSourceEntityMapper<T, M> {
 }

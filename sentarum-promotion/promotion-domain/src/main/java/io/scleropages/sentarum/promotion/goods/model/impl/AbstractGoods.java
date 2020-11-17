@@ -16,11 +16,12 @@
 package io.scleropages.sentarum.promotion.goods.model.impl;
 
 import io.scleropages.sentarum.promotion.goods.model.Goods;
-import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -29,50 +30,40 @@ public abstract class AbstractGoods implements Goods {
 
 
     private Long id;
-//    private GoodsSource goodsSource;
     private Long goodsId;
     private String outerGoodsId;
     private String name;
     private List<GoodsSpecs> specs;
-    private Map<String, Object> additionalAttributes;
 
-
-
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
-//    public GoodsSource getGoodsSource() {
-//        return goodsSource;
-//    }
-
+    @NotNull(groups = Create.class)
     public Long getGoodsId() {
         return goodsId;
     }
 
+    @NotNull(groups = Create.class)
     public String getOuterGoodsId() {
         return outerGoodsId;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getName() {
         return name;
     }
 
+    @Null
     public List<GoodsSpecs> getSpecs() {
         return specs;
-    }
-
-    public Map<String, Object> getAdditionalAttributes() {
-        return additionalAttributes;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
-
-//    public void setGoodsSource(GoodsSource goodsSource) {
-//        this.goodsSource = goodsSource;
-//    }
 
     public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
@@ -90,19 +81,11 @@ public abstract class AbstractGoods implements Goods {
         this.specs = specs;
     }
 
-    public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
-        this.additionalAttributes = additionalAttributes;
-    }
-
     @Override
     public Long id() {
         return getId();
     }
 
-//    @Override
-//    public GoodsSource goodsSource() {
-//        return getGoodsSource();
-//    }
 
     @Override
     public Long goodsId() {
@@ -124,8 +107,10 @@ public abstract class AbstractGoods implements Goods {
         return getSpecs();
     }
 
-    @Override
-    public Map<String, Object> additionalAttributes() {
-        return getAdditionalAttributes();
+    public interface Create {
     }
+
+    public interface Update {
+    }
+
 }

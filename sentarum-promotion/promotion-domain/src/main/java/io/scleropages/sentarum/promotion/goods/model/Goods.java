@@ -15,8 +15,9 @@
  */
 package io.scleropages.sentarum.promotion.goods.model;
 
+import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * represent a conceptual goods.
@@ -31,13 +32,6 @@ public interface Goods {
      * @return
      */
     Long id();
-
-//    /**
-//     * associated good source of this goods.
-//     *
-//     * @return
-//     */
-//    GoodsSource goodsSource();
 
     /**
      * id of goods.
@@ -73,5 +67,7 @@ public interface Goods {
      *
      * @return
      */
-    Map<String, Object> additionalAttributes();
+    default AdditionalAttributes additionalAttributes() {
+        throw new IllegalStateException("not initialized.");
+    }
 }

@@ -15,44 +15,38 @@
  */
 package io.scleropages.sentarum.promotion.mgmt;
 
-import io.scleropages.sentarum.promotion.activity.entity.ActivityBrandGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.activity.entity.ActivityCategoryGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.activity.entity.ActivityClassifiedGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.activity.entity.ActivityDetailedGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityGoodsEntity;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityGoodsSpecsEntity;
-import io.scleropages.sentarum.promotion.activity.entity.ActivityNativeGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.activity.entity.ActivitySellerGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityBrandGoodsSourceEntityMapper;
-import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityCategoryGoodsSourceEntityMapper;
+import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityClassifiedGoodsSourceEntityMapper;
+import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityDetailedGoodsSourceEntityMapper;
 import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityEntityMapper;
 import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityGoodsEntityMapper;
 import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityGoodsSpecsEntityMapper;
-import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityNativeGoodsSourceEntityMapper;
-import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivitySellerGoodsSourceEntityMapper;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityBrandGoodsSource;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityCategoryGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsSpecsModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityNativeGoodsSource;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivitySellerGoodsSource;
-import io.scleropages.sentarum.promotion.activity.repo.ActivityBrandGoodsSourceRepository;
-import io.scleropages.sentarum.promotion.activity.repo.ActivityCategoryGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.activity.repo.ActivityClassifiedGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.activity.repo.ActivityDetailedGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsSpecsRepository;
-import io.scleropages.sentarum.promotion.activity.repo.ActivityNativeGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
-import io.scleropages.sentarum.promotion.activity.repo.ActivitySellerGoodsSourceRepository;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 促销活动管理器.
@@ -73,10 +67,8 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     /**
      * activity goods source repositories.
      */
-    private ActivityBrandGoodsSourceRepository activityBrandGoodsSourceRepository;
-    private ActivityCategoryGoodsSourceRepository activityCategoryGoodsSourceRepository;
-    private ActivitySellerGoodsSourceRepository activitySellerGoodsSourceRepository;
-    private ActivityNativeGoodsSourceRepository activityNativeGoodsSourceRepository;
+    private ActivityClassifiedGoodsSourceRepository classifiedGoodsSourceRepository;
+    private ActivityDetailedGoodsSourceRepository detailedGoodsSourceRepository;
 
     /**
      * activity goods repositories.
@@ -88,10 +80,8 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     /**
      * activity goods source mappers.
      */
-    private ActivityBrandGoodsSourceEntityMapper activityBrandGoodsSourceEntityMapper;
-    private ActivityCategoryGoodsSourceEntityMapper activityCategoryGoodsSourceEntityMapper;
-    private ActivitySellerGoodsSourceEntityMapper activitySellerGoodsSourceEntityMapper;
-    private ActivityNativeGoodsSourceEntityMapper activityNativeGoodsSourceEntityMapper;
+    private ActivityClassifiedGoodsSourceEntityMapper classifiedGoodsSourceEntityMapper;
+    private ActivityDetailedGoodsSourceEntityMapper detailedGoodsSourceEntityMapper;
 
     /**
      * activity goods mappers.
@@ -105,7 +95,9 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @param model
      * @return
      */
+    @Validated({ActivityModel.Create.class})
     @Transactional
+    @BizError("10")
     public Long createActivity(ActivityModel model) {
         ActivityEntity activityEntity = getModelMapper().mapForSave(model);
         activityRepository.save(activityEntity);
@@ -113,78 +105,64 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     }
 
     /**
-     * 创建品牌商品来源并与活动关联.
+     * 创建商品来源并与活动关联.
      *
-     * @param activityBrandGoodsSource
+     * @param goodsSource
      * @param activityId
      * @return
      */
+    @Validated({ActivityClassifiedGoodsSource.Create.class})
     @Transactional
-    public Long createActivityBrandGoodsSource(ActivityBrandGoodsSource activityBrandGoodsSource, Long activityId) {
-        ActivityBrandGoodsSourceEntity activityBrandGoodsSourceEntity = activityBrandGoodsSourceEntityMapper.mapForSave(activityBrandGoodsSource);
-        activityBrandGoodsSourceEntity.setActivity(getRequiredActivityEntity(activityId));
-        activityBrandGoodsSourceRepository.save(activityBrandGoodsSourceEntity);
-        return activityBrandGoodsSourceEntity.getId();
+    @BizError("15")
+    public Long createActivityClassifiedGoodsSource(ActivityClassifiedGoodsSource goodsSource, Long activityId) {
+        ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceEntityMapper.mapForSave(goodsSource);
+        entity.setBizId(getRequiredActivityEntity(activityId).getId());
+        classifiedGoodsSourceRepository.getByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
+            Assert.isTrue(Objects.equals(activityClassifiedGoodsSourceEntity.getGoodsSourceType(), goodsSource.getGoodsSourceType()), () -> "not allowed difference goods source type in same activity. expected: " + activityClassifiedGoodsSourceEntity.getGoodsSourceType() + " actual:" + goodsSource.getGoodsSourceType());
+        });
+        classifiedGoodsSourceRepository.save(entity);
+        return entity.getId();
     }
 
-    /**
-     * 创建类目商品来源并与活动相关联.
-     *
-     * @param activityCategoryGoodsSource
-     * @param activityId
-     * @return
-     */
-    @Transactional
-    public Long createActivityCategoryGoodsSource(ActivityCategoryGoodsSource activityCategoryGoodsSource, Long activityId) {
-        ActivityCategoryGoodsSourceEntity activityCategoryGoodsSourceEntity = activityCategoryGoodsSourceEntityMapper.mapForSave(activityCategoryGoodsSource);
-        activityCategoryGoodsSourceEntity.setActivity(getRequiredActivityEntity(activityId));
-        activityCategoryGoodsSourceRepository.save(activityCategoryGoodsSourceEntity);
-        return activityCategoryGoodsSourceEntity.getId();
-    }
 
     /**
-     * 创建商家（店铺）商品来源并与活动相关联.
+     * 创建商品来源并与活动关联.
      *
-     * @param activitySellerGoodsSource
+     * @param goodsSource
      * @param activityId
      * @return
      */
+    @Validated({ActivityDetailedGoodsSource.Create.class})
     @Transactional
-    public Long createActivitySellerGoodsSource(ActivitySellerGoodsSource activitySellerGoodsSource, Long activityId) {
-        ActivitySellerGoodsSourceEntity activitySellerGoodsSourceEntity = activitySellerGoodsSourceEntityMapper.mapForSave(activitySellerGoodsSource);
-        activitySellerGoodsSourceEntity.setActivity(getRequiredActivityEntity(activityId));
-        activitySellerGoodsSourceRepository.save(activitySellerGoodsSourceEntity);
-        return activitySellerGoodsSourceEntity.getId();
-    }
-
-    /**
-     * 创建本地商品（来源于商品中心本地落盘）来源并与活动相关联
-     *
-     * @param activityNativeGoodsSource
-     * @param activityId
-     * @return
-     */
-    @Transactional
-    public Long createActivityNativeGoodsSource(ActivityNativeGoodsSource activityNativeGoodsSource, Long activityId) {
-        ActivityNativeGoodsSourceEntity activityNativeGoodsSourceEntity = activityNativeGoodsSourceEntityMapper.mapForSave(activityNativeGoodsSource);
-        activityNativeGoodsSourceEntity.setActivity(getRequiredActivityEntity(activityId));
-        activityNativeGoodsSourceRepository.save(activityNativeGoodsSourceEntity);
-        return activityNativeGoodsSourceEntity.getId();
+    @BizError("20")
+    public Long createActivityDetailedGoodsSource(ActivityDetailedGoodsSource goodsSource, Long activityId) {
+        ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceEntityMapper.mapForSave(goodsSource);
+        classifiedGoodsSourceRepository.getByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
+            throw new IllegalArgumentException("given activity already configured as classified goods source: " + activityId);
+        });
+        detailedGoodsSourceRepository.getByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityDetailedGoodsSourceEntity -> {
+            throw new IllegalArgumentException("given activity already associated detailed goods source: " + activityId);
+        });
+        entity.setBizId(getRequiredActivityEntity(activityId).getId());
+        detailedGoodsSourceRepository.save(entity);
+        return entity.getId();
     }
 
     /**
      * 创建一个活动商品并关联到指定的本地商品来源.
      *
      * @param model
-     * @param nativeGoodsSourceId
+     * @param detailedGoodsSourceId
      * @return
      */
+    @Validated({ActivityGoodsModel.Create.class})
     @Transactional
-    public Long createActivityGoods(ActivityGoodsModel model, Long nativeGoodsSourceId) {
+    @BizError("25")
+    public Long createActivityGoods(ActivityGoodsModel model, Long detailedGoodsSourceId) {
         ActivityGoodsEntity activityGoodsEntity = activityGoodsEntityMapper.mapForSave(model);
-        ActivityNativeGoodsSourceEntity activityNativeGoodsSourceEntity = activityNativeGoodsSourceRepository.get(nativeGoodsSourceId).orElseThrow(() -> new IllegalArgumentException("no native goods source found: " + nativeGoodsSourceId));
-        activityGoodsEntity.setGoodsSource(activityNativeGoodsSourceEntity);
-        activityGoodsEntity.setActivity(activityNativeGoodsSourceEntity.getActivity());
+        ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceRepository.get(detailedGoodsSourceId).orElseThrow(() -> new IllegalArgumentException("no detailed goods source found: " + detailedGoodsSourceId));
+        activityGoodsEntity.setGoodsSource(entity);
+        activityGoodsEntity.setActivity(getRequiredActivityEntity(entity.getBizId()));
         activityGoodsRepository.save(activityGoodsEntity);
         return activityGoodsEntity.getId();
     }
@@ -193,13 +171,15 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * 创建一个活动商品规格并关联到指定的本地商品
      *
      * @param model
-     * @param nativeGoodsId
+     * @param goodsId
      * @return
      */
+    @Validated({ActivityGoodsSpecsModel.Create.class})
     @Transactional
-    public Long createActivityGoodsSpecs(ActivityGoodsSpecsModel model, Long nativeGoodsId) {
+    @BizError("30")
+    public Long createActivityGoodsSpecs(ActivityGoodsSpecsModel model, Long goodsId) {
         ActivityGoodsSpecsEntity activityGoodsSpecsEntity = activityGoodsSpecsEntityMapper.mapForSave(model);
-        ActivityGoodsEntity activityGoodsEntity = activityGoodsRepository.get(nativeGoodsId).orElseThrow(() -> new IllegalArgumentException("no activity goods found: " + nativeGoodsId));
+        ActivityGoodsEntity activityGoodsEntity = activityGoodsRepository.get(goodsId).orElseThrow(() -> new IllegalArgumentException("no activity goods found: " + goodsId));
         activityGoodsSpecsEntity.setGoods(activityGoodsEntity);
         activityGoodsSpecsEntity.setActivity(activityGoodsEntity.getActivity());
         activityGoodsSpecsRepository.save(activityGoodsSpecsEntity);
@@ -207,19 +187,11 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     }
 
 
-    /**
-     * 获取所有品牌活动
-     *
-     * @param brandId 品牌id
-     * @param status  活动状态
-     * @return
-     */
     @Transactional(readOnly = true)
-    public List<? extends Activity> findAllActivityByBrandId(Long brandId, Integer status) {
-        if (activityRepository.existsBrandGoodsSourceActivityWithStatus(status)) {
-            return (List<? extends Activity>) getModelMapper().mapForReads(activityRepository.findAllFromGoodsSourceByBrandId(brandId, status));
-        }
-        return Collections.emptyList();
+    @BizError("50")
+    public List<? extends Activity> findAllActivityByClassifiedGoodsSource(Integer status, Integer goodSourceType, Long goodSourceId, Long secondaryGoodSourceId) {
+        List<ActivityEntity> activityEntities = activityRepository.findAllByClassifiedGoodsSource(classifiedGoodsSourceRepository, status, goodSourceType, goodSourceId, secondaryGoodSourceId);
+        return (List<? extends Activity>) getModelMapper().mapForReads(activityEntities);
     }
 
 
@@ -227,29 +199,20 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
         return activityRepository.get(activityId).orElseThrow(() -> new IllegalArgumentException("no activity found: " + activityId));
     }
 
+
     @Autowired
     public void setActivityRepository(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 
     @Autowired
-    public void setActivityBrandGoodsSourceRepository(ActivityBrandGoodsSourceRepository activityBrandGoodsSourceRepository) {
-        this.activityBrandGoodsSourceRepository = activityBrandGoodsSourceRepository;
+    public void setClassifiedGoodsSourceRepository(ActivityClassifiedGoodsSourceRepository classifiedGoodsSourceRepository) {
+        this.classifiedGoodsSourceRepository = classifiedGoodsSourceRepository;
     }
 
     @Autowired
-    public void setActivityCategoryGoodsSourceRepository(ActivityCategoryGoodsSourceRepository activityCategoryGoodsSourceRepository) {
-        this.activityCategoryGoodsSourceRepository = activityCategoryGoodsSourceRepository;
-    }
-
-    @Autowired
-    public void setActivitySellerGoodsSourceRepository(ActivitySellerGoodsSourceRepository activitySellerGoodsSourceRepository) {
-        this.activitySellerGoodsSourceRepository = activitySellerGoodsSourceRepository;
-    }
-
-    @Autowired
-    public void setActivityNativeGoodsSourceRepository(ActivityNativeGoodsSourceRepository activityNativeGoodsSourceRepository) {
-        this.activityNativeGoodsSourceRepository = activityNativeGoodsSourceRepository;
+    public void setDetailedGoodsSourceRepository(ActivityDetailedGoodsSourceRepository detailedGoodsSourceRepository) {
+        this.detailedGoodsSourceRepository = detailedGoodsSourceRepository;
     }
 
     @Autowired
@@ -262,25 +225,14 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
         this.activityGoodsSpecsRepository = activityGoodsSpecsRepository;
     }
 
-
     @Autowired
-    public void setActivityBrandGoodsSourceEntityMapper(ActivityBrandGoodsSourceEntityMapper activityBrandGoodsSourceEntityMapper) {
-        this.activityBrandGoodsSourceEntityMapper = activityBrandGoodsSourceEntityMapper;
+    public void setClassifiedGoodsSourceEntityMapper(ActivityClassifiedGoodsSourceEntityMapper classifiedGoodsSourceEntityMapper) {
+        this.classifiedGoodsSourceEntityMapper = classifiedGoodsSourceEntityMapper;
     }
 
     @Autowired
-    public void setActivityCategoryGoodsSourceEntityMapper(ActivityCategoryGoodsSourceEntityMapper activityCategoryGoodsSourceEntityMapper) {
-        this.activityCategoryGoodsSourceEntityMapper = activityCategoryGoodsSourceEntityMapper;
-    }
-
-    @Autowired
-    public void setActivitySellerGoodsSourceEntityMapper(ActivitySellerGoodsSourceEntityMapper activitySellerGoodsSourceEntityMapper) {
-        this.activitySellerGoodsSourceEntityMapper = activitySellerGoodsSourceEntityMapper;
-    }
-
-    @Autowired
-    public void setActivityNativeGoodsSourceEntityMapper(ActivityNativeGoodsSourceEntityMapper activityNativeGoodsSourceEntityMapper) {
-        this.activityNativeGoodsSourceEntityMapper = activityNativeGoodsSourceEntityMapper;
+    public void setDetailedGoodsSourceEntityMapper(ActivityDetailedGoodsSourceEntityMapper detailedGoodsSourceEntityMapper) {
+        this.detailedGoodsSourceEntityMapper = detailedGoodsSourceEntityMapper;
     }
 
     @Autowired

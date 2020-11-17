@@ -15,8 +15,11 @@
  */
 package io.scleropages.sentarum.promotion.goods.model.impl;
 
-import io.scleropages.sentarum.promotion.goods.GoodsSourceReader;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -25,39 +28,47 @@ public abstract class AbstractGoodsSource implements GoodsSource {
 
     private Long id;
 
-    private GoodsSourceType goodsSourceType;
+    private Integer goodsSourceType;
 
     private String comment;
 
-//    private Integer bizType;
-//
-//    private Long bizId;
+    private Integer bizType;
 
+    private Long bizId;
+
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
-    public GoodsSourceType getGoodsSourceType() {
+    @NotNull(groups = Create.class)
+    public Integer getGoodsSourceType() {
         return goodsSourceType;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getComment() {
         return comment;
     }
 
-//    public Integer getBizType() {
-//        return bizType;
-//    }
-//
-//    public Long getBizId() {
-//        return bizId;
-//    }
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public Integer getBizType() {
+        return bizType;
+    }
+
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public Long getBizId() {
+        return bizId;
+    }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setGoodsSourceType(GoodsSourceType goodsSourceType) {
+    public void setGoodsSourceType(Integer goodsSourceType) {
         this.goodsSourceType = goodsSourceType;
     }
 
@@ -65,22 +76,21 @@ public abstract class AbstractGoodsSource implements GoodsSource {
         this.comment = comment;
     }
 
-//    public void setBizType(Integer bizType) {
-//        this.bizType = bizType;
-//    }
-//
-//    public void setBizId(Long bizId) {
-//        this.bizId = bizId;
-//    }
+    public void setBizType(Integer bizType) {
+        this.bizType = bizType;
+    }
+
+    public void setBizId(Long bizId) {
+        this.bizId = bizId;
+    }
 
     @Override
     public Long id() {
         return getId();
     }
 
-
     @Override
-    public GoodsSourceType goodsSourceType() {
+    public Integer goodsSourceType() {
         return getGoodsSourceType();
     }
 
@@ -89,25 +99,20 @@ public abstract class AbstractGoodsSource implements GoodsSource {
         return getComment();
     }
 
-//    @Override
-//    public Integer bizType() {
-//        return getBizType();
-//    }
-//
-//    @Override
-//    public Long bizId() {
-//        return getBizId();
-//    }
-
-
-    /**
-     * 子类必须覆写的方法，执行数据读取的逻辑.
-     *
-     * @return
-     */
     @Override
-    public GoodsSourceReader goodsSourceReader() {
-        throw new IllegalStateException("goods source not initialized.");
+    public Integer bizType() {
+        return getBizType();
     }
 
+    @Override
+    public Long bizId() {
+        return getBizId();
+    }
+
+
+    public interface Create {
+    }
+
+    public interface Update {
+    }
 }

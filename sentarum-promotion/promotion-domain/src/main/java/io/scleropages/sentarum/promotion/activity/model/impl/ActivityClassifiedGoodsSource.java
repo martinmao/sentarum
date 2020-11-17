@@ -15,20 +15,20 @@
  */
 package io.scleropages.sentarum.promotion.activity.model.impl;
 
-
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
-import io.scleropages.sentarum.promotion.goods.model.impl.NativeGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractClassifiedGoodsSource;
+
+import javax.validation.constraints.Null;
 
 /**
- * represent promotional goods source.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ActivityNativeGoodsSource extends NativeGoodsSource implements ActivityGoodsSource {
+public class ActivityClassifiedGoodsSource extends AbstractClassifiedGoodsSource implements ActivityGoodsSource {
 
     private Activity activity;
 
+    @Null
     public Activity getActivity() {
         return activity;
     }

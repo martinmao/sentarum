@@ -24,6 +24,21 @@ import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
  */
 public interface ActivityGoodsSource extends GoodsSource {
 
+
+    int BIZ_TYPE_OF_ACTIVITY = 1;
+
+
+    // goods source type definitions.
+    int CLASSIFIED_GOODS_SOURCE_TYPE_ALL = 0;//全部
+
+    int CLASSIFIED_GOODS_SOURCE_TYPE_BRAND = 1;//品牌分类
+
+    int CLASSIFIED_GOODS_SOURCE_TYPE_CATEGORY = 2;//品类分类
+
+    int CLASSIFIED_GOODS_SOURCE_TYPE_SELLER = 3;//商家分类
+
+    int DETAILED_GOODS_SOURCE_TYPE = 4;//商品明细
+
     /**
      * associated activity of this goods source.
      *

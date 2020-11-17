@@ -41,6 +41,7 @@ public class ActivityEntity extends IdEntity {
     private Integer status;
 
 
+
     @Column(name = "name_", nullable = false)
     public String getName() {
         return name;

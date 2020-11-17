@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion;
 
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
@@ -28,6 +29,7 @@ import org.scleropages.core.mapper.JsonMapper2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -36,7 +38,7 @@ import java.util.Date;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-//@Transactional
+@Transactional
 public class ActivityManagerTestcase {
 
     @Autowired
@@ -50,13 +52,61 @@ public class ActivityManagerTestcase {
 
         ActivityModel activity = new ActivityModel();
 
-        activity.setName("TEST");
-        activity.setTag("测试");
-        activity.setDescription("测试活动");
+        activity.setName("TEST1");
+        activity.setTag("品牌活动");
+        activity.setDescription("品牌活动测试1");
         activity.setStatus(1);
         activity.setStartTime(new Date());
         activity.setEndTime(DateUtils.addDays(new Date(), 20));
         Long activityId = activityManager.createActivity(activity);
+
+        ActivityClassifiedGoodsSource brandGoodsSource = new ActivityClassifiedGoodsSource();
+        brandGoodsSource.setGoodsSourceType(1);
+        brandGoodsSource.setGoodsSourceId(1l);
+        brandGoodsSource.setGoodsSourceName("Apple Inc");
+        brandGoodsSource.setQuery("brand=1");
+        brandGoodsSource.setBizId(activityId);
+        brandGoodsSource.setComment("活动关联品牌");
+
+        activityManager.createActivityClassifiedGoodsSource(brandGoodsSource, activityId);
+
+        brandGoodsSource.setGoodsSourceId(2l);
+        brandGoodsSource.setGoodsSourceName("Amazon");
+        brandGoodsSource.setQuery("brand=2");
+
+        activityManager.createActivityClassifiedGoodsSource(brandGoodsSource, activityId);
+
+        activity.setName("TEST2");
+        activity.setTag("品类活动");
+        activity.setDescription("品类活动测试1");
+        activity.setStatus(1);
+        activity.setStartTime(new Date());
+        activity.setEndTime(DateUtils.addDays(new Date(), 20));
+        activityId = activityManager.createActivity(activity);
+
+
+        ActivityClassifiedGoodsSource categoryGoodsSource = new ActivityClassifiedGoodsSource();
+
+        categoryGoodsSource.setGoodsSourceType(2);
+        categoryGoodsSource.setGoodsSourceId(1l);
+        categoryGoodsSource.setSecondaryGoodsSourceId(1l);
+        categoryGoodsSource.setGoodsSourceName("Computer/office-notebook");
+        categoryGoodsSource.setQuery("category=1");
+        categoryGoodsSource.setBizId(activityId);
+        categoryGoodsSource.setComment("活动关联品类");
+
+        activityManager.createActivityClassifiedGoodsSource(categoryGoodsSource, activityId);
+
+        categoryGoodsSource.setGoodsSourceType(2);
+        categoryGoodsSource.setGoodsSourceId(1l);
+        categoryGoodsSource.setSecondaryGoodsSourceId(2l);
+        categoryGoodsSource.setGoodsSourceName("Computer/office-microphone");
+        categoryGoodsSource.setQuery("category=2");
+        categoryGoodsSource.setBizId(activityId);
+        categoryGoodsSource.setComment("活动关联品类");
+
+        activityManager.createActivityClassifiedGoodsSource(categoryGoodsSource, activityId);
+
 
         ConjunctionConditionRule conjunctionConditionRule = new ConjunctionConditionRule();
         conjunctionConditionRule.setDescription("root");
@@ -87,12 +137,7 @@ public class ActivityManagerTestcase {
         activityRuleManager.createChannelConditionRule(channelConditionRule, activityId, sub2);
         channelConditionRule.setDescription("sub22");
         activityRuleManager.createChannelConditionRule(channelConditionRule, activityId, sub2);
+
+        System.out.println(JsonMapper2.toJson(activityRuleManager.getConditionRule(activityId, null)));
     }
-
-
-    @Test
-    public void _2_readActivityRules() {
-        System.out.println(JsonMapper2.toJson(activityRuleManager.getConditionRule(1l, null)));
-    }
-
 }

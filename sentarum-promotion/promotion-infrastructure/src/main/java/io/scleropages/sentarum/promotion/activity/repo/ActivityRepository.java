@@ -16,88 +16,60 @@
 package io.scleropages.sentarum.promotion.activity.repo;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import io.scleropages.sentarum.jooq.tables.PromActivity;
 import io.scleropages.sentarum.jooq.tables.records.PromActivityRecord;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
-import org.jooq.Field;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository;
+import org.jooq.Condition;
+import org.jooq.JoinType;
+import org.jooq.Record;
+import org.jooq.SelectQuery;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.util.Assert;
 
-import javax.persistence.metamodel.Attribute;
 import java.util.List;
+import java.util.Set;
 
-import static io.scleropages.sentarum.jooq.Tables.*;
+import static io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository.GoodsSourceConditionsAssembler.applyConditions;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface ActivityRepository extends GenericRepository<ActivityEntity, Long>, JooqRepository<PromActivity, PromActivityRecord, ActivityEntity> {
 
-    default List<ActivityEntity> findAllFromGoodsSourceByBrandId(Long brandId,Integer status) {
+
+    @Cacheable
+    default List<ActivityEntity> findAllByClassifiedGoodsSource(ActivityClassifiedGoodsSourceRepository repository, Integer activityStatus, Integer goodsSourceType, Long goodsSourceId, Long secondaryGoodsSourceId) {
+
+        Assert.notNull(repository, "repository must not be null.");
+        Assert.notNull(activityStatus, "activityStatus must not be null.");
+
         PromActivity promActivity = dslTable();
 
-        List<ActivityEntity> entities = Lists.newArrayList();
-        dslContext().select(promActivity.fields()).from(promActivity)
-                .join(PROM_ACT_BRAND_GOODS_SOURCE).on(promActivity.ID.eq(PROM_ACT_BRAND_GOODS_SOURCE.ACTIVITY_ID))
-                .where(PROM_ACT_BRAND_GOODS_SOURCE.BRAND_ID.eq(brandId))
-                .and(promActivity.STATUS.eq(status)).fetch().forEach(record -> {
-            ActivityEntity entity = new ActivityEntity();
-            dslRecordInto(record, entity, new ReferenceEntityAssembler() {
-                @Override
-                public void applyReferenceIdToTargetEntity(Object targetEntity, Attribute refAttribute, Field field, Object fieldValue) {
+        SelectQuery<Record> baseQuery = dslContext().select(promActivity.fields()).from(promActivity).where(promActivity.STATUS.eq(activityStatus)).getQuery();
 
-                }
-            });
-            entities.add(entity);
+        Condition condition = repository.conditionByGoodsSourceTypeAndGoodsSourceIdAndSecondaryGoodsSourceId(goodsSourceType, goodsSourceId, secondaryGoodsSourceId);
+
+        applyConditions(baseQuery, new AbstractGoodsSourceRepository.GoodsSourceJoin(
+                repository.dslTable(),
+                JoinType.JOIN,
+                promActivity.ID,
+                condition,
+                ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY
+        ));
+        Set<Long> uniqueIds = Sets.newHashSet();
+        List<ActivityEntity> entities = Lists.newArrayList();//客户端去重
+        baseQuery.fetch().forEach(record -> {
+            if (uniqueIds.add(record.getValue(promActivity.ID))) {
+                ActivityEntity entity = new ActivityEntity();
+                dslRecordInto(record, entity);
+                entities.add(entity);
+            }
         });
         return entities;
     }
-
-    /**
-     * return true if any activity has brand goods source with given status.
-     * 是否存在给定状态下的品牌活动.
-     *
-     * @return
-     */
-    @Cacheable
-    default Boolean existsBrandGoodsSourceActivityWithStatus(Integer status) {
-        PromActivity promActivity = dslTable();
-        return null != dslContext().select(promActivity.ID)
-                .from(promActivity)
-                .join(PROM_ACT_BRAND_GOODS_SOURCE).on(promActivity.ID.eq(PROM_ACT_BRAND_GOODS_SOURCE.ACTIVITY_ID))
-                .where(promActivity.STATUS.eq(status)).limit(1).fetchAny();
-    }
-
-    /**
-     * return true if any activity has category goods source with given status.
-     *
-     * @param status
-     * @return
-     */
-    @Cacheable
-    default Boolean existsCategoryGoodsSourceActivityWitStatus(Integer status) {
-        PromActivity promActivity = dslTable();
-        return null != dslContext().select(promActivity.ID)
-                .from(promActivity)
-                .join(PROM_ACT_CATEGORY_GOODS_SOURCE).on(promActivity.ID.eq(PROM_ACT_CATEGORY_GOODS_SOURCE.ACTIVITY_ID))
-                .where(promActivity.STATUS.eq(status)).limit(1).fetchAny();
-    }
-
-    /**
-     * return true if any activity has seller goods source with given status.
-     *
-     * @param status
-     * @return
-     */
-    @Cacheable
-    default Boolean existsSellerGoodsSourceActivityWitStatus(Integer status) {
-        PromActivity promActivity = dslTable();
-        return null != dslContext().select(promActivity.ID)
-                .from(promActivity)
-                .join(PROM_ACT_SELLER_GOODS_SOURCE).on(promActivity.ID.eq(PROM_ACT_SELLER_GOODS_SOURCE.ACTIVITY_ID))
-                .where(promActivity.STATUS.eq(status)).limit(1).fetchAny();
-    }
-
-
 }

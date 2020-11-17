@@ -29,15 +29,24 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class AbstractGoodsSourceEntity extends IdEntity {
 
+
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_GOODS_SOURCE_TYPE = "goods_source_type";
+    public static final String COLUMN_BIZ_TYPE = "biz_type";
+    public static final String COLUMN_BIZ_ID = "biz_id";
+    public static final String COLUMN_ATTRIBUTE_PAYLOAD = "attribute_payload";
+
     private Integer goodsSourceType;
 
     private String comment;
 
-//    private Integer bizType;
-//
-//    private Long bizId;
+    private Integer bizType;
 
-    @Column(name = "goods_source_type", nullable = false)
+    private Long bizId;
+
+    private String attributePayLoad;
+
+    @Column(name = COLUMN_GOODS_SOURCE_TYPE, nullable = false)
     public Integer getGoodsSourceType() {
         return goodsSourceType;
     }
@@ -47,29 +56,38 @@ public abstract class AbstractGoodsSourceEntity extends IdEntity {
         return comment;
     }
 
-//    @Column(name = "biz_type", nullable = false)
-//    public Integer getBizType() {
-//        return bizType;
-//    }
-//
-//    @Column(name = "biz_id", nullable = false)
-//    public Long getBizId() {
-//        return bizId;
-//    }
+    @Column(name = COLUMN_BIZ_TYPE, nullable = false)
+    public Integer getBizType() {
+        return bizType;
+    }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    @Column(name = COLUMN_BIZ_ID, nullable = false)
+    public Long getBizId() {
+        return bizId;
+    }
+
+    @Column(name = COLUMN_ATTRIBUTE_PAYLOAD)
+    public String getAttributePayLoad() {
+        return attributePayLoad;
     }
 
     public void setGoodsSourceType(Integer goodsSourceType) {
         this.goodsSourceType = goodsSourceType;
     }
 
-//    public void setBizType(Integer bizType) {
-//        this.bizType = bizType;
-//    }
-//
-//    public void setBizId(Long bizId) {
-//        this.bizId = bizId;
-//    }
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setBizType(Integer bizType) {
+        this.bizType = bizType;
+    }
+
+    public void setBizId(Long bizId) {
+        this.bizId = bizId;
+    }
+
+    public void setAttributePayLoad(String attributePayLoad) {
+        this.attributePayLoad = attributePayLoad;
+    }
 }

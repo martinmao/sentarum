@@ -18,10 +18,7 @@ package io.scleropages.sentarum.promotion.rule.model.promotion;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.core.model.primitive.Discount.DiscountType;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.goods.model.impl.BrandGoodsSource;
-import io.scleropages.sentarum.promotion.goods.model.impl.CategoryGoodsSource;
-import io.scleropages.sentarum.promotion.goods.model.impl.NativeGoodsSource;
-import io.scleropages.sentarum.promotion.goods.model.impl.SellerGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.AbstractEvaluatorRule;
 
 import java.util.List;
@@ -36,7 +33,7 @@ import java.util.List;
  *  多品牌、多品类、多店联合促销场景下均摊规则为：品牌A卖出商品原价总和/(品牌A卖出商品原价总和+品牌B卖出商品原价总和)*总折扣金额=品牌A均摊金额
  *  单品牌，单品类，单店促销场景下：
  *
- *  当商品来源为一个 {@link NativeGoodsSource} 时，则可将规则设置到各个商品以及各个规格.
+ *  当商品来源为一个 {@link AbstractDetailedGoodsSource} 时，则可将规则设置到各个商品以及各个规格.
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>

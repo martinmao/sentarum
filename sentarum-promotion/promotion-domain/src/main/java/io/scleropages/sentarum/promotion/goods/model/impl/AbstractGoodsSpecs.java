@@ -18,7 +18,9 @@ package io.scleropages.sentarum.promotion.goods.model.impl;
 import io.scleropages.sentarum.promotion.goods.model.Goods;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 
-import java.util.Map;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -30,30 +32,31 @@ public abstract class AbstractGoodsSpecs implements GoodsSpecs {
     private String outerSpecsId;
     private String name;
     private Goods goods;
-    private Map<String, Object> additionalAttributes;
 
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
+    @NotNull(groups = Create.class)
     public Long getSpecsId() {
         return specsId;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getOuterSpecsId() {
         return outerSpecsId;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getName() {
         return name;
     }
 
+    @Null
     public Goods getGoods() {
         return goods;
-    }
-
-    public Map<String, Object> getAdditionalAttributes() {
-        return additionalAttributes;
     }
 
     public void setId(Long id) {
@@ -74,10 +77,6 @@ public abstract class AbstractGoodsSpecs implements GoodsSpecs {
 
     public void setGoods(Goods goods) {
         this.goods = goods;
-    }
-
-    public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
-        this.additionalAttributes = additionalAttributes;
     }
 
     @Override
@@ -105,8 +104,9 @@ public abstract class AbstractGoodsSpecs implements GoodsSpecs {
         return getGoods();
     }
 
-    @Override
-    public Map<String, Object> additionalAttributes() {
-        return getAdditionalAttributes();
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

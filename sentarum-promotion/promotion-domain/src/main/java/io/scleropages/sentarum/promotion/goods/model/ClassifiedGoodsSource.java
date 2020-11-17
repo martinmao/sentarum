@@ -13,28 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.entity;
-
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+package io.scleropages.sentarum.promotion.goods.model;
 
 /**
- * referenced from: {@link io.scleropages.sentarum.promotion.goods.model.impl.RemotingGoodsSource}
+ * represent a classified goods source.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@MappedSuperclass
-public class RemotingGoodsSourceEntity extends AbstractGoodsSourceEntity {
+public interface ClassifiedGoodsSource extends GoodsSource {
+
+    /**
+     * goods source id.
+     *
+     * @return
+     */
+    Long goodsSourceId();
+
+    /**
+     * secondary goods source id.
+     *
+     * @return
+     */
+    Long secondaryGoodsSourceId();
+
+    /**
+     * 商品来源名称
+     *
+     * @return
+     */
+    String goodsSourceName();
 
 
-    private String query;
-
-    @Column(name = "query_", nullable = false)
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
+    /**
+     * query phrase from item center.
+     *
+     * @return
+     */
+    String query();
 }

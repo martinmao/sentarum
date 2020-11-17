@@ -13,13 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.goods.entity.mapper;
+package io.scleropages.sentarum.promotion.goods.model;
 
-import io.scleropages.sentarum.promotion.goods.entity.CategoryGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.goods.model.impl.CategoryGoodsSource;
+import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader;
 
 /**
+ * represent a detailed goods source.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CategoryGoodsSourceEntityMapper<T extends CategoryGoodsSourceEntity, M extends CategoryGoodsSource> extends RemotingGoodsSourceEntityMapper<T, M> {
+public interface DetailedGoodsSource extends GoodsSource {
+
+
+    /**
+     * reader of this detailed goods source.
+     *
+     * @return
+     */
+    default DetailedGoodsSourceReader detailedGoodsSourceReader() {
+        throw new IllegalStateException("not initialized.");
+    }
+
 }

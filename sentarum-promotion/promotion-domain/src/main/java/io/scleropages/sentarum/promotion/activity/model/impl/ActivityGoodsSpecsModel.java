@@ -19,6 +19,9 @@ import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSpecs;
 import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSpecs;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -28,14 +31,17 @@ public class ActivityGoodsSpecsModel extends AbstractGoodsSpecs implements Activ
     private Integer userNum;
     private Activity activity;
 
+    @NotNull(groups = AbstractGoodsSpecs.Create.class)
     public Integer getTotalNum() {
         return totalNum;
     }
 
+    @NotNull(groups = AbstractGoodsSpecs.Create.class)
     public Integer getUserNum() {
         return userNum;
     }
 
+    @Null
     public Activity getActivity() {
         return activity;
     }
