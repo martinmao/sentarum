@@ -60,7 +60,7 @@ public class ActivityGoodsSpecsEntity extends GoodsSpecsEntity {
 
     @Override
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ActivityGoodsEntity.class)
-    @JoinColumn(name = "goods_id", nullable = false)
+    @JoinColumn(name = COLUMN_GOODS_ID, nullable = false)
     public GoodsEntity getGoods() {
         return super.getGoods();
     }

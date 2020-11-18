@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.goods.model;
 
 /**
- * represent a classified goods source.
+ * represent a classified goods source. details see {@link GoodsSource}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

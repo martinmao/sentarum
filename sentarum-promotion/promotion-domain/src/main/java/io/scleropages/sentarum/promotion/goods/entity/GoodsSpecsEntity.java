@@ -34,6 +34,8 @@ import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_
 @MappedSuperclass
 public abstract class GoodsSpecsEntity extends IdEntity {
 
+    public static final String COLUMN_GOODS_ID = "goods_id";
+
     private Long specsId;
     private String outerSpecsId;
     private String name;
@@ -56,7 +58,7 @@ public abstract class GoodsSpecsEntity extends IdEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "goods_id", nullable = false)
+    @JoinColumn(name = COLUMN_GOODS_ID, nullable = false)
     @Transient
     public GoodsEntity getGoods() {
         return goods;

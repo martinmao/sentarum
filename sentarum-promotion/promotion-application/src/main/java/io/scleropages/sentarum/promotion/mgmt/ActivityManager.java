@@ -27,6 +27,7 @@ import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityGoodsEnt
 import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityGoodsSpecsEntityMapper;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSourceModel;
@@ -38,6 +39,8 @@ import io.scleropages.sentarum.promotion.activity.repo.ActivityDetailedGoodsSour
 import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsSpecsRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
+import io.scleropages.sentarum.promotion.goods.model.ClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
 import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
@@ -175,7 +178,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     }
 
     /**
-     * 创建一个活动商品规格并关联到指定的本地商品
+     * 创建一个活动商品规格并关联到活动商品.
      *
      * @param model
      * @param goodsId
@@ -194,6 +197,15 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     }
 
 
+    /**
+     * 根据 {@link ClassifiedGoodsSource} 中的条件检索活动.
+     *
+     * @param status                活动状态
+     * @param goodSourceType        商品来源类型
+     * @param goodSourceId          商品来源id，optional
+     * @param secondaryGoodSourceId 二级商品来源id,optional
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("50")
     public List<? extends Activity> findAllActivityByClassifiedGoodsSource(Integer status, Integer goodSourceType, Long goodSourceId, Long secondaryGoodSourceId) {
@@ -201,12 +213,46 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
         return (List<? extends Activity>) getModelMapper().mapForReads(activityEntities);
     }
 
+
+    /**
+     * 根据 {@link DetailedGoodsSource} 中的条件检索活动
+     *
+     * @param status       活动状态
+     * @param goodsId      商品id
+     * @param goodsSpecsId 商品规格id.
+     * @return
+     */
+    public List<? extends Activity> findAllActivityByDetailedGoodsSource(Integer status, Long goodsId, Long goodsSpecsId) {
+        List<ActivityEntity> activityEntities = activityRepository.findAllByDetailedGoodsSource(detailedGoodsSourceRepository, activityGoodsRepository, activityGoodsSpecsRepository, status, goodsId, goodsSpecsId);
+        return (List<? extends Activity>) getModelMapper().mapForReads(activityEntities);
+    }
+
+    /**
+     * 获取活动商品来源
+     *
+     * @param id
+     * @return
+     */
     @Transactional(readOnly = true)
     @BizError("51")
     public ActivityClassifiedGoodsSource getActivityClassifiedGoodsSource(Long id) {
         ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity classified goods source found: " + id));
         ActivityClassifiedGoodsSourceModel model = classifiedGoodsSourceEntityMapper.mapForRead(entity);
         return (ActivityClassifiedGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, classifiedGoodsSourceRepository, false);
+    }
+
+    /**
+     * 获取商品来源
+     *
+     * @param id
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("52")
+    public ActivityDetailedGoodsSource getActivityDetailedGoodsSource(Long id) {
+        ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity detailed goods source found: " + id));
+        ActivityDetailedGoodsSourceModel model = detailedGoodsSourceEntityMapper.mapForRead(entity);
+        return (ActivityDetailedGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, detailedGoodsSourceRepository, false);
     }
 
 

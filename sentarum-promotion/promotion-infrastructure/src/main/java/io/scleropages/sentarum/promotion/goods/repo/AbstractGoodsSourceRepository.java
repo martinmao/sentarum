@@ -25,6 +25,7 @@ import org.jooq.JoinType;
 import org.jooq.Record;
 import org.jooq.SelectQuery;
 import org.jooq.Table;
+import org.jooq.impl.DSL;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -75,7 +76,7 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
 
     class GoodsSourceConditionsAssembler {
 
-        public static void applyConditions(SelectQuery<Record> baseQuery, GoodsSourceJoin goodsSourceJoin) {
+        public static void applyGoodsSourceCondition(SelectQuery<Record> baseQuery, GoodsSourceJoin goodsSourceJoin) {
             baseQuery.addJoin(
                     goodsSourceJoin.goodsSourceTable,
                     goodsSourceJoin.joinType,
@@ -97,7 +98,7 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
             this.goodsSourceTable = goodsSourceTable;
             this.joinType = joinType;
             this.baseJoinField = baseJoinField;
-            this.otherCondition = otherCondition;
+            this.otherCondition = null != otherCondition ? otherCondition : DSL.noCondition();
             this.bizType = bizType;
         }
     }

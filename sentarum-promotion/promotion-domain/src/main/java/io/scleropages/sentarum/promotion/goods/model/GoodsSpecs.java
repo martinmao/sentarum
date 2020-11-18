@@ -15,14 +15,14 @@
  */
 package io.scleropages.sentarum.promotion.goods.model;
 
-import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
+import io.scleropages.sentarum.promotion.goods.AdditionalAttributesProvider;
 
 /**
  * represent a conceptual goods specs.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsSpecs {
+public interface GoodsSpecs extends AdditionalAttributesProvider {
 
     /**
      * unique id.
@@ -59,14 +59,4 @@ public interface GoodsSpecs {
      * @return
      */
     Goods goods();
-
-
-    /**
-     * additional attributes of this goods specs.
-     *
-     * @return
-     */
-    default AdditionalAttributes additionalAttributes() {
-        throw new IllegalStateException("not initialized.");
-    }
 }

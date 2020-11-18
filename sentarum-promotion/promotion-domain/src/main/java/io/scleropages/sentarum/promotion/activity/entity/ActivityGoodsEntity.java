@@ -43,7 +43,7 @@ public class ActivityGoodsEntity extends GoodsEntity {
 
     @Override
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ActivityDetailedGoodsSourceEntity.class)
-    @JoinColumn(name = "goods_source_id", nullable = false)
+    @JoinColumn(name = GoodsEntity.COLUMN_GOODS_SOURCE_ID, nullable = false)
     public AbstractGoodsSourceEntity getGoodsSource() {
         return super.getGoodsSource();
     }

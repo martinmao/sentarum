@@ -15,12 +15,18 @@
  */
 package io.scleropages.sentarum.promotion.goods.repo;
 
+import io.scleropages.sentarum.core.entity.mapper.MapAttributesMapper;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsSpecsEntity;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
+import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer.AdditionalAttributesSavingCallback;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.util.Assert;
+
+import java.util.Map;
 
 import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_ATTRS_PAYLOAD;
 import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_ID;
@@ -29,12 +35,28 @@ import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @NoRepositoryBean
-public interface GoodsSpecsRepository<E extends GoodsSpecsEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
+public interface GoodsSpecsRepository<E extends GoodsSpecsEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E>, AdditionalAttributesSavingCallback<GoodsSpecs, E>, MapAttributesMapper {
 
 
-    default void saveGoodsSpecsAttributes(Long id, String payload) {
+    default E createEntity() {
+        throw new IllegalStateException("not implement.");
+    }
+
+    @Override
+    default void save(GoodsSpecs provider, Map<String, Object> additionalAttributesMap) {
+        Assert.notNull(provider, "GoodsSpecs must not be null.");
+        Long id = provider.id();
+        Assert.notNull(id, "GoodsSpecs id must not be null.");
         T t = dslTable();
-        dslContext().update(t).set(t.field(COLUMN_ATTRS_PAYLOAD.toUpperCase()), payload).where(t.field(COLUMN_ID.toUpperCase()).eq(id)).execute();
+        dslContext().update(t)
+                .set(t.field(COLUMN_ATTRS_PAYLOAD.toUpperCase()), attributesToPayload(additionalAttributesMap))
+                .where(t.field(COLUMN_ID.toUpperCase()).eq(id)).execute();
+    }
+
+    @Override
+    default Map<String, Object> additionalAttributesMap(E entity) {
+        Assert.notNull(entity, "goods entity must not be null.");
+        return payloadToAttributes(entity.getAdditionalAttributes());
     }
 
 }
