@@ -16,8 +16,12 @@
 package io.scleropages.sentarum.promotion;
 
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSourceModel;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsModel;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsSpecsModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
@@ -33,6 +37,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
+
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -62,7 +67,7 @@ public class ActivityManagerTestcase {
         Long activityId = activityManager.createActivity(activity);
 
         ActivityClassifiedGoodsSourceModel brandGoodsSource = new ActivityClassifiedGoodsSourceModel();
-        brandGoodsSource.setGoodsSourceType(1);
+        brandGoodsSource.setGoodsSourceType(ActivityGoodsSource.CLASSIFIED_GOODS_SOURCE_TYPE_BRAND);
         brandGoodsSource.setGoodsSourceId(1l);
         brandGoodsSource.setGoodsSourceName("Apple Inc");
         brandGoodsSource.setQuery("brand=1");
@@ -98,7 +103,7 @@ public class ActivityManagerTestcase {
 
         ActivityClassifiedGoodsSourceModel categoryGoodsSource = new ActivityClassifiedGoodsSourceModel();
 
-        categoryGoodsSource.setGoodsSourceType(2);
+        categoryGoodsSource.setGoodsSourceType(ActivityGoodsSource.CLASSIFIED_GOODS_SOURCE_TYPE_CATEGORY);
         categoryGoodsSource.setGoodsSourceId(1l);
         categoryGoodsSource.setSecondaryGoodsSourceId(1l);
         categoryGoodsSource.setGoodsSourceName("Computer/office-notebook");
@@ -108,7 +113,6 @@ public class ActivityManagerTestcase {
 
         activityManager.createActivityClassifiedGoodsSource(categoryGoodsSource, activityId);
 
-        categoryGoodsSource.setGoodsSourceType(2);
         categoryGoodsSource.setGoodsSourceId(1l);
         categoryGoodsSource.setSecondaryGoodsSourceId(2l);
         categoryGoodsSource.setGoodsSourceName("Computer/office-microphone");
@@ -119,6 +123,52 @@ public class ActivityManagerTestcase {
         activityManager.createActivityClassifiedGoodsSource(categoryGoodsSource, activityId);
 
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 2, null, null)));
+
+
+        activity.setName("TEST3");
+        activity.setTag("商品活动");
+        activity.setDescription("商品活动测试1");
+        activity.setStatus(1);
+        activity.setStartTime(new Date());
+        activity.setEndTime(DateUtils.addDays(new Date(), 20));
+        activityId = activityManager.createActivity(activity);
+
+
+        ActivityDetailedGoodsSourceModel activityDetailedGoodsSourceModel = new ActivityDetailedGoodsSourceModel();
+
+
+        activityDetailedGoodsSourceModel.setBizId(activityId);
+        activityDetailedGoodsSourceModel.setComment("活动关联商品.");
+        activityDetailedGoodsSourceModel.setGoodsSourceType(ActivityGoodsSource.DETAILED_GOODS_SOURCE_TYPE);
+
+        Long activityDetailedGoodsSourceId = activityManager.createActivityDetailedGoodsSource(activityDetailedGoodsSourceModel, activityId);
+        ActivityDetailedGoodsSource activityDetailedGoodsSource = activityManager.getActivityDetailedGoodsSource(activityDetailedGoodsSourceId);
+
+        activityDetailedGoodsSource.additionalAttributes().setAttribute("k3", "v3", true);
+        activityDetailedGoodsSource.additionalAttributes().setAttribute("k4", "v4", true);
+        activityDetailedGoodsSource.additionalAttributes().save();
+
+        ActivityGoodsModel goodsModel = new ActivityGoodsModel();
+        goodsModel.setGoodsId(888l);
+        goodsModel.setName("iPhoneX");
+        goodsModel.setOuterGoodsId("882123122312");
+        goodsModel.setTotalNum(1000);
+        goodsModel.setUserNum(1);
+
+        Long activityGoodsId = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
+
+        ActivityGoodsSpecsModel goodsSpecsModel = new ActivityGoodsSpecsModel();
+        goodsSpecsModel.setSpecsId(19888l);
+        goodsSpecsModel.setName("iPhoneX- 256G");
+        goodsSpecsModel.setOuterSpecsId("89131212321121");
+        goodsSpecsModel.setTotalNum(200);
+        goodsSpecsModel.setUserNum(1);
+
+        activityManager.createActivityGoodsSpecs(goodsSpecsModel, activityGoodsId);
+
+        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19888l)));
+
+        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19889l)));
 
 
         ConjunctionConditionRule conjunctionConditionRule = new ConjunctionConditionRule();

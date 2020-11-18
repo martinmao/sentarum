@@ -31,6 +31,7 @@ import org.jooq.JoinType;
 import org.jooq.Record;
 import org.jooq.SelectQuery;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
+import org.scleropages.crud.dao.orm.jpa.JpaContexts;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.Assert;
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository.GoodsSourceConditionsAssembler.applyGoodsSourceCondition;
 import static io.scleropages.sentarum.promotion.goods.repo.GoodsRepository.GoodsConditionsAssembler.applyGoodsCondition;
@@ -69,7 +71,7 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
                 condition,
                 ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY
         ));
-        return fetchRecordsInternal(promActivity, baseQuery, record -> true);
+        return fetchRecordsInternal(promActivity, () -> baseQuery, record -> true);
     }
 
     @Cacheable(key = "#goodsId+'-'+#goodsSpecsId")
@@ -103,9 +105,9 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
                 JoinType.JOIN, promActGoods.GOODS_ID.eq(goodsId)
         ));
 
-        return fetchRecordsInternal(promActivity, baseQuery, record -> {
+        return fetchRecordsInternal(promActivity, () -> baseQuery, record -> {
             List<? extends GoodsSpecsEntity> goodsSpecs = goodsRepository.findAllGoodsSpecsByGoodsId(goodsSpecsRepository, record.getValue(promActGoods.ID));
-            if (CollectionUtils.isEmpty(goodsSpecs))//没有任何商品规格关联代表全部.
+            if (CollectionUtils.isEmpty(goodsSpecs))//没有任何商品规格关联即对所有规格匹配.
                 return true;
             for (GoodsSpecsEntity goodsSpec : goodsSpecs) {
                 if (Objects.equals(goodsSpec.getSpecsId(), goodsSpecsId)) {
@@ -116,13 +118,19 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
         });
     }
 
-    default List<ActivityEntity> fetchRecordsInternal(PromActivity promActivity, SelectQuery<Record> baseQuery, Function<Record, Boolean> recordCallback) {
+    default List<ActivityEntity> fetchRecordsInternal(PromActivity promActivity, Supplier<SelectQuery<Record>> baseQuerySupplier, Function<Record, Boolean> recordCallback) {
         Set<Long> uniqueIds = Sets.newHashSet();
         List<ActivityEntity> entities = Lists.newArrayList();//客户端去重
+        SelectQuery<Record> baseQuery = baseQuerySupplier.get();
         baseQuery.fetch().forEach(record -> {
             if (uniqueIds.add(record.getValue(promActivity.ID)) && recordCallback.apply(record)) {
                 ActivityEntity entity = new ActivityEntity();
-                dslRecordInto(record, entity);
+                dslRecordInto(record, entity, new ReferenceEntityAssembler() {
+                    @Override
+                    public Object apply(Object rootEntity, JpaContexts.ManagedTypeModel rootEntityModel, String table, Record record) {
+                        return null;
+                    }
+                });
                 entities.add(entity);
             }
         });

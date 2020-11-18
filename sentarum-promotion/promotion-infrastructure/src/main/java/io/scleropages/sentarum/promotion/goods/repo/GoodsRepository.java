@@ -54,12 +54,12 @@ public interface GoodsRepository<E extends GoodsEntity, T extends Table, R exten
     default List<? extends GoodsSpecsEntity> findAllGoodsSpecsByGoodsId(GoodsSpecsRepository goodsSpecsRepository, Long goodsPk) {
         Table goodsSpecsTable = goodsSpecsRepository.dslTable();
         T goodsTable = dslTable();
-        Field goodsTableId = goodsTable.field(COLUMN_ID);
+        Field goodsTableId = goodsTable.field(COLUMN_ID.toUpperCase());
         List<GoodsSpecsEntity> entities = Lists.newArrayList();
         dslContext().select(goodsSpecsTable.fields())
                 .from(goodsTable)
                 .join(goodsSpecsTable)
-                .on(goodsTableId.eq(goodsSpecsTable.field(COLUMN_GOODS_ID)))
+                .on(goodsTableId.eq(goodsSpecsTable.field(COLUMN_GOODS_ID.toUpperCase())))
                 .where(goodsTableId.eq(goodsPk))
                 .fetch().forEach(record -> {
             GoodsSpecsEntity entity = goodsSpecsRepository.createEntity();
