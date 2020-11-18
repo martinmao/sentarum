@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.activity.entity;
 
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.goods.entity.DetailedGoodsSourceEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
@@ -28,7 +28,7 @@ import javax.persistence.Table;
 import static io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource.DETAILED_GOODS_SOURCE_TYPE;
 
 /**
- * referenced from: {@link ActivityDetailedGoodsSource}
+ * referenced from: {@link ActivityDetailedGoodsSourceModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

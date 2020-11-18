@@ -26,9 +26,10 @@ import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityEntityMa
 import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityGoodsEntityMapper;
 import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityGoodsSpecsEntityMapper;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSource;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsSpecsModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
@@ -37,6 +38,7 @@ import io.scleropages.sentarum.promotion.activity.repo.ActivityDetailedGoodsSour
 import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityGoodsSpecsRepository;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
+import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +92,11 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     private ActivityGoodsSpecsEntityMapper activityGoodsSpecsEntityMapper;
 
     /**
+     *
+     */
+    private AdditionalAttributesInitializer additionalAttributesInitializer;
+
+    /**
      * 创建一个活动.
      *
      * @param model
@@ -111,10 +118,10 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @param activityId
      * @return
      */
-    @Validated({ActivityClassifiedGoodsSource.Create.class})
+    @Validated({ActivityClassifiedGoodsSourceModel.Create.class})
     @Transactional
     @BizError("15")
-    public Long createActivityClassifiedGoodsSource(ActivityClassifiedGoodsSource goodsSource, Long activityId) {
+    public Long createActivityClassifiedGoodsSource(ActivityClassifiedGoodsSourceModel goodsSource, Long activityId) {
         ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceEntityMapper.mapForSave(goodsSource);
         entity.setBizId(getRequiredActivityEntity(activityId).getId());
         classifiedGoodsSourceRepository.getTop1ByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
@@ -132,10 +139,10 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @param activityId
      * @return
      */
-    @Validated({ActivityDetailedGoodsSource.Create.class})
+    @Validated({ActivityDetailedGoodsSourceModel.Create.class})
     @Transactional
     @BizError("20")
-    public Long createActivityDetailedGoodsSource(ActivityDetailedGoodsSource goodsSource, Long activityId) {
+    public Long createActivityDetailedGoodsSource(ActivityDetailedGoodsSourceModel goodsSource, Long activityId) {
         ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceEntityMapper.mapForSave(goodsSource);
         classifiedGoodsSourceRepository.getTop1ByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
             throw new IllegalArgumentException("given activity already configured as classified goods source: " + activityId);
@@ -194,6 +201,14 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
         return (List<? extends Activity>) getModelMapper().mapForReads(activityEntities);
     }
 
+    @Transactional(readOnly = true)
+    @BizError("51")
+    public ActivityClassifiedGoodsSource getActivityClassifiedGoodsSource(Long id) {
+        ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity classified goods source found: " + id));
+        ActivityClassifiedGoodsSourceModel model = classifiedGoodsSourceEntityMapper.mapForRead(entity);
+        return (ActivityClassifiedGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, classifiedGoodsSourceRepository, false);
+    }
+
 
     private ActivityEntity getRequiredActivityEntity(Long activityId) {
         return activityRepository.get(activityId).orElseThrow(() -> new IllegalArgumentException("no activity found: " + activityId));
@@ -243,5 +258,10 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Autowired
     public void setActivityGoodsSpecsEntityMapper(ActivityGoodsSpecsEntityMapper activityGoodsSpecsEntityMapper) {
         this.activityGoodsSpecsEntityMapper = activityGoodsSpecsEntityMapper;
+    }
+
+    @Autowired
+    public void setAdditionalAttributesInitializer(AdditionalAttributesInitializer additionalAttributesInitializer) {
+        this.additionalAttributesInitializer = additionalAttributesInitializer;
     }
 }

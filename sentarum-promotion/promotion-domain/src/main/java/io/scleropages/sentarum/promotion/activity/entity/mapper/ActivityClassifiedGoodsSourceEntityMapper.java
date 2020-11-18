@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.activity.entity.mapper;
 
 import io.scleropages.sentarum.promotion.activity.entity.ActivityClassifiedGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.goods.entity.mapper.ClassifiedGoodsSourceEntityMapper;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
@@ -25,6 +25,6 @@ import org.scleropages.crud.ModelMapper;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface ActivityClassifiedGoodsSourceEntityMapper extends ClassifiedGoodsSourceEntityMapper<ActivityClassifiedGoodsSourceEntity, ActivityClassifiedGoodsSource> {
+public interface ActivityClassifiedGoodsSourceEntityMapper extends ClassifiedGoodsSourceEntityMapper<ActivityClassifiedGoodsSourceEntity, ActivityClassifiedGoodsSourceModel> {
 
 }

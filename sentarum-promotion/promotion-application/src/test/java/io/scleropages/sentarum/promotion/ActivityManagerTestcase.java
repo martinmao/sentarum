@@ -15,7 +15,9 @@
  */
 package io.scleropages.sentarum.promotion;
 
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
@@ -29,7 +31,6 @@ import org.scleropages.core.mapper.JsonMapper2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -38,7 +39,7 @@ import java.util.Date;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@Transactional
+
 public class ActivityManagerTestcase {
 
     @Autowired
@@ -60,7 +61,7 @@ public class ActivityManagerTestcase {
         activity.setEndTime(DateUtils.addDays(new Date(), 20));
         Long activityId = activityManager.createActivity(activity);
 
-        ActivityClassifiedGoodsSource brandGoodsSource = new ActivityClassifiedGoodsSource();
+        ActivityClassifiedGoodsSourceModel brandGoodsSource = new ActivityClassifiedGoodsSourceModel();
         brandGoodsSource.setGoodsSourceType(1);
         brandGoodsSource.setGoodsSourceId(1l);
         brandGoodsSource.setGoodsSourceName("Apple Inc");
@@ -68,7 +69,14 @@ public class ActivityManagerTestcase {
         brandGoodsSource.setBizId(activityId);
         brandGoodsSource.setComment("活动关联品牌");
 
-        activityManager.createActivityClassifiedGoodsSource(brandGoodsSource, activityId);
+        Long activityClassifiedGoodsSourceId = activityManager.createActivityClassifiedGoodsSource(brandGoodsSource, activityId);
+
+        ActivityClassifiedGoodsSource activityClassifiedGoodsSource = activityManager.getActivityClassifiedGoodsSource(activityClassifiedGoodsSourceId);
+
+        activityClassifiedGoodsSource.additionalAttributes().setAttribute("k1", "v1", true);
+        activityClassifiedGoodsSource.additionalAttributes().setAttribute("k2", "v2", true);
+        activityClassifiedGoodsSource.additionalAttributes().save();
+
 
         brandGoodsSource.setGoodsSourceId(2l);
         brandGoodsSource.setGoodsSourceName("Amazon");
@@ -88,7 +96,7 @@ public class ActivityManagerTestcase {
         activityId = activityManager.createActivity(activity);
 
 
-        ActivityClassifiedGoodsSource categoryGoodsSource = new ActivityClassifiedGoodsSource();
+        ActivityClassifiedGoodsSourceModel categoryGoodsSource = new ActivityClassifiedGoodsSourceModel();
 
         categoryGoodsSource.setGoodsSourceType(2);
         categoryGoodsSource.setGoodsSourceId(1l);

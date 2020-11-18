@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.activity.entity;
 
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.goods.entity.ClassifiedGoodsSourceEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
@@ -32,7 +32,7 @@ import static io.scleropages.sentarum.promotion.goods.entity.ClassifiedGoodsSour
 import static io.scleropages.sentarum.promotion.goods.entity.ClassifiedGoodsSourceEntity.COLUMN_SECONDARY_GOODS_SOURCE_ID;
 
 /**
- * referenced from {@link ActivityClassifiedGoodsSource}
+ * referenced from {@link ActivityClassifiedGoodsSourceModel}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

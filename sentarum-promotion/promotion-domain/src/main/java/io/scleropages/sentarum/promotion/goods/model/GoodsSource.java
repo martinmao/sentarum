@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.goods.model;
 
-import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
+import io.scleropages.sentarum.promotion.goods.AdditionalAttributesProvider;
 
 /**
  * represent a goods source.
@@ -29,7 +29,7 @@ import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsSource {
+public interface GoodsSource extends AdditionalAttributesProvider {
 
     /**
      * id of this goods source.
@@ -65,13 +65,4 @@ public interface GoodsSource {
      * @return
      */
     Long bizId();
-
-    /**
-     * additional attributes of this goods source.
-     *
-     * @return
-     */
-    default AdditionalAttributes additionalAttributes() {
-        throw new IllegalStateException("not initialized.");
-    }
 }

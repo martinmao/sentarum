@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.activity.entity.mapper;
-
-import io.scleropages.sentarum.promotion.activity.entity.ActivityDetailedGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSourceModel;
-import io.scleropages.sentarum.promotion.goods.entity.mapper.DetailedGoodsSourceEntityMapper;
-import org.mapstruct.Mapper;
-import org.scleropages.crud.ModelMapper;
+package io.scleropages.sentarum.promotion.goods;
 
 /**
+ * provider of additional attributes
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Mapper(config = ModelMapper.DefaultConfig.class)
-public interface ActivityDetailedGoodsSourceEntityMapper extends DetailedGoodsSourceEntityMapper<ActivityDetailedGoodsSourceEntity, ActivityDetailedGoodsSourceModel>, AbstractActivityEntityMapper {
+public interface AdditionalAttributesProvider {
+
+    /**
+     * return additional attributes
+     *
+     * @return
+     */
+    default AdditionalAttributes additionalAttributes() {
+        throw new IllegalStateException("not initialized.");
+    }
 }

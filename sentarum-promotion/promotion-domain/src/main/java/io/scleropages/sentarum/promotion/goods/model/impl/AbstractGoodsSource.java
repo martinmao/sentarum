@@ -64,6 +64,7 @@ public abstract class AbstractGoodsSource implements GoodsSource {
         return bizId;
     }
 
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -108,7 +109,6 @@ public abstract class AbstractGoodsSource implements GoodsSource {
     public Long bizId() {
         return getBizId();
     }
-
 
     public interface Create {
     }

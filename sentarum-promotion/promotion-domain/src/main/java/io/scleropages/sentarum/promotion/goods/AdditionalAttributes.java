@@ -68,15 +68,6 @@ public interface AdditionalAttributes {
     boolean hasAttribute(String name);
 
     /**
-     * append given attributes to current context.
-     *
-     * @param contextAttributes appending attributes.
-     * @param force             true if replaces when exists. or false do nothing.
-     */
-    void addAttributes(Map<String, Object> contextAttributes, boolean force);
-
-
-    /**
      * save changes of this attributes.
      */
     default void save() {
