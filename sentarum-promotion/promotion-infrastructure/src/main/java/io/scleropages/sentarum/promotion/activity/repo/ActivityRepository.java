@@ -101,7 +101,7 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
         applyGoodsCondition(baseQuery, new GoodsJoin(
                 promActGoods,
                 promActivity.ID,
-                promActGoods.GOODS_SOURCE_ID,
+                promActGoods.ACTIVITY_ID,
                 JoinType.JOIN, promActGoods.GOODS_ID.eq(goodsId)
         ));
 

@@ -270,7 +270,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         if (null == parentId) {
             Assert.isTrue(!baseConditionRuleRepository.existsByActivity_IdAndParentConditionIsNull(activityId), "conditional rules only allow one root in activity tree.");
         } else {
-            BaseConditionRuleEntity parentCondition = baseConditionRuleRepository.get(parentId).orElseThrow(() -> new IllegalArgumentException("no parent condition found: " + parentId));
+            BaseConditionRuleEntity parentCondition = baseConditionRuleRepository.getById(parentId).orElseThrow(() -> new IllegalArgumentException("no parent condition found: " + parentId));
             Assert.isTrue(Objects.equals(parentCondition.getRuleClass(), ConjunctionConditionRule.class.getName()), "parent condition must be conjunction condition: " + parentId);
             if (ConditionConjunction.getByOrdinal(parentCondition.getConditionConjunction()) == ConditionConjunction.NOT) {
                 Assert.isTrue(baseConditionRuleRepository.countByParentCondition(parentId) == 0, "conjunction condition just allowed one child condition with operator 'NOT'");

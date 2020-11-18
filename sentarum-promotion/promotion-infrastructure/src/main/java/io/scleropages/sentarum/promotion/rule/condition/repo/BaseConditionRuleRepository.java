@@ -25,6 +25,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.metamodel.Attribute;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -48,6 +49,15 @@ public interface BaseConditionRuleRepository extends AbstractConditionRuleReposi
             entities.add(baseConditionRuleEntity);
         });
         return entities;
+    }
+
+    default Optional<BaseConditionRuleEntity> getById(Long id) {
+        Optional<PromConditionBaseRecord> promConditionBaseRecord = dslContext().selectFrom(dslTable()).where(dslTable().ID.eq(id)).fetchOptional();
+        if (!promConditionBaseRecord.isPresent())
+            return Optional.empty();
+        BaseConditionRuleEntity entity = new BaseConditionRuleEntity();
+        dslRecordInto(promConditionBaseRecord.get(), entity);
+        return Optional.of(entity);
     }
 
     @Override
