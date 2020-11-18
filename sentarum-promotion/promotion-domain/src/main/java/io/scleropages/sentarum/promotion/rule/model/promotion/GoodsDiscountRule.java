@@ -18,22 +18,26 @@ package io.scleropages.sentarum.promotion.rule.model.promotion;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.core.model.primitive.Discount.DiscountType;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.AbstractEvaluatorRule;
 
 import java.util.List;
 
 /**
- * 商品折扣规则，可对一组商品来源（来自关联的 {@link Activity#goodsSource()}）设置折扣. 按级别划分为：
+ * 商品折扣规则，可对活动关联的一组商品来源{@link Activity#goodsSource()}设置折扣. 按级别划分为：
  * <pre>
- *  当商品来源为 {@link BrandGoodsSource} 时，可对所有关联品牌商品设置统一折扣({@link #discount}),不支持 {@link DiscountType#OVERRIDE_AMOUNT}.
- *  当商品来源为 {@link CategoryGoodsSource} 时，可对所有关联品类下商品设置统一折扣({@link #discount}),不支持 {@link DiscountType#OVERRIDE_AMOUNT}.
- *  当商品来源为 {@link SellerGoodsSource} 时， 可对所有关联商家下商品设置统一折扣({@link #discount}),不支持 {@link DiscountType#OVERRIDE_AMOUNT}.
+ *  {@link ActivityClassifiedGoodsSource}
+ *      当商品来源类型为 {@link ActivityGoodsSource#CLASSIFIED_GOODS_SOURCE_TYPE_BRAND}, 可对所有关联品牌商品设置统一折扣({@link #discount}),不支持 {@link DiscountType#OVERRIDE_AMOUNT}.
+ *      当商品来源类型为 {@link ActivityGoodsSource#CLASSIFIED_GOODS_SOURCE_TYPE_CATEGORY}, 可对所有关联品类下商品设置统一折扣({@link #discount}),不支持 {@link DiscountType#OVERRIDE_AMOUNT}.
+ *      当商品来源类型为 {@link ActivityGoodsSource#CLASSIFIED_GOODS_SOURCE_TYPE_SELLER}, 可对所有关联商家下商品设置统一折扣({@link #discount}),不支持 {@link DiscountType#OVERRIDE_AMOUNT}.
  *
- *  多品牌、多品类、多店联合促销场景下均摊规则为：品牌A卖出商品原价总和/(品牌A卖出商品原价总和+品牌B卖出商品原价总和)*总折扣金额=品牌A均摊金额
- *  单品牌，单品类，单店促销场景下：
+ *  多品牌、多品类、多店联合促销场景下均摊规则为：品牌A卖出商品原价总和/(品牌A卖出商品原价总和+品牌B卖出商品原价总和)*总折扣金额=品牌A均摊金额.
+ *  单品牌，单品类，单店促销场景下：抵扣金额直接从目标主体扣除.
  *
- *  当商品来源为一个 {@link AbstractDetailedGoodsSource} 时，则可将规则设置到各个商品以及各个规格.
+ *  {@link AbstractDetailedGoodsSource}
+ *      可将规则设置到各个商品或更进一步设置到各个规格.
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
