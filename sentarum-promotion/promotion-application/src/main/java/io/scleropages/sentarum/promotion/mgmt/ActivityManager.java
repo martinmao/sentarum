@@ -28,7 +28,9 @@ import io.scleropages.sentarum.promotion.activity.entity.mapper.ActivityGoodsSpe
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoods;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSpecs;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsModel;
@@ -255,6 +257,30 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
         ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity detailed goods source found: " + id));
         ActivityDetailedGoodsSourceModel model = detailedGoodsSourceEntityMapper.mapForRead(entity);
         return (ActivityDetailedGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, detailedGoodsSourceRepository, false);
+    }
+
+    /**
+     * 获取商品
+     *
+     * @param id
+     * @return
+     */
+    public ActivityGoods getActivityGoods(Long id) {
+        ActivityGoodsEntity entity = activityGoodsRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity goods found: " + id));
+        ActivityGoodsModel model = activityGoodsEntityMapper.mapForRead(entity);
+        return (ActivityGoods) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, activityGoodsRepository, false);
+    }
+
+    /**
+     * 获取商品规格.
+     *
+     * @param id
+     * @return
+     */
+    public ActivityGoodsSpecs getActivityGoodsSpecs(Long id) {
+        ActivityGoodsSpecsEntity entity = activityGoodsSpecsRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity goods specs found: " + id));
+        ActivityGoodsSpecsModel model = activityGoodsSpecsEntityMapper.mapForRead(entity);
+        return (ActivityGoodsSpecs) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, activityGoodsSpecsRepository, false);
     }
 
 

@@ -17,7 +17,9 @@ package io.scleropages.sentarum.promotion;
 
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoods;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSpecs;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsModel;
@@ -157,6 +159,12 @@ public class ActivityManagerTestcase {
 
         Long activityGoodsId = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
 
+        ActivityGoods activityGoods = activityManager.getActivityGoods(activityGoodsId);
+
+        activityGoods.additionalAttributes().setAttribute("k5", "v5", true);
+        activityGoods.additionalAttributes().setAttribute("k6", "v6", true);
+        activityGoods.additionalAttributes().save();
+
         ActivityGoodsSpecsModel goodsSpecsModel = new ActivityGoodsSpecsModel();
         goodsSpecsModel.setSpecsId(19888l);
         goodsSpecsModel.setName("iPhoneX- 256G");
@@ -164,7 +172,14 @@ public class ActivityManagerTestcase {
         goodsSpecsModel.setTotalNum(200);
         goodsSpecsModel.setUserNum(1);
 
-        activityManager.createActivityGoodsSpecs(goodsSpecsModel, activityGoodsId);
+        Long activityGoodsSpecsId = activityManager.createActivityGoodsSpecs(goodsSpecsModel, activityGoodsId);
+
+        ActivityGoodsSpecs activityGoodsSpecs = activityManager.getActivityGoodsSpecs(activityGoodsSpecsId);
+
+        activityGoodsSpecs.additionalAttributes().setAttribute("k7", "v7", true);
+        activityGoodsSpecs.additionalAttributes().setAttribute("k8", "v8", true);
+        activityGoodsSpecs.additionalAttributes().save();
+
 
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19888l)));
 
