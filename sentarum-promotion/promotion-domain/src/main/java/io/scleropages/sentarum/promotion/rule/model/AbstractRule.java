@@ -19,6 +19,10 @@ import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import org.scleropages.crud.FrameworkContext;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -32,14 +36,18 @@ public abstract class AbstractRule implements Rule {
 
     private String description;
 
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
     public Long getId() {
         return id;
     }
 
+    @Null
     public Activity getActivity() {
         return activity;
     }
 
+    @Null(groups = Update.class)
     public Integer getRuleInvocationImplementation() {
         if (null == ruleInvocationImplementation) {
             ruleInvocationImplementation = FrameworkContext.getBean(RuleContainer.class).ruleInvocationImplementation((Class<AbstractRule>) getClass());
@@ -47,6 +55,7 @@ public abstract class AbstractRule implements Rule {
         return ruleInvocationImplementation;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getDescription() {
         return description;
     }
@@ -85,6 +94,13 @@ public abstract class AbstractRule implements Rule {
     @Override
     public String description() {
         return getDescription();
+    }
+
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 
 }

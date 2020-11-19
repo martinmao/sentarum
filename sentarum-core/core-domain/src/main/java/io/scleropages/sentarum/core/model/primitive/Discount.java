@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * domain primitive of discount.
@@ -70,32 +71,43 @@ public class Discount {
         this(discountType, String.valueOf(discountValue), originalPrice);
     }
 
+
     public void assertDiscount() {
         if (validFlag) return;
         Assert.notNull(discountType, "discountType must not be null.");
         Assert.notNull(discountValue, "discountValue must not be null.");
-        Assert.notNull(originalPrice, "originalPrice must not be null.");
 
         switch (discountType) {
             case DECREASE_AMOUNT:
+                Assert.notNull(originalPrice, "originalPrice must not be null.");
                 Assert.isTrue(originalPrice.gt(new Amount(discountValue)), "discount value must less than original price with: " + discountType);
                 break;
             case OVERRIDE_AMOUNT:
+                Assert.notNull(originalPrice, "originalPrice must not be null.");
                 Assert.isTrue(originalPrice.gt(new Amount(discountValue)), "discount value must less than original price with: " + discountType);
                 break;
-            case DISCOUNT:
-                try {
-                    int intValue = discountValue.intValueExact();
-                    Assert.isTrue(intValue >= 1 || intValue <= 99, "discount value must range in 1-99(contains 1 and 99) with: " + discountType);
-                } catch (ArithmeticException e) {
-                    throw new IllegalArgumentException("discount value has a nonzero fractional part, or will not fit in an int with: " + discountType, e);
-                }
+        }
+        if (Objects.equals(discountType, DiscountType.DISCOUNT) || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE))
+            try {
+                int intValue = discountValue.intValueExact();
+                Assert.isTrue(intValue >= 1 || intValue <= 99, "discount value must ranging in 1-99(contains 1 and 99) with: " + discountType);
+            } catch (ArithmeticException e) {
+                throw new IllegalArgumentException("discount value has a nonzero fractional part, or will not fit in an int with: " + discountType, e);
+            }
+        if (Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE)
+                || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)) {
+            Assert.isNull(originalPrice, "originalPrice must be null.");
         }
         validFlag = true;
     }
 
     /**
-     * return final amount applying with this discount.
+     * return final amount applying with this discount. supported discount type:
+     * <pre>
+     * {@link DiscountType#DECREASE_AMOUNT}
+     * {@link DiscountType#OVERRIDE_AMOUNT}
+     * {@link DiscountType#DISCOUNT}
+     * </pre>
      *
      * @return
      */
@@ -109,7 +121,25 @@ public class Discount {
             case DISCOUNT:
                 return originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), false);
         }
-        return null;
+        throw new IllegalStateException("illegal operation.");
+    }
+
+    /**
+     * return final amount applying with this discount. supported discount type:
+     * <pre>
+     * {@link DiscountType#DECREASE_WITHOUT_ORIGINAL_PRICE}
+     * {@link DiscountType#DISCOUNT_WITHOUT_ORIGINAL_PRICE}
+     * </pre>
+     *
+     * @param originalPrice
+     * @return
+     */
+    public Amount finalAmount(Amount originalPrice) {
+        if (Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE) || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)) {
+            setOriginalPrice(originalPrice);
+            return finalAmount();
+        }
+        throw new IllegalStateException("illegal operation.");
     }
 
 
@@ -159,8 +189,17 @@ public class Discount {
         /**
          * 指定价格,直接覆盖原有价格，其值不能不能大于等于原价.
          */
-        OVERRIDE_AMOUNT(3, "指定价格", "直接覆盖原有价格，其值不能不能大于等于原价.");
+        OVERRIDE_AMOUNT(3, "指定价格", "直接覆盖原有价格，其值不能不能大于等于原价."),
 
+        /**
+         * 无原价减钱，对于多商品场景可以统一设置减钱金额.
+         */
+        DECREASE_WITHOUT_ORIGINAL_PRICE(4, "无原价减钱", "无原价减钱，对于多商品场景可以统一设置减钱金额."),
+
+        /**
+         * 无原价打折，对于多商品场景可以统一设置折扣.该值必须在1-99之间（包含1和99)
+         */
+        DISCOUNT_WITHOUT_ORIGINAL_PRICE(5, "无原价打折", "无原价打折，对于多商品场景可以统一设置折扣,该值必须在1-99之间（包含1和99)");
 
         private final int ordinal;
         /**

@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion;
 
+import com.google.common.collect.Lists;
+import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoods;
@@ -30,6 +32,8 @@ import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
+import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule.GoodsDiscount;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,6 +97,11 @@ public class ActivityManagerTestcase {
 
 
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 1, null, null)));
+
+
+        GoodsDiscountRule goodsDiscountRule = new GoodsDiscountRule(new Discount(Discount.DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE, 5, null), null);
+
+        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
         activity.setName("TEST2");
         activity.setTag("品类活动");
@@ -181,10 +190,13 @@ public class ActivityManagerTestcase {
         activityGoodsSpecs.additionalAttributes().save();
 
 
+        goodsDiscountRule = new GoodsDiscountRule(null, Lists.newArrayList());
+        goodsDiscountRule.getGoodsDiscounts().add(new GoodsDiscount(activityGoodsId, new Discount(Discount.DiscountType.DISCOUNT, 85, null), Lists.newArrayList()));
+        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19888l)));
 
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19889l)));
-
 
         ConjunctionConditionRule conjunctionConditionRule = new ConjunctionConditionRule();
         conjunctionConditionRule.setDescription("root");

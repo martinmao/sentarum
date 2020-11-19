@@ -35,14 +35,14 @@ public interface AdditionalAttributes {
      * @param value value of this attribute
      * @param force true if replaces when exists. or false do nothing.
      */
-    void setAttribute(String name, Object value, boolean force);
+    AdditionalAttributes setAttribute(String name, Object value, boolean force);
 
     /**
      * remove attribute from this attributes.
      *
      * @param name name of this attribute
      */
-    void removeAttribute(String name);
+    AdditionalAttributes removeAttribute(String name);
 
     /**
      * get attribute from this attributes.

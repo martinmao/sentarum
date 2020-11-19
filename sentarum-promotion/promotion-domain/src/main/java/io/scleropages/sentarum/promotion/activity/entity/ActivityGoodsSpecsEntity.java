@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.entity;
 
+import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsEntity;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsSpecsEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
@@ -63,6 +64,13 @@ public class ActivityGoodsSpecsEntity extends GoodsSpecsEntity {
     @JoinColumn(name = COLUMN_GOODS_ID, nullable = false)
     public GoodsEntity getGoods() {
         return super.getGoods();
+    }
+
+    @Override
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ActivityDetailedGoodsSourceEntity.class)
+    @JoinColumn(name = GoodsEntity.COLUMN_GOODS_SOURCE_ID, nullable = false)
+    public AbstractGoodsSourceEntity getGoodsSource() {
+        return super.getGoodsSource();
     }
 
     public void setTotalNum(Integer totalNum) {

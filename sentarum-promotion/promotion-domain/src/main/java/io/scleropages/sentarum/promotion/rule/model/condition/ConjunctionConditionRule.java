@@ -20,6 +20,7 @@ import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import org.springframework.util.Assert;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ public class ConjunctionConditionRule extends AbstractConditionRule {
      *
      * @return
      */
+    @NotNull(groups = Create.class)
     public ConditionConjunction getConditionConjunction() {
         return conditionConjunction;
     }

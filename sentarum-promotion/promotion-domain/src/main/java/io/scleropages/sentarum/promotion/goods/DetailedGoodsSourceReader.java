@@ -16,8 +16,7 @@
 package io.scleropages.sentarum.promotion.goods;
 
 import io.scleropages.sentarum.promotion.goods.model.Goods;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 
 /**
  * spi strategy interface for detailed goods reading.
@@ -27,18 +26,51 @@ import org.springframework.data.domain.Pageable;
 public interface DetailedGoodsSourceReader {
 
     /**
-     * read a page of goods.
+     * read all of goods.
      *
-     * @param pageable
      * @return
      */
-    Page<? extends Goods> pageOfGoods(Pageable pageable);
+    AllOfGoods allOfGoods();
+
 
     /**
-     * read a goods by id.
-     *
-     * @param id
-     * @return
+     * all of goods read results by {@link DetailedGoodsSourceReader}
      */
-    Goods goods(Long id);
+    interface AllOfGoods {
+        /**
+         * return a goods holder by id.
+         *
+         * @param id
+         * @return
+         */
+        GoodsHolder goods(Long id);
+    }
+
+    /**
+     * holder of goods.
+     */
+    interface GoodsHolder {
+
+        /**
+         * return goods of this holder.
+         *
+         * @return
+         */
+        Goods get();
+
+        /**
+         * return goods specs by id from this goods.
+         *
+         * @param id
+         * @return
+         */
+        GoodsSpecs goodsSpecs(Long id);
+
+        /**
+         * return true if goods specs is empty.
+         *
+         * @return
+         */
+        Boolean emptySpecs();
+    }
 }

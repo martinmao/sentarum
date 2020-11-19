@@ -18,6 +18,7 @@ package io.scleropages.sentarum.promotion.activity.model.impl;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
 
 import javax.validation.constraints.Null;
@@ -41,5 +42,10 @@ public class ActivityDetailedGoodsSourceModel extends AbstractDetailedGoodsSourc
     @Override
     public Activity activity() {
         return getActivity();
+    }
+
+    @Null(groups = Update.class)
+    public Integer getBizType() {
+        return ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY;
     }
 }

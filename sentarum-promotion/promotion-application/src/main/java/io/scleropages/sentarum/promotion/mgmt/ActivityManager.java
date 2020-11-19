@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.mgmt;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityClassifiedGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityDetailedGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
@@ -44,14 +45,19 @@ import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
 import io.scleropages.sentarum.promotion.goods.model.ClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
 import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer;
+import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceReaderInitializer;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,8 +69,10 @@ import java.util.Objects;
 @Service
 @Validated
 @BizError("10")
-public class ActivityManager implements GenericManager<ActivityModel, Long, ActivityEntityMapper> {
+public class ActivityManager implements GenericManager<ActivityModel, Long, ActivityEntityMapper>, InitializingBean {
 
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * activity base repositories.
@@ -97,9 +105,11 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     private ActivityGoodsSpecsEntityMapper activityGoodsSpecsEntityMapper;
 
     /**
-     *
+     * other components.
      */
     private AdditionalAttributesInitializer additionalAttributesInitializer;
+    private DetailedGoodsSourceReaderInitializer detailedGoodsSourceReaderInitializer;
+
 
     /**
      * 创建一个活动.
@@ -110,7 +120,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Validated({ActivityModel.Create.class})
     @Transactional
     @BizError("10")
-    public Long createActivity(ActivityModel model) {
+    public Long createActivity(@Valid ActivityModel model) {
         ActivityEntity activityEntity = getModelMapper().mapForSave(model);
         activityRepository.save(activityEntity);
         return activityEntity.getId();
@@ -126,11 +136,14 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Validated({ActivityClassifiedGoodsSourceModel.Create.class})
     @Transactional
     @BizError("15")
-    public Long createActivityClassifiedGoodsSource(ActivityClassifiedGoodsSourceModel goodsSource, Long activityId) {
+    public Long createActivityClassifiedGoodsSource(@Valid ActivityClassifiedGoodsSourceModel goodsSource, Long activityId) {
         ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceEntityMapper.mapForSave(goodsSource);
         entity.setBizId(getRequiredActivityEntity(activityId).getId());
         classifiedGoodsSourceRepository.getTop1ByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
             Assert.isTrue(Objects.equals(activityClassifiedGoodsSourceEntity.getGoodsSourceType(), goodsSource.getGoodsSourceType()), () -> "not allowed difference goods source type in same activity. expected: " + activityClassifiedGoodsSourceEntity.getGoodsSourceType() + " actual:" + goodsSource.getGoodsSourceType());
+        });
+        detailedGoodsSourceRepository.getTop1ByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityDetailedGoodsSourceEntity -> {
+            throw new IllegalArgumentException("given activity already associated detailed goods source: " + activityId);
         });
         classifiedGoodsSourceRepository.save(entity);
         return entity.getId();
@@ -147,7 +160,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Validated({ActivityDetailedGoodsSourceModel.Create.class})
     @Transactional
     @BizError("20")
-    public Long createActivityDetailedGoodsSource(ActivityDetailedGoodsSourceModel goodsSource, Long activityId) {
+    public Long createActivityDetailedGoodsSource(@Valid ActivityDetailedGoodsSourceModel goodsSource, Long activityId) {
         ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceEntityMapper.mapForSave(goodsSource);
         classifiedGoodsSourceRepository.getTop1ByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId).ifPresent(activityClassifiedGoodsSourceEntity -> {
             throw new IllegalArgumentException("given activity already configured as classified goods source: " + activityId);
@@ -170,7 +183,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Validated({ActivityGoodsModel.Create.class})
     @Transactional
     @BizError("25")
-    public Long createActivityGoods(ActivityGoodsModel model, Long detailedGoodsSourceId) {
+    public Long createActivityGoods(@Valid ActivityGoodsModel model, Long detailedGoodsSourceId) {
         ActivityGoodsEntity activityGoodsEntity = activityGoodsEntityMapper.mapForSave(model);
         ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceRepository.get(detailedGoodsSourceId).orElseThrow(() -> new IllegalArgumentException("no detailed goods source found: " + detailedGoodsSourceId));
         activityGoodsEntity.setGoodsSource(entity);
@@ -189,11 +202,12 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Validated({ActivityGoodsSpecsModel.Create.class})
     @Transactional
     @BizError("30")
-    public Long createActivityGoodsSpecs(ActivityGoodsSpecsModel model, Long goodsId) {
+    public Long createActivityGoodsSpecs(@Valid ActivityGoodsSpecsModel model, Long goodsId) {
         ActivityGoodsSpecsEntity activityGoodsSpecsEntity = activityGoodsSpecsEntityMapper.mapForSave(model);
-        ActivityGoodsEntity activityGoodsEntity = activityGoodsRepository.get(goodsId).orElseThrow(() -> new IllegalArgumentException("no activity goods found: " + goodsId));
+        ActivityGoodsEntity activityGoodsEntity = activityGoodsRepository.getById(goodsId).orElseThrow(() -> new IllegalArgumentException("no activity goods found: " + goodsId));
         activityGoodsSpecsEntity.setGoods(activityGoodsEntity);
         activityGoodsSpecsEntity.setActivity(activityGoodsEntity.getActivity());
+        activityGoodsSpecsEntity.setGoodsSource(activityGoodsEntity.getGoodsSource());
         activityGoodsSpecsRepository.save(activityGoodsSpecsEntity);
         return activityGoodsSpecsEntity.getId();
     }
@@ -265,6 +279,8 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @param id
      * @return
      */
+    @Transactional(readOnly = true)
+    @BizError("54")
     public ActivityGoods getActivityGoods(Long id) {
         ActivityGoodsEntity entity = activityGoodsRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity goods found: " + id));
         ActivityGoodsModel model = activityGoodsEntityMapper.mapForRead(entity);
@@ -277,10 +293,43 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @param id
      * @return
      */
+    @Transactional(readOnly = true)
+    @BizError("55")
     public ActivityGoodsSpecs getActivityGoodsSpecs(Long id) {
         ActivityGoodsSpecsEntity entity = activityGoodsSpecsRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity goods specs found: " + id));
         ActivityGoodsSpecsModel model = activityGoodsSpecsEntityMapper.mapForRead(entity);
         return (ActivityGoodsSpecs) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, activityGoodsSpecsRepository, false);
+    }
+
+
+    /**
+     * 获取活动商品来源.
+     *
+     * @param activityId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("56")
+    public List<ActivityGoodsSource> findAllActivityGoodsSource(Long activityId) {
+
+        List<ActivityGoodsSource> goodsSources = Lists.newArrayList();
+        List<ActivityClassifiedGoodsSourceEntity> classifiedGoodsSourceEntities = classifiedGoodsSourceRepository.findByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId);
+        for (ActivityClassifiedGoodsSourceEntity entity : classifiedGoodsSourceEntities) {
+            ActivityClassifiedGoodsSourceModel model = classifiedGoodsSourceEntityMapper.mapForRead(entity);
+            goodsSources.add((ActivityGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, classifiedGoodsSourceRepository, false));
+        }
+        if (goodsSources.isEmpty()) {
+            List<ActivityDetailedGoodsSourceEntity> detailedGoodsSourceEntities = detailedGoodsSourceRepository.findByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId);
+            if (!detailedGoodsSourceEntities.isEmpty()) {
+                if (detailedGoodsSourceEntities.size() > 1) {
+                    throw new IllegalStateException("internal error. more than one detailed goods source found with activity[" + activityId + "].");
+                }
+                ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceEntities.get(0);
+                ActivityDetailedGoodsSourceModel model = detailedGoodsSourceEntityMapper.mapForRead(entity);
+                goodsSources.add((ActivityGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, detailedGoodsSourceRepository, false, detailedGoodsSourceReaderInitializer));
+            }
+        }
+        return goodsSources;
     }
 
 
@@ -337,5 +386,16 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Autowired
     public void setAdditionalAttributesInitializer(AdditionalAttributesInitializer additionalAttributesInitializer) {
         this.additionalAttributesInitializer = additionalAttributesInitializer;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(activityGoodsRepository, "activityGoodsRepository must not be null.");
+        Assert.notNull(activityGoodsSpecsRepository, "activityGoodsSpecsRepository must not be null.");
+        Assert.notNull(activityGoodsEntityMapper, "activityGoodsEntityMapper must not be null.");
+        Assert.notNull(activityGoodsSpecsEntityMapper, "activityGoodsSpecsEntityMapper must not be null.");
+        Assert.notNull(additionalAttributesInitializer, "additionalAttributesInitializer must not be null.");
+
+        detailedGoodsSourceReaderInitializer = new DetailedGoodsSourceReaderInitializer(activityGoodsRepository, activityGoodsSpecsRepository, activityGoodsEntityMapper, activityGoodsSpecsEntityMapper, additionalAttributesInitializer);
     }
 }

@@ -106,7 +106,7 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
         ));
 
         return fetchRecordsInternal(promActivity, () -> baseQuery, record -> {
-            List<? extends GoodsSpecsEntity> goodsSpecs = goodsRepository.findAllGoodsSpecsByGoodsId(goodsSpecsRepository, record.getValue(promActGoods.ID));
+            List<? extends GoodsSpecsEntity> goodsSpecs = goodsRepository.findAllCacheablesGoodsSpecsByGoodsId(goodsSpecsRepository, record.getValue(promActGoods.ID));
             if (CollectionUtils.isEmpty(goodsSpecs))//没有任何商品规格关联即对所有规格匹配.
                 return true;
             for (GoodsSpecsEntity goodsSpec : goodsSpecs) {

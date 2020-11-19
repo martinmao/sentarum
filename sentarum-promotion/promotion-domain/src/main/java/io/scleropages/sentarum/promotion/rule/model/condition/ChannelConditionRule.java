@@ -17,6 +17,8 @@ package io.scleropages.sentarum.promotion.rule.model.condition;
 
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,15 +59,17 @@ public class ChannelConditionRule extends AbstractConditionRule {
      */
     private Long sellerId;
 
-
+    @NotNull(groups = Create.class)
     public Integer getChannelId() {
         return channelId;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getChannelName() {
         return channelName;
     }
 
+    @NotEmpty(groups = Create.class)
     public String getOuterId() {
         return outerId;
     }

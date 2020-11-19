@@ -24,4 +24,5 @@ import io.scleropages.sentarum.promotion.goods.repo.GoodsRepository;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface ActivityGoodsRepository extends GoodsRepository<ActivityGoodsEntity, PromActGoods, PromActGoodsRecord> {
+
 }

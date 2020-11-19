@@ -17,6 +17,7 @@ package io.scleropages.sentarum.promotion.goods.repo;
 
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributesProvider;
+import org.aopalliance.aop.Advice;
 
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public interface AdditionalAttributesInitializer {
      * @param forceProxy     true if use cglib
      * @return
      */
-    AdditionalAttributesProvider initializeAdditionalAttributes(AdditionalAttributesProvider provider, Object entity, AdditionalAttributesSavingCallback savingCallback, boolean forceProxy);
+    AdditionalAttributesProvider initializeAdditionalAttributes(AdditionalAttributesProvider provider, Object entity, AdditionalAttributesSavingCallback savingCallback, boolean forceProxy, Advice... beforeAdvices);
 
 
     /**

@@ -18,7 +18,9 @@ package io.scleropages.sentarum.promotion.goods.repo;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributesProvider;
+import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactory;
@@ -48,13 +50,20 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
     private TransactionTemplate transactionTemplate;
 
     @Override
-    public AdditionalAttributesProvider initializeAdditionalAttributes(AdditionalAttributesProvider provider, Object entity, AdditionalAttributesSavingCallback savingCallback, boolean forceProxy) {
+    public AdditionalAttributesProvider initializeAdditionalAttributes(AdditionalAttributesProvider provider, Object entity, AdditionalAttributesSavingCallback savingCallback, boolean forceProxy, Advice... beforeAdvices) {
         if (AopUtils.isAopProxy(provider))
             throw new IllegalStateException(provider + " already proxied.");
         ProxyFactory proxyFactory = new ProxyFactory(provider);
         proxyFactory.setProxyTargetClass(forceProxy);
         Map initialMap = savingCallback.additionalAttributesMap(entity);
         AdditionalAttributesImpl additionalAttributes = new AdditionalAttributesImpl(savingCallback, initialMap, provider);
+
+        if (ArrayUtils.isNotEmpty(beforeAdvices)) {
+            for (Advice beforeAdvice : beforeAdvices) {
+                proxyFactory.addAdvice(beforeAdvice);
+            }
+        }
+        
         proxyFactory.addAdvice((MethodInterceptor) invocation -> {
             if (Objects.equals(invocation.getMethod().getName(), "additionalAttributes")) {
                 return additionalAttributes;
@@ -91,19 +100,21 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
         }
 
         @Override
-        public void setAttribute(String name, Object value, boolean force) {
+        public AdditionalAttributes setAttribute(String name, Object value, boolean force) {
             Assert.hasText(name, "name must not be empty text.");
             Assert.notNull(value, "value must not be null.");
             if (force)
                 attributes.put(name, value);
             else
                 attributes.putIfAbsent(name, value);
+            return this;
         }
 
         @Override
-        public void removeAttribute(String name) {
+        public AdditionalAttributes removeAttribute(String name) {
             Assert.hasText(name, "name must not be empty text.");
             attributes.remove(name);
+            return this;
         }
 
         @Override

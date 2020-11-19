@@ -25,6 +25,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_ATTRS_PAYLOAD;
+import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_GOODS_SOURCE_ID;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSpecs}
@@ -40,6 +41,7 @@ public abstract class GoodsSpecsEntity extends IdEntity {
     private String outerSpecsId;
     private String name;
     private GoodsEntity goods;
+    private AbstractGoodsSourceEntity goodsSource;
     private String additionalAttributes;
 
     @Column(name = "specs_id", nullable = false)
@@ -64,6 +66,13 @@ public abstract class GoodsSpecsEntity extends IdEntity {
         return goods;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = COLUMN_GOODS_SOURCE_ID, nullable = false)
+    @Transient
+    public AbstractGoodsSourceEntity getGoodsSource() {
+        return goodsSource;
+    }
+
     @Column(name = COLUMN_ATTRS_PAYLOAD)
     public String getAdditionalAttributes() {
         return additionalAttributes;
@@ -83,6 +92,10 @@ public abstract class GoodsSpecsEntity extends IdEntity {
 
     public void setGoods(GoodsEntity goods) {
         this.goods = goods;
+    }
+
+    public void setGoodsSource(AbstractGoodsSourceEntity goodsSource) {
+        this.goodsSource = goodsSource;
     }
 
     public void setAdditionalAttributes(String additionalAttributes) {

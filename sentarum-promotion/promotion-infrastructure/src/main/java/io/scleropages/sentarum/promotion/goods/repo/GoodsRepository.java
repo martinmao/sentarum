@@ -31,12 +31,14 @@ import org.jooq.impl.DSL;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.Assert;
 
 import javax.persistence.metamodel.Attribute;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_ATTRS_PAYLOAD;
 import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_ID;
@@ -50,7 +52,13 @@ import static io.scleropages.sentarum.promotion.goods.entity.GoodsSpecsEntity.CO
 public interface GoodsRepository<E extends GoodsEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E>, AdditionalAttributesSavingCallback<Goods, E>, MapAttributesMapper {
 
 
-    @Cacheable(key = "#goodsPk")
+    List<E> findAllByGoodsSource_Id(Long goodsSourceId);
+
+    @Cacheable
+    @EntityGraph(attributePaths = {"goodsSource", "activity"})
+    Optional<E> getById(Long id);
+
+
     default List<? extends GoodsSpecsEntity> findAllGoodsSpecsByGoodsId(GoodsSpecsRepository goodsSpecsRepository, Long goodsPk) {
         Table goodsSpecsTable = goodsSpecsRepository.dslTable();
         T goodsTable = dslTable();
@@ -72,6 +80,12 @@ public interface GoodsRepository<E extends GoodsEntity, T extends Table, R exten
             entities.add(entity);
         });
         return entities;
+    }
+
+
+    @Cacheable(key = "#goodsPk")
+    default List<? extends GoodsSpecsEntity> findAllCacheablesGoodsSpecsByGoodsId(GoodsSpecsRepository goodsSpecsRepository, Long goodsPk) {
+        return findAllGoodsSpecsByGoodsId(goodsSpecsRepository, goodsPk);
     }
 
     @Override

@@ -39,7 +39,6 @@ public abstract class AbstractClassifiedGoodsSource extends AbstractGoodsSource 
         return goodsSourceId;
     }
 
-    @NotNull(groups = Create.class)
     @Null(groups = Update.class)
     public Long getSecondaryGoodsSourceId() {
         return secondaryGoodsSourceId;

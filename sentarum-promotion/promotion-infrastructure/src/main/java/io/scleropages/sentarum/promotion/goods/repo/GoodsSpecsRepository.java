@@ -38,6 +38,9 @@ import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_
 public interface GoodsSpecsRepository<E extends GoodsSpecsEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E>, AdditionalAttributesSavingCallback<GoodsSpecs, E>, MapAttributesMapper {
 
 
+
+
+
     default E createEntity() {
         throw new IllegalStateException("not implement.");
     }

@@ -36,13 +36,19 @@
         <heap>1000</heap>
     </cache>
 
-    <cache alias="io.scleropages.sentarum.promotion.goods.repo.GoodsRepository.findAllGoodsSpecsByGoodsId">
+    <cache alias="io.scleropages.sentarum.promotion.goods.repo.GoodsRepository.findAllCacheablesGoodsSpecsByGoodsId">
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
         <heap>1000</heap>
     </cache>
 
+    <cache alias="io.scleropages.sentarum.promotion.goods.repo.GoodsRepository.getById">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
 
     <cache-template name="heap-cache">
         <expiry>
