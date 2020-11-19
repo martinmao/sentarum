@@ -17,6 +17,7 @@ package io.scleropages.sentarum.promotion.rule;
 
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
+import io.scleropages.sentarum.promotion.rule.model.EvaluatorRule;
 
 import java.util.Map;
 
@@ -38,11 +39,27 @@ public interface RuleContainer {
 
 
     /**
-     * string array of action implementations.
+     * return promotion evaluator by evaluator rule.
+     *
+     * @param evaluatorRule
+     * @return
+     */
+    PromotionEvaluator getPromotionEvaluator(EvaluatorRule evaluatorRule);
+
+
+    /**
+     * descriptors of conditions.
      *
      * @return
      */
     Map<Integer, RuleInvocationDescriptor> conditionImplementations();
+
+    /**
+     * descriptor of evaluators.
+     *
+     * @return
+     */
+    Map<Integer, RuleInvocationDescriptor> evaluatorImplementations();
 
 
     /**

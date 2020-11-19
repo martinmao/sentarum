@@ -61,6 +61,7 @@ import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.exception.BizError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -203,8 +204,8 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
                 Assert.notNull(discount, "discount must not be null.");
                 discount.assertDiscount();
                 activityGoodsSource.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, discount, true).save();
-            }
-            throw new IllegalStateException("unsupported activity goods source: " + activityGoodsSource.getClass().getSimpleName());
+            } else
+                throw new IllegalStateException("unsupported activity goods source: " + AopUtils.getTargetClass(activityGoodsSource).getSimpleName());
         });
         GoodsDiscountRuleEntity goodsDiscountRuleEntity = goodsDiscountRuleEntityMapper.mapForSave(goodsDiscountRule);
         ActivityEntity requiredActivityEntity = getRequiredActivityEntity(activityId);
@@ -341,6 +342,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         baseConditionRuleEntity.setRulePayload(JsonMapper2.toJson(conditionRule));
     }
 
+    @Autowired
     public void setActivityManager(ActivityManager activityManager) {
         this.activityManager = activityManager;
     }

@@ -99,10 +99,6 @@ public class ActivityManagerTestcase {
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 1, null, null)));
 
 
-        GoodsDiscountRule goodsDiscountRule = new GoodsDiscountRule(new Discount(Discount.DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE, 5, null), null);
-
-        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
-
         activity.setName("TEST2");
         activity.setTag("品类活动");
         activity.setDescription("品类活动测试1");
@@ -135,6 +131,11 @@ public class ActivityManagerTestcase {
 
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 2, null, null)));
 
+        GoodsDiscountRule goodsDiscountRule = new GoodsDiscountRule(new Discount(Discount.DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE, 5, null), null);
+
+        goodsDiscountRule.setDescription("品类打折规则");
+
+        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
         activity.setName("TEST3");
         activity.setTag("商品活动");
@@ -191,6 +192,7 @@ public class ActivityManagerTestcase {
 
 
         goodsDiscountRule = new GoodsDiscountRule(null, Lists.newArrayList());
+        goodsDiscountRule.setDescription("商品打折规则");
         goodsDiscountRule.getGoodsDiscounts().add(new GoodsDiscount(activityGoodsId, new Discount(Discount.DiscountType.DISCOUNT, 85, null), Lists.newArrayList()));
         activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
 

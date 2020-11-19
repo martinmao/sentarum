@@ -22,6 +22,7 @@ import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.RuleInvocation;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
+import io.scleropages.sentarum.promotion.rule.model.EvaluatorRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -52,8 +53,18 @@ public class SpringRuleContainer implements RuleContainer, InitializingBean, App
     }
 
     @Override
+    public PromotionEvaluator getPromotionEvaluator(EvaluatorRule evaluatorRule){
+        return (PromotionEvaluator) ruleInvocations.get(evaluatorRule.ruleInvocationImplementation());
+    }
+
+    @Override
     public Map<Integer, RuleInvocationDescriptor> conditionImplementations() {
         return conditionDescriptors;
+    }
+
+    @Override
+    public Map<Integer, RuleInvocationDescriptor> evaluatorImplementations() {
+        return evaluatorDescriptors;
     }
 
     @Override
