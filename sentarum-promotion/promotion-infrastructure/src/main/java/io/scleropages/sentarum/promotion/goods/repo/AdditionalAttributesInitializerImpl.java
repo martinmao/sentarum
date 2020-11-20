@@ -56,23 +56,26 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
         ProxyFactory proxyFactory = new ProxyFactory(provider);
         proxyFactory.setProxyTargetClass(forceProxy);
         Map initialMap = savingCallback.additionalAttributesMap(entity);
+        if (logger.isDebugEnabled()) {
+            logger.debug("creating proxy for: {} with initial data {} ", provider.getClass().getSimpleName(), initialMap);
+        }
         AdditionalAttributesImpl additionalAttributes = new AdditionalAttributesImpl(savingCallback, initialMap, provider);
 
         if (ArrayUtils.isNotEmpty(beforeAdvices)) {
             for (Advice beforeAdvice : beforeAdvices) {
                 proxyFactory.addAdvice(beforeAdvice);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("adding advice: {} to: {}", beforeAdvice.getClass().getSimpleName(), provider.getClass().getSimpleName());
+                }
             }
         }
-        
+
         proxyFactory.addAdvice((MethodInterceptor) invocation -> {
             if (Objects.equals(invocation.getMethod().getName(), "additionalAttributes")) {
                 return additionalAttributes;
             }
             return invocation.proceed();
         });
-        if (logger.isDebugEnabled()) {
-            logger.debug("creating proxy for: {} with initial data {} ", provider.getClass().getSimpleName(), initialMap);
-        }
         return (AdditionalAttributesProvider) proxyFactory.getProxy();
     }
 

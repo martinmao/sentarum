@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion;
 
 import com.google.common.collect.Lists;
+import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
@@ -34,6 +35,7 @@ import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditi
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
 import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule.GoodsDiscount;
+import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule.GoodsSpecsDiscount;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -169,10 +171,24 @@ public class ActivityManagerTestcase {
 
         Long activityGoodsId = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
 
+        goodsModel.setGoodsId(889l);
+        goodsModel.setName("MacBook Pro");
+        goodsModel.setOuterGoodsId("882123122322");
+        goodsModel.setTotalNum(10000);
+        goodsModel.setUserNum(2);
+
+        Long activityGoodsId2 = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
+
         ActivityGoods activityGoods = activityManager.getActivityGoods(activityGoodsId);
 
         activityGoods.additionalAttributes().setAttribute("k5", "v5", true);
         activityGoods.additionalAttributes().setAttribute("k6", "v6", true);
+        activityGoods.additionalAttributes().save();
+
+        activityGoods = activityManager.getActivityGoods(activityGoodsId2);
+
+        activityGoods.additionalAttributes().setAttribute("k51", "v51", true);
+        activityGoods.additionalAttributes().setAttribute("k61", "v61", true);
         activityGoods.additionalAttributes().save();
 
         ActivityGoodsSpecsModel goodsSpecsModel = new ActivityGoodsSpecsModel();
@@ -192,8 +208,21 @@ public class ActivityManagerTestcase {
 
 
         goodsDiscountRule = new GoodsDiscountRule(null, Lists.newArrayList());
-        goodsDiscountRule.setDescription("商品打折规则");
-        goodsDiscountRule.getGoodsDiscounts().add(new GoodsDiscount(activityGoodsId, new Discount(Discount.DiscountType.DISCOUNT, 85, null), Lists.newArrayList()));
+        goodsDiscountRule.setDescription("iphone商品打折规则");
+
+        goodsDiscountRule.getGoodsDiscounts().add(
+                new GoodsDiscount(activityGoodsId, new Discount(Discount.DiscountType.DISCOUNT, 85, null), Lists.newArrayList(
+                        new GoodsSpecsDiscount(activityGoodsSpecsId,new Discount(Discount.DiscountType.OVERRIDE_AMOUNT, 8888, new Amount(9999))))));
+
+        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+
+
+        goodsDiscountRule = new GoodsDiscountRule(null, Lists.newArrayList());
+        goodsDiscountRule.setDescription("mac商品打折规则");
+
+        goodsDiscountRule.getGoodsDiscounts().add(
+                new GoodsDiscount(activityGoodsId2, new Discount(Discount.DiscountType.DISCOUNT, 95, null), Lists.newArrayList()));
+
         activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19888l)));
