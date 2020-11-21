@@ -66,7 +66,7 @@ public abstract class AbstractGoodsSourceEntity extends IdEntity {
         return bizId;
     }
 
-    @Column(name = COLUMN_ATTRIBUTE_PAYLOAD)
+    @Column(name = COLUMN_ATTRIBUTE_PAYLOAD, length = 2048)
     public String getAttributePayLoad() {
         return attributePayLoad;
     }

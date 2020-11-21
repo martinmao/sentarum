@@ -73,7 +73,7 @@ public abstract class GoodsSpecsEntity extends IdEntity {
         return goodsSource;
     }
 
-    @Column(name = COLUMN_ATTRS_PAYLOAD)
+    @Column(name = COLUMN_ATTRS_PAYLOAD, length = 2048)
     public String getAdditionalAttributes() {
         return additionalAttributes;
     }
