@@ -17,16 +17,12 @@ package io.scleropages.sentarum.promotion.mgmt;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
-import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.AllOfGoods;
-import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.GoodsHolder;
-import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.SellerUserLevelConditionRuleRepository;
@@ -53,8 +49,6 @@ import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelCon
 import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserTagConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
-import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule.GoodsDiscount;
-import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule.GoodsSpecsDiscount;
 import io.scleropages.sentarum.promotion.rule.promotion.GoodsDiscountRuleRepository;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 import org.scleropages.core.mapper.JsonMapper2;
@@ -68,7 +62,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -128,6 +121,15 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
      */
     private GoodsDiscountRuleEntityMapper goodsDiscountRuleEntityMapper;
 
+
+    /**
+     * 创建条件规则
+     *
+     * @param conditionRule
+     * @param activityId
+     * @param parentConditionId
+     * @return
+     */
     @Validated(ConjunctionConditionRule.Create.class)
     @Transactional
     @BizError("10")
@@ -136,6 +138,14 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return createConditionRuleInternal(conditionRule, entity, activityId, parentConditionId, baseConditionRuleRepository);
     }
 
+    /**
+     * 创建渠道条件规则
+     *
+     * @param conditionRule
+     * @param activityId
+     * @param parentConditionId
+     * @return
+     */
     @Validated(ChannelConditionRule.Create.class)
     @Transactional
     @BizError("11")
@@ -144,6 +154,14 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return createConditionRuleInternal(conditionRule, entity, activityId, parentConditionId, channelConditionRuleRepository);
     }
 
+    /**
+     * 创建用户标签规则
+     *
+     * @param conditionRule
+     * @param activityId
+     * @param parentConditionId
+     * @return
+     */
     @Validated(UserTagConditionRule.Create.class)
     @Transactional
     @BizError("12")
@@ -152,6 +170,14 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return createConditionRuleInternal(conditionRule, entity, activityId, parentConditionId, userTagConditionRuleRepository);
     }
 
+    /**
+     * 创建用户等级规则
+     *
+     * @param conditionRule
+     * @param activityId
+     * @param parentConditionId
+     * @return
+     */
     @Validated(UserLevelConditionRule.Create.class)
     @Transactional
     @BizError("13")
@@ -160,6 +186,14 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return createConditionRuleInternal(conditionRule, entity, activityId, parentConditionId, userLevelConditionRuleRepository);
     }
 
+    /**
+     * 创建商家用户等级规则
+     *
+     * @param conditionRule
+     * @param activityId
+     * @param parentConditionId
+     * @return
+     */
     @Validated(SellerUserLevelConditionRule.Create.class)
     @Transactional
     @BizError("14")
@@ -168,6 +202,13 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return createConditionRuleInternal(conditionRule, entity, activityId, parentConditionId, sellerUserLevelConditionRuleRepository);
     }
 
+    /**
+     * 创建商品折扣规则.
+     *
+     * @param goodsDiscountRule
+     * @param activityId
+     * @return
+     */
     @Validated(GoodsDiscountRule.Create.class)
     @Transactional
     @BizError("15")
@@ -176,34 +217,9 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         Assert.notEmpty(activityGoodsSources, "no activity goods source found.");
         activityGoodsSources.forEach(activityGoodsSource -> {
             if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {
-                ActivityDetailedGoodsSource activityDetailedGoodsSource = (ActivityDetailedGoodsSource) activityGoodsSource;
-                List<GoodsDiscount> goodsDiscounts = goodsDiscountRule.getGoodsDiscounts();
-                Assert.notEmpty(goodsDiscounts, "goods discounts must not empty while current activity associated a detailed goods source.");
-                AllOfGoods allOfGoods = activityDetailedGoodsSource.detailedGoodsSourceReader().allOfGoods();
-                goodsDiscounts.forEach(goodsDiscount -> {
-                    Discount discount = goodsDiscount.getDiscount();
-                    discount.assertDiscount();
-                    GoodsHolder goodsHolder = allOfGoods.goods(goodsDiscount.getNativeGoodsId());
-                    Assert.notNull(goodsHolder, () -> "no goods configured by id: " + goodsDiscount.getNativeGoodsId());
-                    if (goodsHolder.emptySpecs()) {
-                        Assert.isTrue(CollectionUtils.isEmpty(goodsDiscount.getGoodsSpecsDiscounts()), () -> "given goods no specs configured. but contains specs discounts: " + goodsDiscount.getNativeGoodsId());
-                        goodsHolder.get().additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, goodsDiscount.getDiscount(), true).save();
-                    } else {
-                        List<GoodsSpecsDiscount> goodsSpecsDiscounts = goodsDiscount.getGoodsSpecsDiscounts();
-                        Assert.isTrue(!CollectionUtils.isEmpty(goodsSpecsDiscounts), () -> "given goods has specs configured. but no specs discounts: " + goodsDiscount.getNativeGoodsId());
-                        goodsSpecsDiscounts.forEach(goodsSpecsDiscount -> {
-                            GoodsSpecs goodsSpecs = goodsHolder.goodsSpecs(goodsSpecsDiscount.getNativeGoodsSpecsId());
-                            Assert.notNull(goodsSpecs, () -> "no goods specs configured by id: " + goodsSpecsDiscount.getNativeGoodsSpecsId());
-                            goodsSpecs.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, goodsSpecsDiscount.getDiscount(), true).save();
-                        });
-                    }
-                });
+                goodsDiscountRule.applyActivityDetailedGoodsSourceConfigure((ActivityDetailedGoodsSource) activityGoodsSource);
             } else if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
-                Assert.isTrue(CollectionUtils.isEmpty(goodsDiscountRule.getGoodsDiscounts()), "goodsDiscounts must empty while activity associates classified goods source");
-                Discount discount = goodsDiscountRule.getDiscount();
-                Assert.notNull(discount, "discount must not be null.");
-                discount.assertDiscount();
-                activityGoodsSource.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, discount, true).save();
+                goodsDiscountRule.applyActivityClassifiedGoodsSourceConfigure((ActivityClassifiedGoodsSource) activityGoodsSource);
             } else
                 throw new IllegalStateException("unsupported activity goods source: " + AopUtils.getTargetClass(activityGoodsSource).getSimpleName());
         });

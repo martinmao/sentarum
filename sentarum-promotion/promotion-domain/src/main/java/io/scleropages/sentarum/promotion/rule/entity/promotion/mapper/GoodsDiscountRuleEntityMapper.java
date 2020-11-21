@@ -15,9 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.rule.entity.promotion.mapper;
 
-import io.scleropages.sentarum.core.entity.embeddable.EmbeddableDiscount;
-import io.scleropages.sentarum.core.entity.embeddable.EmbeddableMappers;
-import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.promotion.rule.entity.mapper.AbstractRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.promotion.GoodsDiscountRuleEntity;
 import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
@@ -30,11 +27,4 @@ import org.scleropages.crud.ModelMapper;
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface GoodsDiscountRuleEntityMapper extends AbstractRuleEntityMapper<GoodsDiscountRuleEntity, GoodsDiscountRule> {
 
-    default EmbeddableDiscount toEmbeddableDiscount(Discount discount) {
-        return EmbeddableMappers.toEmbeddable(discount);
-    }
-
-    default Discount toDiscount(EmbeddableDiscount discount) {
-        return EmbeddableMappers.toPrimitive(discount);
-    }
 }

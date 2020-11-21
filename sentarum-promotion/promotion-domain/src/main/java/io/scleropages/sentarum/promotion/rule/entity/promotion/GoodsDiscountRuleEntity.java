@@ -15,12 +15,10 @@
  */
 package io.scleropages.sentarum.promotion.rule.entity.promotion;
 
-import io.scleropages.sentarum.core.entity.embeddable.EmbeddableDiscount;
 import io.scleropages.sentarum.promotion.rule.entity.AbstractRuleEntity;
 import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -34,15 +32,4 @@ import javax.persistence.Table;
 @Table(name = "prom_eval_goods_discount")
 @SequenceGenerator(name = "prom_eval_goods_discount_id", sequenceName = "seq_prom_eval_goods_discount", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class GoodsDiscountRuleEntity extends AbstractRuleEntity {
-
-    private EmbeddableDiscount discount;
-
-    @Embedded
-    public EmbeddableDiscount getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(EmbeddableDiscount discount) {
-        this.discount = discount;
-    }
 }

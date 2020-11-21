@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * advice of {@link DetailedGoodsSourceReader}.
+ * advice of {@link DetailedGoodsSourceReader} and proxied to {@link io.scleropages.sentarum.promotion.goods.AdditionalAttributesProvider}.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -74,7 +74,7 @@ public class DetailedGoodsSourceReaderInitializer implements MethodInterceptor {
                         Goods goodsModel = (Goods) goodsEntityMapper.mapForRead(goodsEntity);
                         final Long goodsId = goodsModel.id();
                         goodsModel = (Goods) additionalAttributesInitializer.initializeAdditionalAttributes(goodsModel, goodsEntity, goodsRepository, false, (MethodInterceptor) methodInvocation -> {
-                            if (Objects.equals(methodInvocation.getMethod().getName(), "getSpecs")||Objects.equals(methodInvocation.getMethod().getName(), "specs")) {
+                            if (Objects.equals(methodInvocation.getMethod().getName(), "getSpecs") || Objects.equals(methodInvocation.getMethod().getName(), "specs")) {
                                 List<GoodsSpecs> goodsSpecs = Lists.newArrayList();
                                 List<? extends GoodsSpecsEntity> goodsSpecsEntities = goodsRepository.findAllGoodsSpecsByGoodsId(goodsSpecsRepository, goodsId);
                                 goodsSpecsEntities.forEach(goodsSpecsEntity -> {
@@ -121,7 +121,7 @@ public class DetailedGoodsSourceReaderInitializer implements MethodInterceptor {
         }
 
         @Override
-        public Boolean emptySpecs(){
+        public Boolean emptySpecs() {
             return CollectionUtils.isEmpty(goods.specs());
         }
     }
