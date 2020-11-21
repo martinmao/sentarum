@@ -226,12 +226,10 @@ public class ActivityManagerTestcase {
         goodsDiscountRule.getGoodsDiscounts().add(
                 new GoodsDiscount(activityGoodsId, new Discount(Discount.DiscountType.DISCOUNT, 85, null), Lists.newArrayList(
                         new GoodsSpecsDiscount(activityGoodsSpecsId, new Discount(Discount.DiscountType.OVERRIDE_AMOUNT, 8888, new Amount(9999))))));
-        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
 
         goodsDiscountRule.getGoodsDiscounts().add(
                 new GoodsDiscount(activityGoodsId2, new Discount(Discount.DiscountType.DISCOUNT, 95, new Amount(7999)), Lists.newArrayList()));
-        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
 
         goodsDiscountRule.getGoodsDiscounts().add(

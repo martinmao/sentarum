@@ -17,6 +17,7 @@ package io.scleropages.sentarum.core.model.primitive;
 
 import org.springframework.util.Assert;
 
+import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
@@ -92,6 +93,7 @@ public class Amount {
         this(new BigDecimal(String.valueOf(amount)));
     }
 
+    @Transient
     public String getAmountText() {
         return String.valueOf(amount);
     }
