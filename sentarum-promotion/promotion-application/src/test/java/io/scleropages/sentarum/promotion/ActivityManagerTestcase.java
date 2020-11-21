@@ -179,6 +179,14 @@ public class ActivityManagerTestcase {
 
         Long activityGoodsId2 = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
 
+        goodsModel.setGoodsId(900l);
+        goodsModel.setName("iMac");
+        goodsModel.setOuterGoodsId("882123122344");
+        goodsModel.setTotalNum(299);
+        goodsModel.setUserNum(1);
+
+        Long activityGoodsId3 = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
+
         ActivityGoods activityGoods = activityManager.getActivityGoods(activityGoodsId);
 
         activityGoods.additionalAttributes().setAttribute("k5", "v5", true);
@@ -189,6 +197,12 @@ public class ActivityManagerTestcase {
 
         activityGoods.additionalAttributes().setAttribute("k51", "v51", true);
         activityGoods.additionalAttributes().setAttribute("k61", "v61", true);
+        activityGoods.additionalAttributes().save();
+
+        activityGoods = activityManager.getActivityGoods(activityGoodsId3);
+
+        activityGoods.additionalAttributes().setAttribute("k52", "v52", true);
+        activityGoods.additionalAttributes().setAttribute("k62", "v62", true);
         activityGoods.additionalAttributes().save();
 
         ActivityGoodsSpecsModel goodsSpecsModel = new ActivityGoodsSpecsModel();
@@ -208,22 +222,25 @@ public class ActivityManagerTestcase {
 
 
         goodsDiscountRule = new GoodsDiscountRule(null, Lists.newArrayList());
-        goodsDiscountRule.setDescription("iphone商品打折规则");
-
+        goodsDiscountRule.setDescription("商品打折规则");
         goodsDiscountRule.getGoodsDiscounts().add(
                 new GoodsDiscount(activityGoodsId, new Discount(Discount.DiscountType.DISCOUNT, 85, null), Lists.newArrayList(
-                        new GoodsSpecsDiscount(activityGoodsSpecsId,new Discount(Discount.DiscountType.OVERRIDE_AMOUNT, 8888, new Amount(9999))))));
-
+                        new GoodsSpecsDiscount(activityGoodsSpecsId, new Discount(Discount.DiscountType.OVERRIDE_AMOUNT, 8888, new Amount(9999))))));
         activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
-
-        goodsDiscountRule = new GoodsDiscountRule(null, Lists.newArrayList());
-        goodsDiscountRule.setDescription("mac商品打折规则");
 
         goodsDiscountRule.getGoodsDiscounts().add(
-                new GoodsDiscount(activityGoodsId2, new Discount(Discount.DiscountType.DISCOUNT, 95, null), Lists.newArrayList()));
+                new GoodsDiscount(activityGoodsId2, new Discount(Discount.DiscountType.DISCOUNT, 95, new Amount(7999)), Lists.newArrayList()));
+        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+
+
+        goodsDiscountRule.getGoodsDiscounts().add(
+                new GoodsDiscount(activityGoodsId3, Lists.newArrayList(
+                        new GoodsDiscountRule.UserLevelDiscount(
+                                new Discount(Discount.DiscountType.DECREASE_AMOUNT, 299, new Amount(7999)), 1l, 1l, "vip会员"))));
 
         activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+
 
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19888l)));
 

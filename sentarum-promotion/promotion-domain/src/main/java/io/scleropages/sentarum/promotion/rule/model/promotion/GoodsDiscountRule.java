@@ -114,8 +114,8 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
                             assertDetailedGoodsSourceDiscount(userLevelDiscount.getDiscount());
                         }
                         goodsSpecs.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_USER_LEVEL_DISCOUNT, userLevelDiscounts, true).save();
-                    }
-                    throw new IllegalArgumentException("discount must not be null or user-level discounts must not empty for goods specs:" + goodsSpecsDiscount.getNativeGoodsSpecsId());
+                    } else
+                        throw new IllegalArgumentException("discount must not be null or user-level discounts must not empty for goods specs:" + goodsSpecsDiscount.getNativeGoodsSpecsId());
                 });
             }
         });
@@ -153,10 +153,19 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
     public GoodsDiscountRule() {
     }
 
+    public GoodsDiscountRule(Discount discount) {
+        this.discount = discount;
+    }
+
+    public GoodsDiscountRule(List<UserLevelDiscount> userLevelDiscounts) {
+        this.userLevelDiscounts = userLevelDiscounts;
+    }
+
     public GoodsDiscountRule(Discount discount, List<GoodsDiscount> goodsDiscounts) {
         this.discount = discount;
         this.goodsDiscounts = goodsDiscounts;
     }
+
 
     public Discount getDiscount() {
         return discount;
@@ -214,6 +223,16 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
             this.nativeGoodsId = nativeGoodsId;
             this.discount = discount;
             this.goodsSpecsDiscounts = goodsSpecsDiscounts;
+        }
+
+        public GoodsDiscount(Long nativeGoodsId, List<UserLevelDiscount> userLevelDiscounts) {
+            this.nativeGoodsId = nativeGoodsId;
+            this.userLevelDiscounts = userLevelDiscounts;
+        }
+
+        public GoodsDiscount(Long nativeGoodsId, Discount discount) {
+            this.nativeGoodsId = nativeGoodsId;
+            this.discount = discount;
         }
 
         @NotNull(groups = Create.class)
@@ -278,6 +297,11 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
             this.discount = discount;
         }
 
+        public GoodsSpecsDiscount(Long nativeGoodsSpecsId, List<UserLevelDiscount> userLevelDiscounts) {
+            this.nativeGoodsSpecsId = nativeGoodsSpecsId;
+            this.userLevelDiscounts = userLevelDiscounts;
+        }
+
         @NotNull(groups = Create.class)
         public Long getNativeGoodsSpecsId() {
             return nativeGoodsSpecsId;
@@ -322,6 +346,16 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
          * 用户等级名称
          */
         private String levelName;
+
+        public UserLevelDiscount() {
+        }
+
+        public UserLevelDiscount(Discount discount, Long typeId, Long levelId, String levelName) {
+            this.discount = discount;
+            this.typeId = typeId;
+            this.levelId = levelId;
+            this.levelName = levelName;
+        }
 
         @NotNull(groups = Create.class)
         public Discount getDiscount() {
