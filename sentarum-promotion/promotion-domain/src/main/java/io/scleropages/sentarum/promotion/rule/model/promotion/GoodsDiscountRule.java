@@ -63,7 +63,7 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
     public static final String ATTRIBUTE_USER_LEVEL_DISCOUNT = ATTRIBUTE_PREFIX + "user_level_discounts";
 
     /**
-     * 统一折扣.
+     * 商品统一折扣.
      */
     private Discount discount;
 
@@ -73,7 +73,7 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
     private List<GoodsDiscount> goodsDiscounts;
 
     /**
-     * 会员统一折扣.
+     * 会员商品统一折扣.
      */
     private List<UserLevelDiscount> userLevelDiscounts;
 
@@ -202,7 +202,7 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
         private Long nativeGoodsId;
 
         /**
-         * 商品折扣.
+         * 规格统一折扣.
          */
         private Discount discount;
 
@@ -212,7 +212,7 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
         private List<GoodsSpecsDiscount> goodsSpecsDiscounts;
 
         /**
-         * 会员商品折扣.
+         * 会员规格统一折扣.
          */
         private List<UserLevelDiscount> userLevelDiscounts;
 
