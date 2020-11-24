@@ -27,7 +27,6 @@ public class PromotionGoodsSource extends AbstractDetailedGoodsSource {
 
     private EvaluatorRule evaluatorRule;
 
-
     public EvaluatorRule getEvaluatorRule() {
         return evaluatorRule;
     }

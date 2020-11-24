@@ -39,6 +39,10 @@ import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.SellerUser
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserTagConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.promotion.GoodsDiscountRuleEntity;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.PromotionGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.mapper.PromotionGoodsEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.mapper.PromotionGoodsSourceEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.mapper.PromotionGoodsSpecsEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.promotion.mapper.GoodsDiscountRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
@@ -49,7 +53,11 @@ import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelCon
 import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserTagConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.promotion.goods.PromotionGoodsSource;
 import io.scleropages.sentarum.promotion.rule.promotion.GoodsDiscountRuleRepository;
+import io.scleropages.sentarum.promotion.rule.promotion.goods.PromotionGoodsRepository;
+import io.scleropages.sentarum.promotion.rule.promotion.goods.PromotionGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.rule.promotion.goods.PromotionGoodsSpecsRepository;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.exception.BizError;
@@ -82,7 +90,6 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-
     /**
      * managers
      */
@@ -108,6 +115,13 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     private GoodsDiscountRuleRepository goodsDiscountRuleRepository;
 
     /**
+     * promotion goods repositories.
+     */
+    private PromotionGoodsSourceRepository promotionGoodsSourceRepository;
+    private PromotionGoodsRepository promotionGoodsRepository;
+    private PromotionGoodsSpecsRepository promotionGoodsSpecsRepository;
+
+    /**
      * condition rule mappers.
      */
     private BaseConditionRuleEntityMapper baseConditionRuleEntityMapper;
@@ -120,6 +134,13 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
      * promotion rule mappers.
      */
     private GoodsDiscountRuleEntityMapper goodsDiscountRuleEntityMapper;
+
+    /**
+     * promotion goods mappers.
+     */
+    private PromotionGoodsSourceEntityMapper promotionGoodsSourceEntityMapper;
+    private PromotionGoodsEntityMapper promotionGoodsEntityMapper;
+    private PromotionGoodsSpecsEntityMapper promotionGoodsSpecsEntityMapper;
 
 
     /**
@@ -228,6 +249,11 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         goodsDiscountRuleEntity.setActivity(requiredActivityEntity);
         goodsDiscountRuleRepository.save(goodsDiscountRuleEntity);
         return goodsDiscountRuleEntity.getId();
+    }
+
+    public void createPromotionGoodsSource(PromotionGoodsSource promotionGoodsSource) {
+        PromotionGoodsSourceEntity promotionGoodsSourceEntity = promotionGoodsSourceEntityMapper.mapForSave(promotionGoodsSource);
+        promotionGoodsSourceRepository.save(promotionGoodsSourceEntity);
     }
 
 
@@ -399,6 +425,21 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
+    public void setPromotionGoodsSourceRepository(PromotionGoodsSourceRepository promotionGoodsSourceRepository) {
+        this.promotionGoodsSourceRepository = promotionGoodsSourceRepository;
+    }
+
+    @Autowired
+    public void setPromotionGoodsRepository(PromotionGoodsRepository promotionGoodsRepository) {
+        this.promotionGoodsRepository = promotionGoodsRepository;
+    }
+
+    @Autowired
+    public void setPromotionGoodsSpecsRepository(PromotionGoodsSpecsRepository promotionGoodsSpecsRepository) {
+        this.promotionGoodsSpecsRepository = promotionGoodsSpecsRepository;
+    }
+
+    @Autowired
     public void setBaseConditionRuleEntityMapper(BaseConditionRuleEntityMapper baseConditionRuleEntityMapper) {
         this.baseConditionRuleEntityMapper = baseConditionRuleEntityMapper;
     }
@@ -426,6 +467,21 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     @Autowired
     public void setGoodsDiscountRuleEntityMapper(GoodsDiscountRuleEntityMapper goodsDiscountRuleEntityMapper) {
         this.goodsDiscountRuleEntityMapper = goodsDiscountRuleEntityMapper;
+    }
+
+    @Autowired
+    public void setPromotionGoodsSourceEntityMapper(PromotionGoodsSourceEntityMapper promotionGoodsSourceEntityMapper) {
+        this.promotionGoodsSourceEntityMapper = promotionGoodsSourceEntityMapper;
+    }
+
+    @Autowired
+    public void setPromotionGoodsEntityMapper(PromotionGoodsEntityMapper promotionGoodsEntityMapper) {
+        this.promotionGoodsEntityMapper = promotionGoodsEntityMapper;
+    }
+
+    @Autowired
+    public void setPromotionGoodsSpecsEntityMapper(PromotionGoodsSpecsEntityMapper promotionGoodsSpecsEntityMapper) {
+        this.promotionGoodsSpecsEntityMapper = promotionGoodsSpecsEntityMapper;
     }
 
     private ClassLoader classLoader;
