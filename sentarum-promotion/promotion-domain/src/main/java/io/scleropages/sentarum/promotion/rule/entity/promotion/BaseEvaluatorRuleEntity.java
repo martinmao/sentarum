@@ -16,20 +16,21 @@
 package io.scleropages.sentarum.promotion.rule.entity.promotion;
 
 import io.scleropages.sentarum.promotion.rule.entity.AbstractRuleEntity;
-import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * referenced from {@link GoodsDiscountRule}
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prom_eval_goods_discount")
-@SequenceGenerator(name = "prom_eval_goods_discount_id", sequenceName = "seq_prom_eval_goods_discount", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class GoodsDiscountRuleEntity extends AbstractRuleEntity {
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "prom_eval_base")
+@SequenceGenerator(name = "prom_eval_base_id", sequenceName = "seq_prom_eval_base", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class BaseEvaluatorRuleEntity extends AbstractRuleEntity {
+
 }

@@ -44,4 +44,10 @@ public class EvaluatorGoodsSource extends AbstractDetailedGoodsSource {
     public void setEvaluatorRule(EvaluatorRule evaluatorRule) {
         this.evaluatorRule = evaluatorRule;
     }
+
+
+    @Null
+    public Integer getBizType() {
+        return BIZ_TYPE_OF_EVALUATOR;
+    }
 }

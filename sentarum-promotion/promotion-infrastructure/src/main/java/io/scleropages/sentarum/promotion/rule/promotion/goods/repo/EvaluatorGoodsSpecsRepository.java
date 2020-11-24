@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.promotion;
+package io.scleropages.sentarum.promotion.rule.promotion.goods.repo;
 
-import io.scleropages.sentarum.jooq.tables.PromEvalGoodsDiscount;
-import io.scleropages.sentarum.jooq.tables.records.PromEvalGoodsDiscountRecord;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.GoodsDiscountRuleEntity;
-import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import io.scleropages.sentarum.jooq.tables.PromEvalGoodsSpecs;
+import io.scleropages.sentarum.jooq.tables.records.PromEvalGoodsSpecsRecord;
+import io.scleropages.sentarum.promotion.goods.repo.GoodsSpecsRepository;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.EvaluatorGoodsSpecsEntity;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsDiscountRuleRepository extends GenericRepository<GoodsDiscountRuleEntity, Long>, JooqRepository<PromEvalGoodsDiscount, PromEvalGoodsDiscountRecord, GoodsDiscountRuleEntity> {
+public interface EvaluatorGoodsSpecsRepository extends GoodsSpecsRepository<EvaluatorGoodsSpecsEntity, PromEvalGoodsSpecs, PromEvalGoodsSpecsRecord> {
 
+
+    @Override
+    default EvaluatorGoodsSpecsEntity createEntity() {
+        return new EvaluatorGoodsSpecsEntity();
+    }
 }

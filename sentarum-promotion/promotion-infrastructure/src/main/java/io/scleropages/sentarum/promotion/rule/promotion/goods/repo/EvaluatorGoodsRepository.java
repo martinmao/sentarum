@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.entity.promotion.mapper;
+package io.scleropages.sentarum.promotion.rule.promotion.goods.repo;
 
-import io.scleropages.sentarum.promotion.rule.entity.mapper.AbstractRuleEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.GoodsDiscountRuleEntity;
-import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
-import org.mapstruct.Mapper;
-import org.scleropages.crud.ModelMapper;
+import io.scleropages.sentarum.jooq.tables.PromEvalGoods;
+import io.scleropages.sentarum.jooq.tables.records.PromEvalGoodsRecord;
+import io.scleropages.sentarum.promotion.goods.repo.GoodsRepository;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.EvaluatorGoodsEntity;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Mapper(config = ModelMapper.DefaultConfig.class)
-public interface GoodsDiscountRuleEntityMapper extends AbstractRuleEntityMapper<GoodsDiscountRuleEntity, GoodsDiscountRule> {
-
+public interface EvaluatorGoodsRepository extends GoodsRepository<EvaluatorGoodsEntity, PromEvalGoods, PromEvalGoodsRecord> {
 }

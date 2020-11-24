@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.promotion.goods;
+package io.scleropages.sentarum.promotion.rule.entity.promotion.mapper;
 
-import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods;
+import io.scleropages.sentarum.promotion.rule.entity.mapper.AbstractRuleEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.BaseEvaluatorRuleEntity;
+import io.scleropages.sentarum.promotion.rule.model.AbstractEvaluatorRule;
+import org.mapstruct.Mapper;
+import org.scleropages.crud.ModelMapper;
 
 /**
- * represent goods of {@link EvaluatorGoodsSource}
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class EvaluatorGoods extends AbstractGoods {
-
+@Mapper(config = ModelMapper.DefaultConfig.class)
+public interface BaseEvaluatorRuleEntityMapper extends AbstractRuleEntityMapper<BaseEvaluatorRuleEntity, AbstractEvaluatorRule> {
 }

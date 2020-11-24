@@ -91,18 +91,15 @@ public class OverflowDiscountRule extends AbstractEvaluatorRule {
      * 满减优惠详情
      */
     public class OverflowDiscount {
-
         /**
          * 满减折扣，{@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#STEPPED_FEE_OVERFLOW} 时有效.<br>
          * 折扣类型仅支持 {@link DiscountType#DISCOUNT_WITHOUT_ORIGINAL_PRICE} || {@link DiscountType#DECREASE_WITHOUT_ORIGINAL_PRICE}
          */
         private Discount overflowDiscount;
-
         /**
          * 满件数 {@link OverflowDiscountType#FIXED_GOODS_NUM_OVERFLOW} || {@link OverflowDiscountType#STEPPED_GOODS_NUM_OVERFLOW} 时有效.
          */
         private Integer overflowNum;
-
         /**
          * 满金额 {@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#STEPPED_FEE_OVERFLOW} 时有效.
          */
@@ -154,73 +151,6 @@ public class OverflowDiscountRule extends AbstractEvaluatorRule {
 
         public void setUserSelectNum(Integer userSelectNum) {
             this.userSelectNum = userSelectNum;
-        }
-    }
-
-    /**
-     * 赠品,统一描述为单规格商品，如存在多规格，做不同 gift 处理.
-     */
-    public static class Gift {
-        /**
-         * 本地赠品id
-         */
-        private Long nativeId;
-        /**
-         * 单用户赠送数量.
-         */
-        private Integer userNum;
-        /**
-         * 可赠总数.
-         */
-        private Integer num;
-        /**
-         * 补差价，例如：满100元+5元送牙刷
-         */
-        private Amount adjustFee;
-        /**
-         * 赠品单价
-         */
-        private Amount price;
-
-
-        public Long getNativeId() {
-            return nativeId;
-        }
-
-        public Integer getUserNum() {
-            return userNum;
-        }
-
-        public Integer getNum() {
-            return num;
-        }
-
-        public Amount getAdjustFee() {
-            return adjustFee;
-        }
-
-        public Amount getPrice() {
-            return price;
-        }
-
-        public void setNativeId(Long nativeId) {
-            this.nativeId = nativeId;
-        }
-
-        public void setUserNum(Integer userNum) {
-            this.userNum = userNum;
-        }
-
-        public void setNum(Integer num) {
-            this.num = num;
-        }
-
-        public void setAdjustFee(Amount adjustFee) {
-            this.adjustFee = adjustFee;
-        }
-
-        public void setPrice(Amount price) {
-            this.price = price;
         }
     }
 

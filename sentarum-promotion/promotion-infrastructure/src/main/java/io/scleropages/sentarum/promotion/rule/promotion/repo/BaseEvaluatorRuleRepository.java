@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.promotion.goods;
+package io.scleropages.sentarum.promotion.rule.promotion.repo;
 
-import io.scleropages.sentarum.jooq.tables.PromEvalGoodsSource;
-import io.scleropages.sentarum.jooq.tables.records.PromEvalGoodsSourceRecord;
-import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceRepository;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.EvaluatorGoodsSourceEntity;
+import io.scleropages.sentarum.jooq.tables.PromEvalBase;
+import io.scleropages.sentarum.jooq.tables.records.PromEvalBaseRecord;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.BaseEvaluatorRuleEntity;
+import io.scleropages.sentarum.promotion.rule.repo.AbstractEvaluatorRuleRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface EvaluatorGoodsSourceRepository extends DetailedGoodsSourceRepository<EvaluatorGoodsSourceEntity, PromEvalGoodsSource, PromEvalGoodsSourceRecord> {
+public interface BaseEvaluatorRuleRepository extends AbstractEvaluatorRuleRepository<BaseEvaluatorRuleEntity, PromEvalBase, PromEvalBaseRecord> {
 }
