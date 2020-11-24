@@ -30,81 +30,76 @@ import java.util.Map;
  * <pre>
  *     支持以下规则定义：
  *
- *     固定满减：只允许设置一个 {@link #overflowConditionDetails}。{@link #getOverflowCycleLimit()} 可设置上限，-1为上不封顶
- *      固定金额满减 {@link OverflowConditionDetail#overflowFee}：满100元触发，可并持续叠加直至上限
- *      固定商品数满减 {@link OverflowConditionDetail#overflowNum}：满10件触发，可并持续叠加直至上限
- *     阶梯满减：可设置多个 {@link #overflowConditionDetails}。不支持 {@link #getOverflowCycleLimit()}
- *      阶梯金额满减 {@link OverflowConditionDetail#overflowFee}：满100元触发，满300元触发，限定在 {@link #overflowConditionDetails} 范围内
- *      阶梯商品数满减 {@link OverflowConditionDetail#overflowNum}：满10件触发，满30件触发，限定在 {@link #overflowConditionDetails} 范围内
+ *     固定满减：只允许设置一个 {@link #overflowDiscounts}。{@link #getOverflowCycleLimit()} 可设置上限，-1为上不封顶
+ *      固定金额满减 {@link OverflowDiscount#overflowFee}：满100元触发，可并持续叠加直至上限
+ *      固定商品数满减 {@link OverflowDiscount#overflowNum}：满10件触发，可并持续叠加直至上限
+ *     阶梯满减：可设置多个 {@link #overflowDiscounts}。不支持 {@link #getOverflowCycleLimit()}
+ *      阶梯金额满减 {@link OverflowDiscount#overflowFee}：满100元触发，满300元触发，限定在 {@link #overflowDiscounts} 范围内
+ *      阶梯商品数满减 {@link OverflowDiscount#overflowNum}：满10件触发，满30件触发，限定在 {@link #overflowDiscounts} 范围内
  *     满赠规则：
- *      减金额：设置 {@link OverflowConditionDetail#overflowDiscount}
- *      折扣：设置 {@link OverflowConditionDetail#overflowDiscount}
- *      发赠品：设置 {@link OverflowConditionDetail#giftSource}
+ *      减金额：设置 {@link OverflowDiscount#overflowDiscount}
+ *      折扣：设置 {@link OverflowDiscount#overflowDiscount}
+ *      发赠品：设置 {@link OverflowDiscount#giftSource}
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OverflowRule extends AbstractEvaluatorRule {
+public class OverflowDiscountRule extends AbstractEvaluatorRule {
     /**
      * 满减条件
-     *
-     * @return
      */
-    private OverflowCondition overflowCondition;
+    private OverflowDiscountType overflowDiscountType;
     /**
-     * 循环满减上限, {@link #getOverflowCondition()}=={@link OverflowCondition#FIXED_FEE_OVERFLOW} || {@link OverflowCondition#FIXED_GOODS_NUM_OVERFLOW} 时有效，-1为上不封顶 <br>
-     *
-     * @return
+     * 循环满减上限, {@link #getOverflowDiscountType()}=={@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#FIXED_GOODS_NUM_OVERFLOW} 时有效，-1为上不封顶 <br>
      */
     private Integer overflowCycleLimit;
     /**
-     * 满减详情
+     * 满减折扣详情
      */
-    private List<OverflowConditionDetail> overflowConditionDetails;
+    private List<OverflowDiscount> overflowDiscounts;
 
-
-    public OverflowCondition getOverflowCondition() {
-        return overflowCondition;
+    public OverflowDiscountType getOverflowDiscountType() {
+        return overflowDiscountType;
     }
 
     public Integer getOverflowCycleLimit() {
         return overflowCycleLimit;
     }
 
-    public List<OverflowConditionDetail> getOverflowConditionDetails() {
-        return overflowConditionDetails;
+    public List<OverflowDiscount> getOverflowDiscounts() {
+        return overflowDiscounts;
     }
 
-    public void setOverflowCondition(OverflowCondition overflowCondition) {
-        this.overflowCondition = overflowCondition;
+    public void setOverflowDiscountType(OverflowDiscountType overflowDiscountType) {
+        this.overflowDiscountType = overflowDiscountType;
     }
 
     public void setOverflowCycleLimit(Integer overflowCycleLimit) {
         this.overflowCycleLimit = overflowCycleLimit;
     }
 
-    public void setOverflowConditionDetails(List<OverflowConditionDetail> overflowConditionDetails) {
-        this.overflowConditionDetails = overflowConditionDetails;
+    public void setOverflowDiscounts(List<OverflowDiscount> overflowDiscounts) {
+        this.overflowDiscounts = overflowDiscounts;
     }
 
     /**
      * 满减优惠详情
      */
-    public class OverflowConditionDetail {
+    public class OverflowDiscount {
 
         /**
-         * 满减折扣，{@link OverflowCondition#FIXED_FEE_OVERFLOW} || {@link OverflowCondition#STEPPED_FEE_OVERFLOW} 时有效.<br>
+         * 满减折扣，{@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#STEPPED_FEE_OVERFLOW} 时有效.<br>
          * 折扣类型仅支持 {@link DiscountType#DISCOUNT_WITHOUT_ORIGINAL_PRICE} || {@link DiscountType#DECREASE_WITHOUT_ORIGINAL_PRICE}
          */
         private Discount overflowDiscount;
 
         /**
-         * 满件数 {@link OverflowCondition#FIXED_GOODS_NUM_OVERFLOW} || {@link OverflowCondition#STEPPED_GOODS_NUM_OVERFLOW} 时有效.
+         * 满件数 {@link OverflowDiscountType#FIXED_GOODS_NUM_OVERFLOW} || {@link OverflowDiscountType#STEPPED_GOODS_NUM_OVERFLOW} 时有效.
          */
         private Integer overflowNum;
 
         /**
-         * 满金额 {@link OverflowCondition#FIXED_FEE_OVERFLOW} || {@link OverflowCondition#STEPPED_FEE_OVERFLOW} 时有效.
+         * 满金额 {@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#STEPPED_FEE_OVERFLOW} 时有效.
          */
         private Amount overflowFee;
         /**
@@ -158,7 +153,7 @@ public class OverflowRule extends AbstractEvaluatorRule {
     }
 
     /**
-     * 赠品
+     * 赠品,统一描述为单规格商品，如存在多规格，做不同 gift 处理.
      */
     public static class Gift {
         /**
@@ -225,9 +220,9 @@ public class OverflowRule extends AbstractEvaluatorRule {
     }
 
     /**
-     * 规则触发条件
+     * 满减类型
      */
-    enum OverflowCondition {
+    enum OverflowDiscountType {
 
         /**
          * 满固定金额.
@@ -252,7 +247,7 @@ public class OverflowRule extends AbstractEvaluatorRule {
 
         private final String desc;
 
-        OverflowCondition(int ordinal, String tag, String desc) {
+        OverflowDiscountType(int ordinal, String tag, String desc) {
             this.ordinal = ordinal;
             this.tag = tag;
             this.desc = desc;
@@ -271,22 +266,22 @@ public class OverflowRule extends AbstractEvaluatorRule {
         }
 
 
-        private static final Map<String, OverflowCondition> nameMappings = new HashMap<>();
-        private static final Map<Integer, OverflowCondition> ordinalMappings = new HashMap<>();
+        private static final Map<String, OverflowDiscountType> nameMappings = new HashMap<>();
+        private static final Map<Integer, OverflowDiscountType> ordinalMappings = new HashMap<>();
 
         static {
-            for (OverflowCondition overCondition : OverflowCondition.values()) {
+            for (OverflowDiscountType overCondition : OverflowDiscountType.values()) {
                 nameMappings.put(overCondition.name(), overCondition);
                 ordinalMappings.put(overCondition.getOrdinal(), overCondition);
             }
         }
 
 
-        public static OverflowCondition getByName(String name) {
+        public static OverflowDiscountType getByName(String name) {
             return (name != null ? nameMappings.get(name) : null);
         }
 
-        public static OverflowCondition getByOrdinal(int ordinal) {
+        public static OverflowDiscountType getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
         }
     }
