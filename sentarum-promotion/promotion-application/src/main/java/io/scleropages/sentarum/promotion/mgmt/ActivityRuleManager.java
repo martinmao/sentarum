@@ -251,6 +251,10 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return goodsDiscountRuleEntity.getId();
     }
 
+
+    @Validated(PromotionGoodsSource.Create.class)
+    @Transactional
+    @BizError("16")
     public void createPromotionGoodsSource(PromotionGoodsSource promotionGoodsSource) {
         PromotionGoodsSourceEntity promotionGoodsSourceEntity = promotionGoodsSourceEntityMapper.mapForSave(promotionGoodsSource);
         promotionGoodsSourceRepository.save(promotionGoodsSourceEntity);

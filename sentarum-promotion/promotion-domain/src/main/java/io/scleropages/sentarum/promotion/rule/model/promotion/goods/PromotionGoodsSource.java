@@ -18,6 +18,8 @@ package io.scleropages.sentarum.promotion.rule.model.promotion.goods;
 import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.EvaluatorRule;
 
+import javax.validation.constraints.Null;
+
 /**
  * promotional goods source for evaluator rule references.
  *
@@ -27,6 +29,7 @@ public class PromotionGoodsSource extends AbstractDetailedGoodsSource {
 
     private EvaluatorRule evaluatorRule;
 
+    @Null
     public EvaluatorRule getEvaluatorRule() {
         return evaluatorRule;
     }

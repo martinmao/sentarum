@@ -15,13 +15,13 @@
  */
 package io.scleropages.sentarum.promotion.rule.promotion.goods;
 
-import io.scleropages.sentarum.jooq.tables.PromEvalGoodsSource;
-import io.scleropages.sentarum.jooq.tables.records.PromEvalGoodsSourceRecord;
+import io.scleropages.sentarum.jooq.tables.PromGoodsSource;
+import io.scleropages.sentarum.jooq.tables.records.PromGoodsSourceRecord;
 import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.PromotionGoodsSourceEntity;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PromotionGoodsSourceRepository extends DetailedGoodsSourceRepository<PromotionGoodsSourceEntity, PromEvalGoodsSource, PromEvalGoodsSourceRecord> {
+public interface PromotionGoodsSourceRepository extends DetailedGoodsSourceRepository<PromotionGoodsSourceEntity, PromGoodsSource, PromGoodsSourceRecord> {
 }

@@ -28,8 +28,8 @@ import javax.persistence.Table;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prom_eval_goods_source")
-@SequenceGenerator(name = "prom_eval_goods_source_id", sequenceName = "seq_prom_eval_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "prom_goods_source")
+@SequenceGenerator(name = "prom_goods_source_id", sequenceName = "seq_prom_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class PromotionGoodsSourceEntity extends DetailedGoodsSourceEntity {
 
 }
