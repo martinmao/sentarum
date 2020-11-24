@@ -13,28 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.promotion.goods;
+package io.scleropages.sentarum.promotion.rule.promotion.goods;
 
-import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
-import io.scleropages.sentarum.promotion.rule.model.EvaluatorRule;
-
-import javax.validation.constraints.Null;
+import io.scleropages.sentarum.jooq.tables.PromEvalGoods;
+import io.scleropages.sentarum.jooq.tables.records.PromEvalGoodsRecord;
+import io.scleropages.sentarum.promotion.goods.repo.GoodsRepository;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.EvaluatorGoodsEntity;
 
 /**
- * promotional goods source for evaluator rule references.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PromotionGoodsSource extends AbstractDetailedGoodsSource {
-
-    private EvaluatorRule evaluatorRule;
-
-    @Null
-    public EvaluatorRule getEvaluatorRule() {
-        return evaluatorRule;
-    }
-
-    public void setEvaluatorRule(EvaluatorRule evaluatorRule) {
-        this.evaluatorRule = evaluatorRule;
-    }
+public interface EvaluatorGoodsRepository extends GoodsRepository<EvaluatorGoodsEntity, PromEvalGoods, PromEvalGoodsRecord> {
 }

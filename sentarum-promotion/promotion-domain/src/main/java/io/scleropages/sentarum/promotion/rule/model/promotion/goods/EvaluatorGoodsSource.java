@@ -15,12 +15,33 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.promotion.goods;
 
-import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSpecs;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
+import io.scleropages.sentarum.promotion.rule.model.EvaluatorRule;
+
+import javax.validation.constraints.Null;
 
 /**
- * represent goods specs of {@link PromotionGoods}
+ * promotional goods source for evaluator rule references.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PromotionGoodsSpecs extends AbstractGoodsSpecs {
+public class EvaluatorGoodsSource extends AbstractDetailedGoodsSource {
+
+
+    public static final int BIZ_TYPE_OF_EVALUATOR = 1;
+
+
+    public static final int DETAILED_GOODS_SOURCE_TYPE = 4;//商品明细
+
+
+    private EvaluatorRule evaluatorRule;
+
+    @Null
+    public EvaluatorRule getEvaluatorRule() {
+        return evaluatorRule;
+    }
+
+    public void setEvaluatorRule(EvaluatorRule evaluatorRule) {
+        this.evaluatorRule = evaluatorRule;
+    }
 }

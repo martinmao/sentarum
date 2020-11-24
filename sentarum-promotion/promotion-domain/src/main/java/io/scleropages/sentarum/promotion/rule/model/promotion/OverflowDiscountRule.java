@@ -19,7 +19,7 @@ import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.core.model.primitive.Discount.DiscountType;
 import io.scleropages.sentarum.promotion.rule.model.AbstractEvaluatorRule;
-import io.scleropages.sentarum.promotion.rule.model.promotion.goods.PromotionGoodsSource;
+import io.scleropages.sentarum.promotion.rule.model.promotion.goods.EvaluatorGoodsSource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +45,11 @@ import java.util.Map;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class OverflowDiscountRule extends AbstractEvaluatorRule {
+
+
+    public static final Integer BIZ_TYPE_OVERFLOW_DISCOUNT = 23;
+
+
     /**
      * 满减条件
      */
@@ -105,7 +110,7 @@ public class OverflowDiscountRule extends AbstractEvaluatorRule {
         /**
          * 赠品来源.
          */
-        private PromotionGoodsSource giftSource;
+        private EvaluatorGoodsSource giftSource;
         /**
          * 满赠商品时有效：用户可选赠品总数，-1为全选
          */
@@ -123,7 +128,7 @@ public class OverflowDiscountRule extends AbstractEvaluatorRule {
             return overflowFee;
         }
 
-        public PromotionGoodsSource getGiftSource() {
+        public EvaluatorGoodsSource getGiftSource() {
             return giftSource;
         }
 
@@ -143,7 +148,7 @@ public class OverflowDiscountRule extends AbstractEvaluatorRule {
             this.overflowFee = overflowFee;
         }
 
-        public void setGiftSource(PromotionGoodsSource giftSource) {
+        public void setGiftSource(EvaluatorGoodsSource giftSource) {
             this.giftSource = giftSource;
         }
 

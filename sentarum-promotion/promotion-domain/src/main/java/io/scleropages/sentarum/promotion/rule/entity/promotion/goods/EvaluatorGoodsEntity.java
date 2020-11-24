@@ -15,22 +15,33 @@
  */
 package io.scleropages.sentarum.promotion.rule.entity.promotion.goods;
 
-import io.scleropages.sentarum.promotion.goods.entity.DetailedGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.entity.GoodsEntity;
+import io.scleropages.sentarum.promotion.rule.model.promotion.goods.EvaluatorGoods;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * referenced from {@link io.scleropages.sentarum.promotion.rule.model.promotion.goods.PromotionGoodsSource}
+ * referenced from {@link EvaluatorGoods}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prom_goods_source")
-@SequenceGenerator(name = "prom_goods_source_id", sequenceName = "seq_prom_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class PromotionGoodsSourceEntity extends DetailedGoodsSourceEntity {
+@Table(name = "prom_eval_goods")
+@SequenceGenerator(name = "prom_eval_goods_id", sequenceName = "seq_prom_eval_goods", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class EvaluatorGoodsEntity extends GoodsEntity {
 
+
+    @Override
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = EvaluatorGoodsSourceEntity.class)
+    @JoinColumn(name = GoodsEntity.COLUMN_GOODS_SOURCE_ID, nullable = false)
+    public AbstractGoodsSourceEntity getGoodsSource() {
+        return super.getGoodsSource();
+    }
 }
-

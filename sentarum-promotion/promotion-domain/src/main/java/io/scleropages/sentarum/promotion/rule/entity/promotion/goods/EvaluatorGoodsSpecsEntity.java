@@ -28,23 +28,25 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
+ * referenced from {@link io.scleropages.sentarum.promotion.rule.model.promotion.goods.EvaluatorGoodsSpecs}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prom_goods_specs")
-@SequenceGenerator(name = "prom_goods_specs_id", sequenceName = "seq_prom_goods_specs", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class PromotionGoodsSpecsEntity extends GoodsSpecsEntity {
+@Table(name = "prom_eval_goods_specs")
+@SequenceGenerator(name = "prom_eval_goods_specs_id", sequenceName = "seq_prom_eval_goods_specs", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class EvaluatorGoodsSpecsEntity extends GoodsSpecsEntity {
 
 
     @Override
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = PromotionGoodsEntity.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = EvaluatorGoodsEntity.class)
     @JoinColumn(name = COLUMN_GOODS_ID, nullable = false)
     public GoodsEntity getGoods() {
         return super.getGoods();
     }
 
     @Override
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = PromotionGoodsSourceEntity.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = EvaluatorGoodsSourceEntity.class)
     @JoinColumn(name = GoodsEntity.COLUMN_GOODS_SOURCE_ID, nullable = false)
     public AbstractGoodsSourceEntity getGoodsSource() {
         return super.getGoodsSource();

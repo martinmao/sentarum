@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.entity.promotion.goods.mapper;
+package io.scleropages.sentarum.promotion.rule.promotion.goods;
 
-import io.scleropages.sentarum.promotion.goods.entity.mapper.GoodsSpecsEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.PromotionGoodsSpecsEntity;
-import io.scleropages.sentarum.promotion.rule.model.promotion.goods.PromotionGoodsSpecs;
-import org.mapstruct.Mapper;
-import org.scleropages.crud.ModelMapper;
+import io.scleropages.sentarum.jooq.tables.PromEvalGoodsSpecs;
+import io.scleropages.sentarum.jooq.tables.records.PromEvalGoodsSpecsRecord;
+import io.scleropages.sentarum.promotion.goods.repo.GoodsSpecsRepository;
+import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.EvaluatorGoodsSpecsEntity;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Mapper(config = ModelMapper.DefaultConfig.class)
-public interface PromotionGoodsSpecsEntityMapper extends GoodsSpecsEntityMapper<PromotionGoodsSpecsEntity, PromotionGoodsSpecs> {
+public interface EvaluatorGoodsSpecsRepository extends GoodsSpecsRepository<EvaluatorGoodsSpecsEntity, PromEvalGoodsSpecs, PromEvalGoodsSpecsRecord> {
+
+
+    @Override
+    default EvaluatorGoodsSpecsEntity createEntity() {
+        return new EvaluatorGoodsSpecsEntity();
+    }
 }

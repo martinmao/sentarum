@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.promotion.goods;
+package io.scleropages.sentarum.promotion.rule.model.promotion.goods;
 
-import io.scleropages.sentarum.jooq.tables.PromGoodsSource;
-import io.scleropages.sentarum.jooq.tables.records.PromGoodsSourceRecord;
-import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceRepository;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.PromotionGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoods;
 
 /**
+ * represent goods of {@link EvaluatorGoodsSource}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PromotionGoodsSourceRepository extends DetailedGoodsSourceRepository<PromotionGoodsSourceEntity, PromGoodsSource, PromGoodsSourceRecord> {
+public class EvaluatorGoods extends AbstractGoods {
+
+
 }
