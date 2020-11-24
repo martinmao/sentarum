@@ -63,7 +63,7 @@ public class AbstractRuleEntity extends IdEntity {
         return ruleClass;
     }
 
-    @Column(name = "rule_payload")
+    @Column(name = "rule_payload",length = 2048)
     public String getRulePayload() {
         return rulePayload;
     }

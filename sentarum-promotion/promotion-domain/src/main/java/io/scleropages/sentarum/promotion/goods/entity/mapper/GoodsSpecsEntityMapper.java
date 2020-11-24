@@ -36,6 +36,10 @@ public interface GoodsSpecsEntityMapper<T extends GoodsSpecsEntity, M extends Ab
         if (!isEntityInitialized(entity)) {
             return null;
         }
-        return (Goods) ModelMapperRepository.getRequiredModelMapper(GoodsEntityMapper.class).mapForRead(entity);
+        return (Goods) ModelMapperRepository.getRequiredModelMapper(goodsEntityMapperClazz()).mapForRead(entity);
+    }
+
+    default Class<? extends GoodsEntityMapper> goodsEntityMapperClazz(){
+        throw new IllegalStateException("GoodsEntityMapper class must provided by sub classes.");
     }
 }
