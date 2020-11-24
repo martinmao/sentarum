@@ -19,7 +19,9 @@ import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.core.model.primitive.Discount.DiscountType;
 import io.scleropages.sentarum.promotion.rule.model.evaluator.OverflowDiscountRule.OverflowDiscountType;
-import io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoodsSource;
+import org.springframework.util.Assert;
+
+import java.util.Objects;
 
 /**
  * 满减促销规则 {@link OverflowDiscountRule} 明细.
@@ -42,13 +44,51 @@ public class OverflowDiscount {
      */
     private Amount overflowFee;
     /**
-     * 赠品来源.
-     */
-    private EvaluatorGoodsSource giftSource;
-    /**
      * 满赠商品时有效：用户可选赠品总数，-1为全选
      */
     private Integer userSelectNum;
+
+
+    public void assertValid(OverflowDiscountRule overflowDiscountRule) {
+
+        Assert.notNull(overflowDiscountRule, "overflowDiscountRule must not be null.");
+        OverflowDiscountType overflowDiscountType = overflowDiscountRule.getOverflowDiscountType();
+        Assert.notNull(overflowDiscountType, "overflowDiscountType must not be null.");
+
+        switch (overflowDiscountType) {
+            case FIXED_FEE_OVERFLOW:
+                assertFeeOverflowDiscountType(overflowDiscountType);
+                break;
+            case STEPPED_FEE_OVERFLOW:
+                assertFeeOverflowDiscountType(overflowDiscountType);
+                break;
+            case FIXED_GOODS_NUM_OVERFLOW:
+                assertNumOverflowDiscountType(overflowDiscountType);
+                break;
+            case STEPPED_GOODS_NUM_OVERFLOW:
+                assertNumOverflowDiscountType(overflowDiscountType);
+                break;
+        }
+    }
+
+    private void assertNumOverflowDiscountType(OverflowDiscountType overflowDiscountType) {
+        Assert.notNull(overflowNum, "overflow num is required for: " + overflowDiscountType);
+        Assert.isTrue(overflowNum > 0, "userSelectNum must be greater than 0.");
+    }
+
+    private void assertFeeOverflowDiscountType(OverflowDiscountType overflowDiscountType) {
+        Assert.notNull(overflowFee, "overflow fee is required for: " + overflowDiscountType);
+        if (null != overflowDiscount) {
+            Assert.isTrue(
+                    Objects.equals(overflowDiscount, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE)
+                            || Objects.equals(overflowDiscount, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE),
+                    "discount type must be DECREASE_WITHOUT_ORIGINAL_PRICE or DISCOUNT_WITHOUT_ORIGINAL_PRICE for: " + overflowDiscountType);
+        } else {
+            Assert.notNull(userSelectNum, "overflowDiscount or userSelectNum must specified at least one.");
+            Assert.isTrue(userSelectNum == -1 || userSelectNum > 0, "userSelectNum must be '-1' or greater than 0.");
+        }
+    }
+
 
     public Discount getOverflowDiscount() {
         return overflowDiscount;
@@ -60,10 +100,6 @@ public class OverflowDiscount {
 
     public Amount getOverflowFee() {
         return overflowFee;
-    }
-
-    public EvaluatorGoodsSource getGiftSource() {
-        return giftSource;
     }
 
     public Integer getUserSelectNum() {
@@ -80,10 +116,6 @@ public class OverflowDiscount {
 
     public void setOverflowFee(Amount overflowFee) {
         this.overflowFee = overflowFee;
-    }
-
-    public void setGiftSource(EvaluatorGoodsSource giftSource) {
-        this.giftSource = giftSource;
     }
 
     public void setUserSelectNum(Integer userSelectNum) {

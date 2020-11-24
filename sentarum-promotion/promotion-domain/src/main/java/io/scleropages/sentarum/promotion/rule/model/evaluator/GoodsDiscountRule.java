@@ -58,9 +58,9 @@ public class GoodsDiscountRule extends AbstractEvaluatorRule {
 
     public static final String ATTRIBUTE_PREFIX = Namings.snakeCaseName(GoodsDiscountRule.class.getSimpleName()) + ".";
 
-    public static final String ATTRIBUTE_DISCOUNT = ATTRIBUTE_PREFIX + "discount";
+    public static final String ATTRIBUTE_DISCOUNT = ATTRIBUTE_PREFIX + Namings.snakeCaseName("discount");
 
-    public static final String ATTRIBUTE_USER_LEVEL_DISCOUNT = ATTRIBUTE_PREFIX + "user_level_discounts";
+    public static final String ATTRIBUTE_USER_LEVEL_DISCOUNT = ATTRIBUTE_PREFIX + Namings.snakeCaseName("userLevelDiscounts");
 
     /**
      * 商品统一折扣.

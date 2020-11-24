@@ -31,6 +31,9 @@ public class EvaluatorGoodsSource extends AbstractDetailedGoodsSource {
     public static final int BIZ_TYPE_OF_EVALUATOR = 1;
 
 
+    public static final int GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT=1;
+
+
     public static final int DETAILED_GOODS_SOURCE_TYPE = 4;//商品明细
 
 

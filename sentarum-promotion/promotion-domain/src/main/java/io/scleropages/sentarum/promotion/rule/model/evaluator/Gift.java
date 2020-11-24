@@ -17,6 +17,9 @@ package io.scleropages.sentarum.promotion.rule.model.evaluator;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 /**
  * 赠品,统一描述为单规格商品，如存在多规格，做不同 gift 处理.
  *
@@ -25,9 +28,29 @@ import io.scleropages.sentarum.core.model.primitive.Amount;
 public class Gift {
 
     /**
-     * 本地赠品id
+     * 赠品唯一标识.
      */
-    private Long nativeId;
+    private Long id;
+    /**
+     * 商品id
+     */
+    private Long goodsId;
+    /**
+     * 商品规格id
+     */
+    private Long goodsSpecsId;
+    /**
+     * 商品外部编码
+     */
+    private String outerGoodsId;
+    /**
+     * 商品规格外部编码
+     */
+    private String outerGoodsSpecsId;
+    /**
+     * 名称
+     */
+    private String name;
     /**
      * 单用户赠送数量.
      */
@@ -45,15 +68,48 @@ public class Gift {
      */
     private Amount price;
 
-
-    public Long getNativeId() {
-        return nativeId;
+    @Null(groups = Create.class)
+    @NotNull(groups = Update.class)
+    public Long getId() {
+        return id;
     }
 
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public Long getGoodsId() {
+        return goodsId;
+    }
+
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public Long getGoodsSpecsId() {
+        return goodsSpecsId;
+    }
+
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public String getOuterGoodsId() {
+        return outerGoodsId;
+    }
+
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public String getOuterGoodsSpecsId() {
+        return outerGoodsSpecsId;
+    }
+
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public String getName() {
+        return name;
+    }
+
+    @NotNull(groups = Create.class)
     public Integer getUserNum() {
         return userNum;
     }
 
+    @NotNull(groups = Create.class)
     public Integer getNum() {
         return num;
     }
@@ -62,12 +118,33 @@ public class Gift {
         return adjustFee;
     }
 
+    @NotNull(groups = Create.class)
     public Amount getPrice() {
         return price;
     }
 
-    public void setNativeId(Long nativeId) {
-        this.nativeId = nativeId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setGoodsId(Long goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public void setGoodsSpecsId(Long goodsSpecsId) {
+        this.goodsSpecsId = goodsSpecsId;
+    }
+
+    public void setOuterGoodsId(String outerGoodsId) {
+        this.outerGoodsId = outerGoodsId;
+    }
+
+    public void setOuterGoodsSpecsId(String outerGoodsSpecsId) {
+        this.outerGoodsSpecsId = outerGoodsSpecsId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setUserNum(Integer userNum) {
@@ -84,5 +161,12 @@ public class Gift {
 
     public void setPrice(Amount price) {
         this.price = price;
+    }
+
+
+    public interface Create {
+    }
+
+    public interface Update {
     }
 }

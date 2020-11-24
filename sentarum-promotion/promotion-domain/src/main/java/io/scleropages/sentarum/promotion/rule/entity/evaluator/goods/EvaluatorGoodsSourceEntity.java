@@ -43,11 +43,5 @@ public class EvaluatorGoodsSourceEntity extends DetailedGoodsSourceEntity {
     public Integer getBizType() {
         return EvaluatorGoodsSource.BIZ_TYPE_OF_EVALUATOR;
     }
-
-    @Override
-    @Column(name = COLUMN_GOODS_SOURCE_TYPE, nullable = false)
-    public Integer getGoodsSourceType() {
-        return EvaluatorGoodsSource.DETAILED_GOODS_SOURCE_TYPE;
-    }
 }
 
