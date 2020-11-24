@@ -23,11 +23,7 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsS
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.SellerUserLevelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.UserLevelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.UserTagConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.entity.AbstractRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.condition.BaseConditionRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.condition.ChannelConditionRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.condition.SellerUserLevelConditionRuleEntity;
@@ -38,31 +34,37 @@ import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.ChannelCon
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.SellerUserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserTagConditionRuleEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.BaseEvaluatorRuleEntity;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.EvaluatorGoodsEntity;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.EvaluatorGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.EvaluatorGoodsSpecsEntity;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.mapper.EvaluatorGoodsEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.mapper.EvaluatorGoodsSourceEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.goods.mapper.EvaluatorGoodsSpecsEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.promotion.mapper.BaseEvaluatorRuleEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.BaseEvaluatorRuleEntity;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.EvaluatorGoodsEntity;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.EvaluatorGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.EvaluatorGoodsSpecsEntity;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.mapper.EvaluatorGoodsEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.mapper.EvaluatorGoodsSourceEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.mapper.EvaluatorGoodsSpecsEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.mapper.BaseEvaluatorRuleEntityMapper;
+import io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.condition.repo.SellerUserLevelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.condition.repo.UserLevelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.condition.repo.UserTagConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
+import io.scleropages.sentarum.promotion.rule.model.Rule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
 import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserTagConditionRule;
-import io.scleropages.sentarum.promotion.rule.model.promotion.GoodsDiscountRule;
-import io.scleropages.sentarum.promotion.rule.model.promotion.OverflowDiscountRule;
-import io.scleropages.sentarum.promotion.rule.model.promotion.goods.EvaluatorGoods;
-import io.scleropages.sentarum.promotion.rule.model.promotion.goods.EvaluatorGoodsSource;
-import io.scleropages.sentarum.promotion.rule.model.promotion.goods.EvaluatorGoodsSpecs;
-import io.scleropages.sentarum.promotion.rule.promotion.goods.repo.EvaluatorGoodsRepository;
-import io.scleropages.sentarum.promotion.rule.promotion.goods.repo.EvaluatorGoodsSourceRepository;
-import io.scleropages.sentarum.promotion.rule.promotion.goods.repo.EvaluatorGoodsSpecsRepository;
-import io.scleropages.sentarum.promotion.rule.promotion.repo.BaseEvaluatorRuleRepository;
+import io.scleropages.sentarum.promotion.rule.model.evaluator.GoodsDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.evaluator.OverflowDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoods;
+import io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoodsSource;
+import io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoodsSpecs;
+import io.scleropages.sentarum.promotion.rule.evaluator.goods.repo.EvaluatorGoodsRepository;
+import io.scleropages.sentarum.promotion.rule.evaluator.goods.repo.EvaluatorGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.rule.evaluator.goods.repo.EvaluatorGoodsSpecsRepository;
+import io.scleropages.sentarum.promotion.rule.evaluator.repo.BaseEvaluatorRuleRepository;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.exception.BizError;
@@ -265,8 +267,9 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     @Validated(OverflowDiscountRule.Create.class)
     @Transactional
     @BizError("16")
-    public void createOverflowDiscountRule(@Valid OverflowDiscountRule overflowDiscountRule) {
+    public void createOverflowDiscountRule(@Valid OverflowDiscountRule overflowDiscountRule, Long activityId) {
 
+        getRequiredActivityEntity(activityId);
     }
 
 
@@ -410,7 +413,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         entity.setActivity(getRequiredActivityEntity(activityId));
         entity.setParentCondition(parentId);
         assertConditionRuleEntity(entity);
-        preConditionRuleCreating(conditionRule, entity);
+        preRuleCreating(conditionRule, entity);
         repository.save(entity);
         return entity.getId();
     }
@@ -441,12 +444,12 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     /**
      * pre checking and processing before save.
      *
-     * @param conditionRule
-     * @param baseConditionRuleEntity
+     * @param rule
+     * @param ruleEntity
      */
-    private void preConditionRuleCreating(ConditionRule conditionRule, BaseConditionRuleEntity baseConditionRuleEntity) {
-        baseConditionRuleEntity.setRuleClass(conditionRule.getClass().getName());
-        baseConditionRuleEntity.setRulePayload(JsonMapper2.toJson(conditionRule));
+    private void preRuleCreating(Rule rule, AbstractRuleEntity ruleEntity) {
+        ruleEntity.setRuleClass(rule.getClass().getName());
+        ruleEntity.setRulePayload(JsonMapper2.toJson(rule));
     }
 
     @Autowired

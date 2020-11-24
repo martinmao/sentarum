@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.repo;
+package io.scleropages.sentarum.promotion.rule.invocation.evaluator.promotion;
 
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.BaseEvaluatorRuleEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.promotion.rule.PromotionEvaluator;
+import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
+ * 订单级促销计算(整单优惠)已与特定商业主体关联.
+ * 其处于整个促销计算第二级别.但实际执行顺序应对订单级促销结果进行兜底.即计算完商品级促销规则后合并计算order级别优惠.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface AbstractEvaluatorRuleRepository<E extends BaseEvaluatorRuleEntity, T extends Table, R extends Record> extends AbstractRuleRepository<E, T, R> {
+public interface OrderEvaluator<R extends Rule> extends PromotionEvaluator<R, OrderPromotionContext> {
 
 }

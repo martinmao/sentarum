@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.repo;
+package io.scleropages.sentarum.promotion.rule.invocation.evaluator.promotion;
 
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.BaseEvaluatorRuleEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.promotion.rule.PromotionEvaluator;
+import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
+ * 商品级促销
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface AbstractEvaluatorRuleRepository<E extends BaseEvaluatorRuleEntity, T extends Table, R extends Record> extends AbstractRuleRepository<E, T, R> {
+public interface GoodsEvaluator<R extends Rule> extends PromotionEvaluator<R, GoodsPromotionContext> {
 
 }

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.entity.condition;
+package io.scleropages.sentarum.promotion.rule.entity.evaluator;
 
-import io.scleropages.sentarum.promotion.rule.entity.AbstractConditionRuleEntity;
+import io.scleropages.sentarum.promotion.rule.entity.AbstractRuleEntity;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Entity;
@@ -29,8 +29,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-//@DiscriminatorColumn(name = "type_", discriminatorType = DiscriminatorType.INTEGER)
-@Table(name = "prom_condition_base")
-@SequenceGenerator(name = "prom_condition_base_id", sequenceName = "seq_prom_condition_base", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
-public class BaseConditionRuleEntity extends AbstractConditionRuleEntity {
+@Table(name = "prom_eval_base")
+@SequenceGenerator(name = "prom_eval_base_id", sequenceName = "seq_prom_eval_base", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class BaseEvaluatorRuleEntity extends AbstractRuleEntity {
+
 }

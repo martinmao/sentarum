@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.entity.condition.mapper;
+package io.scleropages.sentarum.promotion.rule.entity.evaluator.mapper;
 
-import io.scleropages.sentarum.promotion.rule.entity.condition.BaseConditionRuleEntity;
-import io.scleropages.sentarum.promotion.rule.entity.mapper.AbstractConditionRuleEntityMapper;
-import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
+import io.scleropages.sentarum.promotion.rule.entity.mapper.AbstractRuleEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.OverflowDiscountRuleEntity;
+import io.scleropages.sentarum.promotion.rule.model.evaluator.OverflowDiscountRule;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 
@@ -25,6 +25,14 @@ import org.scleropages.crud.ModelMapper;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface BaseConditionRuleEntityMapper extends AbstractConditionRuleEntityMapper<BaseConditionRuleEntity, ConjunctionConditionRule> {
+public interface OverflowDiscountRuleEntityMapper extends AbstractRuleEntityMapper<OverflowDiscountRuleEntity, OverflowDiscountRule> {
+
+    default Integer toOrdinal(OverflowDiscountRule.OverflowDiscountType overflowDiscountType) {
+        return overflowDiscountType.getOrdinal();
+    }
+
+    default OverflowDiscountRule.OverflowDiscountType toStatus(Integer ordinal) {
+        return OverflowDiscountRule.OverflowDiscountType.getByOrdinal(ordinal);
+    }
 
 }

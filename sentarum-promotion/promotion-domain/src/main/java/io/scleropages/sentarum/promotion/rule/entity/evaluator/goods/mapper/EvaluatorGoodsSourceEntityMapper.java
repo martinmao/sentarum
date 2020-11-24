@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.repo;
+package io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.mapper;
 
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.BaseEvaluatorRuleEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.promotion.goods.entity.mapper.DetailedGoodsSourceEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.EvaluatorGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoodsSource;
+import org.mapstruct.Mapper;
+import org.scleropages.crud.ModelMapper;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface AbstractEvaluatorRuleRepository<E extends BaseEvaluatorRuleEntity, T extends Table, R extends Record> extends AbstractRuleRepository<E, T, R> {
-
+@Mapper(config = ModelMapper.DefaultConfig.class)
+public interface EvaluatorGoodsSourceEntityMapper extends DetailedGoodsSourceEntityMapper<EvaluatorGoodsSourceEntity, EvaluatorGoodsSource> {
 }

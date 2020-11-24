@@ -38,6 +38,10 @@ public class AbstractRuleEntity extends IdEntity {
 
     private String description;
 
+    private String ruleClass;
+
+    private String rulePayload;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "activity_id", nullable = false)
     public ActivityEntity getActivity() {
@@ -54,6 +58,16 @@ public class AbstractRuleEntity extends IdEntity {
         return description;
     }
 
+    @Column(name = "rule_clazz")
+    public String getRuleClass() {
+        return ruleClass;
+    }
+
+    @Column(name = "rule_payload")
+    public String getRulePayload() {
+        return rulePayload;
+    }
+
     public void setActivity(ActivityEntity activity) {
         this.activity = activity;
     }
@@ -64,5 +78,13 @@ public class AbstractRuleEntity extends IdEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setRuleClass(String ruleClass) {
+        this.ruleClass = ruleClass;
+    }
+
+    public void setRulePayload(String rulePayload) {
+        this.rulePayload = rulePayload;
     }
 }

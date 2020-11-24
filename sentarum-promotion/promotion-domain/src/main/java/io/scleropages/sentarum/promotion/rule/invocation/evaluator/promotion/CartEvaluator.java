@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.repo;
+package io.scleropages.sentarum.promotion.rule.invocation.evaluator.promotion;
 
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.BaseEvaluatorRuleEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.data.repository.NoRepositoryBean;
+import io.scleropages.sentarum.promotion.rule.PromotionEvaluator;
+import io.scleropages.sentarum.promotion.rule.context.CartPromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
+ * 购物车级别促销计算，购物车内商品需要根据卖家商业主体（商家、平台、三方等）、或仓储区域进行拆车.
+ * 其所处维度处于整个促销计算过程的顶级. 但在计算执行中使其进行兜底，即计算完所有订单级促销规则后合并计算cart级别优惠.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface AbstractEvaluatorRuleRepository<E extends BaseEvaluatorRuleEntity, T extends Table, R extends Record> extends AbstractRuleRepository<E, T, R> {
-
+public interface CartEvaluator<R extends Rule> extends PromotionEvaluator<R, CartPromotionContext> {
 }
