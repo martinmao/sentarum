@@ -59,4 +59,41 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <!-- to deploy client sdk to git packages do following steps.-->
+        <!-- 1. mvn package -DskipTests=true -P client-gen -->
+        <!-- 2. mvn source:jar -DskipTests=true -P client-gen -->
+        <!-- 3. mvn deploy:deploy-file -Durl=https://maven.pkg.github.com/martinmao/sentarum  -Dfile=target/item-client-0.0.1-SNAPSHOT.jar -Dsources=target/item-client-0.0.1-SNAPSHOT-sources.jar -DgroupId=org.scleropages.sentarum -DartifactId=item-client -Dversion=0.0.1-SNAPSHOT -DrepositoryId=github -->
+        <profile>
+            <id>client-gen</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.1.2</version>
+                        <configuration>
+                            <includes>
+                                <include>io/scleropages/sentarum/item/*Api*</include>
+                                <include>io/scleropages/sentarum/item/**/model/**</include>
+                            </includes>
+                            <finalName>item-client-${project.version}</finalName>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <configuration>
+                            <includes>
+                                <include>io/scleropages/sentarum/item/*Api*</include>
+                                <include>io/scleropages/sentarum/item/**/model/**</include>
+                            </includes>
+                            <finalName>item-client-${project.version}</finalName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

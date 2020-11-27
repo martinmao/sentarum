@@ -5,7 +5,7 @@
         xmlns='http://www.ehcache.org/v3'
         xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.6.xsd">
 
-    <persistence directory="${java.io.tmpdir}/ehcache"></persistence>
+    <persistence directory="${java.io.tmpdir}/ehcache/promotion"></persistence>
 
 
     <cache alias="io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository.findAllByActivity_Id">

@@ -15,7 +15,9 @@
  */
 package io.scleropages.sentarum.trading.order.entity.mapper;
 
+import io.scleropages.sentarum.trading.order.entity.OrderRefundEntity;
 import io.scleropages.sentarum.trading.order.entity.RefundLineEntity;
+import io.scleropages.sentarum.trading.order.model.OrderRefund;
 import io.scleropages.sentarum.trading.order.model.RefundLine;
 import io.scleropages.sentarum.trading.order.model.impl.RefundLineModel;
 import org.mapstruct.Mapper;
@@ -28,14 +30,14 @@ import org.scleropages.crud.ModelMapperRepository;
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface RefundLineEntityMapper extends AbstractOrderEntityMapper<RefundLineEntity, RefundLineModel> {
 
-    default RefundLine toreRefundLine(RefundLineEntity entity) {
+    default OrderRefund toOrderRefund(OrderRefundEntity entity) {
         if (!isEntityInitialized(entity)) {
             return null;
         }
-        return (RefundLine) ModelMapperRepository.getRequiredModelMapper(RefundLineEntityMapper.class).mapForRead(entity);
+        return (OrderRefund) ModelMapperRepository.getRequiredModelMapper(OrderRefundEntityMapper.class).mapForRead(entity);
     }
 
-    default RefundLineEntity toRefundLineEntity(RefundLine refundLine) {
+    default OrderRefundEntity toOrderRefundEntity(OrderRefund orderRefund) {
         return null;
     }
 

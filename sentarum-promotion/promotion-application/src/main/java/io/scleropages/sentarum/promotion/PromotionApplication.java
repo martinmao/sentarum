@@ -15,7 +15,13 @@
  */
 package io.scleropages.sentarum.promotion;
 
+import com.google.common.collect.Maps;
+import io.scleropages.sentarum.item.ItemApi;
+import org.apache.dubbo.config.annotation.Reference;
+import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.exception.BizError;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,10 +31,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @BizError("90")
-public class PromotionApplication {
+public class PromotionApplication implements InitializingBean {
+
+    @Reference
+    private ItemApi itemApi;
 
     public void computePromotion() {
 
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println(JsonMapper2.toJson(itemApi.findSkuPage(Maps.newHashMap(), Pageable.unpaged())));
+    }
 }

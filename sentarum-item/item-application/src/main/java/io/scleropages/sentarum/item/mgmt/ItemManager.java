@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.mgmt;
 
+import io.scleropages.sentarum.item.ItemApi;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
 import io.scleropages.sentarum.item.core.entity.AbstractSkuEntity;
 import io.scleropages.sentarum.item.core.entity.CombineSkuEntity;
@@ -71,7 +72,7 @@ import static io.scleropages.sentarum.item.category.model.CategoryProperty.Categ
 @Service
 @Validated
 @BizError("40")
-public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMapper> {
+public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMapper>, ItemApi {
 
     private ItemRepository itemRepository;
     private SpuRepository spuRepository;
@@ -88,6 +89,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param spuId  所属spu
      * @param values 商品属性值集合(key为元数据id，value为属性值)
      */
+    @Override
     @Validated({ItemModel.Create.class})
     @Transactional
     @BizError("10")
@@ -108,6 +110,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param model  item模型
      * @param values 商品属性值集合(key为属性值id，value为属性值)
      */
+    @Override
     @Validated({ItemModel.Update.class})
     @Transactional
     @BizError("11")
@@ -125,6 +128,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param model  sku模型
      * @param values 销售属性值集合(key为元数据id，value为属性值)
      */
+    @Override
     @Validated({SkuModel.Create.class})
     @Transactional
     @BizError("12")
@@ -139,6 +143,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param model  sku模型
      * @param values 销售属性值集合(key为属性值id，value为属性值)
      */
+    @Override
     @Validated({SkuModel.Update.class})
     @Transactional
     @BizError("13")
@@ -153,6 +158,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param model  combine sku模型
      * @param values 销售属性值集合(key为元数据id，value为属性值)
      */
+    @Override
     @Validated({CombineSkuModel.Create.class})
     @Transactional
     @BizError("14")
@@ -167,6 +173,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param model  combine sku模型
      * @param values 销售属性值集合(key为属性值id，value为属性值)
      */
+    @Override
     @Validated({CombineSkuModel.Update.class})
     @Transactional
     @BizError("15")
@@ -181,6 +188,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param combineSkuId 组合sku id
      * @param skuId        目标sku id
      */
+    @Override
     @Validated({CombineSkuEntryModel.Create.class})
     @Transactional
     @BizError("16")
@@ -200,6 +208,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      *
      * @param model 组合sku条目模型
      */
+    @Override
     @Validated({CombineSkuEntryModel.Update.class})
     @Transactional
     @BizError("17")
@@ -214,6 +223,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      *
      * @param id
      */
+    @Override
     @Transactional
     @BizError("18")
     public void deleteCombineSkuEntry(Long id) {
@@ -231,6 +241,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param propertySort          关键属性排序
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     @BizError("50")
     public Page<Item> findItemPage(Map<String, SearchFilter> itemSearchFilters, Map<String, SearchFilter> propertySearchFilters, Pageable pageable, Sort propertySort) {
@@ -245,6 +256,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param pageable
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     @BizError("51")
     public Page<Sku> findSkuPage(Map<String, Object> searchFilters, Pageable pageable) {
@@ -258,6 +270,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param pageable
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     @BizError("52")
     public Page<CombineSku> findCombineSkuPage(Map<String, Object> searchFilters, Pageable pageable) {
@@ -271,6 +284,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
      * @param pageable
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     @BizError("53")
     public Page<CombineSkuEntry> findCombineSkuEntryPage(Map<String, Object> searchFilters, Pageable pageable) {

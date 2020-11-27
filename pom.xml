@@ -25,12 +25,20 @@
     <description>Top project pom.xml file</description>
 
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/martinmao/sentarum</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+        <spring-boot.version>2.2.5.RELEASE</spring-boot.version>
         <spring-cloud-aliababa.version>2.2.1.RELEASE</spring-cloud-aliababa.version>
-        <spring-cloud.version>Greenwich.SR6</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
         <spring-statemachine.version>2.2.0.RELEASE</spring-statemachine.version>
         <druid.version>1.1.21</druid.version>
         <shardingsphere.version>4.0.0-RC3</shardingsphere.version>
@@ -244,4 +252,17 @@
         </pluginManagement>
     </build>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name></name>
+            <url>https://maven.pkg.github.com/martinmao/bukitmerah</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
