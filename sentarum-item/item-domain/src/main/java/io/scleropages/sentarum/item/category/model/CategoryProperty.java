@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item.category.model;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import org.springframework.util.Assert;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CategoryProperty {
+public interface CategoryProperty extends Serializable {
 
     /**
      * 唯一标识

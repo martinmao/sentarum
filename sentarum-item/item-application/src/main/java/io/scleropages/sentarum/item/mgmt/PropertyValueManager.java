@@ -58,7 +58,7 @@ import java.util.Optional;
  */
 @Service
 @Validated
-@BizError("50")
+@BizError("04")
 public class PropertyValueManager implements GenericManager<PropertyValueModel, Long, PropertyValueEntityMapper> {
 
     private PropertyValueRepository propertyValueRepository;

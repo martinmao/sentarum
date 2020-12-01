@@ -15,13 +15,14 @@
  */
 package io.scleropages.sentarum.item.ge.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ByteArray {
+public class ByteArray implements Serializable {
 
 
     enum MediaType {

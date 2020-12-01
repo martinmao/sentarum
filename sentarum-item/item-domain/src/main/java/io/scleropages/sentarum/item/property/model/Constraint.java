@@ -28,6 +28,7 @@ import org.springframework.core.Ordered;
 import org.springframework.util.ClassUtils;
 
 import javax.validation.constraints.Null;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -35,8 +36,8 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public abstract class Constraint implements Ordered {
-    
+public abstract class Constraint implements Ordered, Serializable {
+
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(Constraint.class);
 

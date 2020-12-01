@@ -51,7 +51,7 @@ import static io.scleropages.sentarum.item.category.model.CategoryProperty.Categ
  */
 @Service
 @Validated
-@BizError("30")
+@BizError("02")
 public class SpuManager implements GenericManager<SpuModel, Long, SpuEntityMapper> {
 
     private SpuRepository spuRepository;

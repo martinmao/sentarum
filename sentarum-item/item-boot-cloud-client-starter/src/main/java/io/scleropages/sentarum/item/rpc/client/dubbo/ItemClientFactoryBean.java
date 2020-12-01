@@ -13,28 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item;
+package io.scleropages.sentarum.item.rpc.client.dubbo;
 
-import io.scleropages.sentarum.item.mgmt.PropertyValueManager;
-import org.scleropages.crud.exception.BizError;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import io.scleropages.sentarum.item.ItemApi;
+import org.springframework.beans.factory.FactoryBean;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Service
-@BizError("11")
-public class PropertyValueApplication {
+public class ItemClientFactoryBean implements FactoryBean<ItemApi> {
 
-    private PropertyValueManager propertyValueManager;
+    private final ItemApi itemApi;
 
-    public PropertyValueManager getPropertyValueManager() {
-        return propertyValueManager;
+    public ItemClientFactoryBean(ItemApi itemApi) {
+        this.itemApi = itemApi;
     }
 
-    @Autowired
-    public void setPropertyValueManager(PropertyValueManager propertyValueManager) {
-        this.propertyValueManager = propertyValueManager;
+    @Override
+    public ItemApi getObject() throws Exception {
+        return itemApi;
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return ItemApi.class;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return true;
     }
 }

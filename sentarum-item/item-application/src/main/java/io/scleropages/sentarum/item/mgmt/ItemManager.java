@@ -71,7 +71,7 @@ import static io.scleropages.sentarum.item.category.model.CategoryProperty.Categ
  */
 @Service
 @Validated
-@BizError("40")
+@BizError("03")
 public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMapper>, ItemApi {
 
     private ItemRepository itemRepository;

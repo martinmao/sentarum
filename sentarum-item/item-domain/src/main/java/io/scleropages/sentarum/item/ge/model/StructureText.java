@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.ge.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class StructureText {
+public class StructureText implements Serializable {
 
     private Long id;
 

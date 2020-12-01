@@ -17,6 +17,7 @@
 package io.scleropages.sentarum.item.core.model;
 
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CombineSkuEntry {
+public interface CombineSkuEntry extends Serializable {
 
 
     /**

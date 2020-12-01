@@ -36,7 +36,7 @@ import javax.validation.Valid;
  */
 @Service
 @Validated
-@BizError("99")
+@BizError("05")
 public class MediaManager implements GenericManager<Media, Long, MediaEntityMapper> {
 
     private MediaRepository mediaRepository;

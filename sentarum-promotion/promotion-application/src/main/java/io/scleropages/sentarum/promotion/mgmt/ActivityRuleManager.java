@@ -99,7 +99,7 @@ import static io.scleropages.sentarum.promotion.rule.model.evaluator.goods.Evalu
  */
 @Service
 @Validated
-@BizError("20")
+@BizError("21")
 public class ActivityRuleManager implements BeanClassLoaderAware {
 
 

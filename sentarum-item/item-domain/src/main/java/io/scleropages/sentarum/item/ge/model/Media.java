@@ -19,6 +19,7 @@ import com.google.common.net.MediaType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class Media {
+public class Media implements Serializable {
 
     private Long id;//唯一标识
     private String outerId;//外部唯一标识,如对象存储服务唯一标识码

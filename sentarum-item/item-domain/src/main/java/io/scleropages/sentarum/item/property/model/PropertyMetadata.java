@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.property.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PropertyMetadata {
+public interface PropertyMetadata extends Serializable {
 
     /**
      * 标识

@@ -19,6 +19,7 @@ import io.scleropages.sentarum.item.property.model.input.BasicInput;
 import io.scleropages.sentarum.item.property.model.input.ComplexInput;
 import org.apache.commons.collections.ComparatorUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ import java.util.List;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GroupedPropertyMetadata {
+public interface GroupedPropertyMetadata extends Serializable {
 
     /**
      * 标识

@@ -16,12 +16,14 @@
 package io.scleropages.sentarum.item.property.model;
 
 
+import java.io.Serializable;
+
 /**
  * 属性值
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PropertyValue {
+public interface PropertyValue extends Serializable {
 
     /**
      * 唯一标识

@@ -5,8 +5,64 @@
         xmlns='http://www.ehcache.org/v3'
         xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.6.xsd">
 
-    <persistence directory="${java.io.tmpdir}/ehcache"></persistence>
+    <persistence directory="${java.io.tmpdir}/ehcache/item"></persistence>
 
+
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.StateRepository.getIdByName">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.StateRepository.getById">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository.getIdByName">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository.getById">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.EventDefinitionRepository.getIdByName">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.EventDefinitionRepository.getById">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.StateTransitionRepository.findAllByStateMachineDefinition_Id">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
+
+    <cache alias="io.scleropages.sentarum.core.fsm.repo.StateMachineExecutionRepository.getIdByBizTypeAndBizId">
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <heap>1000</heap>
+    </cache>
 
     <cache alias="io.scleropages.sentarum.item.category.repo.StandardCategoryRepository.getFullStandardCategoryGraph">
         <expiry>

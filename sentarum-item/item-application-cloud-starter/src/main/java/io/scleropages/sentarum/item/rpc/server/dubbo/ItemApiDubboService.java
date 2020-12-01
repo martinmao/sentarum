@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.item.rpc.dubbo;
+package io.scleropages.sentarum.item.rpc.server.dubbo;
 
 import io.scleropages.sentarum.item.ItemApi;
 import io.scleropages.sentarum.item.core.model.CombineSku;
@@ -39,7 +39,7 @@ import java.util.Map;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Service
-public class ItemApiImpl implements ItemApi {
+public class ItemApiDubboService implements ItemApi {
 
 
     private ItemManager itemManager;

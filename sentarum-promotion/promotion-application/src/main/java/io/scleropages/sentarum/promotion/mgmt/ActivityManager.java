@@ -68,7 +68,7 @@ import java.util.Objects;
  */
 @Service
 @Validated
-@BizError("10")
+@BizError("20")
 public class ActivityManager implements GenericManager<ActivityModel, Long, ActivityEntityMapper>, InitializingBean {
 
 

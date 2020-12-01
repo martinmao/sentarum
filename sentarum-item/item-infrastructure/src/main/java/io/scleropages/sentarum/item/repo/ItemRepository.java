@@ -75,7 +75,7 @@ public interface ItemRepository extends GenericRepository<ItemEntity, Long>, Joo
             PropertyConditionsAssembler.applyPropertyConditions(KEY_PROPERTY.getOrdinal(), query, propertySort, keyPropertySearchFilters, JpaContexts.getManagedTypeModel(SpuEntity.class));
         }
 
-        return dslPage(() -> query, pageable, false, false).map(o -> {
+        return dslPage(() -> query, pageable, false, true).map(o -> {
             ItemEntity itemEntity = new ItemEntity();
             dslRecordInto(o, itemEntity, new ReferenceEntityAssembler() {
                 @Override

@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.scleropages.sentarum.item.boot.autoconfigure.ItemClientsAutoConfiguration

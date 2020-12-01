@@ -70,7 +70,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Validated
-@BizError("10")
+@BizError("00")
 public class PropertyManager implements GenericManager<PropertyMetadataModel, Long, PropertyMetaEntityMapper> {
 
 

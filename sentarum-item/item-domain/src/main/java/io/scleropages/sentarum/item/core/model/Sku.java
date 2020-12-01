@@ -21,6 +21,7 @@ import io.scleropages.sentarum.item.core.model.impl.CombineSkuModel;
 import io.scleropages.sentarum.item.core.model.impl.SkuModel;
 import io.scleropages.sentarum.item.property.model.PropertyValue;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Sku {
+public interface Sku extends Serializable {
 
 
     /**

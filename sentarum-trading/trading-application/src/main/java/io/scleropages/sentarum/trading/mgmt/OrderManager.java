@@ -30,7 +30,7 @@ import org.springframework.validation.annotation.Validated;
  */
 @Service
 @Validated
-@BizError("10")
+@BizError("30")
 public class OrderManager {
 
     private OrderRepository orderRepository;

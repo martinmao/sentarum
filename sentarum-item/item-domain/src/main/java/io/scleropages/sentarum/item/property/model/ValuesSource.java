@@ -21,6 +21,7 @@ import io.scleropages.sentarum.item.property.model.vs.SqlQueryValuesSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ValuesSource {
+public interface ValuesSource extends Serializable {
 
 
     enum ValuesSourceType {

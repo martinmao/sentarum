@@ -25,6 +25,7 @@ import io.scleropages.sentarum.item.property.model.input.SingleCheck;
 import io.scleropages.sentarum.item.property.model.input.SingleInput;
 import org.springframework.util.Assert;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Input {
+public interface Input extends Serializable {
 
 
     /**

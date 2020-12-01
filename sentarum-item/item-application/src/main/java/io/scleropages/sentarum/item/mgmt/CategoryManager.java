@@ -77,7 +77,7 @@ import java.util.stream.Stream;
  */
 @Service
 @Validated
-@BizError("20")
+@BizError("01")
 public class CategoryManager implements GenericManager<StandardCategoryModel, Long, StandardCategoryEntityMapper> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());

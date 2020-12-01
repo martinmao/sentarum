@@ -17,6 +17,7 @@ package io.scleropages.sentarum.item.category.model;
 
 import org.scleropages.crud.dao.orm.SearchFilter;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface StandardCategoryLink {
+public interface StandardCategoryLink extends Serializable {
 
     /**
      * 唯一标识

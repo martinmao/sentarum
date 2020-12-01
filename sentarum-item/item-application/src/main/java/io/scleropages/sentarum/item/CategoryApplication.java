@@ -31,7 +31,7 @@ import java.util.List;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Service
-@BizError("21")
+@BizError("10")
 public class CategoryApplication {
 
     private CategoryManager categoryManager;

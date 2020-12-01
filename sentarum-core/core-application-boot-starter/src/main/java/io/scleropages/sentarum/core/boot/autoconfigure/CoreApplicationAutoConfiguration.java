@@ -18,6 +18,7 @@ package io.scleropages.sentarum.core.boot.autoconfigure;
 import io.scleropages.sentarum.core.model.primitive.BaseAddressReader;
 import io.scleropages.sentarum.core.model.primitive.BaseAddresses;
 import io.scleropages.sentarum.core.model.primitive.impl.ResourceBaseAddressReader;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 public class CoreApplicationAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
 
+    @ConditionalOnMissingBean
     @Bean
     public BaseAddressReader baseAddressReader() {
         return new ResourceBaseAddressReader();

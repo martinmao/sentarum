@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.item.category.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Category {
+public interface Category extends Serializable {
 
 
     enum Status {

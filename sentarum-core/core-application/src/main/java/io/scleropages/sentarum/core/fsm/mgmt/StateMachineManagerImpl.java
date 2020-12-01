@@ -42,7 +42,6 @@ import io.scleropages.sentarum.core.fsm.repo.StateMachineDefinitionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateMachineExecutionRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateRepository;
 import io.scleropages.sentarum.core.fsm.repo.StateTransitionRepository;
-import org.scleropages.crud.exception.BizError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +58,6 @@ import java.util.Map;
  */
 @Service
 @Validated
-@BizError("91")
 public class StateMachineManagerImpl implements StateMachineManager {
 
     private StateMachineDefinitionEntityMapper stateMachineDefinitionEntityMapper;
@@ -79,7 +77,6 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @Override
     @Validated({StateModel.CreateModel.class})
     @Transactional
-    @BizError("10")
     public void createState(StateModel state) {
         StateEntity stateEntity = stateEntityMapper.mapForSave(state);
         if (null != stateEntity.getEnteredActionConfig())
@@ -92,7 +89,6 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @Override
     @Validated({EventDefinitionModel.CreateModel.class})
     @Transactional
-    @BizError("11")
     public void createEventDefinition(EventDefinitionModel eventDefinition) {
         EventDefinitionEntity eventDefinitionEntity = eventDefinitionEntityMapper.mapForSave(eventDefinition);
         eventDefinitionRepository.save(eventDefinitionEntity);
@@ -101,7 +97,6 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @Override
     @Validated({StateMachineDefinitionModel.CreateModel.class})
     @Transactional
-    @BizError("12")
     public void createStateMachineDefinition(StateMachineDefinitionModel stateMachineDefinition, Long initialState, Long endState) {
         Assert.notNull(initialState, "initialState must not null;");
 
@@ -119,7 +114,6 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @Override
     @Validated({StateTransitionModel.CreateModel.class})
     @Transactional
-    @BizError("13")
     public void createStateTransition(StateTransitionModel stateTransition, Long stateMachineDefinitionId, Long fromStateId, Long toStateId, Long eventDefinitionId) {
         Assert.notNull(stateMachineDefinitionId, "stateMachineDefinitionId must not null;");
         Assert.notNull(toStateId, "toStateId must not null;");
@@ -145,7 +139,6 @@ public class StateMachineManagerImpl implements StateMachineManager {
 
     @Override
     @Transactional
-    @BizError("14")
     public StateMachine createStateMachine(Long definitionId, Integer bizType, Long bizId, Map<String, Object> contextAttributes) {
         Assert.notNull(definitionId, "definitionId must not null;");
         Assert.notNull(bizType, "bizType must not null;");
