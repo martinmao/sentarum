@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.repo;
 
 import com.google.common.collect.Lists;
+import io.scleropages.sentarum.item.category.repo.StandardCategoryRepository;
 import io.scleropages.sentarum.item.core.entity.ItemEntity;
 import io.scleropages.sentarum.item.core.entity.SpuEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
@@ -42,6 +43,7 @@ import javax.persistence.metamodel.Attribute;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.KEY_PROPERTY;
 import static io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository.PropertyConditionsAssembler;
@@ -55,7 +57,44 @@ public interface ItemRepository extends GenericRepository<ItemEntity, Long>, Joo
 
     @EntityGraph(attributePaths = {"spu", "category"})
     @Cacheable
-    Optional<ItemEntity> getById(Long aLong);
+    Optional<ItemEntity> getById(Long id);
+
+
+    @Cacheable
+    default Optional<ItemRecord> readById(Long id) {
+        Item item = dslTable();
+        return dslContext().selectFrom(item).where(item.ID.eq(id)).fetchOptional();
+    }
+
+    /**
+     * read item by given id
+     *
+     * @param id                 required
+     * @param spuRepository      (optional) required if want to fetch spu info.
+     * @param categoryRepository (optional) required if want to fetch category info.
+     * @return
+     */
+    default Optional<ItemEntity> readById(Long id, SpuRepository spuRepository, StandardCategoryRepository categoryRepository) {
+        Optional<ItemRecord> optionalItemRecord = readById(id);
+        if (!optionalItemRecord.isPresent())
+            return Optional.empty();
+
+        ItemRecord itemRecord = optionalItemRecord.get();
+        ItemEntity itemEntity = new ItemEntity();
+
+        dslRecordInto(itemRecord, itemEntity);
+        if (null != spuRepository)
+            spuRepository.readById(itemRecord.getSpuId(), categoryRepository).ifPresent(spuEntity -> itemEntity.setSpu(spuEntity));
+        return Optional.of(itemEntity);
+    }
+
+    default void consumeById(Long id, Consumer<ItemEntity> entityConsumer) {
+        readById(id).ifPresent(r -> {
+            ItemEntity entity = new ItemEntity();
+            dslRecordInto(r, entity);
+            entityConsumer.accept(entity);
+        });
+    }
 
 
     default Page<ItemEntity> findItemPage(Map<String, SearchFilter> spuSearchFilters, Map<PropertyMetadata, SearchFilter> keyPropertySearchFilters, Pageable pageable, Sort propertySort) {

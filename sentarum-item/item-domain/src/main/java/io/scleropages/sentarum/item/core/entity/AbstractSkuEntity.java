@@ -37,6 +37,10 @@ import java.util.List;
 @MappedSuperclass
 public class AbstractSkuEntity extends IdEntity {
 
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_ITEM_ID = "item_id";
+    public static final String COLUMN_STD_CATEGORY_ID = "std_category_id";
+
     private ItemEntity item;
     private StandardCategoryEntity category;
     private String outerId;
@@ -48,13 +52,13 @@ public class AbstractSkuEntity extends IdEntity {
     private String additionalAttributes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = COLUMN_ITEM_ID)
     public ItemEntity getItem() {
         return item;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "std_category_id")
+    @JoinColumn(name = COLUMN_STD_CATEGORY_ID)
     public StandardCategoryEntity getCategory() {
         return category;
     }

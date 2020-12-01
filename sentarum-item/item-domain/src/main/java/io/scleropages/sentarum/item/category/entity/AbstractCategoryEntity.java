@@ -29,6 +29,8 @@ import javax.persistence.Transient;
 @MappedSuperclass
 public class AbstractCategoryEntity extends IdEntity {
 
+    public static final String COLUMN_ID="id";
+
     private String name;
     private String tag;
     private String description;

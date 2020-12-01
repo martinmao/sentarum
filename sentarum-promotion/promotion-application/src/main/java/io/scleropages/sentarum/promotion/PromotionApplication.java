@@ -17,8 +17,8 @@ package io.scleropages.sentarum.promotion;
 
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.item.ItemApi;
-import org.apache.dubbo.common.serialize.hessian2.Hessian2ObjectInput;
-import org.apache.dubbo.common.serialize.hessian2.Hessian2ObjectOutput;
+import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
+import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.dao.orm.jpa.Pages;
 import org.scleropages.crud.exception.BizError;
@@ -28,10 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import org.springframework.util.Assert;
 
 /**
  * application layer for promotion.
@@ -42,10 +39,14 @@ import java.io.IOException;
 @BizError("25")
 public class PromotionApplication implements InitializingBean {
 
+    private ActivityManager activityManager;
+    private ActivityRuleManager activityRuleManager;
     private ItemApi itemApi;
 
-    public void computePromotion() {
-
+    public void calculateDiscount(DiscountCalculateRequest request) {
+        Assert.notNull(request, "request must not be null.");
+        request.getCalculatingGoods().forEach(calculatingGoods -> {
+        });
     }
 
     @Override
@@ -59,26 +60,17 @@ public class PromotionApplication implements InitializingBean {
     }
 
     @Autowired
+    public void setActivityManager(ActivityManager activityManager) {
+        this.activityManager = activityManager;
+    }
+
+    @Autowired
+    public void setActivityRuleManager(ActivityRuleManager activityRuleManager) {
+        this.activityRuleManager = activityRuleManager;
+    }
+
+    @Autowired
     public void setItemApi(ItemApi itemApi) {
         this.itemApi = itemApi;
-    }
-
-
-    public static void main(String[] args) throws IOException {
-
-        testPage(PageRequest.of(1, 15, Sort.Direction.DESC, "a", "b", "c", "d"));
-        testPage(Pageable.unpaged());
-        testPage(PageRequest.of(1, 15));
-        testPage(PageRequest.of(1, 15, Sort.by(Sort.Order.asc("a"), Sort.Order.desc("b"))));
-        testPage(PageRequest.of(1, 15, Sort.by("a", "b", "c")));
-    }
-
-    private static void testPage(Pageable sp) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Hessian2ObjectOutput writer = new Hessian2ObjectOutput(out);
-        writer.writeObject(Pages.serializablePageable(sp));
-        writer.flushBuffer();
-        Hessian2ObjectInput reader = new Hessian2ObjectInput(new ByteArrayInputStream(out.toByteArray()));
-        System.out.println(reader.readObject());
     }
 }

@@ -92,4 +92,8 @@ public interface StandardCategoryRepository extends AbstractCategoryRepository<S
         return createGraph(specification);
     }
 
+    @Override
+    default StandardCategoryEntity createEntity() {
+        return new StandardCategoryEntity();
+    }
 }

@@ -17,6 +17,7 @@ package io.scleropages.sentarum.item.mgmt;
 
 import io.scleropages.sentarum.item.ItemApi;
 import io.scleropages.sentarum.item.category.entity.StandardCategoryEntity;
+import io.scleropages.sentarum.item.category.repo.StandardCategoryRepository;
 import io.scleropages.sentarum.item.core.entity.AbstractSkuEntity;
 import io.scleropages.sentarum.item.core.entity.CombineSkuEntity;
 import io.scleropages.sentarum.item.core.entity.CombineSkuEntryEntity;
@@ -77,6 +78,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     private ItemRepository itemRepository;
     private SpuRepository spuRepository;
     private SkuRepository skuRepository;
+    private StandardCategoryRepository standardCategoryRepository;
     private CombineSkuRepository combineSkuRepository;
     private CombineSkuEntryRepository combineSkuEntryRepository;
     private CategoryManager categoryManager;
@@ -292,6 +294,42 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     }
 
 
+    /**
+     * 获取商品
+     *
+     * @param itemId
+     * @param fetchSpu
+     * @param fetchCategory
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = true)
+    @BizError("54")
+    public Item getItem(Long itemId, boolean fetchSpu, boolean fetchCategory) {
+        Assert.notNull(itemId, "item id is required.");
+        ItemEntity itemEntity = itemRepository.readById(itemId, fetchSpu ? spuRepository : null, fetchCategory ? standardCategoryRepository : null).orElseThrow(() -> new IllegalArgumentException("no item found: " + itemId));
+        return getModelMapper().mapForRead(itemEntity);
+    }
+
+    /**
+     * 获取sku
+     *
+     * @param skuId
+     * @param fetchItem
+     * @param fetchSpu
+     * @param fetchCategory
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = true)
+    @BizError("55")
+    public Sku getSku(Long skuId, boolean fetchItem, boolean fetchSpu, boolean fetchCategory) {
+        Assert.notNull(skuId, "sku id is required.");
+        SkuEntity skuEntity = skuRepository.readById(skuId, fetchItem ? itemRepository : null, fetchSpu ? spuRepository : null, fetchCategory ? standardCategoryRepository : null).orElseThrow(() -> new IllegalArgumentException("no sku found: " + skuId));
+        return getModelMapper(SkuEntityMapper.class).mapForRead(skuEntity);
+    }
+
+
     protected void createSkuInternal(SkuModel model, Long itemId, Map<Long, Object> values) {
         Assert.notNull(itemId, "itemId is required.");
         AbstractSkuEntity skuEntity = (AbstractSkuEntity) getSkuMapper(model).mapForSave(model);
@@ -378,6 +416,11 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @Autowired
     public void setCombineSkuEntryRepository(CombineSkuEntryRepository combineSkuEntryRepository) {
         this.combineSkuEntryRepository = combineSkuEntryRepository;
+    }
+
+    @Autowired
+    public void setStandardCategoryRepository(StandardCategoryRepository standardCategoryRepository) {
+        this.standardCategoryRepository = standardCategoryRepository;
     }
 
     @Autowired

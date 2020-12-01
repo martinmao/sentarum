@@ -22,12 +22,15 @@ import org.jooq.Record;
 import org.jooq.Table;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -35,6 +38,25 @@ import java.util.function.Supplier;
  */
 @NoRepositoryBean
 public interface AbstractCategoryRepository<E extends AbstractCategoryEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E> {
+
+
+    @Cacheable
+    default Optional<R> readById(Long id) {
+        T t = dslTable();
+        return dslContext().selectFrom(t).where(t.field(AbstractCategoryEntity.COLUMN_ID.toUpperCase()).eq(id)).fetchOptional();
+    }
+
+    default void consumeById(Long id, Consumer<E> entityConsumer) {
+        readById(id).ifPresent(r -> {
+            E entity = createEntity();
+            dslRecordInto(r, entity);
+            entityConsumer.accept(entity);
+        });
+    }
+
+    default E createEntity() {
+        throw new IllegalStateException("not implemented.");
+    }
 
     /**
      * get by id with parent.

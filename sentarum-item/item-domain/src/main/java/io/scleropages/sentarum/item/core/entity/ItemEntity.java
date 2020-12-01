@@ -98,13 +98,13 @@ public class ItemEntity extends IdEntity implements EntityAware<Object> {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "spu_id")
+    @JoinColumn(name = "spu_id", nullable = false)
     public SpuEntity getSpu() {
         return spu;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "std_category_id")
+    @JoinColumn(name = "std_category_id", nullable = false)
     public StandardCategoryEntity getCategory() {
         return category;
     }

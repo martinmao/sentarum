@@ -109,6 +109,16 @@ public class ItemApiDubboService implements ItemApi {
         return itemManager.findCombineSkuEntryPage(searchFilters, pageable);
     }
 
+    @Override
+    public Item getItem(Long itemId, boolean fetchSpu, boolean fetchCategory) {
+        return itemManager.getItem(itemId, fetchSpu, fetchCategory);
+    }
+
+    @Override
+    public Sku getSku(Long skuId, boolean fetchItem, boolean fetchSpu, boolean fetchCategory) {
+        return itemManager.getSku(skuId, fetchItem, fetchSpu, fetchCategory);
+    }
+
     @Autowired
     public void setItemManager(ItemManager itemManager) {
         this.itemManager = itemManager;

@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.item.repo;
 
 import com.google.common.collect.Lists;
+import io.scleropages.sentarum.item.category.repo.StandardCategoryRepository;
 import io.scleropages.sentarum.item.core.entity.SpuEntity;
 import io.scleropages.sentarum.item.property.model.PropertyMetadata;
 import io.scleropages.sentarum.item.property.repo.AbstractPropertyValueRepository.PropertyConditionsAssembler;
@@ -40,6 +41,7 @@ import javax.persistence.metamodel.Attribute;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static io.scleropages.sentarum.item.category.model.CategoryProperty.CategoryPropertyBizType.KEY_PROPERTY;
 
@@ -52,6 +54,43 @@ public interface SpuRepository extends GenericRepository<SpuEntity, Long>, JooqR
     @EntityGraph(attributePaths = "category")
     @Cacheable
     Optional<SpuEntity> getById(Long id);
+
+
+    @Cacheable
+    default Optional<ItemSpuRecord> readById(Long id) {
+        ItemSpu spu = dslTable();
+        return dslContext().selectFrom(spu).where(spu.ID.eq(id)).fetchOptional();
+    }
+
+
+    /**
+     * read spu by given id
+     *
+     * @param id                 required.
+     * @param categoryRepository (optional) required if want to fetch category.
+     * @return
+     */
+    default Optional<SpuEntity> readById(Long id, StandardCategoryRepository categoryRepository) {
+        Optional<ItemSpuRecord> optionalItemSpuRecord = readById(id);
+        if (!optionalItemSpuRecord.isPresent())
+            return Optional.empty();
+        ItemSpuRecord itemSpuRecord = optionalItemSpuRecord.get();
+        SpuEntity spuEntity = new SpuEntity();
+        dslRecordInto(itemSpuRecord, spuEntity);
+        if (null != categoryRepository) {
+            categoryRepository.consumeById(itemSpuRecord.getStdCategoryId(), entity -> spuEntity.setCategory(entity));
+        }
+        return Optional.of(spuEntity);
+    }
+
+
+    default void consumeById(Long id, Consumer<SpuEntity> entityConsumer) {
+        readById(id).ifPresent(r -> {
+            SpuEntity entity = new SpuEntity();
+            dslRecordInto(r, entity);
+            entityConsumer.accept(entity);
+        });
+    }
 
 
     default Page<SpuEntity> findSpuPage(Map<String, SearchFilter> spuSearchFilters, Map<PropertyMetadata, SearchFilter> propertySearchFilters, Pageable pageable, Sort propertySort) {

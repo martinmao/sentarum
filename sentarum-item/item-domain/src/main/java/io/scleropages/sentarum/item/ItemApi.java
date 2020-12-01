@@ -24,9 +24,11 @@ import io.scleropages.sentarum.item.core.model.impl.CombineSkuModel;
 import io.scleropages.sentarum.item.core.model.impl.ItemModel;
 import io.scleropages.sentarum.item.core.model.impl.SkuModel;
 import org.scleropages.crud.dao.orm.SearchFilter;
+import org.scleropages.crud.exception.BizError;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -144,4 +146,29 @@ public interface ItemApi {
      * @return
      */
     Page<CombineSkuEntry> findCombineSkuEntryPage(Map<String, Object> searchFilters, Pageable pageable);
+
+    /**
+     * 获取商品
+     *
+     * @param itemId
+     * @param fetchSpu
+     * @param fetchCategory
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("54")
+    Item getItem(Long itemId, boolean fetchSpu, boolean fetchCategory);
+
+    /**
+     * 获取sku
+     *
+     * @param skuId
+     * @param fetchItem
+     * @param fetchSpu
+     * @param fetchCategory
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("55")
+    Sku getSku(Long skuId, boolean fetchItem, boolean fetchSpu, boolean fetchCategory);
 }

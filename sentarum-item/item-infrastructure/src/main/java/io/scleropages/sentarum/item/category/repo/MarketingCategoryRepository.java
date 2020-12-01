@@ -38,4 +38,9 @@ public interface MarketingCategoryRepository extends AbstractCategoryRepository<
         };
         return get(specification);
     }
+
+    @Override
+    default MarketingCategoryEntity createEntity() {
+        return new MarketingCategoryEntity();
+    }
 }

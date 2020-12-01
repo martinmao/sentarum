@@ -23,4 +23,9 @@ import io.scleropages.sentarum.jooq.tables.records.ItemSkuRecord;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface SkuRepository extends AbstractSkuRepository<SkuEntity, ItemSku, ItemSkuRecord> {
+
+    @Override
+    default SkuEntity createEntity() {
+        return new SkuEntity();
+    }
 }

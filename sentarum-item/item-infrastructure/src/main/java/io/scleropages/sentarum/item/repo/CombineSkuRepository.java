@@ -23,4 +23,9 @@ import io.scleropages.sentarum.jooq.tables.records.ItemCombineSkuRecord;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface CombineSkuRepository extends AbstractSkuRepository<CombineSkuEntity, ItemCombineSku, ItemCombineSkuRecord> {
+
+    @Override
+    default CombineSkuEntity createEntity() {
+        return new CombineSkuEntity();
+    }
 }
