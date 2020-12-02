@@ -30,7 +30,7 @@ import javax.persistence.Table;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name = "type_", discriminatorType = DiscriminatorType.INTEGER)
-@Table(name = "prom_condition_base")
-@SequenceGenerator(name = "prom_condition_base_id", sequenceName = "seq_prom_condition_base", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "prom_cond_base")
+@SequenceGenerator(name = "prom_cond_base_id", sequenceName = "seq_prom_cond_base", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class BaseConditionRuleEntity extends AbstractConditionRuleEntity {
 }

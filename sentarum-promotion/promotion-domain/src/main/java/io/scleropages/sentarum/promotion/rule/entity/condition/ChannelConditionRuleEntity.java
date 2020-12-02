@@ -29,8 +29,8 @@ import javax.persistence.Table;
  */
 @Entity
 //@DiscriminatorValue("1")
-@Table(name = "prom_condition_channel")
-@SequenceGenerator(name = "prom_condition_channel_id", sequenceName = "seq_prom_condition_channel", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "prom_cond_channel")
+@SequenceGenerator(name = "prom_cond_channel_id", sequenceName = "seq_prom_cond_channel", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ChannelConditionRuleEntity extends BaseConditionRuleEntity {
 
 

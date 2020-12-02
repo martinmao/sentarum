@@ -23,12 +23,27 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsS
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
+import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsRepository;
+import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSourceRepository;
+import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSpecsRepository;
+import io.scleropages.sentarum.promotion.rule.calculator.repo.BaseCalculatorRuleRepository;
+import io.scleropages.sentarum.promotion.rule.calculator.repo.OverflowDiscountRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.SellerUserLevelConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.UserLevelConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.condition.repo.UserTagConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.entity.AbstractRuleEntity;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.BaseCalculatorRuleEntity;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.OverflowDiscountRuleEntity;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.CalculatorGoodsEntity;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.CalculatorGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.CalculatorGoodsSpecsEntity;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.mapper.CalculatorGoodsEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.mapper.CalculatorGoodsSourceEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.mapper.CalculatorGoodsSpecsEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.mapper.BaseCalculatorRuleEntityMapper;
+import io.scleropages.sentarum.promotion.rule.entity.calculator.mapper.OverflowDiscountRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.BaseConditionRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.condition.ChannelConditionRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.condition.SellerUserLevelConditionRuleEntity;
@@ -39,38 +54,23 @@ import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.ChannelCon
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.SellerUserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserTagConditionRuleEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.BaseEvaluatorRuleEntity;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.OverflowDiscountRuleEntity;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.EvaluatorGoodsEntity;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.EvaluatorGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.EvaluatorGoodsSpecsEntity;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.mapper.EvaluatorGoodsEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.mapper.EvaluatorGoodsSourceEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.goods.mapper.EvaluatorGoodsSpecsEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.mapper.BaseEvaluatorRuleEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.evaluator.mapper.OverflowDiscountRuleEntityMapper;
-import io.scleropages.sentarum.promotion.rule.evaluator.goods.repo.EvaluatorGoodsRepository;
-import io.scleropages.sentarum.promotion.rule.evaluator.goods.repo.EvaluatorGoodsSourceRepository;
-import io.scleropages.sentarum.promotion.rule.evaluator.goods.repo.EvaluatorGoodsSpecsRepository;
-import io.scleropages.sentarum.promotion.rule.evaluator.repo.BaseEvaluatorRuleRepository;
-import io.scleropages.sentarum.promotion.rule.evaluator.repo.OverflowDiscountRuleRepository;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.Gift;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
+import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoods;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
 import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.UserTagConditionRule;
-import io.scleropages.sentarum.promotion.rule.model.evaluator.Gift;
-import io.scleropages.sentarum.promotion.rule.model.evaluator.GoodsDiscountRule;
-import io.scleropages.sentarum.promotion.rule.model.evaluator.OverflowDiscount;
-import io.scleropages.sentarum.promotion.rule.model.evaluator.OverflowDiscountRule;
-import io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoods;
-import io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoodsSource;
-import io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.exception.BizError;
@@ -90,7 +90,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static io.scleropages.sentarum.promotion.rule.model.evaluator.goods.EvaluatorGoodsSource.GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT;
+import static io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource.GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT;
 
 /**
  * 活动规则管理器.
@@ -125,17 +125,17 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     private SellerUserLevelConditionRuleRepository sellerUserLevelConditionRuleRepository;
 
     /**
-     * evaluator rule repositories.
+     * calculator rule repositories.
      */
-    private BaseEvaluatorRuleRepository baseEvaluatorRuleRepository;
+    private BaseCalculatorRuleRepository baseCalculatorRuleRepository;
     private OverflowDiscountRuleRepository overflowDiscountRuleRepository;
 
     /**
-     * evaluator goods repositories.
+     * calculator goods repositories.
      */
-    private EvaluatorGoodsSourceRepository evaluatorGoodsSourceRepository;
-    private EvaluatorGoodsRepository evaluatorGoodsRepository;
-    private EvaluatorGoodsSpecsRepository evaluatorGoodsSpecsRepository;
+    private CalculatorGoodsSourceRepository calculatorGoodsSourceRepository;
+    private CalculatorGoodsRepository calculatorGoodsRepository;
+    private CalculatorGoodsSpecsRepository calculatorGoodsSpecsRepository;
 
     /**
      * condition rule mappers.
@@ -147,17 +147,17 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     private SellerUserLevelConditionRuleEntityMapper sellerUserLevelConditionRuleEntityMapper;
 
     /**
-     * evaluator rule mappers.
+     * calculator rule mappers.
      */
-    private BaseEvaluatorRuleEntityMapper baseEvaluatorRuleEntityMapper;
+    private BaseCalculatorRuleEntityMapper baseCalculatorRuleEntityMapper;
     private OverflowDiscountRuleEntityMapper overflowDiscountRuleEntityMapper;
 
     /**
      * promotion goods mappers.
      */
-    private EvaluatorGoodsSourceEntityMapper evaluatorGoodsSourceEntityMapper;
-    private EvaluatorGoodsEntityMapper evaluatorGoodsEntityMapper;
-    private EvaluatorGoodsSpecsEntityMapper evaluatorGoodsSpecsEntityMapper;
+    private CalculatorGoodsSourceEntityMapper calculatorGoodsSourceEntityMapper;
+    private CalculatorGoodsEntityMapper calculatorGoodsEntityMapper;
+    private CalculatorGoodsSpecsEntityMapper calculatorGoodsSpecsEntityMapper;
 
 
     /**
@@ -261,11 +261,11 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
             } else
                 throw new IllegalStateException("unsupported activity goods source: " + AopUtils.getTargetClass(activityGoodsSource).getSimpleName());
         });
-        BaseEvaluatorRuleEntity entity = baseEvaluatorRuleEntityMapper.mapForSave(goodsDiscountRule);
+        BaseCalculatorRuleEntity entity = baseCalculatorRuleEntityMapper.mapForSave(goodsDiscountRule);
         ActivityEntity requiredActivityEntity = getRequiredActivityEntity(activityId);
         entity.setActivity(requiredActivityEntity);
         preRuleCreating(goodsDiscountRule, entity);
-        baseEvaluatorRuleRepository.save(entity);
+        baseCalculatorRuleRepository.save(entity);
         return entity.getId();
     }
 
@@ -300,12 +300,12 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         Assert.notNull(overflowDiscount, "overflowDiscount must not be null.");
         OverflowDiscountRule overflowDiscountRule = overflowDiscountRuleEntityMapper.mapForRead(overflowDiscountRuleRepository.get(overflowDiscountRuleId).orElseThrow(() -> new IllegalArgumentException("no overflow discount rule found: " + overflowDiscountRuleId)));
         overflowDiscount.assertValid(overflowDiscountRule);
-        EvaluatorGoodsSource evaluatorGoodsSource = new EvaluatorGoodsSource();
-        evaluatorGoodsSource.setBizType(EvaluatorGoodsSource.BIZ_TYPE_OF_EVALUATOR);
-        evaluatorGoodsSource.setBizId(overflowDiscountRule.id());
-        evaluatorGoodsSource.setComment("满减促销");
-        evaluatorGoodsSource.setGoodsSourceType(GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT);
-        return createEvaluatorGoodsSource(evaluatorGoodsSource, overflowDiscountRuleId, overflowDiscount);
+        CalculatorGoodsSource calculatorGoodsSource = new CalculatorGoodsSource();
+        calculatorGoodsSource.setBizType(CalculatorGoodsSource.BIZ_TYPE_OF_CALCULATOR);
+        calculatorGoodsSource.setBizId(overflowDiscountRule.id());
+        calculatorGoodsSource.setComment("满减促销");
+        calculatorGoodsSource.setGoodsSourceType(GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT);
+        return createCalculatorGoodsSource(calculatorGoodsSource, overflowDiscountRuleId, overflowDiscount);
     }
 
 
@@ -320,73 +320,73 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     @Transactional
     @BizError("18")
     public Long createOverflowDiscountGift(@Valid Gift gift, Long overflowDiscountId) {
-        evaluatorGoodsSourceRepository.get(overflowDiscountId).orElseThrow(() -> new IllegalArgumentException("no overflow discount found: " + overflowDiscountId));
-        EvaluatorGoods goods = new EvaluatorGoods();
+        calculatorGoodsSourceRepository.get(overflowDiscountId).orElseThrow(() -> new IllegalArgumentException("no overflow discount found: " + overflowDiscountId));
+        CalculatorGoods goods = new CalculatorGoods();
         goods.setGoodsId(gift.getGoodsId());
         goods.setName(gift.getName());
         goods.setOuterGoodsId(gift.getOuterGoodsId());
-        return createEvaluatorGoods(goods, overflowDiscountId, gift);
+        return createCalculatorGoods(goods, overflowDiscountId, gift);
     }
 
 
     /**
      * 创建规则维度商品来源.
      *
-     * @param evaluatorGoodsSource
-     * @param evaluatorRuleId
+     * @param calculatorGoodsSource
+     * @param calculatorRuleId
      * @param initialAdditionalAttributesObject
      * @return
      */
-    @Validated(EvaluatorGoodsSource.Create.class)
+    @Validated(CalculatorGoodsSource.Create.class)
     @Transactional
     @BizError("30")
-    public Long createEvaluatorGoodsSource(EvaluatorGoodsSource evaluatorGoodsSource, Long evaluatorRuleId, Object initialAdditionalAttributesObject) {
-        EvaluatorGoodsSourceEntity entity = evaluatorGoodsSourceEntityMapper.mapForSave(evaluatorGoodsSource);
+    public Long createCalculatorGoodsSource(CalculatorGoodsSource calculatorGoodsSource, Long calculatorRuleId, Object initialAdditionalAttributesObject) {
+        CalculatorGoodsSourceEntity entity = calculatorGoodsSourceEntityMapper.mapForSave(calculatorGoodsSource);
         entity.setAttributePayLoad(JsonMapper2.toJson(initialAdditionalAttributesObject));
-        Assert.isTrue(baseEvaluatorRuleRepository.existsById(evaluatorRuleId), () -> " no evaluator rule found by id: " + evaluatorRuleId);
-        entity.setBizId(evaluatorRuleId);
-        evaluatorGoodsSourceRepository.save(entity);
+        Assert.isTrue(baseCalculatorRuleRepository.existsById(calculatorRuleId), () -> " no calculator rule found by id: " + calculatorRuleId);
+        entity.setBizId(calculatorRuleId);
+        calculatorGoodsSourceRepository.save(entity);
         return entity.getId();
     }
 
     /**
      * 创建规则维度商品.
      *
-     * @param evaluatorGoods
-     * @param evaluatorGoodsSourceId
+     * @param calculatorGoods
+     * @param calculatorGoodsSourceId
      * @param initialAdditionalAttributesObject
      * @return
      */
-    @Validated(EvaluatorGoods.Create.class)
+    @Validated(CalculatorGoods.Create.class)
     @Transactional
     @BizError("31")
-    public Long createEvaluatorGoods(EvaluatorGoods evaluatorGoods, Long evaluatorGoodsSourceId, Object initialAdditionalAttributesObject) {
-        EvaluatorGoodsEntity entity = evaluatorGoodsEntityMapper.mapForSave(evaluatorGoods);
+    public Long createCalculatorGoods(CalculatorGoods calculatorGoods, Long calculatorGoodsSourceId, Object initialAdditionalAttributesObject) {
+        CalculatorGoodsEntity entity = calculatorGoodsEntityMapper.mapForSave(calculatorGoods);
         entity.setAdditionalAttributes(JsonMapper2.toJson(initialAdditionalAttributesObject));
-        EvaluatorGoodsSourceEntity evaluatorGoodsSourceEntity = evaluatorGoodsSourceRepository.get(evaluatorGoodsSourceId).orElseThrow(() -> new IllegalArgumentException("no evaluator goods source found: " + evaluatorGoodsSourceId));
-        entity.setGoodsSource(evaluatorGoodsSourceEntity);
-        evaluatorGoodsRepository.save(entity);
+        CalculatorGoodsSourceEntity calculatorGoodsSourceEntity = calculatorGoodsSourceRepository.get(calculatorGoodsSourceId).orElseThrow(() -> new IllegalArgumentException("no calculator goods source found: " + calculatorGoodsSourceId));
+        entity.setGoodsSource(calculatorGoodsSourceEntity);
+        calculatorGoodsRepository.save(entity);
         return entity.getId();
     }
 
     /**
      * 创建规则维度商品规格.
      *
-     * @param evaluatorGoodsSpecs
-     * @param evaluatorGoodsId
+     * @param calculatorGoodsSpecs
+     * @param calculatorGoodsId
      * @param initialAdditionalAttributesObject
      * @return
      */
-    @Validated(EvaluatorGoods.Create.class)
+    @Validated(CalculatorGoods.Create.class)
     @Transactional
     @BizError("32")
-    public Long createEvaluatorGoodsSpecs(EvaluatorGoodsSpecs evaluatorGoodsSpecs, Long evaluatorGoodsId, Object initialAdditionalAttributesObject) {
-        EvaluatorGoodsSpecsEntity entity = evaluatorGoodsSpecsEntityMapper.mapForSave(evaluatorGoodsSpecs);
+    public Long createCalculatorGoodsSpecs(CalculatorGoodsSpecs calculatorGoodsSpecs, Long calculatorGoodsId, Object initialAdditionalAttributesObject) {
+        CalculatorGoodsSpecsEntity entity = calculatorGoodsSpecsEntityMapper.mapForSave(calculatorGoodsSpecs);
         entity.setAdditionalAttributes(JsonMapper2.toJson(initialAdditionalAttributesObject));
-        EvaluatorGoodsEntity evaluatorGoodsEntity = evaluatorGoodsRepository.get(evaluatorGoodsId).orElseThrow(() -> new IllegalArgumentException("no evaluator goods found: " + evaluatorGoodsId));
-        entity.setGoods(evaluatorGoodsEntity);
-        entity.setGoodsSource(evaluatorGoodsEntity.getGoodsSource());
-        evaluatorGoodsSpecsRepository.save(entity);
+        CalculatorGoodsEntity calculatorGoodsEntity = calculatorGoodsRepository.get(calculatorGoodsId).orElseThrow(() -> new IllegalArgumentException("no calculator goods found: " + calculatorGoodsId));
+        entity.setGoods(calculatorGoodsEntity);
+        entity.setGoodsSource(calculatorGoodsEntity.getGoodsSource());
+        calculatorGoodsSpecsRepository.save(entity);
         return entity.getId();
     }
 
@@ -554,8 +554,8 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
-    public void setBaseEvaluatorRuleRepository(BaseEvaluatorRuleRepository baseEvaluatorRuleRepository) {
-        this.baseEvaluatorRuleRepository = baseEvaluatorRuleRepository;
+    public void setBaseCalculatorRuleRepository(BaseCalculatorRuleRepository baseCalculatorRuleRepository) {
+        this.baseCalculatorRuleRepository = baseCalculatorRuleRepository;
     }
 
     @Autowired
@@ -564,18 +564,18 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
-    public void setEvaluatorGoodsSourceRepository(EvaluatorGoodsSourceRepository evaluatorGoodsSourceRepository) {
-        this.evaluatorGoodsSourceRepository = evaluatorGoodsSourceRepository;
+    public void setCalculatorGoodsSourceRepository(CalculatorGoodsSourceRepository calculatorGoodsSourceRepository) {
+        this.calculatorGoodsSourceRepository = calculatorGoodsSourceRepository;
     }
 
     @Autowired
-    public void setEvaluatorGoodsRepository(EvaluatorGoodsRepository evaluatorGoodsRepository) {
-        this.evaluatorGoodsRepository = evaluatorGoodsRepository;
+    public void setCalculatorGoodsRepository(CalculatorGoodsRepository calculatorGoodsRepository) {
+        this.calculatorGoodsRepository = calculatorGoodsRepository;
     }
 
     @Autowired
-    public void setEvaluatorGoodsSpecsRepository(EvaluatorGoodsSpecsRepository evaluatorGoodsSpecsRepository) {
-        this.evaluatorGoodsSpecsRepository = evaluatorGoodsSpecsRepository;
+    public void setCalculatorGoodsSpecsRepository(CalculatorGoodsSpecsRepository calculatorGoodsSpecsRepository) {
+        this.calculatorGoodsSpecsRepository = calculatorGoodsSpecsRepository;
     }
 
     @Autowired
@@ -604,8 +604,8 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
-    public void setBaseEvaluatorRuleEntityMapper(BaseEvaluatorRuleEntityMapper baseEvaluatorRuleEntityMapper) {
-        this.baseEvaluatorRuleEntityMapper = baseEvaluatorRuleEntityMapper;
+    public void setBaseCalculatorRuleEntityMapper(BaseCalculatorRuleEntityMapper baseCalculatorRuleEntityMapper) {
+        this.baseCalculatorRuleEntityMapper = baseCalculatorRuleEntityMapper;
     }
 
     @Autowired
@@ -614,18 +614,18 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
-    public void setEvaluatorGoodsSourceEntityMapper(EvaluatorGoodsSourceEntityMapper evaluatorGoodsSourceEntityMapper) {
-        this.evaluatorGoodsSourceEntityMapper = evaluatorGoodsSourceEntityMapper;
+    public void setCalculatorGoodsSourceEntityMapper(CalculatorGoodsSourceEntityMapper calculatorGoodsSourceEntityMapper) {
+        this.calculatorGoodsSourceEntityMapper = calculatorGoodsSourceEntityMapper;
     }
 
     @Autowired
-    public void setEvaluatorGoodsEntityMapper(EvaluatorGoodsEntityMapper evaluatorGoodsEntityMapper) {
-        this.evaluatorGoodsEntityMapper = evaluatorGoodsEntityMapper;
+    public void setCalculatorGoodsEntityMapper(CalculatorGoodsEntityMapper calculatorGoodsEntityMapper) {
+        this.calculatorGoodsEntityMapper = calculatorGoodsEntityMapper;
     }
 
     @Autowired
-    public void setEvaluatorGoodsSpecsEntityMapper(EvaluatorGoodsSpecsEntityMapper evaluatorGoodsSpecsEntityMapper) {
-        this.evaluatorGoodsSpecsEntityMapper = evaluatorGoodsSpecsEntityMapper;
+    public void setCalculatorGoodsSpecsEntityMapper(CalculatorGoodsSpecsEntityMapper calculatorGoodsSpecsEntityMapper) {
+        this.calculatorGoodsSpecsEntityMapper = calculatorGoodsSpecsEntityMapper;
     }
 
     private ClassLoader classLoader;

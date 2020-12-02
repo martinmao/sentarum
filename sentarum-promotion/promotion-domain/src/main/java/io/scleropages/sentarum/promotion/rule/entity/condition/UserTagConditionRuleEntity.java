@@ -30,8 +30,8 @@ import javax.persistence.Table;
  */
 @Entity
 //@DiscriminatorValue("2")
-@Table(name = "prom_condition_user_tag")
-@SequenceGenerator(name = "prom_condition_user_tag_id", sequenceName = "seq_prom_condition_user_tag", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "prom_cond_user_tag")
+@SequenceGenerator(name = "prom_cond_user_tag_id", sequenceName = "seq_prom_cond_user_tag", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class UserTagConditionRuleEntity extends BaseConditionRuleEntity {
 
     private String tag;

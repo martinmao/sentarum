@@ -31,13 +31,13 @@ public interface LevelChangeStrategy {
 
 
     /**
-     * implementation this strategy method to evaluate given distributor level meet the change conditions.
+     * implementation this strategy method to calculate given distributor level meet the change conditions.
      *
      * @param levelConnecting
      * @param distributor
      * @return return true if given distributor the level changed.
      */
-    Boolean evaluate(HierarchyLevelConnecting levelConnecting, Distributor distributor);
+    Boolean calculate(HierarchyLevelConnecting levelConnecting, Distributor distributor);
 
 
     /**

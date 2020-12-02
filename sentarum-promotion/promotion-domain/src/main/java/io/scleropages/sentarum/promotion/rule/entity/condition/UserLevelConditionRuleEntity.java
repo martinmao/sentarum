@@ -29,8 +29,8 @@ import javax.persistence.Table;
  */
 @Entity
 //@DiscriminatorValue("3")
-@Table(name = "prom_condition_user_lv")
-@SequenceGenerator(name = "prom_condition_user_lv_id", sequenceName = "seq_prom_condition_user_lv", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+@Table(name = "prom_cond_user_lv")
+@SequenceGenerator(name = "prom_cond_user_lv_id", sequenceName = "seq_prom_cond_user_lv", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class UserLevelConditionRuleEntity extends BaseConditionRuleEntity {
 
     private Integer levelId;

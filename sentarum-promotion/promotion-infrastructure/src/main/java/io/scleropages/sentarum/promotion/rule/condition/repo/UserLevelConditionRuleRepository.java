@@ -15,13 +15,13 @@
  */
 package io.scleropages.sentarum.promotion.rule.condition.repo;
 
-import io.scleropages.sentarum.jooq.tables.PromConditionUserLv;
-import io.scleropages.sentarum.jooq.tables.records.PromConditionUserLvRecord;
+import io.scleropages.sentarum.jooq.tables.PromCondUserLv;
+import io.scleropages.sentarum.jooq.tables.records.PromCondUserLvRecord;
 import io.scleropages.sentarum.promotion.rule.entity.condition.UserLevelConditionRuleEntity;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface UserLevelConditionRuleRepository extends AbstractConditionRuleRepository<UserLevelConditionRuleEntity, PromConditionUserLv, PromConditionUserLvRecord> {
+public interface UserLevelConditionRuleRepository extends AbstractConditionRuleRepository<UserLevelConditionRuleEntity, PromCondUserLv, PromCondUserLvRecord> {
 }

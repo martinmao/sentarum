@@ -37,12 +37,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @ConditionalOnClass(StateMachineManager.class)
+@ConditionalOnMissingBean(StateMachineApplicationAutoConfiguration.class)
 @ConditionalOnProperty(prefix = "statemachine", name = "enabled", havingValue = "true", matchIfMissing = true)
 @AutoConfigureAfter(JpaRepositoriesAutoConfiguration.class)
 public class StateMachineApplicationAutoConfiguration {
 
 
-    @ConditionalOnMissingBean
     @EntityScan(basePackageClasses = {StateMachineDefinitionEntity.class})
     @EnableJpaRepositories(basePackageClasses = {StateMachineDefinitionRepository.class})
     @ComponentScan(basePackageClasses = {StateMachineManager.class, StateMachineDefinitionEntityMapper.class, StateMachineFactory.class})

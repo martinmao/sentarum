@@ -16,8 +16,8 @@
 package io.scleropages.sentarum.promotion.rule.condition.repo;
 
 import com.google.common.collect.Lists;
-import io.scleropages.sentarum.jooq.tables.PromConditionBase;
-import io.scleropages.sentarum.jooq.tables.records.PromConditionBaseRecord;
+import io.scleropages.sentarum.jooq.tables.PromCondBase;
+import io.scleropages.sentarum.jooq.tables.records.PromCondBaseRecord;
 import io.scleropages.sentarum.promotion.rule.entity.condition.BaseConditionRuleEntity;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 import org.jooq.Field;
@@ -30,13 +30,13 @@ import java.util.Optional;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface BaseConditionRuleRepository extends AbstractConditionRuleRepository<BaseConditionRuleEntity, PromConditionBase, PromConditionBaseRecord> {
+public interface BaseConditionRuleRepository extends AbstractConditionRuleRepository<BaseConditionRuleEntity, PromCondBase, PromCondBaseRecord> {
 
 
     @Override
     @Cacheable
     default List<BaseConditionRuleEntity> findAllByActivity_Id(Long activityId) {
-        PromConditionBase promConditionBase = dslTable();
+        PromCondBase promConditionBase = dslTable();
         List<BaseConditionRuleEntity> entities = Lists.newArrayList();
         dslContext().selectFrom(promConditionBase).where(promConditionBase.ACTIVITY_ID.eq(activityId)).fetch().forEach(r -> {
             BaseConditionRuleEntity baseConditionRuleEntity = new BaseConditionRuleEntity();
@@ -52,7 +52,7 @@ public interface BaseConditionRuleRepository extends AbstractConditionRuleReposi
     }
 
     default Optional<BaseConditionRuleEntity> getById(Long id) {
-        Optional<PromConditionBaseRecord> promConditionBaseRecord = dslContext().selectFrom(dslTable()).where(dslTable().ID.eq(id)).fetchOptional();
+        Optional<PromCondBaseRecord> promConditionBaseRecord = dslContext().selectFrom(dslTable()).where(dslTable().ID.eq(id)).fetchOptional();
         if (!promConditionBaseRecord.isPresent())
             return Optional.empty();
         BaseConditionRuleEntity entity = new BaseConditionRuleEntity();
@@ -62,13 +62,13 @@ public interface BaseConditionRuleRepository extends AbstractConditionRuleReposi
 
     @Override
     default Integer countByParentCondition(Long parentCondition) {
-        PromConditionBase promConditionBase = dslTable();
+        PromCondBase promConditionBase = dslTable();
         return dslContext().selectCount().from(promConditionBase).where(promConditionBase.PARENT_CONDITION_ID.eq(parentCondition)).fetchOneInto(Integer.class);
     }
 
     @Override
     default Boolean existsByActivity_IdAndParentConditionIsNull(Long activityId) {
-        PromConditionBase promConditionBase = dslTable();
+        PromCondBase promConditionBase = dslTable();
         return null != dslContext().select(promConditionBase.ID)
                 .from(promConditionBase)
                 .where(promConditionBase.ACTIVITY_ID.eq(activityId).and(promConditionBase.PARENT_CONDITION_ID.isNull()))

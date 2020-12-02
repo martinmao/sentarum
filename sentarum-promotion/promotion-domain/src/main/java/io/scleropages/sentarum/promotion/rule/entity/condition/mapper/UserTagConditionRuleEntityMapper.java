@@ -26,4 +26,5 @@ import org.scleropages.crud.ModelMapper;
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface UserTagConditionRuleEntityMapper extends AbstractConditionRuleEntityMapper<UserTagConditionRuleEntity, UserTagConditionRule> {
+
 }

@@ -15,13 +15,13 @@
  */
 package io.scleropages.sentarum.promotion.rule.condition.repo;
 
-import io.scleropages.sentarum.jooq.tables.PromConditionChannel;
-import io.scleropages.sentarum.jooq.tables.records.PromConditionChannelRecord;
+import io.scleropages.sentarum.jooq.tables.PromCondChannel;
+import io.scleropages.sentarum.jooq.tables.records.PromCondChannelRecord;
 import io.scleropages.sentarum.promotion.rule.entity.condition.ChannelConditionRuleEntity;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ChannelConditionRuleRepository extends AbstractConditionRuleRepository<ChannelConditionRuleEntity, PromConditionChannel, PromConditionChannelRecord> {
+public interface ChannelConditionRuleRepository extends AbstractConditionRuleRepository<ChannelConditionRuleEntity, PromCondChannel, PromCondChannelRecord> {
 }

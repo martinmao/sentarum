@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion;
 
+import com.google.common.collect.Lists;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -44,6 +46,8 @@ public class DiscountCalculateRequest {
 
     @NotEmpty
     public List<CalculatingGoods> getCalculatingGoods() {
+        if (null == calculatingGoods)
+            calculatingGoods = Lists.newArrayList();
         return calculatingGoods;
     }
 
@@ -70,8 +74,21 @@ public class DiscountCalculateRequest {
          */
         private Integer num;
 
+        public CalculatingGoods() {
 
-        @NotNull
+        }
+
+        public CalculatingGoods(Long goodsSpecsId, Integer num) {
+            this.goodsSpecsId = goodsSpecsId;
+            this.num = num;
+        }
+
+        public CalculatingGoods(Long goodsId, Long goodsSpecsId, Integer num) {
+            this.goodsId = goodsId;
+            this.goodsSpecsId = goodsSpecsId;
+            this.num = num;
+        }
+
         public Long getGoodsId() {
             return goodsId;
         }
@@ -80,6 +97,7 @@ public class DiscountCalculateRequest {
             return goodsSpecsId;
         }
 
+        @NotNull
         public Integer getNum() {
             return num;
         }

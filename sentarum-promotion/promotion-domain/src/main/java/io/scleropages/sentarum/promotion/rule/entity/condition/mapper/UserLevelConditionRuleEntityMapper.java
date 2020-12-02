@@ -28,4 +28,5 @@ import org.scleropages.crud.ModelMapper;
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
 public interface UserLevelConditionRuleEntityMapper extends AbstractConditionRuleEntityMapper<UserLevelConditionRuleEntity, UserLevelConditionRule> {
+
 }
