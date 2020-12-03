@@ -23,17 +23,20 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JoinType;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SelectQuery;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.COLUMN_ATTRIBUTE_PAYLOAD;
 import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.COLUMN_ID;
@@ -56,6 +59,24 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
 
     Boolean existsByGoodsSourceType(Integer goodsSourceType);
 
+    @Cacheable
+    default Result<R> readByBizTypeAndBizId(Integer bizType, Long bizId) {
+        T t = dslTable();
+        return dslContext().selectFrom(t)
+                .where(t.field(AbstractGoodsSourceEntity.COLUMN_BIZ_TYPE.toUpperCase()).eq(bizType))
+                .and(t.field(AbstractGoodsSourceEntity.COLUMN_BIZ_ID.toUpperCase()).eq(bizId))
+                .fetch();
+    }
+
+    default void consumeEntitiesByBizTypeAndBizId(Integer bizType, Long bizId, Consumer<E> consumer) {
+        Result<R> rs = readByBizTypeAndBizId(bizType, bizId);
+        rs.forEach(r -> {
+            E entity = createEntity();
+            dslRecordInto(r, entity);
+            consumer.accept(entity);
+        });
+    }
+
 
     @Override
     default void save(GoodsSource provider, Map<String, Object> attributes) {
@@ -76,7 +97,7 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
 
     class GoodsSourceConditionsAssembler {
 
-        public static void applyGoodsSourceCondition(SelectQuery<Record> baseQuery, GoodsSourceJoin goodsSourceJoin) {
+        public static void applyGoodsSourceCondition(SelectQuery<? extends Record> baseQuery, GoodsSourceJoin goodsSourceJoin) {
             baseQuery.addJoin(
                     goodsSourceJoin.goodsSourceTable,
                     goodsSourceJoin.joinType,

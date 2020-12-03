@@ -24,4 +24,9 @@ import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.Calculator
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface CalculatorGoodsSourceRepository extends DetailedGoodsSourceRepository<CalculatorGoodsSourceEntity, PromCalcGoodsSource, PromCalcGoodsSourceRecord> {
+
+    @Override
+    default CalculatorGoodsSourceEntity createEntity() {
+        return new CalculatorGoodsSourceEntity();
+    }
 }

@@ -15,13 +15,18 @@
  */
 package io.scleropages.sentarum.promotion.activity.entity;
 
+import com.google.common.collect.Lists;
+import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel}
@@ -40,6 +45,8 @@ public class ActivityEntity extends IdEntity {
     private Date endTime;
     private Integer status;
 
+    //transient entity fields.
+    private List<AbstractGoodsSourceEntity> goodsSource;
 
 
     @Column(name = "name_", nullable = false)
@@ -72,6 +79,13 @@ public class ActivityEntity extends IdEntity {
         return status;
     }
 
+    @Transient
+    public List<AbstractGoodsSourceEntity> getGoodsSource() {
+        if (null == goodsSource)
+            goodsSource = Lists.newArrayList();
+        return goodsSource;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -95,4 +109,10 @@ public class ActivityEntity extends IdEntity {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    public void setGoodsSource(List<AbstractGoodsSourceEntity> goodsSource) {
+        this.goodsSource = goodsSource;
+    }
+
+
 }

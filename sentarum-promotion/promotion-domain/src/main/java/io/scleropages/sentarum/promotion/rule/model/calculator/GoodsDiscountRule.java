@@ -37,7 +37,7 @@ import java.util.Objects;
 /**
  * 商品折扣规则，可对活动关联的一组商品来源{@link Activity#goodsSource()}设置折扣. 按级别划分为：
  * <pre>
- *  {@link ActivityClassifiedGoodsSource} 仅支持 {@link DiscountType#DECREASE_WITHOUT_ORIGINAL_PRICE},  {@link DiscountType#DISCOUNT_WITHOUT_ORIGINAL_PRICE}.
+ *  {@link ActivityClassifiedGoodsSource} 支持 {@link DiscountType#DECREASE_WITHOUT_ORIGINAL_PRICE},  {@link DiscountType#DISCOUNT_WITHOUT_ORIGINAL_PRICE}.
  *      当商品来源类型为 {@link ActivityGoodsSource#CLASSIFIED_GOODS_SOURCE_TYPE_BRAND}, 可对所有关联品牌商品设置统一折扣({@link #discount}).
  *      当商品来源类型为 {@link ActivityGoodsSource#CLASSIFIED_GOODS_SOURCE_TYPE_CATEGORY}, 可对所有关联品类下商品设置统一折扣({@link #discount}).
  *      当商品来源类型为 {@link ActivityGoodsSource#CLASSIFIED_GOODS_SOURCE_TYPE_SELLER}, 可对所有关联商家下商品设置统一折扣({@link #discount}).
@@ -45,7 +45,7 @@ import java.util.Objects;
  *  多品牌、多品类、多店联合促销场景下均摊规则为：品牌A卖出商品原价总和/(品牌A卖出商品原价总和+品牌B卖出商品原价总和)*总折扣金额=品牌A均摊金额.
  *  单品牌，单品类，单店促销场景下：抵扣金额直接从目标主体扣除.
  *
- *  {@link ActivityDetailedGoodsSource} 仅支持 {@link DiscountType#DISCOUNT},{@link DiscountType#OVERRIDE_AMOUNT},{@link DiscountType#DECREASE_AMOUNT}.
+ *  {@link ActivityDetailedGoodsSource} 支持 {@link DiscountType#DISCOUNT},{@link DiscountType#OVERRIDE_AMOUNT},{@link DiscountType#DECREASE_AMOUNT}.
  *      可将规则设置到各个商品或更进一步设置到各个规格.
  *
  *  两种商品源均支持基于会员级别的折扣设置,通过设置一组 {@link UserLevelDiscount} to {@link #userLevelDiscounts},优先级顺序为 discount>userLevelDiscounts.

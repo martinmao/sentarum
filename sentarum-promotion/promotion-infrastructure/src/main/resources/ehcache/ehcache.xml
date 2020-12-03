@@ -79,14 +79,14 @@
         <heap>1000</heap>
     </cache>
 
-    <cache alias="io.scleropages.sentarum.promotion.activity.repo.ActivityRepository.findAllByClassifiedGoodsSource">
+    <cache alias="io.scleropages.sentarum.promotion.activity.repo.ActivityRepository.findAllActivityIdByClassifiedGoodsSource">
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
         <heap>1000</heap>
     </cache>
 
-    <cache alias="io.scleropages.sentarum.promotion.activity.repo.ActivityRepository.findAllByDetailedGoodsSource">
+    <cache alias="io.scleropages.sentarum.promotion.activity.repo.ActivityRepository.findAllActivityIdByDetailedGoodsSource">
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>

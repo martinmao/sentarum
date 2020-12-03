@@ -49,7 +49,7 @@ public class ItemClientsAutoConfiguration {
             return new ItemClientFactoryBean(itemApi);
         }
 
-        @Reference
+        @Reference(check = false)
         public void setItemApi(ItemApi itemApi) {
             this.itemApi = itemApi;
         }

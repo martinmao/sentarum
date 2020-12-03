@@ -26,6 +26,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import static io.scleropages.sentarum.promotion.goods.entity.GoodsEntity.COLUMN_GOODS_ID;
 
 /**
  * referenced from: {@link io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsModel}
@@ -33,7 +36,7 @@ import javax.persistence.Table;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prom_act_goods")
+@Table(name = "prom_act_goods",uniqueConstraints = @UniqueConstraint(columnNames = {"activity_id",COLUMN_GOODS_ID}))
 @SequenceGenerator(name = "prom_act_goods_id", sequenceName = "seq_prom_act_goods", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityGoodsEntity extends GoodsEntity {
 

@@ -22,12 +22,12 @@ import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.COLUMN_BIZ_ID;
-import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.COLUMN_GOODS_SOURCE_TYPE;
+import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.*;
 import static io.scleropages.sentarum.promotion.goods.entity.ClassifiedGoodsSourceEntity.COLUMN_GOODS_SOURCE_ID;
 import static io.scleropages.sentarum.promotion.goods.entity.ClassifiedGoodsSourceEntity.COLUMN_SECONDARY_GOODS_SOURCE_ID;
 
@@ -38,7 +38,8 @@ import static io.scleropages.sentarum.promotion.goods.entity.ClassifiedGoodsSour
  */
 @Entity
 @Table(name = "prom_act_classified_goods_source",
-        uniqueConstraints = @UniqueConstraint(columnNames = {COLUMN_GOODS_SOURCE_TYPE, COLUMN_BIZ_ID, COLUMN_GOODS_SOURCE_ID, COLUMN_SECONDARY_GOODS_SOURCE_ID})
+        uniqueConstraints = @UniqueConstraint(columnNames = {COLUMN_GOODS_SOURCE_TYPE, COLUMN_GOODS_SOURCE_ID, COLUMN_SECONDARY_GOODS_SOURCE_ID, COLUMN_BIZ_TYPE, COLUMN_BIZ_ID}),
+        indexes = @Index(columnList = "biz_type,biz_id")
 )
 @SequenceGenerator(name = "prom_act_classified_goods_source_id", sequenceName = "seq_prom_act_classified_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityClassifiedGoodsSourceEntity extends ClassifiedGoodsSourceEntity {

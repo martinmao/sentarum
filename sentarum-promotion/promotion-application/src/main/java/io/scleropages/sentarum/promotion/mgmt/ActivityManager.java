@@ -220,29 +220,50 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @param goodSourceType        商品来源类型
      * @param goodSourceId          商品来源id，optional
      * @param secondaryGoodSourceId 二级商品来源id,optional
+     * @param fetchGoodsSource      true if want to fetch {@link Activity#goodsSource()}.
      * @return
      */
     @Transactional(readOnly = true)
     @BizError("50")
-    public List<? extends Activity> findAllActivityByClassifiedGoodsSource(Integer status, Integer goodSourceType, Long goodSourceId, Long secondaryGoodSourceId) {
-        List<ActivityEntity> activityEntities = activityRepository.findAllByClassifiedGoodsSource(classifiedGoodsSourceRepository, status, goodSourceType, goodSourceId, secondaryGoodSourceId);
-        return (List<? extends Activity>) getModelMapper().mapForReads(activityEntities);
+    public List<? extends Activity> findAllActivityByClassifiedGoodsSource(Integer status, Integer goodSourceType, Long goodSourceId, Long secondaryGoodSourceId, boolean fetchGoodsSource) {
+        List<Long> ids = activityRepository.findAllActivityIdByClassifiedGoodsSource(classifiedGoodsSourceRepository, status, goodSourceType, goodSourceId, secondaryGoodSourceId);
+        List<Activity> activities = Lists.newArrayList();
+        ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
+        return activities;
     }
 
 
     /**
      * 根据 {@link DetailedGoodsSource} 中的条件检索活动
      *
-     * @param status       活动状态
-     * @param goodsId      商品id
-     * @param goodsSpecsId 商品规格id.
+     * @param status           活动状态
+     * @param goodsId          商品id
+     * @param goodsSpecsId     商品规格id.
+     * @param fetchGoodsSource true if want to fetch {@link Activity#goodsSource()}.
      * @return
      */
     @Transactional(readOnly = true)
     @BizError("51")
-    public List<? extends Activity> findAllActivityByDetailedGoodsSource(Integer status, Long goodsId, Long goodsSpecsId) {
-        List<ActivityEntity> activityEntities = activityRepository.findAllByDetailedGoodsSource(detailedGoodsSourceRepository, activityGoodsRepository, activityGoodsSpecsRepository, status, goodsId, goodsSpecsId);
-        return (List<? extends Activity>) getModelMapper().mapForReads(activityEntities);
+    public List<? extends Activity> findAllActivityByDetailedGoodsSource(Integer status, Long goodsId, Long goodsSpecsId, boolean fetchGoodsSource) {
+        List<Long> ids = activityRepository.findAllActivityIdByDetailedGoodsSource(detailedGoodsSourceRepository, activityGoodsRepository, activityGoodsSpecsRepository, status, goodsId, goodsSpecsId);
+        List<Activity> activities = Lists.newArrayList();
+        ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
+        return activities;
+    }
+
+
+    /**
+     * 获取活动详情
+     *
+     * @param id               id of activity
+     * @param fetchGoodsSource true if want to fetch goods source.
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("52")
+    public Activity getActivity(Long id, boolean fetchGoodsSource) {
+        ActivityEntity activityEntity = activityRepository.readById(id, fetchGoodsSource ? classifiedGoodsSourceRepository : null, fetchGoodsSource ? detailedGoodsSourceRepository : null).orElseThrow(() -> new IllegalArgumentException("no activity found: " + id));
+        return getModelMapper().mapForRead(activityEntity);
     }
 
     /**
@@ -252,7 +273,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @return
      */
     @Transactional(readOnly = true)
-    @BizError("52")
+    @BizError("53")
     public ActivityClassifiedGoodsSource getActivityClassifiedGoodsSource(Long id) {
         ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity classified goods source found: " + id));
         ActivityClassifiedGoodsSourceModel model = classifiedGoodsSourceEntityMapper.mapForRead(entity);
@@ -266,7 +287,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @return
      */
     @Transactional(readOnly = true)
-    @BizError("53")
+    @BizError("54")
     public ActivityDetailedGoodsSource getActivityDetailedGoodsSource(Long id) {
         ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity detailed goods source found: " + id));
         ActivityDetailedGoodsSourceModel model = detailedGoodsSourceEntityMapper.mapForRead(entity);
@@ -280,7 +301,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @return
      */
     @Transactional(readOnly = true)
-    @BizError("54")
+    @BizError("55")
     public ActivityGoods getActivityGoods(Long id) {
         ActivityGoodsEntity entity = activityGoodsRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity goods found: " + id));
         ActivityGoodsModel model = activityGoodsEntityMapper.mapForRead(entity);
@@ -294,7 +315,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @return
      */
     @Transactional(readOnly = true)
-    @BizError("55")
+    @BizError("56")
     public ActivityGoodsSpecs getActivityGoodsSpecs(Long id) {
         ActivityGoodsSpecsEntity entity = activityGoodsSpecsRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity goods specs found: " + id));
         ActivityGoodsSpecsModel model = activityGoodsSpecsEntityMapper.mapForRead(entity);
@@ -309,7 +330,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * @return
      */
     @Transactional(readOnly = true)
-    @BizError("56")
+    @BizError("57")
     public List<ActivityGoodsSource> findAllActivityGoodsSource(Long activityId) {
 
         List<ActivityGoodsSource> goodsSources = Lists.newArrayList();

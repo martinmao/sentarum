@@ -36,7 +36,7 @@ public class DiscountCalculateRequest {
     /**
      * 计算商品列表
      */
-    private List<CalculatingGoods> calculatingGoods;
+    private List<CalculatingGoodsSpecs> calculatingGoodsSpecs;
 
 
     @NotNull
@@ -45,26 +45,22 @@ public class DiscountCalculateRequest {
     }
 
     @NotEmpty
-    public List<CalculatingGoods> getCalculatingGoods() {
-        if (null == calculatingGoods)
-            calculatingGoods = Lists.newArrayList();
-        return calculatingGoods;
+    public List<CalculatingGoodsSpecs> getCalculatingGoodsSpecs() {
+        if (null == calculatingGoodsSpecs)
+            calculatingGoodsSpecs = Lists.newArrayList();
+        return calculatingGoodsSpecs;
     }
 
     public void setBuyerId(Long buyerId) {
         this.buyerId = buyerId;
     }
 
-    public void setCalculatingGoods(List<CalculatingGoods> calculatingGoods) {
-        this.calculatingGoods = calculatingGoods;
+    public void setCalculatingGoodsSpecs(List<CalculatingGoodsSpecs> calculatingGoodsSpecs) {
+        this.calculatingGoodsSpecs = calculatingGoodsSpecs;
     }
 
-    public static class CalculatingGoods {
-
-        /**
-         * 商品id.
-         */
-        private Long goodsId;
+    public static class CalculatingGoodsSpecs {
+        
         /**
          * 商品规格id.
          */
@@ -74,25 +70,16 @@ public class DiscountCalculateRequest {
          */
         private Integer num;
 
-        public CalculatingGoods() {
+        public CalculatingGoodsSpecs() {
 
         }
 
-        public CalculatingGoods(Long goodsSpecsId, Integer num) {
+        public CalculatingGoodsSpecs(Long goodsSpecsId, Integer num) {
             this.goodsSpecsId = goodsSpecsId;
             this.num = num;
         }
 
-        public CalculatingGoods(Long goodsId, Long goodsSpecsId, Integer num) {
-            this.goodsId = goodsId;
-            this.goodsSpecsId = goodsSpecsId;
-            this.num = num;
-        }
-
-        public Long getGoodsId() {
-            return goodsId;
-        }
-
+        @NotNull
         public Long getGoodsSpecsId() {
             return goodsSpecsId;
         }
@@ -100,10 +87,6 @@ public class DiscountCalculateRequest {
         @NotNull
         public Integer getNum() {
             return num;
-        }
-
-        public void setGoodsId(Long goodsId) {
-            this.goodsId = goodsId;
         }
 
         public void setGoodsSpecsId(Long goodsSpecsId) {

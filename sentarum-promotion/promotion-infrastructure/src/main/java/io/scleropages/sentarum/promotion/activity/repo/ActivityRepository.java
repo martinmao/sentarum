@@ -29,9 +29,9 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JoinType;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.SelectQuery;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
-import org.scleropages.crud.dao.orm.jpa.JpaContexts;
 import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.Assert;
@@ -39,6 +39,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -53,14 +54,14 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
 
 
     @Cacheable(key = "#activityStatus+'-'+#goodsSourceType+'-'+#goodsSourceId+'-'+#secondaryGoodsSourceId")
-    default List<ActivityEntity> findAllByClassifiedGoodsSource(ActivityClassifiedGoodsSourceRepository repository, Integer activityStatus, Integer goodsSourceType, Long goodsSourceId, Long secondaryGoodsSourceId) {
+    default List<Long> findAllActivityIdByClassifiedGoodsSource(ActivityClassifiedGoodsSourceRepository repository, Integer activityStatus, Integer goodsSourceType, Long goodsSourceId, Long secondaryGoodsSourceId) {
 
         Assert.notNull(repository, "repository must not be null.");
         Assert.notNull(activityStatus, "activityStatus must not be null.");
 
         PromActivity promActivity = dslTable();
 
-        SelectQuery<Record> baseQuery = dslContext().select(promActivity.fields()).from(promActivity).where(promActivity.STATUS.eq(activityStatus)).getQuery();
+        SelectQuery<Record1<Long>> baseQuery = dslContext().select(promActivity.ID).from(promActivity).where(promActivity.STATUS.eq(activityStatus)).getQuery();
 
         Condition condition = repository.conditionByGoodsSourceTypeAndGoodsSourceIdAndSecondaryGoodsSourceId(goodsSourceType, goodsSourceId, secondaryGoodsSourceId);
 
@@ -75,7 +76,7 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
     }
 
     @Cacheable(key = "#goodsId+'-'+#goodsSpecsId")
-    default List<ActivityEntity> findAllByDetailedGoodsSource(ActivityDetailedGoodsSourceRepository goodsSourceRepository, ActivityGoodsRepository goodsRepository, ActivityGoodsSpecsRepository goodsSpecsRepository, Integer activityStatus, Long goodsId, Long goodsSpecsId) {
+    default List<Long> findAllActivityIdByDetailedGoodsSource(ActivityDetailedGoodsSourceRepository goodsSourceRepository, ActivityGoodsRepository goodsRepository, ActivityGoodsSpecsRepository goodsSpecsRepository, Integer activityStatus, Long goodsId, Long goodsSpecsId) {
 
         Assert.notNull(goodsSourceRepository, "goodsSourceRepository must not be null.");
         Assert.notNull(goodsRepository, "goodsRepository repository must not be null.");
@@ -87,7 +88,7 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
 
         PromActivity promActivity = dslTable();
 
-        List<Field> queryFields = Lists.newArrayList(promActivity.fields());
+        List<Field> queryFields = Lists.newArrayList(promActivity.ID);
         PromActGoods promActGoods = goodsRepository.dslTable();
         queryFields.add(promActGoods.ID);
         SelectQuery<Record> baseQuery = dslContext().select(queryFields).from(promActivity).where(promActivity.STATUS.eq(activityStatus)).getQuery();
@@ -118,22 +119,49 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
         });
     }
 
-    default List<ActivityEntity> fetchRecordsInternal(PromActivity promActivity, Supplier<SelectQuery<Record>> baseQuerySupplier, Function<Record, Boolean> recordCallback) {
+    @Cacheable
+    default Optional<PromActivityRecord> readById(Long activityId) {
+        PromActivity promActivity = dslTable();
+        return dslContext().selectFrom(promActivity).where(promActivity.ID.eq(activityId)).fetchOptional();
+    }
+
+    /**
+     * read activity by given id
+     *
+     * @param activityId                      required id for read.
+     * @param classifiedGoodsSourceRepository (optional) required if want to fetch classified goods source
+     * @param detailedGoodsSourceRepository   (optional) required if want to fetch detailed goods source
+     * @return
+     */
+    default Optional<ActivityEntity> readById(Long activityId, ActivityClassifiedGoodsSourceRepository classifiedGoodsSourceRepository, ActivityDetailedGoodsSourceRepository detailedGoodsSourceRepository) {
+        Optional<PromActivityRecord> optionalRecord = readById(activityId);
+        if (!optionalRecord.isPresent())
+            return Optional.empty();
+        PromActivityRecord record = optionalRecord.get();
+        ActivityEntity entity = new ActivityEntity();
+        dslRecordInto(record, entity);
+        if (null != classifiedGoodsSourceRepository) {
+            classifiedGoodsSourceRepository.consumeEntitiesByBizTypeAndBizId(
+                    ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY
+                    , activityId
+                    , e -> entity.getGoodsSource().add(e));
+        }
+        if (null != detailedGoodsSourceRepository) {
+            detailedGoodsSourceRepository.consumeEntitiesByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId, e -> entity.getGoodsSource().add(e));
+        }
+        return Optional.of(entity);
+    }
+
+
+    default List<Long> fetchRecordsInternal(PromActivity promActivity, Supplier<SelectQuery<? extends Record>> baseQuerySupplier, Function<Record, Boolean> recordCallback) {
         Set<Long> uniqueIds = Sets.newHashSet();//客户端去重
-        List<ActivityEntity> entities = Lists.newArrayList();
-        SelectQuery<Record> baseQuery = baseQuerySupplier.get();
+        SelectQuery<? extends Record> baseQuery = baseQuerySupplier.get();
         baseQuery.fetch().forEach(record -> {
-            if (uniqueIds.add(record.getValue(promActivity.ID)) && recordCallback.apply(record)) {
-                ActivityEntity entity = new ActivityEntity();
-                dslRecordInto(record, entity, new ReferenceEntityAssembler() {
-                    @Override
-                    public Object apply(Object rootEntity, JpaContexts.ManagedTypeModel rootEntityModel, String table, Record record) {
-                        return null;
-                    }
-                });
-                entities.add(entity);
+            Long activityId = record.getValue(promActivity.ID);
+            if (!uniqueIds.contains(activityId) && recordCallback.apply(record)) {
+                uniqueIds.add(activityId);
             }
         });
-        return entities;
+        return Lists.newArrayList(uniqueIds);
     }
 }

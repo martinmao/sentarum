@@ -16,10 +16,13 @@
 package io.scleropages.sentarum.promotion.rule.context;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * builder of promotion context(s). make a easy way to create promotion context.
@@ -31,7 +34,7 @@ public final class PromotionContextBuilder {
     private ChannelType channelType;
     private Integer channelId;
     private Long buyerId;
-    private List<OrderPromotionContextBuilder> orderPromotionContextBuilders = Lists.newArrayList();
+    private Map<String, OrderPromotionContextBuilder> orderPromotionContextBuilders = Maps.newHashMap();
 
     private PromotionContextBuilder() {
     }
@@ -80,14 +83,33 @@ public final class PromotionContextBuilder {
     }
 
     /**
+     * add if absent builder of {@link OrderPromotionContext} to this builder.
+     *
+     * @return
+     */
+    public OrderPromotionContextBuilder orderPromotionContextBuilder(Long sellerUnionId, Long sellerId) {
+        String key = computeOrderPromotionContextKey(sellerUnionId, sellerId);
+        return orderPromotionContextBuilders.computeIfAbsent(key, s -> {
+            OrderPromotionContextBuilder orderPromotionContextBuilder = new OrderPromotionContextBuilder(this);
+            orderPromotionContextBuilder.withSellerUnionId(sellerUnionId);
+            orderPromotionContextBuilder.withSellerId(sellerId);
+            return orderPromotionContextBuilder;
+        });
+    }
+
+    /**
      * add builder of {@link OrderPromotionContext} to this builder.
      *
      * @return
      */
     public OrderPromotionContextBuilder orderPromotionContextBuilder() {
         OrderPromotionContextBuilder orderPromotionContextBuilder = new OrderPromotionContextBuilder(this);
-        this.orderPromotionContextBuilders.add(orderPromotionContextBuilder);
+        this.orderPromotionContextBuilders.put(String.valueOf(orderPromotionContextBuilders.size()), orderPromotionContextBuilder);
         return orderPromotionContextBuilder;
+    }
+
+    private String computeOrderPromotionContextKey(Long sellerUnionId, Long sellerId) {
+        return sellerUnionId + "_" + sellerId;
     }
 
     /**
@@ -102,7 +124,7 @@ public final class PromotionContextBuilder {
 
         List<OrderPromotionContext> orderPromotionContexts = Lists.newArrayList();
         CartPromotionContext cartPromotionContext = new CartPromotionContextImpl(channelType, channelId, buyerId, orderPromotionContexts);
-        orderPromotionContextBuilders.forEach(orderPromotionContextBuilder -> {
+        orderPromotionContextBuilders.values().forEach(orderPromotionContextBuilder -> {
             List<GoodsPromotionContext> goodsPromotionContexts = Lists.newArrayList();
             OrderPromotionContext orderPromotionContext = orderPromotionContextBuilder.build(cartPromotionContext, goodsPromotionContexts);
             orderPromotionContexts.add(orderPromotionContext);
@@ -172,6 +194,7 @@ public final class PromotionContextBuilder {
          * @return
          */
         private OrderPromotionContext build(CartPromotionContext cartPromotionContext, List<GoodsPromotionContext> goodsPromotionContexts) {
+            done();
             return new OrderPromotionContextImpl(cartPromotionContext, sellerUnionId, sellerId, goodsPromotionContexts);
         }
 
@@ -268,6 +291,7 @@ public final class PromotionContextBuilder {
          * @return
          */
         private GoodsPromotionContext build(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext) {
+            done();
             return new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num);
         }
 
@@ -279,6 +303,12 @@ public final class PromotionContextBuilder {
         public OrderPromotionContextBuilder done() {
             Assert.notNull(goodsId, "goodsId must not be null.");
             Assert.notNull(num, "num must not be null.");
+            Assert.notNull(specsId, "specsId must not be null.");
+            orderPromotionContextBuilder.goodsPromotionContextBuilders.forEach(goodsPromotionContextBuilder -> {
+                if (!Objects.equals(this, goodsPromotionContextBuilder) && Objects.equals(goodsPromotionContextBuilder.specsId, specsId)) {
+                    throw new IllegalArgumentException("specsId: " + specsId + "already exists");
+                }
+            });
             return orderPromotionContextBuilder;
         }
 

@@ -24,4 +24,9 @@ import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceRepositor
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface ActivityDetailedGoodsSourceRepository extends DetailedGoodsSourceRepository<ActivityDetailedGoodsSourceEntity, PromActDetailedGoodsSource, PromActDetailedGoodsSourceRecord> {
+
+    @Override
+    default ActivityDetailedGoodsSourceEntity createEntity() {
+        return new ActivityDetailedGoodsSourceEntity();
+    }
 }

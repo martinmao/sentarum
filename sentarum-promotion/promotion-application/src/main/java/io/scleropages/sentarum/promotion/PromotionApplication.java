@@ -25,6 +25,8 @@ import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
 import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
+import io.scleropages.sentarum.promotion.rule.context.CartPromotionContext;
+import io.scleropages.sentarum.promotion.rule.context.PromotionContextBuilder;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.dao.orm.jpa.Pages;
@@ -62,40 +64,62 @@ public class PromotionApplication implements InitializingBean {
 
     public void calculateDiscount(DiscountCalculateRequest request) {
         Assert.notNull(request, "request must not be null.");
-        request.getCalculatingGoods().forEach(goods -> {
-            List<ConditionRule> activityConditionRules = getAllActivityConditionRules(goods);
+        PromotionContextBuilder promotionContextBuilder = PromotionContextBuilder.newBuilder().withBuyerId(request.getBuyerId());
+        request.getCalculatingGoodsSpecs().forEach(goodsSpecs -> {
+            Sku sku = getSku(goodsSpecs);
+            Item item = sku.item();
+            applyBuilder(promotionContextBuilder.orderPromotionContextBuilder(item.sellerUnionId(), item.sellerId()).goodsPromotionContextBuilder(), item, sku, goodsSpecs);
+            List<ConditionRule> activityConditionRules = getAllActivityConditionRules(sku);
             activityConditionRules.forEach(conditionRule -> {
                 Activity activity = conditionRule.activity();
                 Condition condition = ruleContainer.getCondition(conditionRule);
-
+                activityManager.findAllActivityGoodsSource(activity.id());
             });
         });
+        final CartPromotionContext promotionContext = promotionContextBuilder.build();
     }
 
     /**
-     * query all activity condition(associated activity) rules by given goods
+     * apply all information to goods promotion context builder.
      *
-     * @param goods
+     * @param builder    apply to
+     * @param item       item information
+     * @param sku        sku information
+     * @param goodsSpecs calculating information
+     */
+    private void applyBuilder(PromotionContextBuilder.GoodsPromotionContextBuilder builder, Item item, Sku sku, DiscountCalculateRequest.CalculatingGoodsSpecs goodsSpecs) {
+        builder.withGoodsId(item.id());
+        builder.withOuterGoodsId(item.outerId());
+        builder.withSpecsId(sku.id());
+        builder.withOuterSpecsId(sku.outerId());
+        builder.withNum(goodsSpecs.getNum());
+    }
+
+    /**
+     * query all activity condition(associated activity) rules by given sku
+     *
+     * @param sku
      * @return
      */
-    private List<ConditionRule> getAllActivityConditionRules(DiscountCalculateRequest.CalculatingGoods goods) {
-        Item item;
-        Sku sku = null;
+    private List<ConditionRule> getAllActivityConditionRules(Sku sku) {
+        Item item = sku.item();
         List<ConditionRule> activityConditionRules = Lists.newArrayList();
-        if (null != goods.getGoodsSpecsId()) {
-            sku = itemApi.getSku(goods.getGoodsSpecsId(), true, true, true);
-            item = sku.item();
-            addAllClassifiedActivityRules(item, activityConditionRules);
-        } else {
-            Assert.notNull(goods.getGoodsId(), "goods id or goods specs id must least specify one.");
-            item = itemApi.getItem(goods.getGoodsId(), true, true);
-            addAllClassifiedActivityRules(item, activityConditionRules);
-        }
-        List<? extends Activity> detailedActivities = activityManager.findAllActivityByDetailedGoodsSource(1, item.id(), null != sku ? sku.id() : null);
+        addAllClassifiedActivityRules(item, activityConditionRules);
+        List<? extends Activity> detailedActivities = activityManager.findAllActivityByDetailedGoodsSource(1, item.id(), sku.id(), true);
         detailedActivities.forEach(detailedActivity -> {
             activityConditionRules.add(activityRuleManager.getConditionRule(detailedActivity.id(), detailedActivity));
         });
         return activityConditionRules;
+    }
+
+    /**
+     * get sku from item center.
+     *
+     * @param goodsSpecs
+     * @return
+     */
+    private Sku getSku(DiscountCalculateRequest.CalculatingGoodsSpecs goodsSpecs) {
+        return itemApi.getSku(goodsSpecs.getGoodsSpecsId(), true, true, true);
     }
 
     /**
@@ -107,7 +131,7 @@ public class PromotionApplication implements InitializingBean {
     private void addAllClassifiedActivityRules(Item item, List<ConditionRule> activityConditionRules) {
         Long sellerUnionId = item.sellerUnionId();
         Long sellerId = item.sellerId();
-        List<? extends Activity> classifiedActivities = activityManager.findAllActivityByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId);
+        List<? extends Activity> classifiedActivities = activityManager.findAllActivityByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId, true);
         classifiedActivities.forEach(classifiedActivity -> {
             activityConditionRules.add(activityRuleManager.getConditionRule(classifiedActivity.id(), classifiedActivity));
         });
@@ -115,22 +139,15 @@ public class PromotionApplication implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+    }
+
+    private void test() {
         System.out.println(itemApi);
         System.out.println(JsonMapper2.toJson(itemApi.findItemPage(Maps.newHashMap(), Maps.newHashMap(), Pages.serializablePageable(Pageable.unpaged()), null)));
         System.out.println(JsonMapper2.toJson(itemApi.findItemPage(Maps.newHashMap(), Maps.newHashMap(), Pages.serializablePageable(PageRequest.of(0, 6, Sort.by("sales_price", "num"))), null)));
         System.out.println(JsonMapper2.toJson(itemApi.findItemPage(Maps.newHashMap(), Maps.newHashMap(), Pages.serializablePageable(PageRequest.of(1, 3, Sort.by("sales_price", "num"))), null)));
         System.out.println(JsonMapper2.toJson(itemApi.findItemPage(Maps.newHashMap(), Maps.newHashMap(), Pages.serializablePageable(PageRequest.of(2, 1, Sort.Direction.DESC, "sales_price", "num")), null)));
         System.out.println(JsonMapper2.toJson(itemApi.findItemPage(Maps.newHashMap(), Maps.newHashMap(), Pages.serializablePageable(PageRequest.of(1, 2, Sort.by(Sort.Order.asc("sales_price"), Sort.Order.desc("num")))), null)));
-
-        DiscountCalculateRequest request = new DiscountCalculateRequest();
-        request.setBuyerId(9527l);
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(1l, 1));
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(2l, 2));
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(3l, 3));
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(4l, 4));
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(5l, 5));
-
-//        calculateDiscount(request);
     }
 
     @Autowired
