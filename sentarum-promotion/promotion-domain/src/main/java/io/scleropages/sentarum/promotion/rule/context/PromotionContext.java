@@ -54,7 +54,9 @@ public interface PromotionContext extends InvocationContext {
      *
      * @return
      */
-    PromotionResultBuilder promotionResultBuilder();
+    default PromotionResultBuilder promotionResultBuilder() {
+        return PromotionResultBuilder.newBuilder();
+    }
 
     /**
      * add {@link PromotionResult} to current context.

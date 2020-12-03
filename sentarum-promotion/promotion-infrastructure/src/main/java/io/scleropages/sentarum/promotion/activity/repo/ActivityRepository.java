@@ -119,8 +119,8 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
     }
 
     default List<ActivityEntity> fetchRecordsInternal(PromActivity promActivity, Supplier<SelectQuery<Record>> baseQuerySupplier, Function<Record, Boolean> recordCallback) {
-        Set<Long> uniqueIds = Sets.newHashSet();
-        List<ActivityEntity> entities = Lists.newArrayList();//客户端去重
+        Set<Long> uniqueIds = Sets.newHashSet();//客户端去重
+        List<ActivityEntity> entities = Lists.newArrayList();
         SelectQuery<Record> baseQuery = baseQuerySupplier.get();
         baseQuery.fetch().forEach(record -> {
             if (uniqueIds.add(record.getValue(promActivity.ID)) && recordCallback.apply(record)) {

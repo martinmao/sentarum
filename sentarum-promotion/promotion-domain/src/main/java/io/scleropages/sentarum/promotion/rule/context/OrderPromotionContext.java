@@ -46,5 +46,5 @@ public interface OrderPromotionContext extends PromotionContext {
      *
      * @return
      */
-    List<GoodsPromotionContext> goodsPromotions();
+    List<GoodsPromotionContext> goodsPromotionContexts();
 }

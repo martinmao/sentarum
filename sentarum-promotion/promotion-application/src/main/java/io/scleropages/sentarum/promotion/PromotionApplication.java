@@ -23,10 +23,14 @@ import io.scleropages.sentarum.item.core.model.Sku;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
+import io.scleropages.sentarum.promotion.rule.Condition;
+import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.dao.orm.jpa.Pages;
 import org.scleropages.crud.exception.BizError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -48,35 +52,64 @@ import static io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSour
 @BizError("25")
 public class PromotionApplication implements InitializingBean {
 
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
     private ActivityManager activityManager;
     private ActivityRuleManager activityRuleManager;
+    private RuleContainer ruleContainer;
     private ItemApi itemApi;
+
 
     public void calculateDiscount(DiscountCalculateRequest request) {
         Assert.notNull(request, "request must not be null.");
         request.getCalculatingGoods().forEach(goods -> {
-            List<ConditionRule> goodsConditionRules = Lists.newArrayList();
-            if (null != goods.getGoodsSpecsId()) {
-                Sku sku = itemApi.getSku(goods.getGoodsSpecsId(), true, true, true);
-                addSellerActivity(sku.item(), goodsConditionRules);
-                List<? extends Activity> detailedActivities = activityManager.findAllActivityByDetailedGoodsSource(1, sku.item().id(), sku.id());
-                detailedActivities.forEach(detailedActivity -> {
-                    goodsConditionRules.add(activityRuleManager.getConditionRule(detailedActivity.id(), detailedActivity));
-                });
-            } else {
-                Assert.notNull(goods.getGoodsId(), "goods id or goods specs id must least specify one.");
-                Item item = itemApi.getItem(goods.getGoodsId(), true, true);
-                addSellerActivity(item, goodsConditionRules);
-            }
+            List<ConditionRule> activityConditionRules = getAllActivityConditionRules(goods);
+            activityConditionRules.forEach(conditionRule -> {
+                Activity activity = conditionRule.activity();
+                Condition condition = ruleContainer.getCondition(conditionRule);
+
+            });
         });
     }
 
-    private void addSellerActivity(Item item, List<ConditionRule> conditionRules) {
+    /**
+     * query all activity condition(associated activity) rules by given goods
+     *
+     * @param goods
+     * @return
+     */
+    private List<ConditionRule> getAllActivityConditionRules(DiscountCalculateRequest.CalculatingGoods goods) {
+        Item item;
+        Sku sku = null;
+        List<ConditionRule> activityConditionRules = Lists.newArrayList();
+        if (null != goods.getGoodsSpecsId()) {
+            sku = itemApi.getSku(goods.getGoodsSpecsId(), true, true, true);
+            item = sku.item();
+            addAllClassifiedActivityRules(item, activityConditionRules);
+        } else {
+            Assert.notNull(goods.getGoodsId(), "goods id or goods specs id must least specify one.");
+            item = itemApi.getItem(goods.getGoodsId(), true, true);
+            addAllClassifiedActivityRules(item, activityConditionRules);
+        }
+        List<? extends Activity> detailedActivities = activityManager.findAllActivityByDetailedGoodsSource(1, item.id(), null != sku ? sku.id() : null);
+        detailedActivities.forEach(detailedActivity -> {
+            activityConditionRules.add(activityRuleManager.getConditionRule(detailedActivity.id(), detailedActivity));
+        });
+        return activityConditionRules;
+    }
+
+    /**
+     * query and add all classified goods source activity rules.
+     *
+     * @param item
+     * @param activityConditionRules
+     */
+    private void addAllClassifiedActivityRules(Item item, List<ConditionRule> activityConditionRules) {
         Long sellerUnionId = item.sellerUnionId();
         Long sellerId = item.sellerId();
         List<? extends Activity> classifiedActivities = activityManager.findAllActivityByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId);
         classifiedActivities.forEach(classifiedActivity -> {
-            conditionRules.add(activityRuleManager.getConditionRule(classifiedActivity.id(), classifiedActivity));
+            activityConditionRules.add(activityRuleManager.getConditionRule(classifiedActivity.id(), classifiedActivity));
         });
     }
 
@@ -91,11 +124,11 @@ public class PromotionApplication implements InitializingBean {
 
         DiscountCalculateRequest request = new DiscountCalculateRequest();
         request.setBuyerId(9527l);
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(1l,1));
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(2l,2));
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(3l,3));
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(4l,4));
-        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(5l,5));
+        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(1l, 1));
+        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(2l, 2));
+        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(3l, 3));
+        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(4l, 4));
+        request.getCalculatingGoods().add(new DiscountCalculateRequest.CalculatingGoods(5l, 5));
 
 //        calculateDiscount(request);
     }
@@ -108,6 +141,11 @@ public class PromotionApplication implements InitializingBean {
     @Autowired
     public void setActivityRuleManager(ActivityRuleManager activityRuleManager) {
         this.activityRuleManager = activityRuleManager;
+    }
+
+    @Autowired
+    public void setRuleContainer(RuleContainer ruleContainer) {
+        this.ruleContainer = ruleContainer;
     }
 
     @Autowired

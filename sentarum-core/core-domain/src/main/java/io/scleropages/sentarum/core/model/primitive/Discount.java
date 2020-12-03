@@ -111,7 +111,7 @@ public class Discount {
      *
      * @return
      */
-    public Amount finalAmount() {
+    public Amount finalAmount(boolean keepScale) {
         assertDiscount();
         switch (discountType) {
             case DECREASE_AMOUNT:
@@ -119,7 +119,7 @@ public class Discount {
             case OVERRIDE_AMOUNT:
                 return new Amount(discountValue);
             case DISCOUNT:
-                return originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), false);
+                return originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), keepScale);
         }
         throw new IllegalStateException("illegal operation.");
     }
@@ -134,10 +134,10 @@ public class Discount {
      * @param originalPrice
      * @return
      */
-    public Amount finalAmount(Amount originalPrice) {
+    public Amount finalAmount(Amount originalPrice, boolean keepScale) {
         if (Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE) || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)) {
             setOriginalPrice(originalPrice);
-            return finalAmount();
+            return finalAmount(keepScale);
         }
         throw new IllegalStateException("illegal operation.");
     }

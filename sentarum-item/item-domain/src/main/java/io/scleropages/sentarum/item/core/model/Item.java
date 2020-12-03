@@ -77,7 +77,7 @@ public interface Item extends Serializable {
     String sellerCode();
 
     /**
-     * 外部编码（商家自己的货号）
+     * 外部编码（商家自己的货号）,存储为商家商业综合体标识_商家标识_商家货号
      *
      * @return
      */

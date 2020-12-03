@@ -20,7 +20,23 @@ package io.scleropages.sentarum.promotion.rule.context;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsPromotionContext extends OrderPromotionContext {
+public interface GoodsPromotionContext extends PromotionContext {
+
+
+    /**
+     * 商家唯一标识（商业综合体).
+     *
+     * @return
+     */
+    Long sellerUnionId();
+
+    /**
+     * 商家唯一标识(单店).
+     *
+     * @return
+     */
+    Long sellerId();
+
 
     /**
      * 商品唯一标识
