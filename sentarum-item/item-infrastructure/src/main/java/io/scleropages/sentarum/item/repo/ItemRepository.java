@@ -67,29 +67,33 @@ public interface ItemRepository extends GenericRepository<ItemEntity, Long>, Joo
     }
 
     /**
-     * read item by given id
+     * read item by given item record.
      *
-     * @param id                 required
+     * @param optionalItemRecord required record use {@link #readById(Long)} to fetch.
      * @param spuRepository      (optional) required if want to fetch spu info.
      * @param categoryRepository (optional) required if want to fetch category info.
      * @return
      */
-    default Optional<ItemEntity> readById(Long id, SpuRepository spuRepository, StandardCategoryRepository categoryRepository) {
-        Optional<ItemRecord> optionalItemRecord = readById(id);
+    default Optional<ItemEntity> readByRecord(Optional<ItemRecord> optionalItemRecord, SpuRepository spuRepository, StandardCategoryRepository categoryRepository) {
         if (!optionalItemRecord.isPresent())
             return Optional.empty();
 
         ItemRecord itemRecord = optionalItemRecord.get();
         ItemEntity itemEntity = new ItemEntity();
 
-        dslRecordInto(itemRecord, itemEntity);
+        dslRecordInto(itemRecord, itemEntity, new ReferenceEntityAssembler() {
+            @Override
+            public void applyReferenceIdToTargetEntity(Object targetEntity, Attribute refAttribute, Field field, Object fieldValue) {
+
+            }
+        });
         if (null != spuRepository)
-            spuRepository.readById(itemRecord.getSpuId(), categoryRepository).ifPresent(spuEntity -> itemEntity.setSpu(spuEntity));
+            spuRepository.readByRecord(spuRepository.readById(itemRecord.getSpuId()), categoryRepository).ifPresent(spuEntity -> itemEntity.setSpu(spuEntity));
         return Optional.of(itemEntity);
     }
 
-    default void consumeById(Long id, Consumer<ItemEntity> entityConsumer) {
-        readById(id).ifPresent(r -> {
+    default void consumeById(Optional<ItemRecord> optionalItemRecord, Consumer<ItemEntity> entityConsumer) {
+        optionalItemRecord.ifPresent(r -> {
             ItemEntity entity = new ItemEntity();
             dslRecordInto(r, entity);
             entityConsumer.accept(entity);

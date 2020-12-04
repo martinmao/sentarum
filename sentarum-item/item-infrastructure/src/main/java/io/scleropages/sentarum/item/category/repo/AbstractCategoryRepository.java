@@ -18,6 +18,7 @@ package io.scleropages.sentarum.item.category.repo;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.MutableGraph;
 import io.scleropages.sentarum.item.category.entity.AbstractCategoryEntity;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
@@ -28,6 +29,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.Assert;
 
+import javax.persistence.metamodel.Attribute;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -46,10 +48,15 @@ public interface AbstractCategoryRepository<E extends AbstractCategoryEntity, T 
         return dslContext().selectFrom(t).where(t.field(AbstractCategoryEntity.COLUMN_ID.toUpperCase()).eq(id)).fetchOptional();
     }
 
-    default void consumeById(Long id, Consumer<E> entityConsumer) {
-        readById(id).ifPresent(r -> {
+    default void consumeByRecord(Optional<R> optionalRecord, Consumer<E> entityConsumer) {
+        optionalRecord.ifPresent(r -> {
             E entity = createEntity();
-            dslRecordInto(r, entity);
+            dslRecordInto(r, entity, new ReferenceEntityAssembler() {
+                @Override
+                public void applyReferenceIdToTargetEntity(Object targetEntity, Attribute refAttribute, Field field, Object fieldValue) {
+
+                }
+            });
             entityConsumer.accept(entity);
         });
     }

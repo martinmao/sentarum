@@ -59,7 +59,7 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
 
     Boolean existsByGoodsSourceType(Integer goodsSourceType);
 
-    @Cacheable
+    @Cacheable(key = "#root.target+'-'+#bizType+'-'+#bizId")
     default Result<R> readByBizTypeAndBizId(Integer bizType, Long bizId) {
         T t = dslTable();
         return dslContext().selectFrom(t)
@@ -68,8 +68,7 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
                 .fetch();
     }
 
-    default void consumeEntitiesByBizTypeAndBizId(Integer bizType, Long bizId, Consumer<E> consumer) {
-        Result<R> rs = readByBizTypeAndBizId(bizType, bizId);
+    default void consumeEntitiesByRecord(Result<R> rs, Consumer<E> consumer) {
         rs.forEach(r -> {
             E entity = createEntity();
             dslRecordInto(r, entity);

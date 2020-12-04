@@ -307,7 +307,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @BizError("54")
     public Item getItem(Long itemId, boolean fetchSpu, boolean fetchCategory) {
         Assert.notNull(itemId, "item id is required.");
-        ItemEntity itemEntity = itemRepository.readById(itemId, fetchSpu ? spuRepository : null, fetchCategory ? standardCategoryRepository : null).orElseThrow(() -> new IllegalArgumentException("no item found: " + itemId));
+        ItemEntity itemEntity = itemRepository.readByRecord(itemRepository.readById(itemId), fetchSpu ? spuRepository : null, fetchCategory ? standardCategoryRepository : null).orElseThrow(() -> new IllegalArgumentException("no item found: " + itemId));
         return getModelMapper().mapForRead(itemEntity);
     }
 
@@ -325,7 +325,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @BizError("55")
     public Sku getSku(Long skuId, boolean fetchItem, boolean fetchSpu, boolean fetchCategory) {
         Assert.notNull(skuId, "sku id is required.");
-        SkuEntity skuEntity = skuRepository.readById(skuId, fetchItem ? itemRepository : null, fetchSpu ? spuRepository : null, fetchCategory ? standardCategoryRepository : null).orElseThrow(() -> new IllegalArgumentException("no sku found: " + skuId));
+        SkuEntity skuEntity = skuRepository.readByRecord(skuRepository.readById(skuId), fetchItem ? itemRepository : null, fetchSpu ? spuRepository : null, fetchCategory ? standardCategoryRepository : null).orElseThrow(() -> new IllegalArgumentException("no sku found: " + skuId));
         return getModelMapper(SkuEntityMapper.class).mapForRead(skuEntity);
     }
 

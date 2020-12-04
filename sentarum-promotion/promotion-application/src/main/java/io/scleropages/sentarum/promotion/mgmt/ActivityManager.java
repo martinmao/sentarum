@@ -262,7 +262,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Transactional(readOnly = true)
     @BizError("52")
     public Activity getActivity(Long id, boolean fetchGoodsSource) {
-        ActivityEntity activityEntity = activityRepository.readById(id, fetchGoodsSource ? classifiedGoodsSourceRepository : null, fetchGoodsSource ? detailedGoodsSourceRepository : null).orElseThrow(() -> new IllegalArgumentException("no activity found: " + id));
+        ActivityEntity activityEntity = activityRepository.readByRecord(activityRepository.readById(id), fetchGoodsSource ? classifiedGoodsSourceRepository : null, fetchGoodsSource ? detailedGoodsSourceRepository : null).orElseThrow(() -> new IllegalArgumentException("no activity found: " + id));
         return getModelMapper().mapForRead(activityEntity);
     }
 

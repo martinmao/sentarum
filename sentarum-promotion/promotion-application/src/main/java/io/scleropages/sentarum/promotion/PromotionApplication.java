@@ -139,6 +139,7 @@ public class PromotionApplication implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        test();
     }
 
     private void test() {
@@ -148,6 +149,9 @@ public class PromotionApplication implements InitializingBean {
         System.out.println(JsonMapper2.toJson(itemApi.findItemPage(Maps.newHashMap(), Maps.newHashMap(), Pages.serializablePageable(PageRequest.of(1, 3, Sort.by("sales_price", "num"))), null)));
         System.out.println(JsonMapper2.toJson(itemApi.findItemPage(Maps.newHashMap(), Maps.newHashMap(), Pages.serializablePageable(PageRequest.of(2, 1, Sort.Direction.DESC, "sales_price", "num")), null)));
         System.out.println(JsonMapper2.toJson(itemApi.findItemPage(Maps.newHashMap(), Maps.newHashMap(), Pages.serializablePageable(PageRequest.of(1, 2, Sort.by(Sort.Order.asc("sales_price"), Sort.Order.desc("num")))), null)));
+        System.out.println(JsonMapper2.toJson(itemApi.getItem(1l, true, true)));
+        System.out.println(JsonMapper2.toJson(itemApi.getSku(1l, true, true, true)));
+
     }
 
     @Autowired

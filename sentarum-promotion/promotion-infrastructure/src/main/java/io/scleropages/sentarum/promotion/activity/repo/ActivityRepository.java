@@ -130,28 +130,28 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
     }
 
     /**
-     * read activity by given id
+     * read activity by given record
      *
-     * @param activityId                      required id for read.
+     * @param optionalRecord                  required record use {@link #readById(Long)} to fetch.
      * @param classifiedGoodsSourceRepository (optional) required if want to fetch classified goods source
      * @param detailedGoodsSourceRepository   (optional) required if want to fetch detailed goods source
      * @return
      */
-    default Optional<ActivityEntity> readById(Long activityId, ActivityClassifiedGoodsSourceRepository classifiedGoodsSourceRepository, ActivityDetailedGoodsSourceRepository detailedGoodsSourceRepository) {
-        Optional<PromActivityRecord> optionalRecord = readById(activityId);
+    default Optional<ActivityEntity> readByRecord(Optional<PromActivityRecord> optionalRecord, ActivityClassifiedGoodsSourceRepository classifiedGoodsSourceRepository, ActivityDetailedGoodsSourceRepository detailedGoodsSourceRepository) {
         if (!optionalRecord.isPresent())
             return Optional.empty();
         PromActivityRecord record = optionalRecord.get();
+        Long activityId = record.getId();
         ActivityEntity entity = new ActivityEntity();
         dslRecordInto(record, entity);
         if (null != classifiedGoodsSourceRepository) {
-            classifiedGoodsSourceRepository.consumeEntitiesByBizTypeAndBizId(
+            classifiedGoodsSourceRepository.consumeEntitiesByRecord(classifiedGoodsSourceRepository.readByBizTypeAndBizId(
                     ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY
-                    , activityId
+                    , activityId)
                     , e -> entity.getGoodsSource().add(e));
         }
         if (null != detailedGoodsSourceRepository) {
-            detailedGoodsSourceRepository.consumeEntitiesByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId, e -> entity.getGoodsSource().add(e));
+            detailedGoodsSourceRepository.consumeEntitiesByRecord(detailedGoodsSourceRepository.readByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId), e -> entity.getGoodsSource().add(e));
         }
         return Optional.of(entity);
     }

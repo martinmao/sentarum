@@ -100,6 +100,8 @@ public class ActivityManagerTestcase {
 
 
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 1, null, null, true)));
+        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 1, null, null, true)));
+
 
 
         activity.setName("TEST2");

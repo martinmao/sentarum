@@ -17,6 +17,7 @@ package io.scleropages.sentarum.item.repo;
 
 import io.scleropages.sentarum.item.category.repo.StandardCategoryRepository;
 import io.scleropages.sentarum.item.core.entity.AbstractSkuEntity;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.scleropages.crud.dao.orm.jpa.GenericRepository;
@@ -25,6 +26,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import javax.persistence.metamodel.Attribute;
 import java.util.Optional;
 
 import static io.scleropages.sentarum.item.core.entity.AbstractSkuEntity.COLUMN_ID;
@@ -38,10 +40,10 @@ public interface AbstractSkuRepository<E extends AbstractSkuEntity, T extends Ta
 
 
     @EntityGraph(attributePaths = {"item", "category"})
-    @Cacheable
+    @Cacheable(key = "#root.target+'-'+#id")
     Optional<E> getById(Long id);
 
-    @Cacheable
+    @Cacheable(key = "#root.target+'-'+#id")
     default Optional<R> readById(Long id) {
         T t = dslTable();
         return dslContext().selectFrom(t).where(t.field(COLUMN_ID.toUpperCase()).eq(id)).fetchOptional();
@@ -49,23 +51,27 @@ public interface AbstractSkuRepository<E extends AbstractSkuEntity, T extends Ta
 
 
     /**
-     * get sku entity by id.
+     * get sku entity by sku record.
      *
-     * @param id                 required.
+     * @param optionalSkuRecord  required record use {@link #readById(Long)} to fetch.
      * @param itemRepository     (optional) required if want to fetch item info.
      * @param spuRepository      (optional) required if want to fetch spu info.
      * @param categoryRepository (optional) required if want to fetch category info.
      * @return
      */
-    default Optional<E> readById(Long id, ItemRepository itemRepository, SpuRepository spuRepository, StandardCategoryRepository categoryRepository) {
-
-        Optional<R> optionalR = readById(id);
-        if (!optionalR.isPresent())
+    default Optional<E> readByRecord(Optional<R> optionalSkuRecord, ItemRepository itemRepository, SpuRepository spuRepository, StandardCategoryRepository categoryRepository) {
+        if (!optionalSkuRecord.isPresent())
             return Optional.empty();
-        R r = optionalR.get();
+        R r = optionalSkuRecord.get();
         E entity = createEntity();
+        dslRecordInto(r, entity, new ReferenceEntityAssembler() {
+            @Override
+            public void applyReferenceIdToTargetEntity(Object targetEntity, Attribute refAttribute, Field field, Object fieldValue) {
+
+            }
+        });
         if (null != itemRepository) {
-            itemRepository.readById(r.getValue(COLUMN_ITEM_ID.toUpperCase(), Long.class), spuRepository, categoryRepository).ifPresent(itemEntity -> entity.setItem(itemEntity));
+            itemRepository.readByRecord(itemRepository.readById(r.getValue(COLUMN_ITEM_ID.toUpperCase(), Long.class)), spuRepository, categoryRepository).ifPresent(itemEntity -> entity.setItem(itemEntity));
         }
         return Optional.of(entity);
     }

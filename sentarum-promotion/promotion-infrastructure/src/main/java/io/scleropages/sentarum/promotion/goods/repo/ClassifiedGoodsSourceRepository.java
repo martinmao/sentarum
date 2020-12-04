@@ -18,6 +18,7 @@ package io.scleropages.sentarum.promotion.goods.repo;
 import io.scleropages.sentarum.promotion.goods.entity.ClassifiedGoodsSourceEntity;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.Table;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.Assert;

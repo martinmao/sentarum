@@ -64,28 +64,32 @@ public interface SpuRepository extends GenericRepository<SpuEntity, Long>, JooqR
 
 
     /**
-     * read spu by given id
+     * read spu by given spu record
      *
-     * @param id                 required.
-     * @param categoryRepository (optional) required if want to fetch category.
+     * @param optionalItemSpuRecord required record use {@link #readById(Long)} to fetch.
+     * @param categoryRepository    (optional) required if want to fetch category.
      * @return
      */
-    default Optional<SpuEntity> readById(Long id, StandardCategoryRepository categoryRepository) {
-        Optional<ItemSpuRecord> optionalItemSpuRecord = readById(id);
+    default Optional<SpuEntity> readByRecord(Optional<ItemSpuRecord> optionalItemSpuRecord, StandardCategoryRepository categoryRepository) {
         if (!optionalItemSpuRecord.isPresent())
             return Optional.empty();
         ItemSpuRecord itemSpuRecord = optionalItemSpuRecord.get();
         SpuEntity spuEntity = new SpuEntity();
-        dslRecordInto(itemSpuRecord, spuEntity);
+        dslRecordInto(itemSpuRecord, spuEntity, new ReferenceEntityAssembler() {
+            @Override
+            public void applyReferenceIdToTargetEntity(Object targetEntity, Attribute refAttribute, Field field, Object fieldValue) {
+
+            }
+        });
         if (null != categoryRepository) {
-            categoryRepository.consumeById(itemSpuRecord.getStdCategoryId(), entity -> spuEntity.setCategory(entity));
+            categoryRepository.consumeByRecord(categoryRepository.readById(itemSpuRecord.getStdCategoryId()), entity -> spuEntity.setCategory(entity));
         }
         return Optional.of(spuEntity);
     }
 
 
-    default void consumeById(Long id, Consumer<SpuEntity> entityConsumer) {
-        readById(id).ifPresent(r -> {
+    default void consumeById(Optional<ItemSpuRecord> optionalItemSpuRecord, Consumer<SpuEntity> entityConsumer) {
+        optionalItemSpuRecord.ifPresent(r -> {
             SpuEntity entity = new SpuEntity();
             dslRecordInto(r, entity);
             entityConsumer.accept(entity);
