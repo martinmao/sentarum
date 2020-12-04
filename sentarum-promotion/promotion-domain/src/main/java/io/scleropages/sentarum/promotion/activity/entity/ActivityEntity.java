@@ -17,7 +17,6 @@ package io.scleropages.sentarum.promotion.activity.entity;
 
 import com.google.common.collect.Lists;
 import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.goods.model.impl.AbstractGoodsSource;
 import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
