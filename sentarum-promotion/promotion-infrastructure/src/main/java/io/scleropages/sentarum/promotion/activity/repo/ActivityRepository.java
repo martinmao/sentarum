@@ -27,7 +27,6 @@ import io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepositor
 import io.scleropages.sentarum.promotion.goods.repo.GoodsRepository.GoodsJoin;
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.JoinType;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SelectQuery;
@@ -61,17 +60,19 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
 
         PromActivity promActivity = dslTable();
 
-        SelectQuery<Record1<Long>> baseQuery = dslContext().select(promActivity.ID).from(promActivity).where(promActivity.STATUS.eq(activityStatus)).getQuery();
+        SelectQuery<Record1<Long>> baseQuery = dslContext().select(promActivity.ID).getQuery();
 
         Condition condition = repository.conditionByGoodsSourceTypeAndGoodsSourceIdAndSecondaryGoodsSourceId(goodsSourceType, goodsSourceId, secondaryGoodsSourceId);
 
         applyGoodsSourceCondition(baseQuery, new GoodsSourceJoin(
                 repository.dslTable(),
-                JoinType.JOIN,
+                null,
                 promActivity.ID,
                 condition,
                 ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY
         ));
+        baseQuery.addFrom(promActivity);
+        baseQuery.addConditions(promActivity.STATUS.eq(activityStatus));
         return fetchRecordsInternal(promActivity, () -> baseQuery, record -> true);
     }
 
@@ -91,7 +92,7 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
         List<Field> queryFields = Lists.newArrayList(promActivity.ID);
         PromActGoods promActGoods = goodsRepository.dslTable();
         queryFields.add(promActGoods.ID);
-        SelectQuery<Record> baseQuery = dslContext().select(queryFields).from(promActivity).where(promActivity.STATUS.eq(activityStatus)).getQuery();
+        SelectQuery<Record> baseQuery = dslContext().select(queryFields).getQuery();
 
 //        applyGoodsSourceCondition(baseQuery, new GoodsSourceJoin(
 //                goodsSourceRepository.dslTable(),
@@ -103,8 +104,11 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
                 promActGoods,
                 promActivity.ID,
                 promActGoods.ACTIVITY_ID,
-                JoinType.JOIN, promActGoods.GOODS_ID.eq(goodsId)
+                null, promActGoods.GOODS_ID.eq(goodsId)
         ));
+
+        baseQuery.addFrom(promActivity);
+        baseQuery.addConditions(promActivity.STATUS.eq(activityStatus));
 
         return fetchRecordsInternal(promActivity, () -> baseQuery, record -> {
             List<? extends GoodsSpecsEntity> goodsSpecs = goodsRepository.findAllCacheablesGoodsSpecsByGoodsId(goodsSpecsRepository, record.getValue(promActGoods.ID));

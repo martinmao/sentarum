@@ -98,12 +98,19 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
     class GoodsSourceConditionsAssembler {
 
         public static void applyGoodsSourceCondition(SelectQuery<? extends Record> baseQuery, GoodsSourceJoin goodsSourceJoin) {
-            baseQuery.addJoin(
-                    goodsSourceJoin.goodsSourceTable,
-                    goodsSourceJoin.joinType,
-                    goodsSourceJoin.goodsSourceTable.field(AbstractGoodsSourceEntity.COLUMN_BIZ_TYPE.toUpperCase()).eq(goodsSourceJoin.bizType)
-                            .and(goodsSourceJoin.baseJoinField.eq(goodsSourceJoin.goodsSourceTable.field(AbstractGoodsSourceEntity.COLUMN_BIZ_ID.toUpperCase()))),
-                    goodsSourceJoin.otherCondition);
+            if (null == goodsSourceJoin.joinType) {
+                baseQuery.addFrom(goodsSourceJoin.goodsSourceTable);
+                baseQuery.addConditions(goodsSourceJoin.goodsSourceTable.field(AbstractGoodsSourceEntity.COLUMN_BIZ_TYPE.toUpperCase()).eq(goodsSourceJoin.bizType)
+                                .and(goodsSourceJoin.baseJoinField.eq(goodsSourceJoin.goodsSourceTable.field(AbstractGoodsSourceEntity.COLUMN_BIZ_ID.toUpperCase()))),
+                        goodsSourceJoin.otherCondition);
+            } else {
+                baseQuery.addJoin(
+                        goodsSourceJoin.goodsSourceTable,
+                        goodsSourceJoin.joinType,
+                        goodsSourceJoin.goodsSourceTable.field(AbstractGoodsSourceEntity.COLUMN_BIZ_TYPE.toUpperCase()).eq(goodsSourceJoin.bizType)
+                                .and(goodsSourceJoin.baseJoinField.eq(goodsSourceJoin.goodsSourceTable.field(AbstractGoodsSourceEntity.COLUMN_BIZ_ID.toUpperCase()))),
+                        goodsSourceJoin.otherCondition);
+            }
         }
     }
 

@@ -108,11 +108,17 @@ public interface GoodsRepository<E extends GoodsEntity, T extends Table, R exten
     class GoodsConditionsAssembler {
 
         public static void applyGoodsCondition(SelectQuery<Record> baseQuery, GoodsJoin goodsJoin) {
-            baseQuery.addJoin(
-                    goodsJoin.goodsTable,
-                    goodsJoin.joinType,
-                    goodsJoin.goodsRefField.eq(goodsJoin.sourceIdField),
-                    goodsJoin.otherCondition);
+            if (goodsJoin.joinType == null) {
+                baseQuery.addFrom(goodsJoin.goodsTable);
+                baseQuery.addConditions(goodsJoin.goodsRefField.eq(goodsJoin.sourceIdField), goodsJoin.otherCondition);
+
+            } else {
+                baseQuery.addJoin(
+                        goodsJoin.goodsTable,
+                        goodsJoin.joinType,
+                        goodsJoin.goodsRefField.eq(goodsJoin.sourceIdField),
+                        goodsJoin.otherCondition);
+            }
         }
     }
 
