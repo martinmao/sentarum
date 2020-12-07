@@ -46,6 +46,7 @@ import io.scleropages.sentarum.promotion.goods.model.ClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
 import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer;
 import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceReaderInitializer;
+import org.apache.commons.collections.ComparatorUtils;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
 import org.slf4j.Logger;
@@ -227,9 +228,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @BizError("50")
     public List<? extends Activity> findAllActivityByClassifiedGoodsSource(Integer status, Integer goodSourceType, Long goodSourceId, Long secondaryGoodSourceId, boolean fetchGoodsSource) {
         List<Long> ids = activityRepository.findAllActivityIdByClassifiedGoodsSource(classifiedGoodsSourceRepository, status, goodSourceType, goodSourceId, secondaryGoodSourceId);
-        List<Activity> activities = Lists.newArrayList();
-        ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
-        return activities;
+        return getActivities(ids, fetchGoodsSource);
     }
 
 
@@ -246,9 +245,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @BizError("51")
     public List<? extends Activity> findAllActivityByDetailedGoodsSource(Integer status, Long goodsId, Long goodsSpecsId, boolean fetchGoodsSource) {
         List<Long> ids = activityRepository.findAllActivityIdByDetailedGoodsSource(detailedGoodsSourceRepository, activityGoodsRepository, activityGoodsSpecsRepository, status, goodsId, goodsSpecsId);
-        List<Activity> activities = Lists.newArrayList();
-        ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
-        return activities;
+        return getActivities(ids, fetchGoodsSource);
     }
 
 
@@ -351,6 +348,21 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
             }
         }
         return goodsSources;
+    }
+
+
+    /**
+     * get activities by ids
+     *
+     * @param ids              id list for activity
+     * @param fetchGoodsSource true if want to fetch goods source.
+     * @return
+     */
+    public List<? extends Activity> getActivities(List<Long> ids, boolean fetchGoodsSource) {
+        List<Activity> activities = Lists.newArrayList();
+        ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
+        activities.sort((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.order(), o2.order()));
+        return activities;
     }
 
 

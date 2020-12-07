@@ -56,9 +56,41 @@ public class DefaultInvocationChain implements InvocationChain {
         } else {
             final RuleInvocation next = invocations.get(currentPosition++);
             if (logger.isDebugEnabled()) {
-                logger.debug("invoking rule invocation [{}]: {}", next.getClass().getSimpleName(), next.description());
+                logger.debug("invoking rule invocation [{}]: {}", next.information(), next.description());
             }
             next.execute(null, invocationContext, this);
         }
+    }
+
+    @Override
+    public void nextChain(InvocationContext invocationContext) {
+        if (null != nextInvocationChain) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("ignoring all next invocations from [{}-{}] and forwarding to next invocation chain: {}", currentPosition, invocations.get(currentPosition).information(), nextInvocationChain);
+                nextInvocationChain.next(invocationContext);
+            }
+        } else if (logger.isDebugEnabled()) {
+            logger.debug("ignoring all next invocations from [{}-{}] and no next invocation chain to forward.", currentPosition, invocations.get(currentPosition).information());
+        }
+    }
+
+    @Override
+    public RuleInvocation getNext() {
+        return null;
+    }
+
+    @Override
+    public void skipNext() {
+
+    }
+
+    @Override
+    public InvocationChain getNextChain() {
+        return null;
+    }
+
+    @Override
+    public void skipNextChain() {
+
     }
 }

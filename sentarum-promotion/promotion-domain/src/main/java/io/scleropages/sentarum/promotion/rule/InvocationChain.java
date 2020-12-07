@@ -16,12 +16,11 @@
 package io.scleropages.sentarum.promotion.rule;
 
 /**
- * 规则调用链，通常情况下，一个促销规则计算链包括n个参与规则{@link Condition} 及1个促销规则（{@link PromotionCalculator}）
+ * 规则调用链，通常情况下，计算链包括条件规则{@link Condition} 及计算规则（{@link PromotionCalculator}）
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface InvocationChain {
-
 
     /**
      * 基于当前所处位置，调用下一个规则.
@@ -29,4 +28,35 @@ public interface InvocationChain {
      * @param invocationContext
      */
     void next(InvocationContext invocationContext);
+
+    /**
+     * 忽略当前chain中后续规则调用，直接跳到下一个chain.
+     *
+     * @param invocationContext
+     */
+    void nextChain(InvocationContext invocationContext);
+
+    /**
+     * 获取下一个规则调用.
+     *
+     * @return
+     */
+    RuleInvocation getNext();
+
+    /**
+     * 跳过下一个规则调用.
+     */
+    void skipNext();
+
+    /**
+     * 获取下一个调用链
+     *
+     * @return
+     */
+    InvocationChain getNextChain();
+
+    /**
+     * 结束当前调用链，并跳过下一个调用链
+     */
+    void skipNextChain();
 }

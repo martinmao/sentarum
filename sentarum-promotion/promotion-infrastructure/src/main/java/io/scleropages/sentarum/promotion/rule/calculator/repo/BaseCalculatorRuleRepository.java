@@ -15,13 +15,37 @@
  */
 package io.scleropages.sentarum.promotion.rule.calculator.repo;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.jooq.tables.PromCalcBase;
 import io.scleropages.sentarum.jooq.tables.records.PromCalcBaseRecord;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.BaseCalculatorRuleEntity;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractCalculatorRuleRepository;
+import org.jooq.Field;
+import org.springframework.cache.annotation.Cacheable;
+
+import javax.persistence.metamodel.Attribute;
+import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface BaseCalculatorRuleRepository extends AbstractCalculatorRuleRepository<BaseCalculatorRuleEntity, PromCalcBase, PromCalcBaseRecord> {
+
+    @Override
+    @Cacheable
+    default List<BaseCalculatorRuleEntity> findAllByActivity_Id(Long activityId) {
+        PromCalcBase table = dslTable();
+        List<BaseCalculatorRuleEntity> entities = Lists.newArrayList();
+        dslContext().selectFrom(table).where(table.ACTIVITY_ID.eq(activityId)).fetch().forEach(r -> {
+            BaseCalculatorRuleEntity entity = new BaseCalculatorRuleEntity();
+            dslRecordInto(r, entity, new ReferenceEntityAssembler() {
+                @Override
+                public void applyReferenceIdToTargetEntity(Object targetEntity, Attribute refAttribute, Field field, Object fieldValue) {
+
+                }
+            });
+            entities.add(entity);
+        });
+        return entities;
+    }
 }

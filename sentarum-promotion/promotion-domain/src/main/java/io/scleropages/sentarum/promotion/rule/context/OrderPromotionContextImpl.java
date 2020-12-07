@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OrderPromotionContextImpl implements OrderPromotionContext {
+public class OrderPromotionContextImpl extends AbstractPromotionContext implements OrderPromotionContext {
 
 
     private final CartPromotionContext cartPromotionContext;

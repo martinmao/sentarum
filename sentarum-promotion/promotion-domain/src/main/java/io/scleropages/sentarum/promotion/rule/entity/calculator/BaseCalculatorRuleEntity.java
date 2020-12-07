@@ -25,6 +25,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
+ * referenced from: {@link io.scleropages.sentarum.promotion.rule.model.CalculatorRule}
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity

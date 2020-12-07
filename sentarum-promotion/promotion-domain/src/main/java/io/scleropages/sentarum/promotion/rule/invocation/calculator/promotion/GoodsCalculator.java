@@ -17,13 +17,13 @@ package io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion;
 
 import io.scleropages.sentarum.promotion.rule.PromotionCalculator;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 
 /**
  * 商品级促销
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsCalculator<R extends Rule> extends PromotionCalculator<R, GoodsPromotionContext> {
+public interface GoodsCalculator<R extends CalculatorRule> extends PromotionCalculator<R, GoodsPromotionContext> {
 
 }

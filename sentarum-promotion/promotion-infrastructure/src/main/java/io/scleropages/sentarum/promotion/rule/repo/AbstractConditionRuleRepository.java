@@ -29,7 +29,7 @@ import java.util.List;
 @NoRepositoryBean
 public interface AbstractConditionRuleRepository<E extends AbstractConditionRuleEntity, T extends Table, R extends Record> extends AbstractRuleRepository<E, T, R> {
 
-    @Cacheable
+    @Cacheable(key = "#root.target+'-'+#activityId")
     List<E> findAllByActivity_Id(Long activityId);
 
     Integer countByParentCondition(Long parentCondition);

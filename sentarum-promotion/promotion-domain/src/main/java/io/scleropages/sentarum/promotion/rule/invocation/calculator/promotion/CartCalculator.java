@@ -17,7 +17,7 @@ package io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion;
 
 import io.scleropages.sentarum.promotion.rule.PromotionCalculator;
 import io.scleropages.sentarum.promotion.rule.context.CartPromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 
 /**
  * 购物车级别促销计算，购物车内商品需要根据卖家商业主体（商家、平台、三方等）、或仓储区域进行拆车.
@@ -25,5 +25,5 @@ import io.scleropages.sentarum.promotion.rule.model.Rule;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CartCalculator<R extends Rule> extends PromotionCalculator<R, CartPromotionContext> {
+public interface CartCalculator<R extends CalculatorRule> extends PromotionCalculator<R, CartPromotionContext> {
 }

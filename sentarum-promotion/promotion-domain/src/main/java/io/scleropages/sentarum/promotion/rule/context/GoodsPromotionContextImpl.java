@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class GoodsPromotionContextImpl implements GoodsPromotionContext {
+public class GoodsPromotionContextImpl extends AbstractPromotionContext implements GoodsPromotionContext {
 
 
     private final CartPromotionContext cartPromotionContext;

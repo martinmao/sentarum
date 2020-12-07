@@ -56,6 +56,7 @@ import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserLevelC
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserTagConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
+import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.Gift;
@@ -73,6 +74,7 @@ import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelCondition
 import io.scleropages.sentarum.promotion.rule.model.condition.UserTagConditionRule;
 import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 import org.scleropages.core.mapper.JsonMapper2;
+import org.scleropages.core.util.Reflections2;
 import org.scleropages.crud.exception.BizError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +84,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -399,7 +400,9 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
      * @return
      */
     @Transactional(readOnly = true)
+    @BizError("33")
     public ConditionRule getConditionRule(Long activityId, Activity activity) {
+        Assert.notNull(activityId, "activityId must not be null.");
         Map<Long, ConjunctionConditionRule> conjunctionRules = Maps.newHashMap();
         List<AbstractConditionRule> otherRules = Lists.newArrayList();
         List<BaseConditionRuleEntity> conditionEntities = baseConditionRuleRepository.findAllByActivity_Id(activityId);
@@ -451,13 +454,27 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return rootConjunctionConditionRule;
     }
 
-    private AbstractRule mapRule(AbstractRuleEntity entity, Activity activity) {
-        Class<?> ruleClass;
-        try {
-            ruleClass = ClassUtils.forName(entity.getRuleClass(), classLoader);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("no rule class found.");
+
+    /**
+     * find all {@link CalculatorRule}s by given activity id.
+     *
+     * @param activityId id of activity.
+     * @param activity   (optional) if present,it will apply to {@link CalculatorRule#activity()}
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("34")
+    public List<CalculatorRule> findAllCalculatorRulesByActivityId(Long activityId, Activity activity) {
+        List<BaseCalculatorRuleEntity> entities = baseCalculatorRuleRepository.findAllByActivity_Id(activityId);
+        List<CalculatorRule> calculatorRules = Lists.newArrayList();
+        for (BaseCalculatorRuleEntity entity : entities) {
+            calculatorRules.add((CalculatorRule) mapRule(entity, activity));
         }
+        return calculatorRules;
+    }
+
+    private AbstractRule mapRule(AbstractRuleEntity entity, Activity activity) {
+        Class<?> ruleClass = Reflections2.getClass(entity.getRuleClass(), classLoader);
         AbstractConditionRule conditionRule = JsonMapper2.fromJson(entity.getRulePayload(), ruleClass);
         conditionRule.setId(entity.getId());
         conditionRule.setActivity(activity);

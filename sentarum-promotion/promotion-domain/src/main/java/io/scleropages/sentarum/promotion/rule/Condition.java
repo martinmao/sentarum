@@ -37,6 +37,8 @@ public interface Condition<R extends Rule, C extends InvocationContext> extends 
     default void execute(R rule, C invocationContext, InvocationChain chain) {
         if (match(rule, invocationContext)) {
             chain.next(invocationContext);
+        } else {
+            chain.nextChain(invocationContext);
         }
     }
 

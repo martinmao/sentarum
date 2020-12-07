@@ -112,4 +112,15 @@ public interface Activity {
      * @return
      */
     List<ActivityGoodsSource> goodsSource();
+
+
+    /**
+     * order of this activity.
+     *
+     * @return
+     */
+    default Float order(){
+        //default to lowest precedence value.
+        return Float.MAX_VALUE;
+    }
 }

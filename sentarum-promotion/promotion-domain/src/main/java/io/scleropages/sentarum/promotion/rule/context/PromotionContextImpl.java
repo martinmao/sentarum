@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PromotionContextImpl implements PromotionContext {
+public class PromotionContextImpl extends AbstractPromotionContext implements PromotionContext {
 
     private final ChannelConditionRule.ChannelType channelType;
     private final Integer channelId;

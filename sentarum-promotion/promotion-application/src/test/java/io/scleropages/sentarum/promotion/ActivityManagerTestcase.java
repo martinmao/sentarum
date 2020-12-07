@@ -53,7 +53,7 @@ import java.util.Date;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 public class ActivityManagerTestcase {
 
     @Autowired

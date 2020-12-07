@@ -17,6 +17,7 @@ package io.scleropages.sentarum.promotion.rule.context;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
 import org.springframework.util.Assert;
 
@@ -34,6 +35,7 @@ public final class PromotionContextBuilder {
     private ChannelType channelType;
     private Integer channelId;
     private Long buyerId;
+    private List<Activity> activities = Lists.newArrayList();
     private Map<String, OrderPromotionContextBuilder> orderPromotionContextBuilders = Maps.newHashMap();
 
     private PromotionContextBuilder() {
@@ -72,6 +74,17 @@ public final class PromotionContextBuilder {
     }
 
     /**
+     * add activity to this builder.
+     *
+     * @param activity
+     * @return
+     */
+    public PromotionContextBuilder withActivity(Activity activity) {
+        this.activities.add(activity);
+        return this;
+    }
+
+    /**
      * with buyerId to this builder.
      *
      * @param buyerId
@@ -85,7 +98,7 @@ public final class PromotionContextBuilder {
     /**
      * add if absent builder of {@link OrderPromotionContext} to this builder.
      *
-     * @return
+     * @return associated {@link OrderPromotionContextBuilder}
      */
     public OrderPromotionContextBuilder orderPromotionContextBuilder(Long sellerUnionId, Long sellerId) {
         String key = computeOrderPromotionContextKey(sellerUnionId, sellerId);
@@ -121,9 +134,11 @@ public final class PromotionContextBuilder {
         Assert.notNull(channelType, "channelType must not be null.");
         Assert.notNull(channelId, "channelId must not be null.");
         Assert.notNull(buyerId, "buyerId must not be null.");
+        Assert.notEmpty(activities, "no activities specified.");
 
         List<OrderPromotionContext> orderPromotionContexts = Lists.newArrayList();
-        CartPromotionContext cartPromotionContext = new CartPromotionContextImpl(channelType, channelId, buyerId, orderPromotionContexts);
+        CartPromotionContextImpl cartPromotionContext = new CartPromotionContextImpl(channelType, channelId, buyerId, orderPromotionContexts);
+        cartPromotionContext.setActivities(activities);
         orderPromotionContextBuilders.values().forEach(orderPromotionContextBuilder -> {
             List<GoodsPromotionContext> goodsPromotionContexts = Lists.newArrayList();
             OrderPromotionContext orderPromotionContext = orderPromotionContextBuilder.build(cartPromotionContext, goodsPromotionContexts);
@@ -143,6 +158,7 @@ public final class PromotionContextBuilder {
 
         private Long sellerUnionId;
         private Long sellerId;
+        private List<Activity> activities = Lists.newArrayList();
 
         private List<GoodsPromotionContextBuilder> goodsPromotionContextBuilders = Lists.newArrayList();
 
@@ -176,6 +192,17 @@ public final class PromotionContextBuilder {
         }
 
         /**
+         * add activity to this builder.
+         *
+         * @param activity
+         * @return
+         */
+        public OrderPromotionContextBuilder withActivity(Activity activity) {
+            this.activities.add(activity);
+            return this;
+        }
+
+        /**
          * add builder of {@link GoodsPromotionContext} to this builder.
          *
          * @return
@@ -195,7 +222,9 @@ public final class PromotionContextBuilder {
          */
         private OrderPromotionContext build(CartPromotionContext cartPromotionContext, List<GoodsPromotionContext> goodsPromotionContexts) {
             done();
-            return new OrderPromotionContextImpl(cartPromotionContext, sellerUnionId, sellerId, goodsPromotionContexts);
+            OrderPromotionContextImpl orderPromotionContext = new OrderPromotionContextImpl(cartPromotionContext, sellerUnionId, sellerId, goodsPromotionContexts);
+            orderPromotionContext.setActivities(activities);
+            return orderPromotionContext;
         }
 
         /**
@@ -206,6 +235,7 @@ public final class PromotionContextBuilder {
         public PromotionContextBuilder done() {
             Assert.notNull(sellerUnionId, "sellerUnionId must not be null.");
             Assert.notNull(sellerId, "sellerId must not be null.");
+            Assert.notEmpty(activities, "no activities specified.");
             return promotionContextBuilder;
         }
 
@@ -221,6 +251,7 @@ public final class PromotionContextBuilder {
         private Long specsId;
         private String outerSpecsId;
         private Integer num;
+        private List<Activity> activities = Lists.newArrayList();
 
         private final OrderPromotionContextBuilder orderPromotionContextBuilder;
 
@@ -284,6 +315,17 @@ public final class PromotionContextBuilder {
         }
 
         /**
+         * add activity to this builder.
+         *
+         * @param activity
+         * @return
+         */
+        public GoodsPromotionContextBuilder withActivity(Activity activity) {
+            this.activities.add(activity);
+            return this;
+        }
+
+        /**
          * internal build implements.
          *
          * @param cartPromotionContext
@@ -292,7 +334,9 @@ public final class PromotionContextBuilder {
          */
         private GoodsPromotionContext build(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext) {
             done();
-            return new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num);
+            GoodsPromotionContextImpl goodsPromotionContext = new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num);
+            goodsPromotionContext.setActivities(activities);
+            return goodsPromotionContext;
         }
 
         /**
@@ -304,6 +348,7 @@ public final class PromotionContextBuilder {
             Assert.notNull(goodsId, "goodsId must not be null.");
             Assert.notNull(num, "num must not be null.");
             Assert.notNull(specsId, "specsId must not be null.");
+            Assert.notNull(activities, "no activities specified.");
             orderPromotionContextBuilder.goodsPromotionContextBuilders.forEach(goodsPromotionContextBuilder -> {
                 if (!Objects.equals(this, goodsPromotionContextBuilder) && Objects.equals(goodsPromotionContextBuilder.specsId, specsId)) {
                     throw new IllegalArgumentException("specsId: " + specsId + "already exists");

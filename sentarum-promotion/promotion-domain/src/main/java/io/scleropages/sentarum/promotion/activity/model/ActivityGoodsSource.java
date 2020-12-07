@@ -29,15 +29,27 @@ public interface ActivityGoodsSource extends GoodsSource {
 
 
     // goods source type definitions.
-    int CLASSIFIED_GOODS_SOURCE_TYPE_ALL = 0;//全部
+    /**
+     * 全部
+     */
+    int CLASSIFIED_GOODS_SOURCE_TYPE_ALL = 0;
+    /**
+     * 品牌分类
+     */
+    int CLASSIFIED_GOODS_SOURCE_TYPE_BRAND = 1;
+    /**
+     * 品类分类
+     */
+    int CLASSIFIED_GOODS_SOURCE_TYPE_CATEGORY = 2;
+    /**
+     * 商家分类
+     */
+    int CLASSIFIED_GOODS_SOURCE_TYPE_SELLER = 3;
 
-    int CLASSIFIED_GOODS_SOURCE_TYPE_BRAND = 1;//品牌分类
-
-    int CLASSIFIED_GOODS_SOURCE_TYPE_CATEGORY = 2;//品类分类
-
-    int CLASSIFIED_GOODS_SOURCE_TYPE_SELLER = 3;//商家分类
-
-    int DETAILED_GOODS_SOURCE_TYPE = 4;//商品明细
+    /**
+     * 商品明细
+     */
+    int DETAILED_GOODS_SOURCE_TYPE = 4;
 
     /**
      * associated activity of this goods source.

@@ -16,14 +16,14 @@
 package io.scleropages.sentarum.promotion.rule;
 
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 
 /**
  * 促销计算器
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface PromotionCalculator<R extends Rule, C extends PromotionContext> extends RuleInvocation<R, C> {
+public interface PromotionCalculator<R extends CalculatorRule, C extends PromotionContext> extends RuleInvocation<R, C> {
 
     @Override
     default void execute(R rule, C invocationContext, InvocationChain chain) {

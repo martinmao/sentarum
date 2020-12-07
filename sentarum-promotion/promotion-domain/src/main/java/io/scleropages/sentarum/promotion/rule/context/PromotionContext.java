@@ -16,8 +16,11 @@
 package io.scleropages.sentarum.promotion.rule.context;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
+import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
+
+import java.util.List;
 
 /**
  * base interface of promotion context.
@@ -47,6 +50,14 @@ public interface PromotionContext extends InvocationContext {
      * @return
      */
     Long buyerId();
+
+
+    /**
+     * 活动列表
+     *
+     * @return
+     */
+    List<Activity> activities();
 
 
     /**

@@ -15,8 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
-import io.scleropages.sentarum.promotion.rule.condition.promotion.ChannelCondition;
 import io.scleropages.sentarum.promotion.rule.condition.ConjunctionCondition;
+import io.scleropages.sentarum.promotion.rule.condition.promotion.ChannelCondition;
 import io.scleropages.sentarum.promotion.rule.condition.promotion.UserLevelCondition;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 import org.scleropages.core.util.GenericTypes;
@@ -92,4 +92,14 @@ public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
      * @return
      */
     String description();
+
+
+    default String information() {
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + "{");
+        sb.append("id: ").append(id());
+        sb.append("name: ").append(name());
+        sb.append("rule: ").append(ruleClass());
+        sb.append("}");
+        return sb.toString();
+    }
 }
