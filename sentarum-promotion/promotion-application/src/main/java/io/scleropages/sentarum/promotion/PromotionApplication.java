@@ -38,6 +38,7 @@ import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContextBuilder;
 import io.scleropages.sentarum.promotion.rule.impl.DefaultInvocationChain;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
+import org.apache.commons.collections.ComparatorUtils;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.dao.orm.jpa.Pages;
 import org.scleropages.crud.exception.BizError;
@@ -158,6 +159,7 @@ public class PromotionApplication implements InitializingBean {
         List<Activity> activities = Lists.newArrayList(activityManager.findAllActivityByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId, true));
         //可用商品活动...
         activities.addAll(activityManager.findAllActivityByDetailedGoodsSource(1, item.id(), sku.id(), true));
+        activities.sort((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.order(), o2.order()));
         return activities;
     }
 

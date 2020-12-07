@@ -15,11 +15,21 @@
  */
 package io.scleropages.sentarum.promotion.rule.model;
 
+import io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion.CalculateLevel;
+
 /**
  * base interface of promotional calculator rule.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface CalculatorRule extends Rule {
+
+
+    /**
+     * calculate level of this rule.
+     *
+     * @return
+     */
+    CalculateLevel calculateLevel();
 
 }

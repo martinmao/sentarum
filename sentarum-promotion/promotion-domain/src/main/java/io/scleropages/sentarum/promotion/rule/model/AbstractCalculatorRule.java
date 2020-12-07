@@ -15,9 +15,28 @@
  */
 package io.scleropages.sentarum.promotion.rule.model;
 
+import io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion.CalculateLevel;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class AbstractCalculatorRule extends AbstractRule implements CalculatorRule {
 
+    private CalculateLevel calculateLevel;
+
+    @NotNull
+    public CalculateLevel getCalculateLevel() {
+        return calculateLevel;
+    }
+
+    public void setCalculateLevel(CalculateLevel calculateLevel) {
+        this.calculateLevel = calculateLevel;
+    }
+
+    @Override
+    public CalculateLevel calculateLevel() {
+        return getCalculateLevel();
+    }
 }

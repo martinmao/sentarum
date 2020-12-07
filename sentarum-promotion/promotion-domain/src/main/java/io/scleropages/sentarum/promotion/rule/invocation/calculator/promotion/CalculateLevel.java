@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 促销级别，同级互斥，下级可叠加计算,当前根据促销规则如下:
+ * 促销计算级别，同级互斥，上级可可叠加下级,当前根据促销规则如下:
  * <p>
  * 对活动设置计算级别可以对不同活动的叠加关系进行定义.
  * 活动叠加存在的先后次序，同样可以按照级别进行定义，后面的促销结果计算基于前面的促销结果
@@ -34,15 +34,15 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public enum PromotionLevel {
+public enum CalculateLevel {
 
 
-    FIXED_PRICE(1, "固定金额", "场景：直降价、秒杀、拼团、预购、一口价等."),
-    RANGE_PROMOTION(2, "范围促销", "场景：指定商品（类目、品牌）满减、满送等."),
-    COUPON(3, "优惠券", "场景：满减券，抵扣券等"),
-    DISCOUNT_IN_DISCOUNT(4, "折上折", "场景：会员折上折，在实付金额基础上再打折."),
-    FREE_FREIGHT(5, "包邮", "场景：单品包邮、满99包邮、大促全场包邮"),
-    POINTS_DEDUCTION(6, "积分抵扣", "场景：100积分抵1元");
+    GOODS_DISCOUNT(10, "商品折扣", "场景：单品折扣、一口价、秒杀、拼团、预购、会员价."),
+    RANGE_PROMOTION(20, "范围促销", "场景：指定商品分类（店铺、类目、品牌）满减、满送、全场折扣等."),
+    COUPON(30, "优惠券", "场景：满减券，抵扣券等"),
+    DISCOUNT_BY_DISCOUNT(40, "折扣基础上再打折", "场景：符合特定条件下可在折扣基础上再打折.如会员全场8.5折"),
+    FREE_FREIGHT(50, "包邮", "场景：单品包邮、满99包邮、大促全场包邮"),
+    POINTS_DEDUCTION(60, "积分抵扣", "场景：100积分抵1元");
 
     private final int ordinal;
     /**
@@ -54,7 +54,7 @@ public enum PromotionLevel {
      */
     private final String desc;
 
-    PromotionLevel(int ordinal, String tag, String desc) {
+    CalculateLevel(int ordinal, String tag, String desc) {
         this.ordinal = ordinal;
         this.tag = tag;
         this.desc = desc;
@@ -73,22 +73,22 @@ public enum PromotionLevel {
     }
 
 
-    private static final Map<String, PromotionLevel> nameMappings = new HashMap<>();
-    private static final Map<Integer, PromotionLevel> ordinalMappings = new HashMap<>();
+    private static final Map<String, CalculateLevel> nameMappings = new HashMap<>();
+    private static final Map<Integer, CalculateLevel> ordinalMappings = new HashMap<>();
 
     static {
-        for (PromotionLevel level : PromotionLevel.values()) {
+        for (CalculateLevel level : CalculateLevel.values()) {
             nameMappings.put(level.name(), level);
             ordinalMappings.put(level.getOrdinal(), level);
         }
     }
 
 
-    public static PromotionLevel getByName(String name) {
+    public static CalculateLevel getByName(String name) {
         return (name != null ? nameMappings.get(name) : null);
     }
 
-    public static PromotionLevel getByOrdinal(int ordinal) {
+    public static CalculateLevel getByOrdinal(int ordinal) {
         return ordinalMappings.get(ordinal);
     }
 }
