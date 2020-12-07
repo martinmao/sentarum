@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.activity.model;
 
+import io.scleropages.sentarum.promotion.goods.AdditionalAttributesProvider;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 import java.util.Date;
@@ -25,7 +26,7 @@ import java.util.List;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Activity {
+public interface Activity extends AdditionalAttributesProvider {
 
     /**
      * unique id of this activity

@@ -22,7 +22,7 @@ import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 import java.util.Map;
 
 /**
- * additional attributes of {@link GoodsSource} , {@link Goods} , {@link GoodsSpecs}
+ * additional attributes of {@link GoodsSource} , {@link Goods} , {@link GoodsSpecs}...
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
