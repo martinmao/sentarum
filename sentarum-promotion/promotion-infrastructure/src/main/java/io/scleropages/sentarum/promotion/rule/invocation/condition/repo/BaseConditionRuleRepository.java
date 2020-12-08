@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.condition.repo;
+package io.scleropages.sentarum.promotion.rule.invocation.condition.repo;
 
 import com.google.common.collect.Lists;
 import io.scleropages.sentarum.jooq.tables.PromCondBase;

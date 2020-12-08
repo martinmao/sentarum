@@ -28,11 +28,11 @@ import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGo
 import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSpecsRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.repo.BaseCalculatorRuleRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.repo.OverflowDiscountRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.ChannelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.SellerUserLevelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.UserLevelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.condition.repo.UserTagConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.BaseConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.ChannelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.SellerUserLevelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserLevelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserTagConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.entity.AbstractRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.BaseCalculatorRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.OverflowDiscountRuleEntity;

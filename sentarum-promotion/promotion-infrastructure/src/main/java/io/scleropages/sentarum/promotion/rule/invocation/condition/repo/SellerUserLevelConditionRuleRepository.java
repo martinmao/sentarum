@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model;
+package io.scleropages.sentarum.promotion.rule.invocation.condition.repo;
 
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculateLevel;
-
-import javax.validation.constraints.NotNull;
+import io.scleropages.sentarum.jooq.tables.PromCondSellerUserLv;
+import io.scleropages.sentarum.jooq.tables.records.PromCondSellerUserLvRecord;
+import io.scleropages.sentarum.promotion.rule.entity.condition.SellerUserLevelConditionRuleEntity;
+import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class AbstractCalculatorRule extends AbstractRule implements CalculatorRule {
-
-    private CalculateLevel calculateLevel;
-
-    @NotNull
-    public CalculateLevel getCalculateLevel() {
-        return calculateLevel;
-    }
-
-    public void setCalculateLevel(CalculateLevel calculateLevel) {
-        this.calculateLevel = calculateLevel;
-    }
-
-    @Override
-    public CalculateLevel calculateLevel() {
-        return getCalculateLevel();
-    }
+public interface SellerUserLevelConditionRuleRepository extends AbstractConditionRuleRepository<SellerUserLevelConditionRuleEntity, PromCondSellerUserLv, PromCondSellerUserLvRecord> {
 }

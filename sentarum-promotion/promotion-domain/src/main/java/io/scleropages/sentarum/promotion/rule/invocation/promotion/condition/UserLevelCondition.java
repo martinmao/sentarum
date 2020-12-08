@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.condition.promotion;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.condition;
 
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
+import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,27 +25,26 @@ import org.springframework.stereotype.Component;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
-public class SellerUserLevelCondition implements AbstractPromotionCondition<SellerUserLevelConditionRule> {
+public class UserLevelCondition implements AbstractPromotionCondition<UserLevelConditionRule> {
 
 
     @Override
-    public boolean match(SellerUserLevelConditionRule rule, PromotionContext invocationContext) {
+    public boolean match(UserLevelConditionRule rule, PromotionContext invocationContext) {
         return false;
     }
 
-
     @Override
     public Integer id() {
-        return USER_INVOCATION_ID + 3;
+        return USER_INVOCATION_ID + 1;
     }
 
     @Override
     public String name() {
-        return "促销参与用户的店铺会员级别";
+        return "促销参与用户级别";
     }
 
     @Override
     public String description() {
-        return "限定性规则：将促销活动限定为在特定店铺具备特定级别的用户人群.";
+        return "限定性规则：将促销活动限定为具备特定级别的用户人群.";
     }
 }

@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.condition.repo;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.jooq.tables.PromCondUserTag;
-import io.scleropages.sentarum.jooq.tables.records.PromCondUserTagRecord;
-import io.scleropages.sentarum.promotion.rule.entity.condition.UserTagConditionRuleEntity;
-import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.PromotionCalculator;
+import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 
 /**
+ * 商品级促销
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface UserTagConditionRuleRepository extends AbstractConditionRuleRepository<UserTagConditionRuleEntity, PromCondUserTag, PromCondUserTagRecord> {
+public interface GoodsCalculator<R extends CalculatorRule> extends PromotionCalculator<R, GoodsPromotionContext> {
+
 }

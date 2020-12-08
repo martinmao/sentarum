@@ -13,38 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.condition.promotion;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.condition.UserLevelConditionRule;
+import io.scleropages.sentarum.promotion.rule.InvocationChain;
+import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
 import org.springframework.stereotype.Component;
 
 /**
- * 促销参与用户规则
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
-public class UserLevelCondition implements AbstractPromotionCondition<UserLevelConditionRule> {
+public class GoodsDiscountCalculator implements GoodsCalculator<GoodsDiscountRule> {
 
 
     @Override
-    public boolean match(UserLevelConditionRule rule, PromotionContext invocationContext) {
-        return false;
+    public void calculate(GoodsDiscountRule rule, GoodsPromotionContext promotionContext, InvocationChain chain) {
+
     }
 
     @Override
     public Integer id() {
-        return USER_INVOCATION_ID + 1;
+        return PROMOTION_INVOCATION_ID + 1;
     }
 
     @Override
     public String name() {
-        return "促销参与用户级别";
+        return "商品促销";
     }
 
     @Override
     public String description() {
-        return "限定性规则：将促销活动限定为具备特定级别的用户人群.";
+        return "计算规则：根据购买的商品计算商品级促销.";
     }
 }

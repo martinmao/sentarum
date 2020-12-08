@@ -21,13 +21,12 @@ import io.scleropages.sentarum.item.ItemApi;
 import io.scleropages.sentarum.item.core.model.Item;
 import io.scleropages.sentarum.item.core.model.Sku;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
-import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
-import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
 import io.scleropages.sentarum.promotion.rule.Condition;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
+import io.scleropages.sentarum.promotion.rule.InvocationChainStarterFactory;
+import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.PromotionCalculator;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.RuleInvocation;
@@ -36,9 +35,10 @@ import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContextBuilder;
+import io.scleropages.sentarum.promotion.rule.context.PromotionContextBuilder.PromotionGoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.impl.DefaultInvocationChain;
+import io.scleropages.sentarum.promotion.rule.impl.PromotionChainStarterFactory;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
-import org.apache.commons.collections.ComparatorUtils;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.dao.orm.jpa.Pages;
 import org.scleropages.crud.exception.BizError;
@@ -51,13 +51,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 import static io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource.CLASSIFIED_GOODS_SOURCE_TYPE_SELLER;
-import static io.scleropages.sentarum.promotion.rule.model.CalculatorRule.ATTRIBUTE_CALCULATE_LEVEL;
 
 /**
  * application layer for promotion.
@@ -83,58 +80,52 @@ public class PromotionApplication implements InitializingBean {
             Sku sku = getSku(goodsSpecs);
             Item item = sku.item();
             List<Activity> activities = findAllActiveActivityBySku(sku);
-            if (CollectionUtils.isEmpty(activities)) {
-
-            }
-            activities.forEach(activity -> {
-                if (activity.goodsSource().size() > 1) {//多个分类(多店、多品牌、多品类)都属于购物车级促销.
-                    builder.withActivity(activity);
-                } else {
-                    ActivityGoodsSource activityGoodsSource = activity.goodsSource().get(0);
-                    if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
-                        if (Objects.equals(activityGoodsSource.goodsSourceType(), CLASSIFIED_GOODS_SOURCE_TYPE_SELLER)) {//只有一个店家分类为店铺活动对应到订单级促销.
-                            builder.orderPromotionContextBuilder(item.sellerUnionId(), item.sellerId()).withActivity(activity);
-                        } else {//非店家分类，如品牌，品类等，则为跨订单活动，将其对应到购物车级促销.
-                            builder.withActivity(activity);
-                        }
-                    } else if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {//对应到商品级促销.
-                        builder.orderPromotionContextBuilder(item.sellerUnionId(), item.sellerId())
-                                .withActivity(activity).goodsPromotionContextBuilder()
-                                .withGoodsId(item.id())
-                                .withOuterGoodsId(item.outerId())
-                                .withSpecsId(sku.id())
-                                .withOuterSpecsId(sku.outerId())
-                                .withNum(goodsSpecs.getNum());
-                    }
-                }
-            });
+            builder.withActivities(new PromotionGoodsSpecs(item.id(), item.outerId(), sku.id(), sku.outerId(), goodsSpecs.getNum()), activities, item.sellerUnionId(), item.sellerId());
         });
         CartPromotionContext promotionContext = builder.build();
-        List<DefaultInvocationChain> chainsOfCarts = Lists.newArrayList();
-        List<DefaultInvocationChain> chainsOfOrders = Lists.newArrayList();
-        List<Activity> activities = promotionContext.activities();
-        DefaultInvocationChain previousChain = null;
-        for (Activity activity : activities) {
-            DefaultInvocationChain cartChain = new DefaultInvocationChain(getActivityRuleInvocations(activity), previousChain);
-            chainsOfCarts.add(cartChain);
-            previousChain = cartChain;
-        }
-        previousChain = null;
+
+        PromotionChainStarterFactory chainStarterFactory = new PromotionChainStarterFactory();
+        chainStarterFactory.createChainStarter(promotionContext, o -> getActivityRuleInvocations(o));
+
+        HeaderOfChain headerOfCartChain = createHeaderOfChain(promotionContext); //仅一个cart header of chain.
+        List<HeaderOfChain> headerOfOrderChains = Lists.newArrayList();//每个订单一个header of chain.
+        List<HeaderOfChain> headerOfGoodsChains = Lists.newArrayList();//每个商品一个header of chain.
         List<OrderPromotionContext> orderPromotionContexts = promotionContext.orderPromotionContexts();
         for (OrderPromotionContext orderPromotionContext : orderPromotionContexts) {
-            for (Activity activity : orderPromotionContext.activities()) {
-                DefaultInvocationChain orderChain = new DefaultInvocationChain(getActivityRuleInvocations(activity), previousChain);
-                chainsOfOrders.add(orderChain);
-                previousChain = orderChain;
-            }
+            headerOfOrderChains.add(createHeaderOfChain(orderPromotionContext));
             List<GoodsPromotionContext> goodsPromotionContexts = orderPromotionContext.goodsPromotionContexts();
             for (GoodsPromotionContext goodsPromotionContext : goodsPromotionContexts) {
-                DefaultInvocationChain goodsPreviousChain = null;
-                for (Activity activity : goodsPromotionContext.activities()) {
-                    DefaultInvocationChain goodsChain = new DefaultInvocationChain(getActivityRuleInvocations(activity), goodsPreviousChain);
-                    goodsPreviousChain = goodsChain;
-                }
+                headerOfGoodsChains.add(createHeaderOfChain(goodsPromotionContext));
             }
+        }
+        headerOfCartChain.start();
+    }
+
+
+    private HeaderOfChain createHeaderOfChain(PromotionContext promotionContext) {
+        DefaultInvocationChain previousChain = null;
+        for (Activity activity : promotionContext.activities()) {
+            DefaultInvocationChain orderChain = new DefaultInvocationChain(getActivityRuleInvocations(activity), previousChain);
+            previousChain = orderChain;
+        }
+        return new HeaderOfChain(previousChain, promotionContext);
+    }
+
+
+    private class HeaderOfChain {
+        private final InvocationChain invocationChain;
+        private final InvocationContext invocationContext;
+
+        private HeaderOfChain(InvocationChain invocationChain, InvocationContext invocationContext) {
+            Assert.notNull(invocationChain, "invocationChain must not be null.");
+            Assert.notNull(invocationContext, "invocationContext must not be null.");
+
+            this.invocationChain = invocationChain;
+            this.invocationContext = invocationContext;
+        }
+
+        private void start() {
+            invocationChain.next(invocationContext);
         }
     }
 
@@ -160,20 +151,9 @@ public class PromotionApplication implements InitializingBean {
         List<Activity> activities = Lists.newArrayList(activityManager.findAllActivityByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId, true));
         //可用商品活动...
         activities.addAll(activityManager.findAllActivityByDetailedGoodsSource(1, item.id(), sku.id(), true));
-        sortingActivitiesForCalculating(activities);
         return activities;
     }
 
-
-    private final void sortingActivitiesForCalculating(List<Activity> activities) {
-        activities.sort((o1, o2) -> {
-            int compare = ComparatorUtils.naturalComparator().compare(o1.additionalAttributes().getAttribute(ATTRIBUTE_CALCULATE_LEVEL), o2.additionalAttributes().getAttribute(ATTRIBUTE_CALCULATE_LEVEL));
-            if (0 == compare) {
-                ComparatorUtils.naturalComparator().compare(o1.order(), o2.order());
-            }
-            return compare;
-        });
-    }
 
     /**
      * get sku from item center.

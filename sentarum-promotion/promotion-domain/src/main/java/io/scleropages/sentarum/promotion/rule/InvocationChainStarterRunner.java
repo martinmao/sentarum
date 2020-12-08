@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.condition.repo;
-
-import io.scleropages.sentarum.jooq.tables.PromCondUserLv;
-import io.scleropages.sentarum.jooq.tables.records.PromCondUserLvRecord;
-import io.scleropages.sentarum.promotion.rule.entity.condition.UserLevelConditionRuleEntity;
-import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
+package io.scleropages.sentarum.promotion.rule;
 
 /**
+ * runner of invocation chain.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface UserLevelConditionRuleRepository extends AbstractConditionRuleRepository<UserLevelConditionRuleEntity, PromCondUserLv, PromCondUserLvRecord> {
+public interface InvocationChainStarterRunner<T extends InvocationChainStarter> {
+
+    /**
+     * running given invocation chain starter.
+     *
+     * @param invocationChainStarter
+     */
+    void run(T invocationChainStarter);
 }

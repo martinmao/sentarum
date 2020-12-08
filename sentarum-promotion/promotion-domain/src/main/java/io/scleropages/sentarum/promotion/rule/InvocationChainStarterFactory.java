@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.condition.repo;
+package io.scleropages.sentarum.promotion.rule;
 
-import io.scleropages.sentarum.jooq.tables.PromCondChannel;
-import io.scleropages.sentarum.jooq.tables.records.PromCondChannelRecord;
-import io.scleropages.sentarum.promotion.rule.entity.condition.ChannelConditionRuleEntity;
-import io.scleropages.sentarum.promotion.rule.repo.AbstractConditionRuleRepository;
+import java.util.List;
+import java.util.function.Function;
 
 /**
+ * factory for invocation chain starter.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface ChannelConditionRuleRepository extends AbstractConditionRuleRepository<ChannelConditionRuleEntity, PromCondChannel, PromCondChannelRecord> {
+public interface InvocationChainStarterFactory<C extends InvocationContext, X> {
+
+    /**
+     * create chain starter by given invocation context and invocations.
+     *
+     * @param invocationContext
+     * @param invocations
+     * @return
+     */
+    InvocationChainStarter createChainStarter(C invocationContext, Function<X, List<RuleInvocation>> invocations);
 }

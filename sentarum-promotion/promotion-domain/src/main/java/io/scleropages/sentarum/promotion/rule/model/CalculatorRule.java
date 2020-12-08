@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.model;
 
-import io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion.CalculateLevel;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculateLevel;
 import org.scleropages.core.util.Namings;
 
 /**

@@ -13,37 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.condition;
 
-import io.scleropages.sentarum.promotion.rule.InvocationChain;
-import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
+import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import org.springframework.stereotype.Component;
 
 /**
+ * 促销参与渠道规则
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
-public class GoodsDiscountCalculator implements GoodsCalculator<GoodsDiscountRule> {
-
+public class ChannelCondition implements AbstractPromotionCondition<ChannelConditionRule> {
 
     @Override
-    public void calculate(GoodsDiscountRule rule, GoodsPromotionContext promotionContext, InvocationChain chain) {
-
+    public boolean match(ChannelConditionRule rule, PromotionContext invocationContext) {
+        return false;
     }
 
     @Override
     public Integer id() {
-        return PROMOTION_INVOCATION_ID + 1;
+        return CHANNEL_INVOCATION_ID;
     }
 
     @Override
     public String name() {
-        return "商品促销";
+        return "促销参与渠道";
     }
 
     @Override
     public String description() {
-        return "计算规则：根据购买的商品计算商品级促销.";
+        return "限定性规则：将促销活动中关联的商品限定到某一（或多）个渠道进行.只有在限定渠道内购买才可以获得优惠.";
     }
 }

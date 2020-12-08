@@ -13,37 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.condition.promotion;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.condition;
 
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
+import io.scleropages.sentarum.promotion.rule.model.condition.SellerUserLevelConditionRule;
 import org.springframework.stereotype.Component;
 
 /**
- * 促销参与渠道规则
+ * 促销参与用户规则
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
-public class ChannelCondition implements AbstractPromotionCondition<ChannelConditionRule> {
+public class SellerUserLevelCondition implements AbstractPromotionCondition<SellerUserLevelConditionRule> {
+
 
     @Override
-    public boolean match(ChannelConditionRule rule, PromotionContext invocationContext) {
+    public boolean match(SellerUserLevelConditionRule rule, PromotionContext invocationContext) {
         return false;
     }
 
+
     @Override
     public Integer id() {
-        return CHANNEL_INVOCATION_ID;
+        return USER_INVOCATION_ID + 3;
     }
 
     @Override
     public String name() {
-        return "促销参与渠道";
+        return "促销参与用户的店铺会员级别";
     }
 
     @Override
     public String description() {
-        return "限定性规则：将促销活动中关联的商品限定到某一（或多）个渠道进行.只有在限定渠道内购买才可以获得优惠.";
+        return "限定性规则：将促销活动限定为在特定店铺具备特定级别的用户人群.";
     }
 }

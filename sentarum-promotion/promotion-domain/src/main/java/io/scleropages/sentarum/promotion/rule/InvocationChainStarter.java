@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion;
-
-import io.scleropages.sentarum.promotion.rule.PromotionCalculator;
-import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
+package io.scleropages.sentarum.promotion.rule;
 
 /**
- * 商品级促销
+ * represent a starter of chain list. it will starting chains and all of subsequent chains...
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface GoodsCalculator<R extends CalculatorRule> extends PromotionCalculator<R, GoodsPromotionContext> {
-
+public interface InvocationChainStarter {
+    
 }

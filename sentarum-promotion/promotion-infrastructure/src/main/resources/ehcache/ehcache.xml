@@ -72,7 +72,7 @@
         <heap>1000</heap>
     </cache>
 
-    <cache alias="io.scleropages.sentarum.promotion.rule.condition.repo.BaseConditionRuleRepository.findAllByActivity_Id">
+    <cache alias="io.scleropages.sentarum.promotion.rule.invocation.condition.repo.BaseConditionRuleRepository.findAllByActivity_Id">
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>

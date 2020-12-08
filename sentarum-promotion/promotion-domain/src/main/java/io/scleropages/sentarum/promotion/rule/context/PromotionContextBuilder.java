@@ -18,12 +18,19 @@ package io.scleropages.sentarum.promotion.rule.context;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
+import org.apache.commons.collections.ComparatorUtils;
 import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource.CLASSIFIED_GOODS_SOURCE_TYPE_SELLER;
+import static io.scleropages.sentarum.promotion.rule.model.CalculatorRule.ATTRIBUTE_CALCULATE_LEVEL;
 
 /**
  * builder of promotion context(s). make a easy way to create promotion context.
@@ -138,7 +145,8 @@ public final class PromotionContextBuilder {
 
         List<OrderPromotionContext> orderPromotionContexts = Lists.newArrayList();
         CartPromotionContextImpl cartPromotionContext = new CartPromotionContextImpl(channelType, channelId, buyerId, orderPromotionContexts);
-        cartPromotionContext.setActivities(Lists.newArrayList(activities.values()));
+
+        cartPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), true));
         orderPromotionContextBuilders.values().forEach(orderPromotionContextBuilder -> {
             List<GoodsPromotionContext> goodsPromotionContexts = Lists.newArrayList();
             OrderPromotionContext orderPromotionContext = orderPromotionContextBuilder.build(cartPromotionContext, goodsPromotionContexts);
@@ -223,7 +231,7 @@ public final class PromotionContextBuilder {
         private OrderPromotionContext build(CartPromotionContext cartPromotionContext, List<GoodsPromotionContext> goodsPromotionContexts) {
             done();
             OrderPromotionContextImpl orderPromotionContext = new OrderPromotionContextImpl(cartPromotionContext, sellerUnionId, sellerId, goodsPromotionContexts);
-            orderPromotionContext.setActivities(Lists.newArrayList(activities.values()));
+            orderPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), true));
             return orderPromotionContext;
         }
 
@@ -251,7 +259,7 @@ public final class PromotionContextBuilder {
         private Long specsId;
         private String outerSpecsId;
         private Integer num;
-        private Map<Long,Activity> activities = Maps.newHashMap();
+        private Map<Long, Activity> activities = Maps.newHashMap();
 
         private final OrderPromotionContextBuilder orderPromotionContextBuilder;
 
@@ -321,7 +329,7 @@ public final class PromotionContextBuilder {
          * @return
          */
         public GoodsPromotionContextBuilder withActivity(Activity activity) {
-            this.activities.putIfAbsent(activity.id(),activity);
+            this.activities.putIfAbsent(activity.id(), activity);
             return this;
         }
 
@@ -335,7 +343,7 @@ public final class PromotionContextBuilder {
         private GoodsPromotionContext build(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext) {
             done();
             GoodsPromotionContextImpl goodsPromotionContext = new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num);
-            goodsPromotionContext.setActivities(Lists.newArrayList(activities.values()));
+            goodsPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), true));
             return goodsPromotionContext;
         }
 
@@ -357,6 +365,87 @@ public final class PromotionContextBuilder {
             return orderPromotionContextBuilder;
         }
 
+    }
+
+
+    /**
+     * sorting activities first by value of #ATTRIBUTE_CALCULATE_LEVEL defined in {@link Activity#additionalAttributes()} and second by {@link Activity#order()}.
+     *
+     * @param activities
+     * @param reverse
+     * @return
+     */
+    private static final List<Activity> sortingActivitiesForCalculating(List<Activity> activities, boolean reverse) {
+        activities.sort((o1, o2) -> {
+            Activity a1 = reverse ? o2 : o1;
+            Activity a2 = reverse ? o1 : o2;
+            int compare = ComparatorUtils.naturalComparator().compare(a1.additionalAttributes().getAttribute(ATTRIBUTE_CALCULATE_LEVEL), a2.additionalAttributes().getAttribute(ATTRIBUTE_CALCULATE_LEVEL));
+            if (0 == compare) {
+                return ComparatorUtils.naturalComparator().compare(a1.order(), a2.order());
+            }
+            return compare;
+        });
+        return activities;
+    }
+
+
+    /**
+     * apply group of activity to this builder.
+     *
+     * @param promotionGoodsSpecs promotion goods specs.
+     * @param activities          fetched activities for goods specs.
+     * @param sellerUnionId       union id of seller.
+     * @param sellerId            id of seller.
+     * @return
+     */
+    public PromotionContextBuilder withActivities(PromotionGoodsSpecs promotionGoodsSpecs, List<Activity> activities, Long sellerUnionId, Long sellerId) {
+        Assert.notNull(promotionGoodsSpecs, "promotionGoodsSpecs must not be null.");
+        Assert.notNull(sellerUnionId, "sellerUnionId must not be null.");
+        Assert.notNull(sellerId, "sellerId must not be null.");
+        Assert.notNull(activities, "activities must not be null.");
+        if (activities.size() == 0) { //if empty build empty goods context.
+            //orderPromotionContextBuilder(sellerUnionId,sellerId).withActivity(null)
+        }
+        activities.forEach(activity -> {//将活动分组，根据所处级别构建计算上下文.
+            if (activity.goodsSource().size() > 1) {//多个分类(多店、多品牌、多品类)都属于购物车级促销.
+                withActivity(activity);
+            } else {
+                ActivityGoodsSource activityGoodsSource = activity.goodsSource().get(0);
+                if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
+                    if (Objects.equals(activityGoodsSource.goodsSourceType(), CLASSIFIED_GOODS_SOURCE_TYPE_SELLER)) {//只有一个店家分类为店铺活动对应到订单级促销.
+                        orderPromotionContextBuilder(sellerUnionId, sellerId).withActivity(activity);
+                    } else {//非店家分类，如品牌，品类等，则为跨订单活动，将其对应到购物车级促销.
+                        withActivity(activity);
+                    }
+                } else if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {//对应到商品级促销.
+                    orderPromotionContextBuilder(sellerUnionId, sellerId)
+                            .withActivity(activity).goodsPromotionContextBuilder()
+                            .withGoodsId(promotionGoodsSpecs.goodsId)
+                            .withOuterGoodsId(promotionGoodsSpecs.outerGoodsId)
+                            .withSpecsId(promotionGoodsSpecs.goodsSpecsId)
+                            .withOuterSpecsId(promotionGoodsSpecs.outerGoodsSpecsId)
+                            .withNum(promotionGoodsSpecs.num);
+                }
+            }
+        });
+        return this;
+    }
+
+    public static class PromotionGoodsSpecs {
+
+        private final Long goodsId;
+        private final String outerGoodsId;
+        private final Long goodsSpecsId;
+        private final String outerGoodsSpecsId;
+        private final Integer num;
+
+        public PromotionGoodsSpecs(Long goodsId, String outerGoodsId, Long goodsSpecsId, String outerGoodsSpecsId, Integer num) {
+            this.goodsId = goodsId;
+            this.outerGoodsId = outerGoodsId;
+            this.goodsSpecsId = goodsSpecsId;
+            this.outerGoodsSpecsId = outerGoodsSpecsId;
+            this.num = num;
+        }
     }
 
 }

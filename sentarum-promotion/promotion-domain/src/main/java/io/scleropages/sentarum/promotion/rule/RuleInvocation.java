@@ -15,9 +15,9 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
-import io.scleropages.sentarum.promotion.rule.condition.ConjunctionCondition;
-import io.scleropages.sentarum.promotion.rule.condition.promotion.ChannelCondition;
-import io.scleropages.sentarum.promotion.rule.condition.promotion.UserLevelCondition;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.ConjunctionCondition;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.ChannelCondition;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.UserLevelCondition;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 import org.scleropages.core.util.GenericTypes;
 import org.springframework.util.Assert;
@@ -94,6 +94,10 @@ public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
     String description();
 
 
+    /**
+     * detailed information about this invocation.
+     * @return
+     */
     default String information() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + "{");
         sb.append("id: ").append(id());

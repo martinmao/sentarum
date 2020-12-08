@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
 import java.util.HashMap;
 import java.util.Map;
