@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource.CLASSIFIED_GOODS_SOURCE_TYPE_SELLER;
+import static io.scleropages.sentarum.promotion.rule.model.CalculatorRule.ATTRIBUTE_CALCULATE_LEVEL;
 
 /**
  * application layer for promotion.
@@ -159,8 +160,19 @@ public class PromotionApplication implements InitializingBean {
         List<Activity> activities = Lists.newArrayList(activityManager.findAllActivityByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId, true));
         //可用商品活动...
         activities.addAll(activityManager.findAllActivityByDetailedGoodsSource(1, item.id(), sku.id(), true));
-        activities.sort((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.order(), o2.order()));
+        sortingActivitiesForCalculating(activities);
         return activities;
+    }
+
+
+    private final void sortingActivitiesForCalculating(List<Activity> activities) {
+        activities.sort((o1, o2) -> {
+            int compare = ComparatorUtils.naturalComparator().compare(o1.additionalAttributes().getAttribute(ATTRIBUTE_CALCULATE_LEVEL), o2.additionalAttributes().getAttribute(ATTRIBUTE_CALCULATE_LEVEL));
+            if (0 == compare) {
+                ComparatorUtils.naturalComparator().compare(o1.order(), o2.order());
+            }
+            return compare;
+        });
     }
 
     /**

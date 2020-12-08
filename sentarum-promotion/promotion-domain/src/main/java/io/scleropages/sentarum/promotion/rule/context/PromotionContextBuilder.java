@@ -35,7 +35,7 @@ public final class PromotionContextBuilder {
     private ChannelType channelType;
     private Integer channelId;
     private Long buyerId;
-    private List<Activity> activities = Lists.newArrayList();
+    private Map<Long, Activity> activities = Maps.newHashMap();
     private Map<String, OrderPromotionContextBuilder> orderPromotionContextBuilders = Maps.newHashMap();
 
     private PromotionContextBuilder() {
@@ -80,7 +80,7 @@ public final class PromotionContextBuilder {
      * @return
      */
     public PromotionContextBuilder withActivity(Activity activity) {
-        this.activities.add(activity);
+        this.activities.putIfAbsent(activity.id(), activity);
         return this;
     }
 
@@ -138,7 +138,7 @@ public final class PromotionContextBuilder {
 
         List<OrderPromotionContext> orderPromotionContexts = Lists.newArrayList();
         CartPromotionContextImpl cartPromotionContext = new CartPromotionContextImpl(channelType, channelId, buyerId, orderPromotionContexts);
-        cartPromotionContext.setActivities(activities);
+        cartPromotionContext.setActivities(Lists.newArrayList(activities.values()));
         orderPromotionContextBuilders.values().forEach(orderPromotionContextBuilder -> {
             List<GoodsPromotionContext> goodsPromotionContexts = Lists.newArrayList();
             OrderPromotionContext orderPromotionContext = orderPromotionContextBuilder.build(cartPromotionContext, goodsPromotionContexts);
@@ -158,7 +158,7 @@ public final class PromotionContextBuilder {
 
         private Long sellerUnionId;
         private Long sellerId;
-        private List<Activity> activities = Lists.newArrayList();
+        private Map<Long, Activity> activities = Maps.newHashMap();
 
         private List<GoodsPromotionContextBuilder> goodsPromotionContextBuilders = Lists.newArrayList();
 
@@ -198,7 +198,7 @@ public final class PromotionContextBuilder {
          * @return
          */
         public OrderPromotionContextBuilder withActivity(Activity activity) {
-            this.activities.add(activity);
+            this.activities.putIfAbsent(activity.id(), activity);
             return this;
         }
 
@@ -223,7 +223,7 @@ public final class PromotionContextBuilder {
         private OrderPromotionContext build(CartPromotionContext cartPromotionContext, List<GoodsPromotionContext> goodsPromotionContexts) {
             done();
             OrderPromotionContextImpl orderPromotionContext = new OrderPromotionContextImpl(cartPromotionContext, sellerUnionId, sellerId, goodsPromotionContexts);
-            orderPromotionContext.setActivities(activities);
+            orderPromotionContext.setActivities(Lists.newArrayList(activities.values()));
             return orderPromotionContext;
         }
 
@@ -251,7 +251,7 @@ public final class PromotionContextBuilder {
         private Long specsId;
         private String outerSpecsId;
         private Integer num;
-        private List<Activity> activities = Lists.newArrayList();
+        private Map<Long,Activity> activities = Maps.newHashMap();
 
         private final OrderPromotionContextBuilder orderPromotionContextBuilder;
 
@@ -321,7 +321,7 @@ public final class PromotionContextBuilder {
          * @return
          */
         public GoodsPromotionContextBuilder withActivity(Activity activity) {
-            this.activities.add(activity);
+            this.activities.putIfAbsent(activity.id(),activity);
             return this;
         }
 
@@ -335,7 +335,7 @@ public final class PromotionContextBuilder {
         private GoodsPromotionContext build(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext) {
             done();
             GoodsPromotionContextImpl goodsPromotionContext = new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num);
-            goodsPromotionContext.setActivities(activities);
+            goodsPromotionContext.setActivities(Lists.newArrayList(activities.values()));
             return goodsPromotionContext;
         }
 

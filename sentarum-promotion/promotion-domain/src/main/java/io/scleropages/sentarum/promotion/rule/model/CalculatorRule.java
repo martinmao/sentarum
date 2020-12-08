@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.model;
 
 import io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion.CalculateLevel;
+import org.scleropages.core.util.Namings;
 
 /**
  * base interface of promotional calculator rule.
@@ -23,6 +24,11 @@ import io.scleropages.sentarum.promotion.rule.invocation.calculator.promotion.Ca
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface CalculatorRule extends Rule {
+
+
+    String ATTRIBUTE_PREFIX = Namings.snakeCaseName(CalculatorRule.class.getSimpleName()) + ".";
+
+    String ATTRIBUTE_CALCULATE_LEVEL = ATTRIBUTE_PREFIX + Namings.snakeCaseName("calculateLevel");
 
 
     /**

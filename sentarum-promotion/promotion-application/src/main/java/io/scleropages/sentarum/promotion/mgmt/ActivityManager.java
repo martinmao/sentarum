@@ -46,7 +46,6 @@ import io.scleropages.sentarum.promotion.goods.model.ClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
 import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer;
 import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceReaderInitializer;
-import org.apache.commons.collections.ComparatorUtils;
 import org.scleropages.crud.GenericManager;
 import org.scleropages.crud.exception.BizError;
 import org.slf4j.Logger;
@@ -361,7 +360,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     public List<? extends Activity> getActivities(List<Long> ids, boolean fetchGoodsSource) {
         List<Activity> activities = Lists.newArrayList();
         ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
-        activities.sort((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.order(), o2.order()));
+        //activities.sort((o1, o2) -> ComparatorUtils.naturalComparator().compare(o1.order(), o2.order()));
         return activities;
     }
 
