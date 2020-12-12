@@ -16,13 +16,14 @@
 package io.scleropages.sentarum.promotion.rule.impl;
 
 import com.google.common.collect.Maps;
-import io.scleropages.sentarum.promotion.rule.Condition;
-import io.scleropages.sentarum.promotion.rule.PromotionCalculator;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.RuleInvocation;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCalculator;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCondition;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.TrueCondition;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
-import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
+import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -34,6 +35,7 @@ import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -48,12 +50,14 @@ public class SpringRuleContainer implements RuleContainer, InitializingBean, App
     private Map<Class, Integer> ruleClasses;
 
     @Override
-    public Condition getCondition(ConditionRule conditionRule) {
-        return (Condition) ruleInvocations.get(conditionRule.ruleInvocationImplementation());
+    public PromotionCondition getCondition(ConditionRule conditionRule) {
+        if (Objects.equals(TrueCondition.TRUE_CONDITION_RULE, conditionRule))
+            return TrueCondition.TRUE_CONDITION;
+        return (PromotionCondition) ruleInvocations.get(conditionRule.ruleInvocationImplementation());
     }
 
     @Override
-    public PromotionCalculator getPromotionCalculator(CalculatorRule calculatorRule){
+    public PromotionCalculator getPromotionCalculator(CalculatorRule calculatorRule) {
         return (PromotionCalculator) ruleInvocations.get(calculatorRule.ruleInvocationImplementation());
     }
 
@@ -80,7 +84,7 @@ public class SpringRuleContainer implements RuleContainer, InitializingBean, App
         Map<Integer, RuleInvocationDescriptor> _calculatorDescriptors = Maps.newHashMap();
         Map<Class, Integer> _ruleClasses = Maps.newHashMap();
 
-        applicationContext.getBeansOfType(Condition.class).forEach((s, condition) -> {
+        applicationContext.getBeansOfType(PromotionCondition.class).forEach((s, condition) -> {
             Integer conditionId = condition.id();
             Assert.isNull(_ruleInvocations.put(conditionId, condition), () -> "condition with id: " + conditionId + " already exists. please specify another one.");
             _conditionDescriptors.put(conditionId, new RuleInvocationDescriptor(condition));

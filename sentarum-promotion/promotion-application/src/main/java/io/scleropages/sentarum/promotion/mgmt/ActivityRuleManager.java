@@ -28,11 +28,6 @@ import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGo
 import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSpecsRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.repo.BaseCalculatorRuleRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.repo.OverflowDiscountRuleRepository;
-import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.BaseConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.ChannelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.SellerUserLevelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserLevelConditionRuleRepository;
-import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserTagConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.entity.AbstractRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.BaseCalculatorRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.OverflowDiscountRuleEntity;
@@ -54,6 +49,11 @@ import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.ChannelCon
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.SellerUserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserLevelConditionRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.mapper.UserTagConditionRuleEntityMapper;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.BaseConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.ChannelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.SellerUserLevelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserLevelConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserTagConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
@@ -162,7 +162,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
 
 
     /**
-     * 创建条件规则
+     * 创建逻辑运算条件规则
      *
      * @param conditionRule
      * @param activityId
@@ -397,7 +397,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
      *
      * @param activityId id of activity.
      * @param activity   optional activity. if present it will apply to {@link ConditionRule#activity()}.
-     * @return
+     * @return root node of merged rule tree.
      */
     @Transactional(readOnly = true)
     @BizError("33")
@@ -473,6 +473,13 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return calculatorRules;
     }
 
+    /**
+     * map rule entity as rule model and applying to given activity(optional)
+     *
+     * @param entity
+     * @param activity
+     * @return
+     */
     private AbstractRule mapRule(AbstractRuleEntity entity, Activity activity) {
         Class<?> ruleClass = Reflections2.getClass(entity.getRuleClass(), classLoader);
         AbstractConditionRule conditionRule = JsonMapper2.fromJson(entity.getRulePayload(), ruleClass);

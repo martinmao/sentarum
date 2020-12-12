@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.impl;
+package io.scleropages.sentarum.promotion.rule.impl.cart;
 
-import io.scleropages.sentarum.promotion.rule.InvocationChainStarter;
-import io.scleropages.sentarum.promotion.rule.impl.PromotionChainStarterFactory.HeadOfChain;
+import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
+import io.scleropages.sentarum.promotion.rule.impl.cart.CartPromotionChainStarterFactory.HeadOfChain;
 
 import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PromotionChainStarter implements InvocationChainStarter {
+public class CartPromotionChainStarter implements PromotionChainStarter {
 
     private final HeadOfChain headOfChain;//仅一个cart head of chain.
     private final List<HeadOfChain> headOfOrdersChain;//每个订单一个head of chain.
     private final List<HeadOfChain> headOfGoodsChain;//每个商品一个head of chain.
 
-    public PromotionChainStarter(HeadOfChain headOfChain, List<HeadOfChain> headOfOrdersChain, List<HeadOfChain> headOfGoodsChain) {
+    public CartPromotionChainStarter(HeadOfChain headOfChain, List<HeadOfChain> headOfOrdersChain, List<HeadOfChain> headOfGoodsChain) {
         this.headOfChain = headOfChain;
         this.headOfOrdersChain = headOfOrdersChain;
         this.headOfGoodsChain = headOfGoodsChain;

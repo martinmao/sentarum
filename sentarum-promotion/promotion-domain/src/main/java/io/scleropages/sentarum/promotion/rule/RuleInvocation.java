@@ -15,8 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.ConjunctionCondition;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.ChannelCondition;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.ConjunctionCondition;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.UserLevelCondition;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 import org.scleropages.core.util.GenericTypes;
@@ -30,10 +30,12 @@ import org.springframework.util.Assert;
 public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
 
 
+    Integer PROMOTION_INVOCATION = 0;
     /**
      * 条件连接 {@link ConjunctionCondition}
      */
     Integer CONJUNCTION_CONDITION_ID = 1;
+    Integer ALWAYS_TRUE_CONDITION_ID = 2;
     /**
      * 促销参与渠道规则id {@link ChannelCondition}
      */
@@ -96,6 +98,7 @@ public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
 
     /**
      * detailed information about this invocation.
+     *
      * @return
      */
     default String information() {

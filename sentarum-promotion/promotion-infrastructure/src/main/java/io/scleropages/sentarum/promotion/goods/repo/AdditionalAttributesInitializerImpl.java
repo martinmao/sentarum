@@ -50,7 +50,7 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
     private TransactionTemplate transactionTemplate;
 
     @Override
-    public AdditionalAttributesProvider initializeAdditionalAttributes(AdditionalAttributesProvider provider, Object entity, AdditionalAttributesSavingCallback savingCallback, boolean forceProxy, Advice... beforeAdvices) {
+    public AdditionalAttributesProvider initializeAdditionalAttributes(AdditionalAttributesProvider provider, Object entity, AdditionalAttributesSavingCallback savingCallback, boolean forceProxy, boolean readOnly, Advice... beforeAdvices) {
         if (AopUtils.isAopProxy(provider))
             throw new IllegalStateException(provider + " already proxied.");
         ProxyFactory proxyFactory = new ProxyFactory(provider);
@@ -59,7 +59,7 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
         if (logger.isDebugEnabled()) {
             logger.debug("creating proxy for: {} with initial data {} ", provider.getClass().getSimpleName(), initialMap);
         }
-        AdditionalAttributesImpl additionalAttributes = new AdditionalAttributesImpl(savingCallback, initialMap, provider);
+        AdditionalAttributesImpl additionalAttributes = new AdditionalAttributesImpl(savingCallback, initialMap, provider, readOnly);
 
         if (ArrayUtils.isNotEmpty(beforeAdvices)) {
             for (Advice beforeAdvice : beforeAdvices) {
@@ -95,15 +95,18 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
         private final AdditionalAttributesSavingCallback savingCallback;
         private final Map<String, Object> attributes;
         private final AdditionalAttributesProvider provider;
+        private final boolean readOnly;
 
-        public AdditionalAttributesImpl(AdditionalAttributesSavingCallback savingCallback, Map<String, Object> initialMap, AdditionalAttributesProvider provider) {
+        public AdditionalAttributesImpl(AdditionalAttributesSavingCallback savingCallback, Map<String, Object> initialMap, AdditionalAttributesProvider provider, boolean readOnly) {
             this.savingCallback = savingCallback;
             this.attributes = null != initialMap ? initialMap : Maps.newHashMap();
             this.provider = provider;
+            this.readOnly = readOnly;
         }
 
         @Override
         public AdditionalAttributes setAttribute(String name, Object value, boolean force) {
+            assertReadOnly();
             Assert.hasText(name, "name must not be empty text.");
             Assert.notNull(value, "value must not be null.");
             if (force)
@@ -115,6 +118,7 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
 
         @Override
         public AdditionalAttributes removeAttribute(String name) {
+            assertReadOnly();
             Assert.hasText(name, "name must not be empty text.");
             attributes.remove(name);
             return this;
@@ -139,10 +143,21 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
 
         @Override
         public void save() {
+            assertReadOnly();
             transactionTemplate.execute(status -> {
                 savingCallback.save(provider, attributes);
                 return null;
             });
+        }
+
+        @Override
+        public boolean readOnly() {
+            return readOnly;
+        }
+
+        private final void assertReadOnly() {
+            Assert.isTrue(!readOnly, "current additional-attributes is read only.");
+
         }
     }
 }

@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.invocation.promotion.condition;
-
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCondition;
-import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
+package io.scleropages.sentarum.promotion.rule;
 
 /**
- * base abstract condition for promotion.
+ * runner of invocation chain.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface AbstractPromotionCondition<R extends ConditionRule> extends PromotionCondition<R, PromotionContext> {
+public interface PromotionChainStarterRunner<T extends PromotionChainStarter> {
+
+    /**
+     * running given invocation chain starter.
+     *
+     * @param invocationChainStarter
+     */
+    void run(T invocationChainStarter);
 }

@@ -13,13 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule;
+package io.scleropages.sentarum.promotion.rule.impl;
+
+import io.scleropages.sentarum.promotion.rule.PromotionCalculateEngine;
+import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
+import io.scleropages.sentarum.promotion.rule.impl.cart.CartPromotionChainStarterFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
- * represent a starter of chain list. it will starting chains and all of subsequent chains...
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface InvocationChainStarter {
-    
+public class DefaultPromotionCalculateEngine implements PromotionCalculateEngine, InitializingBean {
+
+
+    private CartPromotionChainStarterFactory cartPromotionChainStarterFactory;
+
+    private PromotionChainStarterRunner promotionChainStarterRunner;
+
+
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+    }
 }

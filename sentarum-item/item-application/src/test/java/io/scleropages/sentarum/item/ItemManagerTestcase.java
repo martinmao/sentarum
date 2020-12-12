@@ -21,8 +21,10 @@ import io.scleropages.sentarum.item.category.model.CategoryProperty;
 import io.scleropages.sentarum.item.category.model.impl.CategoryPropertyModel;
 import io.scleropages.sentarum.item.category.model.impl.StandardCategoryModel;
 import io.scleropages.sentarum.item.core.model.Item;
+import io.scleropages.sentarum.item.core.model.Sku;
 import io.scleropages.sentarum.item.core.model.Spu;
 import io.scleropages.sentarum.item.core.model.impl.ItemModel;
+import io.scleropages.sentarum.item.core.model.impl.SkuModel;
 import io.scleropages.sentarum.item.core.model.impl.SpuModel;
 import io.scleropages.sentarum.item.mgmt.CategoryManager;
 import io.scleropages.sentarum.item.mgmt.ItemManager;
@@ -208,8 +210,37 @@ public class ItemManagerTestcase {
         item.setStatus(Item.Status.SAVED);
 
 
-        itemManager.createItem(item, spuPage.iterator().next().id(), null);
-        itemManager.createItem(item, spuPage.iterator().next().id(), null);
+        Long itemId = itemManager.createItem(item, spuPage.iterator().next().id(), null);
+        SkuModel sku=new SkuModel();
+        sku.setOuterId(itemId+"1");
+        sku.setQuantity(222);
+        sku.setStatus(Sku.Status.VALID);
+        sku.setSalesPrice(new BigDecimal("4444"));
+        itemManager.createSku(sku,itemId,null);
+        sku.setOuterId(itemId+"2");
+        sku.setQuantity(333);
+        sku.setStatus(Sku.Status.VALID);
+        sku.setSalesPrice(new BigDecimal("5555"));
+        itemManager.createSku(sku,itemId,null);
+        sku.setOuterId(itemId+"3");
+        sku.setQuantity(444);
+        sku.setStatus(Sku.Status.VALID);
+        sku.setSalesPrice(new BigDecimal("6666"));
+        itemManager.createSku(sku,itemId,null);
+
+        itemId=itemManager.createItem(item, spuPage.iterator().next().id(), null);
+
+        sku.setOuterId(itemId+"1");
+        sku.setQuantity(333);
+        sku.setStatus(Sku.Status.VALID);
+        sku.setSalesPrice(new BigDecimal("7777"));
+        itemManager.createSku(sku,itemId,null);
+        sku.setOuterId(itemId+"2");
+        sku.setQuantity(444);
+        sku.setStatus(Sku.Status.VALID);
+        sku.setSalesPrice(new BigDecimal("8888"));
+        itemManager.createSku(sku,itemId,null);
+
         itemManager.createItem(item, spuPage.iterator().next().id(), null);
         itemManager.createItem(item, spuPage.iterator().next().id(), null);
         itemManager.createItem(item, spuPage.iterator().next().id(), null);

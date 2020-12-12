@@ -73,13 +73,13 @@ public class DetailedGoodsSourceReaderInitializer implements MethodInterceptor {
                         GoodsEntity goodsEntity = (GoodsEntity) entity;
                         Goods goodsModel = (Goods) goodsEntityMapper.mapForRead(goodsEntity);
                         final Long goodsId = goodsModel.id();
-                        goodsModel = (Goods) additionalAttributesInitializer.initializeAdditionalAttributes(goodsModel, goodsEntity, goodsRepository, false, (MethodInterceptor) methodInvocation -> {
+                        goodsModel = (Goods) additionalAttributesInitializer.initializeAdditionalAttributes(goodsModel, goodsEntity, goodsRepository, false, false, (MethodInterceptor) methodInvocation -> {
                             if (Objects.equals(methodInvocation.getMethod().getName(), "getSpecs") || Objects.equals(methodInvocation.getMethod().getName(), "specs")) {
                                 List<GoodsSpecs> goodsSpecs = Lists.newArrayList();
                                 List<? extends GoodsSpecsEntity> goodsSpecsEntities = goodsRepository.findAllGoodsSpecsByGoodsId(goodsSpecsRepository, goodsId);
                                 goodsSpecsEntities.forEach(goodsSpecsEntity -> {
                                     GoodsSpecs goodsSpecsModel = (GoodsSpecs) goodsSpecsEntityMapper.mapForRead(goodsSpecsEntity);
-                                    goodsSpecs.add((GoodsSpecs) additionalAttributesInitializer.initializeAdditionalAttributes(goodsSpecsModel, goodsSpecsEntity, goodsSpecsRepository, false));
+                                    goodsSpecs.add((GoodsSpecs) additionalAttributesInitializer.initializeAdditionalAttributes(goodsSpecsModel, goodsSpecsEntity, goodsSpecsRepository, false, false));
                                 });
                                 return goodsSpecs;
                             }

@@ -73,4 +73,10 @@ public interface AdditionalAttributes {
     default void save() {
         throw new IllegalStateException("not implementation or not initialized.");
     }
+
+    /**
+     * return true if current attributes is read only.
+     * @return
+     */
+    boolean readOnly();
 }

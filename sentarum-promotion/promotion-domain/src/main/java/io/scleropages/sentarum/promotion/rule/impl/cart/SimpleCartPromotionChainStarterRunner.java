@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.impl;
+package io.scleropages.sentarum.promotion.rule.impl.cart;
 
-import io.scleropages.sentarum.promotion.rule.InvocationChainStarterRunner;
+import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
 
 /**
- * simple (sequence computing) implementation of {@link PromotionChainStarter} runner.
+ * simple (sequence computing) implementation of {@link CartPromotionChainStarter} runner.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class SimplePromotionChainStarterRunner implements InvocationChainStarterRunner<PromotionChainStarter> {
+public class SimpleCartPromotionChainStarterRunner implements PromotionChainStarterRunner<CartPromotionChainStarter> {
 
 
     @Override
-    public void run(PromotionChainStarter promotionChainStarter) {
-        for (PromotionChainStarterFactory.HeadOfChain headOfChain : promotionChainStarter.getHeadOfGoodsChain()) {
+    public void run(CartPromotionChainStarter promotionChainStarter) {
+        for (CartPromotionChainStarterFactory.HeadOfChain headOfChain : promotionChainStarter.getHeadOfGoodsChain()) {
             headOfChain.startInternal();
         }
-        for (PromotionChainStarterFactory.HeadOfChain headOfChain : promotionChainStarter.getHeadOfOrdersChain()) {
+        for (CartPromotionChainStarterFactory.HeadOfChain headOfChain : promotionChainStarter.getHeadOfOrdersChain()) {
             headOfChain.startInternal();
         }
         promotionChainStarter.getHeadOfChain().startInternal();

@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion;
 
 import com.google.common.collect.Lists;
+import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -26,12 +27,16 @@ import java.util.List;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class DiscountCalculateRequest {
+public class PromotionCalculateRequest {
 
     /**
      * 买家id
      */
     private Long buyerId;
+
+    private ChannelConditionRule.ChannelType channelType;
+
+    private Integer channelId;
 
     /**
      * 计算商品列表
@@ -42,6 +47,16 @@ public class DiscountCalculateRequest {
     @NotNull
     public Long getBuyerId() {
         return buyerId;
+    }
+
+    @NotNull
+    public ChannelConditionRule.ChannelType getChannelType() {
+        return channelType;
+    }
+
+    @NotNull
+    public Integer getChannelId() {
+        return channelId;
     }
 
     @NotEmpty
@@ -55,12 +70,20 @@ public class DiscountCalculateRequest {
         this.buyerId = buyerId;
     }
 
+    public void setChannelType(ChannelConditionRule.ChannelType channelType) {
+        this.channelType = channelType;
+    }
+
+    public void setChannelId(Integer channelId) {
+        this.channelId = channelId;
+    }
+
     public void setCalculatingGoodsSpecs(List<CalculatingGoodsSpecs> calculatingGoodsSpecs) {
         this.calculatingGoodsSpecs = calculatingGoodsSpecs;
     }
 
     public static class CalculatingGoodsSpecs {
-        
+
         /**
          * 商品规格id.
          */

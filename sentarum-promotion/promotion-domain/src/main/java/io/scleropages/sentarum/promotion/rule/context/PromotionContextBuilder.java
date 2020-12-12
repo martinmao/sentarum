@@ -24,6 +24,7 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
 import org.apache.commons.collections.ComparatorUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -141,18 +142,21 @@ public final class PromotionContextBuilder {
         Assert.notNull(channelType, "channelType must not be null.");
         Assert.notNull(channelId, "channelId must not be null.");
         Assert.notNull(buyerId, "buyerId must not be null.");
-        Assert.notEmpty(activities, "no activities specified.");
+//        Assert.notEmpty(activities, "no activities specified.");
 
         List<OrderPromotionContext> orderPromotionContexts = Lists.newArrayList();
         CartPromotionContextImpl cartPromotionContext = new CartPromotionContextImpl(channelType, channelId, buyerId, orderPromotionContexts);
 
-        cartPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), true));
+        if (!CollectionUtils.isEmpty(activities)) {
+            cartPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), false));
+        }
         orderPromotionContextBuilders.values().forEach(orderPromotionContextBuilder -> {
             List<GoodsPromotionContext> goodsPromotionContexts = Lists.newArrayList();
             OrderPromotionContext orderPromotionContext = orderPromotionContextBuilder.build(cartPromotionContext, goodsPromotionContexts);
             orderPromotionContexts.add(orderPromotionContext);
             orderPromotionContextBuilder.goodsPromotionContextBuilders.forEach(goodsPromotionContextBuilder -> {
-                goodsPromotionContextBuilder.build(cartPromotionContext, orderPromotionContext);
+                GoodsPromotionContext goodsPromotionContext = goodsPromotionContextBuilder.build(cartPromotionContext, orderPromotionContext);
+                goodsPromotionContexts.add(goodsPromotionContext);
             });
         });
         return cartPromotionContext;
@@ -231,7 +235,7 @@ public final class PromotionContextBuilder {
         private OrderPromotionContext build(CartPromotionContext cartPromotionContext, List<GoodsPromotionContext> goodsPromotionContexts) {
             done();
             OrderPromotionContextImpl orderPromotionContext = new OrderPromotionContextImpl(cartPromotionContext, sellerUnionId, sellerId, goodsPromotionContexts);
-            orderPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), true));
+            orderPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), false));
             return orderPromotionContext;
         }
 
@@ -343,7 +347,7 @@ public final class PromotionContextBuilder {
         private GoodsPromotionContext build(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext) {
             done();
             GoodsPromotionContextImpl goodsPromotionContext = new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num);
-            goodsPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), true));
+            goodsPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), false));
             return goodsPromotionContext;
         }
 
@@ -402,9 +406,15 @@ public final class PromotionContextBuilder {
         Assert.notNull(promotionGoodsSpecs, "promotionGoodsSpecs must not be null.");
         Assert.notNull(sellerUnionId, "sellerUnionId must not be null.");
         Assert.notNull(sellerId, "sellerId must not be null.");
-        Assert.notNull(activities, "activities must not be null.");
-        if (activities.size() == 0) { //if empty build empty goods context.
-            //orderPromotionContextBuilder(sellerUnionId,sellerId).withActivity(null)
+        OrderPromotionContextBuilder orderPromotionContextBuilder = orderPromotionContextBuilder(sellerUnionId, sellerId);
+        GoodsPromotionContextBuilder goodsPromotionContextBuilder = orderPromotionContextBuilder.goodsPromotionContextBuilder()
+                .withGoodsId(promotionGoodsSpecs.goodsId)
+                .withOuterGoodsId(promotionGoodsSpecs.outerGoodsId)
+                .withSpecsId(promotionGoodsSpecs.goodsSpecsId)
+                .withOuterSpecsId(promotionGoodsSpecs.outerGoodsSpecsId)
+                .withNum(promotionGoodsSpecs.num);
+        if (CollectionUtils.isEmpty(activities)) { //if empty build a no activities goods context.
+            return this;
         }
         activities.forEach(activity -> {//将活动分组，根据所处级别构建计算上下文.
             if (activity.goodsSource().size() > 1) {//多个分类(多店、多品牌、多品类)都属于购物车级促销.
@@ -413,18 +423,12 @@ public final class PromotionContextBuilder {
                 ActivityGoodsSource activityGoodsSource = activity.goodsSource().get(0);
                 if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
                     if (Objects.equals(activityGoodsSource.goodsSourceType(), CLASSIFIED_GOODS_SOURCE_TYPE_SELLER)) {//只有一个店家分类为店铺活动对应到订单级促销.
-                        orderPromotionContextBuilder(sellerUnionId, sellerId).withActivity(activity);
+                        orderPromotionContextBuilder.withActivity(activity);
                     } else {//非店家分类，如品牌，品类等，则为跨订单活动，将其对应到购物车级促销.
                         withActivity(activity);
                     }
                 } else if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {//对应到商品级促销.
-                    orderPromotionContextBuilder(sellerUnionId, sellerId)
-                            .withActivity(activity).goodsPromotionContextBuilder()
-                            .withGoodsId(promotionGoodsSpecs.goodsId)
-                            .withOuterGoodsId(promotionGoodsSpecs.outerGoodsId)
-                            .withSpecsId(promotionGoodsSpecs.goodsSpecsId)
-                            .withOuterSpecsId(promotionGoodsSpecs.outerGoodsSpecsId)
-                            .withNum(promotionGoodsSpecs.num);
+                    goodsPromotionContextBuilder.withActivity(activity);
                 }
             }
         });

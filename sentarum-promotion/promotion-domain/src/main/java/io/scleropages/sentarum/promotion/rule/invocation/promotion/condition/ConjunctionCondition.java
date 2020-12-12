@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.invocation.promotion.condition;
 
 import com.google.common.collect.Lists;
-import io.scleropages.sentarum.promotion.rule.Condition;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCondition;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
@@ -38,7 +38,7 @@ import static io.scleropages.sentarum.promotion.rule.model.condition.Conjunction
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Component
-public class ConjunctionCondition implements Condition<ConjunctionConditionRule, InvocationContext> {
+public class ConjunctionCondition implements PromotionCondition<ConjunctionConditionRule, InvocationContext> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -82,7 +82,7 @@ public class ConjunctionCondition implements Condition<ConjunctionConditionRule,
         if (conditionRule instanceof ConjunctionConditionRule) {
             return match((ConjunctionConditionRule) conditionRule, invocationContext);
         }
-        Condition condition = ruleContainer.getCondition(conditionRule);
+        PromotionCondition condition = ruleContainer.getCondition(conditionRule);
         return condition.match(conditionRule, invocationContext);
     }
 

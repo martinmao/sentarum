@@ -13,51 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.impl;
+package io.scleropages.sentarum.promotion.rule.impl.cart;
 
 import com.google.common.collect.Lists;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
-import io.scleropages.sentarum.promotion.rule.InvocationChainStarter;
-import io.scleropages.sentarum.promotion.rule.InvocationChainStarterFactory;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
-import io.scleropages.sentarum.promotion.rule.RuleInvocation;
+import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
+import io.scleropages.sentarum.promotion.rule.PromotionChainStarterFactory;
+import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.context.CartPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
+import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class PromotionChainStarterFactory implements InvocationChainStarterFactory<PromotionContext, Activity> {
+public class CartPromotionChainStarterFactory implements PromotionChainStarterFactory<CartPromotionContext> {
 
 
     @Override
-    public InvocationChainStarter createChainStarter(PromotionContext promotionContext, Function<Activity, List<RuleInvocation>> invocations) {
-        Assert.isInstanceOf(CartPromotionContext.class, promotionContext, "given context must be CartPromotionContext.");
-        CartPromotionContext cartPromotionContext = (CartPromotionContext) promotionContext;
-
-        HeadOfChain headOfChain = createHeadOfChain(cartPromotionContext, invocations);//仅一个cart head of chain.
+    public PromotionChainStarter createChainStarter(CartPromotionContext cartPromotionContext, RuleContainer ruleContainer) {
+        Assert.notNull(cartPromotionContext, "cartPromotionContext must not be null.");
+        HeadOfChain headOfChain = createHeadOfChain(cartPromotionContext, ruleContainer);//仅一个cart head of chain.
         List<HeadOfChain> headOfOrdersChain = Lists.newArrayList();//每个订单一个head of chain.
         List<HeadOfChain> headOfGoodsChain = Lists.newArrayList();//每个商品一个head of chain.
         for (OrderPromotionContext orderPromotionContext : cartPromotionContext.orderPromotionContexts()) {
-            headOfOrdersChain.add(createHeadOfChain(orderPromotionContext, invocations));
+            headOfOrdersChain.add(createHeadOfChain(orderPromotionContext, ruleContainer));
             for (GoodsPromotionContext goodsPromotionContext : orderPromotionContext.goodsPromotionContexts()) {
-                headOfGoodsChain.add(createHeadOfChain(goodsPromotionContext, invocations));
+                headOfGoodsChain.add(createHeadOfChain(goodsPromotionContext, ruleContainer));
             }
         }
-        return new PromotionChainStarter(headOfChain, headOfOrdersChain, headOfGoodsChain);
+        return new CartPromotionChainStarter(headOfChain, headOfOrdersChain, headOfGoodsChain);
     }
 
-    private HeadOfChain createHeadOfChain(PromotionContext promotionContext, Function<Activity, List<RuleInvocation>> invocations) {
-        DefaultInvocationChain previousChain = null;
-        for (Activity activity : promotionContext.activities()) {
-            DefaultInvocationChain orderChain = new DefaultInvocationChain(invocations.apply(activity), previousChain);
+    private HeadOfChain createHeadOfChain(PromotionContext promotionContext, RuleContainer ruleContainer) {
+        ActivityPromotionInvocationChain previousChain = null;
+        List<Activity> activities = promotionContext.activities();
+        for (int i = activities.size() - 1; i > -1; i--) {
+            ActivityPromotionInvocationChain orderChain = new ActivityPromotionInvocationChain(promotionContext.activities(), ruleContainer, previousChain);
             previousChain = orderChain;
         }
         return new HeadOfChain(previousChain, promotionContext);
@@ -69,15 +68,14 @@ public class PromotionChainStarterFactory implements InvocationChainStarterFacto
         private final InvocationContext invocationContext;
 
         private HeadOfChain(InvocationChain invocationChain, InvocationContext invocationContext) {
-            Assert.notNull(invocationChain, "invocationChain must not be null.");
             Assert.notNull(invocationContext, "invocationContext must not be null.");
-
             this.invocationChain = invocationChain;
             this.invocationContext = invocationContext;
         }
 
         protected void startInternal() {
-            invocationChain.next(invocationContext);
+            if (null != invocationChain)
+                invocationChain.next(invocationContext);
         }
     }
 }

@@ -26,7 +26,7 @@ import java.util.List;
 public abstract class AbstractPromotionContext implements PromotionContext {
 
 
-    private List<Activity> activities;
+    private List<Activity> activities = Collections.emptyList();
 
 
     @Override

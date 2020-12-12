@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion;
 
+import io.scleropages.sentarum.promotion.rule.InvocationChain;
+import io.scleropages.sentarum.promotion.rule.RuleInvocation;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 
@@ -27,7 +29,7 @@ public interface PromotionCalculator<R extends CalculatorRule, C extends Promoti
 
     @Override
     default void execute(R rule, C invocationContext, InvocationChain chain) {
-        calculate(rule, invocationContext, chain);
+        calculate(rule, invocationContext);
     }
 
 
@@ -36,7 +38,6 @@ public interface PromotionCalculator<R extends CalculatorRule, C extends Promoti
      *
      * @param rule             促销规则
      * @param promotionContext 促销上下文
-     * @param chain            规则调用链
      */
-    void calculate(R rule, C promotionContext, InvocationChain chain);
+    void calculate(R rule, C promotionContext);
 }

@@ -15,17 +15,21 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
+
 /**
- * runner of invocation chain.
+ * factory for promotion chain starter.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface InvocationChainStarterRunner<T extends InvocationChainStarter> {
+public interface PromotionChainStarterFactory<C extends PromotionContext> {
 
     /**
-     * running given invocation chain starter.
+     * create chain starter by given promotion context and invocations.
      *
-     * @param invocationChainStarter
+     * @param promotionContext context to build from.
+     * @param ruleContainer    container of rules.
+     * @return
      */
-    void run(T invocationChainStarter);
+    PromotionChainStarter createChainStarter(C promotionContext, RuleContainer ruleContainer);
 }

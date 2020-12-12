@@ -36,9 +36,11 @@ public interface AdditionalAttributesInitializer {
      * @param entity         entity for initial attributes reading.
      * @param savingCallback callback for attributes saving.
      * @param forceProxy     true if use cglib
+     * @param readOnly       true if want to create a read only attributes.
+     * @param beforeAdvices  advices for method invocation.
      * @return
      */
-    AdditionalAttributesProvider initializeAdditionalAttributes(AdditionalAttributesProvider provider, Object entity, AdditionalAttributesSavingCallback savingCallback, boolean forceProxy, Advice... beforeAdvices);
+    AdditionalAttributesProvider initializeAdditionalAttributes(AdditionalAttributesProvider provider, Object entity, AdditionalAttributesSavingCallback savingCallback, boolean forceProxy, boolean readOnly, Advice... beforeAdvices);
 
 
     /**

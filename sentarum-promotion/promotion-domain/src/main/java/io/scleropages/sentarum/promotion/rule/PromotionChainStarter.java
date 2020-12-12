@@ -15,22 +15,11 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
-import java.util.List;
-import java.util.function.Function;
-
 /**
- * factory for invocation chain starter.
+ * represent information about promotion chain list. it will starting chains and all of subsequent chains by {@link PromotionChainStarterRunner}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface InvocationChainStarterFactory<C extends InvocationContext, X> {
+public interface PromotionChainStarter {
 
-    /**
-     * create chain starter by given invocation context and invocations.
-     *
-     * @param invocationContext
-     * @param invocations
-     * @return
-     */
-    InvocationChainStarter createChainStarter(C invocationContext, Function<X, List<RuleInvocation>> invocations);
 }

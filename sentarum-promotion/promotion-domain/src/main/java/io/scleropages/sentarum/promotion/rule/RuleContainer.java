@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCondition;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCalculator;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
@@ -35,7 +37,7 @@ public interface RuleContainer {
      * @param conditionRule
      * @return
      */
-    Condition getCondition(ConditionRule conditionRule);
+    PromotionCondition getCondition(ConditionRule conditionRule);
 
 
     /**

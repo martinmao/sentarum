@@ -95,7 +95,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @Validated({ItemModel.Create.class})
     @Transactional
     @BizError("10")
-    public void createItem(@Valid ItemModel model, Long spuId, Map<Long, Object> values) {
+    public Long createItem(@Valid ItemModel model, Long spuId, Map<Long, Object> values) {
         Assert.notNull(spuId, "spuId is required.");
         ItemEntity itemEntity = getModelMapper().mapForSave(model);
         SpuEntity spuEntity = spuRepository.getById(spuId).orElseThrow(() -> new IllegalArgumentException("no spu found: " + spuId));
@@ -104,6 +104,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
         Map<Long, PropertyValueModel> propertiesValues = categoryManager.buildCategoryPropertyValues(spuEntity.getCategory().getId(), values, ITEM_PROPERTY);
         itemRepository.save(itemEntity);
         applyBizIdToPropertyValues(propertiesValues, itemEntity.getId());
+        return itemEntity.getId();
     }
 
     /**
@@ -134,8 +135,8 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @Validated({SkuModel.Create.class})
     @Transactional
     @BizError("12")
-    public void createSku(@Valid SkuModel model, Long itemId, Map<Long, Object> values) {
-        createSkuInternal(model, itemId, values);
+    public Long createSku(@Valid SkuModel model, Long itemId, Map<Long, Object> values) {
+        return createSkuInternal(model, itemId, values);
     }
 
 
@@ -164,8 +165,8 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @Validated({CombineSkuModel.Create.class})
     @Transactional
     @BizError("14")
-    public void createCombineSku(@Valid CombineSkuModel model, Long itemId, Map<Long, Object> values) {
-        createSkuInternal(model, itemId, values);
+    public Long createCombineSku(@Valid CombineSkuModel model, Long itemId, Map<Long, Object> values) {
+        return createSkuInternal(model, itemId, values);
     }
 
 
@@ -194,7 +195,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     @Validated({CombineSkuEntryModel.Create.class})
     @Transactional
     @BizError("16")
-    public void createCombineSkuEntry(@Valid CombineSkuEntryModel model, Long combineSkuId, Long skuId) {
+    public Long createCombineSkuEntry(@Valid CombineSkuEntryModel model, Long combineSkuId, Long skuId) {
         Assert.notNull(combineSkuId, "combineSkuId must not be null.");
         Assert.notNull(skuId, "skuId must not be null.");
         CombineSkuEntryEntity combineSkuEntryEntity = getModelMapper(CombineSkuEntryEntityMapper.class).mapForSave(model);
@@ -203,6 +204,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
         combineSkuEntryEntity.setCombineSku(combineSkuEntity);
         combineSkuEntryEntity.setSku(skuEntity);
         combineSkuEntryRepository.save(combineSkuEntryEntity);
+        return combineSkuEntryEntity.getId();
     }
 
     /**
@@ -330,7 +332,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
     }
 
 
-    protected void createSkuInternal(SkuModel model, Long itemId, Map<Long, Object> values) {
+    protected Long createSkuInternal(SkuModel model, Long itemId, Map<Long, Object> values) {
         Assert.notNull(itemId, "itemId is required.");
         AbstractSkuEntity skuEntity = (AbstractSkuEntity) getSkuMapper(model).mapForSave(model);
         ItemEntity itemEntity = itemRepository.getById(itemId).orElseThrow(() -> new IllegalArgumentException("no item found: " + itemId));
@@ -340,6 +342,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
         Map<Long, PropertyValueModel> propertiesValues = categoryManager.buildCategoryPropertyValues(categoryEntity.getId(), values, SALES_PROPERTY);
         getSkuRepository(model).save(skuEntity);
         applyBizIdToPropertyValues(propertiesValues, skuEntity.getId());
+        return skuEntity.getId();
     }
 
     public void saveSkuInternal(SkuModel model, Map<Long, Object> values) {

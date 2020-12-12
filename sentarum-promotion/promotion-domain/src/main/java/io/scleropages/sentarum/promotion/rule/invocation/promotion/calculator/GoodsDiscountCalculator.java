@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
 import org.springframework.stereotype.Component;
@@ -28,7 +27,7 @@ public class GoodsDiscountCalculator implements GoodsCalculator<GoodsDiscountRul
 
 
     @Override
-    public void calculate(GoodsDiscountRule rule, GoodsPromotionContext promotionContext, InvocationChain chain) {
+    public void calculate(GoodsDiscountRule rule, GoodsPromotionContext promotionContext) {
 
     }
 

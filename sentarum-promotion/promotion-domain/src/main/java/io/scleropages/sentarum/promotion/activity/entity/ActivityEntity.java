@@ -36,13 +36,15 @@ import java.util.List;
 @Table(name = "prom_activity")
 @SequenceGenerator(name = "prom_activity_id", sequenceName = "seq_prom_activity", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class ActivityEntity extends IdEntity {
-
+    
     private String name;
     private String tag;
     private String description;
     private Date startTime;
     private Date endTime;
     private Integer status;
+
+    private String attributePayLoad;
 
     //transient entity fields.
     private List<AbstractGoodsSourceEntity> goodsSource;
@@ -78,6 +80,11 @@ public class ActivityEntity extends IdEntity {
         return status;
     }
 
+    @Column(name = "attribute_payload", length = 2048)
+    public String getAttributePayLoad() {
+        return attributePayLoad;
+    }
+
     @Transient
     public List<AbstractGoodsSourceEntity> getGoodsSource() {
         if (null == goodsSource)
@@ -107,6 +114,10 @@ public class ActivityEntity extends IdEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public void setAttributePayLoad(String attributePayLoad) {
+        this.attributePayLoad = attributePayLoad;
     }
 
     public void setGoodsSource(List<AbstractGoodsSourceEntity> goodsSource) {

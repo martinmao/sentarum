@@ -43,7 +43,6 @@ import org.scleropages.core.mapper.JsonMapper2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -99,9 +98,8 @@ public class ActivityManagerTestcase {
         activityManager.createActivityClassifiedGoodsSource(brandGoodsSource, activityId);
 
 
-        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 1, null, null, true)));
-        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 1, null, null, true)));
-
+        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, 1, null, null), true)));
+        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, 1, null, null)));
 
 
         activity.setName("TEST2");
@@ -125,8 +123,8 @@ public class ActivityManagerTestcase {
 
         activityManager.createActivityClassifiedGoodsSource(categoryGoodsSource, activityId);
 
-        categoryGoodsSource.setGoodsSourceId(1l);
-        categoryGoodsSource.setSecondaryGoodsSourceId(2l);
+        categoryGoodsSource.setGoodsSourceId(2l);
+        categoryGoodsSource.setSecondaryGoodsSourceId(22l);
         categoryGoodsSource.setGoodsSourceName("Computer/office-microphone");
         categoryGoodsSource.setQuery("category=2");
         categoryGoodsSource.setBizId(activityId);
@@ -134,13 +132,37 @@ public class ActivityManagerTestcase {
 
         activityManager.createActivityClassifiedGoodsSource(categoryGoodsSource, activityId);
 
-        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByClassifiedGoodsSource(1, 2, null, null, true)));
+        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, 2, null, null), true)));
 
         GoodsDiscountRule goodsDiscountRule = new GoodsDiscountRule(new Discount(Discount.DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE, 5, null), null);
 
-        goodsDiscountRule.setDescription("品类打折规则");
+        goodsDiscountRule.setDescription("品类打折，全场商品均直减5元.");
 
         activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+
+
+        activity.setName("TEST22");
+        activity.setTag("商家活动");
+        activity.setDescription("商家活动测试");
+        activity.setStatus(1);
+        activity.setStartTime(new Date());
+        activity.setEndTime(DateUtils.addDays(new Date(), 20));
+        activityId = activityManager.createActivity(activity);
+
+        ActivityClassifiedGoodsSourceModel sellerGoodsSource = new ActivityClassifiedGoodsSourceModel();
+        sellerGoodsSource.setGoodsSourceType(ActivityGoodsSource.CLASSIFIED_GOODS_SOURCE_TYPE_SELLER);
+        sellerGoodsSource.setGoodsSourceId(101l);
+        sellerGoodsSource.setSecondaryGoodsSourceId(1011l);
+        sellerGoodsSource.setGoodsSourceName("商家店铺商品");
+        sellerGoodsSource.setQuery("sellerId=1011");
+        sellerGoodsSource.setBizId(activityId);
+        sellerGoodsSource.setComment("活动到关联店铺");
+        activityManager.createActivityClassifiedGoodsSource(sellerGoodsSource, activityId);
+
+        goodsDiscountRule = new GoodsDiscountRule(new Discount(Discount.DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE, 7, null), null);
+        goodsDiscountRule.setDescription("商家店铺折扣，全店商品均直减7元.");
+        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+
 
         activity.setName("TEST3");
         activity.setTag("商品活动");
@@ -166,26 +188,26 @@ public class ActivityManagerTestcase {
         activityDetailedGoodsSource.additionalAttributes().save();
 
         ActivityGoodsModel goodsModel = new ActivityGoodsModel();
-        goodsModel.setGoodsId(888l);
+        goodsModel.setGoodsId(1l);
         goodsModel.setName("iPhoneX");
-        goodsModel.setOuterGoodsId("882123122312");
-        goodsModel.setTotalNum(1000);
+        goodsModel.setOuterGoodsId("x1221212121212121");
+        goodsModel.setTotalNum(111);
         goodsModel.setUserNum(1);
 
         Long activityGoodsId = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
 
-        goodsModel.setGoodsId(889l);
-        goodsModel.setName("MacBook Pro");
-        goodsModel.setOuterGoodsId("882123122322");
-        goodsModel.setTotalNum(10000);
+        goodsModel.setGoodsId(2l);
+        goodsModel.setName("iPhoneX");
+        goodsModel.setOuterGoodsId("x1221212121212121");
+        goodsModel.setTotalNum(222);
         goodsModel.setUserNum(2);
 
         Long activityGoodsId2 = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
 
-        goodsModel.setGoodsId(900l);
-        goodsModel.setName("iMac");
-        goodsModel.setOuterGoodsId("882123122344");
-        goodsModel.setTotalNum(299);
+        goodsModel.setGoodsId(3l);
+        goodsModel.setName("iPhoneX");
+        goodsModel.setOuterGoodsId("x1221212121212121");
+        goodsModel.setTotalNum(333);
         goodsModel.setUserNum(1);
 
         Long activityGoodsId3 = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
@@ -209,10 +231,10 @@ public class ActivityManagerTestcase {
         activityGoods.additionalAttributes().save();
 
         ActivityGoodsSpecsModel goodsSpecsModel = new ActivityGoodsSpecsModel();
-        goodsSpecsModel.setSpecsId(19888l);
-        goodsSpecsModel.setName("iPhoneX- 256G");
-        goodsSpecsModel.setOuterSpecsId("89131212321121");
-        goodsSpecsModel.setTotalNum(200);
+        goodsSpecsModel.setSpecsId(1l);
+        goodsSpecsModel.setName("iPhoneX- 32G");
+        goodsSpecsModel.setOuterSpecsId("11");
+        goodsSpecsModel.setTotalNum(10);
         goodsSpecsModel.setUserNum(1);
 
         Long activityGoodsSpecsId = activityManager.createActivityGoodsSpecs(goodsSpecsModel, activityGoodsId);
@@ -228,7 +250,7 @@ public class ActivityManagerTestcase {
         goodsDiscountRule.setDescription("商品打折规则");
         goodsDiscountRule.getGoodsDiscounts().add(
                 new GoodsDiscount(activityGoodsId, new Discount(Discount.DiscountType.DISCOUNT, 85, null), Lists.newArrayList(
-                        new GoodsSpecsDiscount(activityGoodsSpecsId, new Discount(Discount.DiscountType.OVERRIDE_AMOUNT, 8888, new Amount(9999))))));
+                        new GoodsSpecsDiscount(activityGoodsSpecsId, new Discount(Discount.DiscountType.OVERRIDE_AMOUNT, 3500, new Amount(4444))))));
 
 
         goodsDiscountRule.getGoodsDiscounts().add(
@@ -243,10 +265,12 @@ public class ActivityManagerTestcase {
         activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
 
-        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19888l, true)));
+        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, 888l, 19888l), true)));
 
-        System.out.println(JsonMapper2.toJson(activityManager.findAllActivityByDetailedGoodsSource(1, 888l, 19889l, true)));
+        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, 888l, 19889l), true)));
 
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ConjunctionConditionRule conjunctionConditionRule = new ConjunctionConditionRule();
         conjunctionConditionRule.setDescription("root");
         conjunctionConditionRule.setConditionConjunction(ConditionConjunction.AND);

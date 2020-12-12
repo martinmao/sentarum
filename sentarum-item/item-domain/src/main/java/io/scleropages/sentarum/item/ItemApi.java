@@ -44,7 +44,7 @@ public interface ItemApi {
      * @param spuId  所属spu
      * @param values 商品属性值集合(key为元数据id，value为属性值)
      */
-    void createItem(@Valid ItemModel model, Long spuId, Map<Long, Object> values);
+    Long createItem(@Valid ItemModel model, Long spuId, Map<Long, Object> values);
 
     /**
      * 更新保存item
@@ -60,7 +60,7 @@ public interface ItemApi {
      * @param model  sku模型
      * @param values 销售属性值集合(key为元数据id，value为属性值)
      */
-    void createSku(@Valid SkuModel model, Long itemId, Map<Long, Object> values);
+    Long createSku(@Valid SkuModel model, Long itemId, Map<Long, Object> values);
 
     /**
      * 更新保存Sku
@@ -76,7 +76,7 @@ public interface ItemApi {
      * @param model  combine sku模型
      * @param values 销售属性值集合(key为元数据id，value为属性值)
      */
-    void createCombineSku(@Valid CombineSkuModel model, Long itemId, Map<Long, Object> values);
+    Long createCombineSku(@Valid CombineSkuModel model, Long itemId, Map<Long, Object> values);
 
     /**
      * 更新保存 combine sku
@@ -93,7 +93,7 @@ public interface ItemApi {
      * @param combineSkuId 组合sku id
      * @param skuId        目标sku id
      */
-    void createCombineSkuEntry(@Valid CombineSkuEntryModel model, Long combineSkuId, Long skuId);
+    Long createCombineSkuEntry(@Valid CombineSkuEntryModel model, Long combineSkuId, Long skuId);
 
     /**
      * 更新保存组合sku条目

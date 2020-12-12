@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion;
 
+import io.scleropages.sentarum.promotion.rule.InvocationChain;
+import io.scleropages.sentarum.promotion.rule.InvocationContext;
+import io.scleropages.sentarum.promotion.rule.RuleInvocation;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
@@ -23,7 +26,7 @@ import io.scleropages.sentarum.promotion.rule.model.Rule;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Condition<R extends Rule, C extends InvocationContext> extends RuleInvocation<R, C> {
+public interface PromotionCondition<R extends Rule, C extends InvocationContext> extends RuleInvocation<R, C> {
 
 
     /**
@@ -37,8 +40,6 @@ public interface Condition<R extends Rule, C extends InvocationContext> extends 
     default void execute(R rule, C invocationContext, InvocationChain chain) {
         if (match(rule, invocationContext)) {
             chain.next(invocationContext);
-        } else {
-            chain.nextChain(invocationContext);
         }
     }
 

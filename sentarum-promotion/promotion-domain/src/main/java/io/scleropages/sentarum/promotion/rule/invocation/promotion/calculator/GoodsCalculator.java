@@ -15,7 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.promotion.rule.PromotionCalculator;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCalculator;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 

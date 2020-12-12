@@ -45,8 +45,8 @@ public class ItemApiDubboService implements ItemApi {
     private ItemManager itemManager;
 
     @Override
-    public void createItem(@Valid ItemModel model, Long spuId, Map<Long, Object> values) {
-        itemManager.createItem(model, spuId, values);
+    public Long createItem(@Valid ItemModel model, Long spuId, Map<Long, Object> values) {
+        return itemManager.createItem(model, spuId, values);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class ItemApiDubboService implements ItemApi {
     }
 
     @Override
-    public void createSku(@Valid SkuModel model, Long itemId, Map<Long, Object> values) {
-        itemManager.createSku(model, itemId, values);
+    public Long createSku(@Valid SkuModel model, Long itemId, Map<Long, Object> values) {
+        return itemManager.createSku(model, itemId, values);
     }
 
     @Override
@@ -65,8 +65,8 @@ public class ItemApiDubboService implements ItemApi {
     }
 
     @Override
-    public void createCombineSku(@Valid CombineSkuModel model, Long itemId, Map<Long, Object> values) {
-        itemManager.createCombineSku(model, itemId, values);
+    public Long createCombineSku(@Valid CombineSkuModel model, Long itemId, Map<Long, Object> values) {
+        return itemManager.createCombineSku(model, itemId, values);
     }
 
     @Override
@@ -75,8 +75,8 @@ public class ItemApiDubboService implements ItemApi {
     }
 
     @Override
-    public void createCombineSkuEntry(@Valid CombineSkuEntryModel model, Long combineSkuId, Long skuId) {
-        itemManager.createCombineSkuEntry(model, combineSkuId, skuId);
+    public Long createCombineSkuEntry(@Valid CombineSkuEntryModel model, Long combineSkuId, Long skuId) {
+        return itemManager.createCombineSkuEntry(model, combineSkuId, skuId);
     }
 
     @Override
