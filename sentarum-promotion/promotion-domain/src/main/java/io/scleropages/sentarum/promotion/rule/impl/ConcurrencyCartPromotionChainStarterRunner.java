@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.impl.cart;
+package io.scleropages.sentarum.promotion.rule.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
-import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
 import org.apache.commons.lang3.StringUtils;
 import org.scleropages.core.concurrent.ExecutorServices;
 import org.slf4j.Logger;

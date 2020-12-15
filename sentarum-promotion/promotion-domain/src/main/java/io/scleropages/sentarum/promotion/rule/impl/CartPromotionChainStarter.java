@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.impl.cart;
+package io.scleropages.sentarum.promotion.rule.impl;
 
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
-import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
 
 import java.util.List;
 

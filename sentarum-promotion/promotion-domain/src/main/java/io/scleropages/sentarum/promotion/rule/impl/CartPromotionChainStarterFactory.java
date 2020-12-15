@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.impl.cart;
+package io.scleropages.sentarum.promotion.rule.impl;
 
 import com.google.common.collect.Lists;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
@@ -24,7 +24,6 @@ import io.scleropages.sentarum.promotion.rule.context.CartPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;

@@ -17,7 +17,6 @@ package io.scleropages.sentarum.promotion.rule.impl;
 
 import io.scleropages.sentarum.promotion.rule.PromotionCalculateEngine;
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
-import io.scleropages.sentarum.promotion.rule.impl.cart.CartPromotionChainStarterFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
