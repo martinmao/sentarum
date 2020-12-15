@@ -109,6 +109,7 @@ public class Discount {
      * {@link DiscountType#DISCOUNT}
      * </pre>
      *
+     * @param keepScale true if keep scale(2)
      * @return
      */
     public Amount finalAmount(boolean keepScale) {
@@ -119,7 +120,7 @@ public class Discount {
             case OVERRIDE_AMOUNT:
                 return new Amount(discountValue);
             case DISCOUNT:
-                return originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), keepScale);
+                return originalPrice.subtract(originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), keepScale));
         }
         throw new IllegalStateException("illegal operation.");
     }
@@ -132,12 +133,89 @@ public class Discount {
      * </pre>
      *
      * @param originalPrice
+     * @param keepScale     true if keep scale(2)
      * @return
      */
     public Amount finalAmount(Amount originalPrice, boolean keepScale) {
         if (Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE) || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)) {
-            setOriginalPrice(originalPrice);
-            return finalAmount(keepScale);
+            assertDiscount();
+            switch (discountType) {
+                case DECREASE_WITHOUT_ORIGINAL_PRICE: {
+                    Assert.isTrue(originalPrice.gt(new Amount(discountValue)), "discount value must less than original price with: " + discountType);
+                    return originalPrice.subtract(new Amount(discountValue));
+                }
+                case DISCOUNT_WITHOUT_ORIGINAL_PRICE:
+                    return originalPrice.subtract(originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), keepScale));
+            }
+        }
+        throw new IllegalStateException("illegal operation.");
+    }
+
+
+    /**
+     * return discount amount.  supported discount type:
+     * <pre>
+     * {@link DiscountType#DECREASE_AMOUNT}
+     * {@link DiscountType#OVERRIDE_AMOUNT}
+     * {@link DiscountType#DISCOUNT}
+     * </pre>
+     *
+     * @param keepScale
+     * @return
+     */
+    public Amount discountAmount(boolean keepScale) {
+        assertDiscount();
+        switch (discountType) {
+            case DECREASE_AMOUNT:
+                return new Amount(discountValue);
+            case OVERRIDE_AMOUNT:
+                return new Amount(discountValue);
+            case DISCOUNT:
+                return originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), keepScale);
+        }
+        throw new IllegalStateException("illegal operation.");
+    }
+
+    /**
+     * return discount amount.  supported discount type:
+     * <pre>
+     * {@link DiscountType#DECREASE_WITHOUT_ORIGINAL_PRICE}
+     * {@link DiscountType#DISCOUNT_WITHOUT_ORIGINAL_PRICE}
+     * </pre>
+     *
+     * @param originalPrice
+     * @param keepScale
+     * @return
+     */
+    public Amount discountAmount(Amount originalPrice, boolean keepScale) {
+        if (Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE) || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)) {
+            assertDiscount();
+            switch (discountType) {
+                case DECREASE_WITHOUT_ORIGINAL_PRICE:
+                    Assert.isTrue(originalPrice.gt(new Amount(discountValue)), "discount value must less than original price with: " + discountType);
+                    return new Amount(discountValue);
+                case DISCOUNT_WITHOUT_ORIGINAL_PRICE:
+                    return originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), keepScale);
+            }
+        }
+        throw new IllegalStateException("illegal operation.");
+    }
+
+
+    /**
+     * return discount value amount and multiply given multiplicand. supported discount type:
+     * <pre>
+     * {@link DiscountType#DECREASE_WITHOUT_ORIGINAL_PRICE}
+     * </pre>
+     *
+     * @param multiplicand
+     * @param keepScale
+     * @return
+     */
+    public Amount multiplyDiscountAmount(Amount multiplicand, boolean keepScale) {
+        if (Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE)) {
+            assertDiscount();
+            return new Amount(discountValue).multiply(multiplicand, keepScale);
         }
         throw new IllegalStateException("illegal operation.");
     }

@@ -94,6 +94,7 @@ public interface PromotionContext extends InvocationContext {
         private String name;
         private String description;
         private Amount adjustFee;
+        private AdjustMode adjustMode = AdjustMode.DECREASE;
 
 
         private PromotionResultBuilder() {
@@ -124,6 +125,11 @@ public interface PromotionContext extends InvocationContext {
             return this;
         }
 
+        public PromotionResultBuilder withAdjustMode(AdjustMode adjustMode) {
+            this.adjustMode = adjustMode;
+            return this;
+        }
+
         public PromotionResult build() {
             return new PromotionResult() {
                 @Override
@@ -144,6 +150,11 @@ public interface PromotionContext extends InvocationContext {
                 @Override
                 public Amount adjustFee() {
                     return adjustFee;
+                }
+
+                @Override
+                public AdjustMode adjustMode() {
+                    return adjustMode;
                 }
 
                 @Override
@@ -187,10 +198,31 @@ public interface PromotionContext extends InvocationContext {
 
 
         /**
-         * 计算后的价格调整，通常为减免金额(特殊情况下可能为负)
+         * 计算后的价格调整
          *
          * @return
          */
         Amount adjustFee();
+
+        /**
+         * 价格调整模式 + or -
+         *
+         * @return
+         */
+        AdjustMode adjustMode();
+    }
+
+    /**
+     * 改价模式，增，减.
+     */
+    enum AdjustMode {
+        /**
+         * 减少金额
+         */
+        DECREASE,
+        /**
+         * 增加金额
+         */
+        INCREASE
     }
 }

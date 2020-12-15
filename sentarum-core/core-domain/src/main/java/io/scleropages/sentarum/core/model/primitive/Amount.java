@@ -34,6 +34,9 @@ public class Amount {
     private Currency currency;
 
 
+    /**
+     * new amount with zero.
+     */
     public Amount() {
         this(0);
     }
@@ -68,6 +71,7 @@ public class Amount {
     public Amount(String amount) {
         this(new BigDecimal(amount));
     }
+
 
     public Amount(Integer amount, Currency currency) {
         this(new BigDecimal(amount), currency);
@@ -136,9 +140,10 @@ public class Amount {
     }
 
     /**
-     * this * multiplicand
+     * this * multiplicand (scale=2 and round half up)
      *
      * @param multiplicand
+     * @param keepScale    true if keep scale(2).
      * @return this * multiplicand
      */
     public Amount multiply(Amount multiplicand, boolean keepScale) {
@@ -147,12 +152,15 @@ public class Amount {
 
     /**
      * this / divisor (scale=2 and round half up)
+     * <p>
+     * NOTE: if keepScale set to false. the ROUND_DOWN(ignore any scales) as rounding mode.
      *
      * @param divisor
+     * @param keepScale true if keep scale(2).
      * @return this / divisor
      */
-    public Amount divide(Amount divisor) {
-        return new Amount(getAmount().divide(divisor.getAmount(), 2, BigDecimal.ROUND_HALF_UP));
+    public Amount divide(Amount divisor, boolean keepScale) {
+        return new Amount(getAmount().divide(divisor.getAmount(), keepScale ? 2 : 0, keepScale ? BigDecimal.ROUND_HALF_UP : BigDecimal.ROUND_DOWN));
     }
 
     /**
@@ -203,6 +211,26 @@ public class Amount {
      */
     public Boolean eq(Amount compare) {
         return compareTo(compare) == 0;
+    }
+
+    /**
+     * return max amount.
+     *
+     * @param compare
+     * @return
+     */
+    public Amount max(Amount compare) {
+        return gte(compare) ? this : compare;
+    }
+
+    /**
+     * return min amount.
+     *
+     * @param compare
+     * @return
+     */
+    public Amount min(Amount compare) {
+        return lte(compare) ? this : compare;
     }
 
 

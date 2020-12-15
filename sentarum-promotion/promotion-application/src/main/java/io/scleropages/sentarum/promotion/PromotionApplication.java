@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion;
 
 import com.google.common.collect.Lists;
+import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.item.ItemApi;
 import io.scleropages.sentarum.item.core.model.Item;
 import io.scleropages.sentarum.item.core.model.Sku;
@@ -89,7 +90,7 @@ public class PromotionApplication {
             Sku sku = getSku(goodsSpecs);
             Item item = sku.item();
             List<Activity> activities = findAllActiveActivityBySku(sku);
-            builder.withActivities(new PromotionGoodsSpecs(item.id(), item.outerId(), sku.id(), sku.outerId(), goodsSpecs.getNum()), activities, item.sellerUnionId(), item.sellerId());
+            builder.withActivities(new PromotionGoodsSpecs(item.id(), item.outerId(), sku.id(), sku.outerId(), goodsSpecs.getNum(), new Amount(sku.salesPrice())), activities, item.sellerUnionId(), item.sellerId());
         });
         return builder.build();
     }

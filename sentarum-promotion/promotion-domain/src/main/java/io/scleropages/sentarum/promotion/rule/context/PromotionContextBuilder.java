@@ -17,10 +17,12 @@ package io.scleropages.sentarum.promotion.rule.context;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
 import org.apache.commons.collections.ComparatorUtils;
 import org.springframework.util.Assert;
@@ -263,6 +265,7 @@ public final class PromotionContextBuilder {
         private Long specsId;
         private String outerSpecsId;
         private Integer num;
+        private Amount originalPrice;
         private Map<Long, Activity> activities = Maps.newHashMap();
 
         private final OrderPromotionContextBuilder orderPromotionContextBuilder;
@@ -327,6 +330,18 @@ public final class PromotionContextBuilder {
         }
 
         /**
+         * with original price to this builder.
+         *
+         * @param originalPrice
+         * @return
+         */
+        public GoodsPromotionContextBuilder withOriginalPrice(Amount originalPrice) {
+            this.originalPrice = originalPrice;
+            return this;
+        }
+
+
+        /**
          * add activity to this builder.
          *
          * @param activity
@@ -346,7 +361,7 @@ public final class PromotionContextBuilder {
          */
         private GoodsPromotionContext build(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext) {
             done();
-            GoodsPromotionContextImpl goodsPromotionContext = new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num);
+            GoodsPromotionContextImpl goodsPromotionContext = new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num, originalPrice);
             goodsPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), false));
             return goodsPromotionContext;
         }
@@ -412,7 +427,8 @@ public final class PromotionContextBuilder {
                 .withOuterGoodsId(promotionGoodsSpecs.outerGoodsId)
                 .withSpecsId(promotionGoodsSpecs.goodsSpecsId)
                 .withOuterSpecsId(promotionGoodsSpecs.outerGoodsSpecsId)
-                .withNum(promotionGoodsSpecs.num);
+                .withNum(promotionGoodsSpecs.num)
+                .withOriginalPrice(promotionGoodsSpecs.originalPrice);
         if (CollectionUtils.isEmpty(activities)) { //if empty build a no activities goods context.
             return this;
         }
@@ -442,13 +458,15 @@ public final class PromotionContextBuilder {
         private final Long goodsSpecsId;
         private final String outerGoodsSpecsId;
         private final Integer num;
+        private final Amount originalPrice;
 
-        public PromotionGoodsSpecs(Long goodsId, String outerGoodsId, Long goodsSpecsId, String outerGoodsSpecsId, Integer num) {
+        public PromotionGoodsSpecs(Long goodsId, String outerGoodsId, Long goodsSpecsId, String outerGoodsSpecsId, Integer num, Amount originalPrice) {
             this.goodsId = goodsId;
             this.outerGoodsId = outerGoodsId;
             this.goodsSpecsId = goodsSpecsId;
             this.outerGoodsSpecsId = outerGoodsSpecsId;
             this.num = num;
+            this.originalPrice = originalPrice;
         }
     }
 

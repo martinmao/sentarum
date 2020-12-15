@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.rule.context;
 
+import io.scleropages.sentarum.core.model.primitive.Amount;
+
 /**
  * 商品级促销上下文
  *
@@ -72,4 +74,11 @@ public interface GoodsPromotionContext extends PromotionContext {
      * @return
      */
     Integer num();
+
+    /**
+     * 原价
+     *
+     * @return
+     */
+    Amount originalPrice();
 }

@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.context;
 
+import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 
 /**
@@ -31,9 +32,10 @@ public class GoodsPromotionContextImpl extends AbstractPromotionContext implemen
     private final Long specsId;
     private final String outerSpecsId;
     private final Integer num;
+    private final Amount originalPrice;
 
 
-    protected GoodsPromotionContextImpl(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext, Long goodsId, String outerGoodsId, Long specsId, String outerSpecsId, Integer num) {
+    protected GoodsPromotionContextImpl(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext, Long goodsId, String outerGoodsId, Long specsId, String outerSpecsId, Integer num, Amount originalPrice) {
         this.cartPromotionContext = cartPromotionContext;
         this.orderPromotionContext = orderPromotionContext;
         this.goodsId = goodsId;
@@ -41,6 +43,7 @@ public class GoodsPromotionContextImpl extends AbstractPromotionContext implemen
         this.specsId = specsId;
         this.outerSpecsId = outerSpecsId;
         this.num = num;
+        this.originalPrice = originalPrice;
     }
 
     @Override
@@ -66,6 +69,11 @@ public class GoodsPromotionContextImpl extends AbstractPromotionContext implemen
     @Override
     public Integer num() {
         return num;
+    }
+
+    @Override
+    public Amount originalPrice() {
+        return originalPrice;
     }
 
     @Override
