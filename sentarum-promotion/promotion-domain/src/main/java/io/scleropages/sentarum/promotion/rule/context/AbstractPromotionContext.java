@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.context;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 
 import java.util.Collections;
@@ -28,6 +29,7 @@ public abstract class AbstractPromotionContext implements PromotionContext {
 
     private List<Activity> activities = Collections.emptyList();
 
+    private final List<PromotionResult> promotionResults = Lists.newArrayList();
 
     @Override
     public List<Activity> activities() {
@@ -36,5 +38,15 @@ public abstract class AbstractPromotionContext implements PromotionContext {
 
     protected void setActivities(List<Activity> activities) {
         this.activities = activities;
+    }
+
+    @Override
+    public void addPromotionResult(PromotionResult promotionResult) {
+        promotionResults.add(promotionResult);
+    }
+
+    @Override
+    public List<PromotionResult> promotionResults() {
+        return Collections.unmodifiableList(promotionResults);
     }
 }

@@ -63,6 +63,8 @@ public class AdditionalAttributesInitializerImpl implements AdditionalAttributes
 
         if (ArrayUtils.isNotEmpty(beforeAdvices)) {
             for (Advice beforeAdvice : beforeAdvices) {
+                if (null == beforeAdvice)
+                    continue;
                 proxyFactory.addAdvice(beforeAdvice);
                 if (logger.isDebugEnabled()) {
                     logger.debug("adding advice: {} to: {}", beforeAdvice.getClass().getSimpleName(), provider.getClass().getSimpleName());

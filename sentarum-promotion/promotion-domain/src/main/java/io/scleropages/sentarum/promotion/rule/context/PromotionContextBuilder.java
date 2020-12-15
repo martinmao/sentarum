@@ -424,7 +424,7 @@ public final class PromotionContextBuilder {
                 if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
                     if (Objects.equals(activityGoodsSource.goodsSourceType(), CLASSIFIED_GOODS_SOURCE_TYPE_SELLER)) {//只有一个店家分类为店铺活动对应到订单级促销.
                         orderPromotionContextBuilder.withActivity(activity);
-                    } else {//非店家分类，如品牌，品类等，则为跨订单活动，将其对应到购物车级促销.
+                    } else {//非店家分类，如品牌，品类等，则为跨店活动，将其对应到购物车级促销.
                         withActivity(activity);
                     }
                 } else if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {//对应到商品级促销.

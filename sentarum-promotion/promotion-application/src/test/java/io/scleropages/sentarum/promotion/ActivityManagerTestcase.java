@@ -288,8 +288,8 @@ public class ActivityManagerTestcase {
         channelConditionRule.setChannelId(1);
         channelConditionRule.setChannelName("渠道规则");
         channelConditionRule.setOuterId("1");
-        channelConditionRule.setSellerId(1l);
-        channelConditionRule.setSellerUnionId(1l);
+        channelConditionRule.setSellerId(1011l);
+        channelConditionRule.setSellerUnionId(101l);
 
         activityRuleManager.createChannelConditionRule(channelConditionRule, activityId, root);
         channelConditionRule.setDescription("sub11");

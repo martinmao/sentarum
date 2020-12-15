@@ -482,10 +482,10 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
      */
     private AbstractRule mapRule(AbstractRuleEntity entity, Activity activity) {
         Class<?> ruleClass = Reflections2.getClass(entity.getRuleClass(), classLoader);
-        AbstractConditionRule conditionRule = JsonMapper2.fromJson(entity.getRulePayload(), ruleClass);
-        conditionRule.setId(entity.getId());
-        conditionRule.setActivity(activity);
-        return conditionRule;
+        AbstractRule abstractRule = JsonMapper2.fromJson(entity.getRulePayload(), ruleClass);
+        abstractRule.setId(entity.getId());
+        abstractRule.setActivity(activity);
+        return abstractRule;
     }
 
 

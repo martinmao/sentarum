@@ -56,9 +56,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -255,7 +257,8 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Transactional(readOnly = true)
     @BizError("52")
     public List<? extends Activity> getActivities(List<Long> ids, boolean fetchGoodsSource) {
-        Assert.notEmpty(ids, "given ids must not empty.");
+        if(CollectionUtils.isEmpty(ids))
+            return Collections.emptyList();
         List<Activity> activities = Lists.newArrayList();
         ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
         return activities;

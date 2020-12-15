@@ -15,11 +15,30 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
+
+import java.util.List;
+
 /**
  * represent information about promotion chain list. it will starting chains and all of subsequent chains by {@link PromotionChainStarterRunner}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public interface PromotionChainStarter {
+
+
+    /**
+     * return head chain from calculating chain's list.
+     *
+     * @return
+     */
+    List<ActivityPromotionInvocationChain> headOfChains();
+
+    /**
+     * return final chain for calculating finally
+     *
+     * @return
+     */
+    ActivityPromotionInvocationChain finalChain();
 
 }

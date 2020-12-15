@@ -27,12 +27,9 @@ public class SimpleCartPromotionChainStarterRunner implements PromotionChainStar
 
     @Override
     public void run(CartPromotionChainStarter promotionChainStarter) {
-        for (CartPromotionChainStarterFactory.HeadOfChain headOfChain : promotionChainStarter.getHeadOfGoodsChain()) {
-            headOfChain.startInternal();
-        }
-        for (CartPromotionChainStarterFactory.HeadOfChain headOfChain : promotionChainStarter.getHeadOfOrdersChain()) {
-            headOfChain.startInternal();
-        }
-        promotionChainStarter.getHeadOfChain().startInternal();
+        promotionChainStarter.headOfChains().forEach(activityPromotionInvocationChain -> {
+            activityPromotionInvocationChain.start();
+        });
+        promotionChainStarter.finalChain().start();
     }
 }

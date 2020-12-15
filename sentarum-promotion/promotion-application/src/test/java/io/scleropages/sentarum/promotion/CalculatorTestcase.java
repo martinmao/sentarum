@@ -47,7 +47,7 @@ public class CalculatorTestcase {
         PromotionCalculateRequest request = new PromotionCalculateRequest();
         request.setBuyerId(1l);
         request.setChannelType(ChannelConditionRule.ChannelType.APP_MALL);
-        request.setChannelId(5);
+        request.setChannelId(1);
         request.getCalculatingGoodsSpecs().add(new PromotionCalculateRequest.CalculatingGoodsSpecs(1l, 1));
         request.getCalculatingGoodsSpecs().add(new PromotionCalculateRequest.CalculatingGoodsSpecs(2l, 1));
         request.getCalculatingGoodsSpecs().add(new PromotionCalculateRequest.CalculatingGoodsSpecs(3l, 1));

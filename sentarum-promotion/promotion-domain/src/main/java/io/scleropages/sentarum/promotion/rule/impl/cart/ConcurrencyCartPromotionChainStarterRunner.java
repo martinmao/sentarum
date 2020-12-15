@@ -18,6 +18,7 @@ package io.scleropages.sentarum.promotion.rule.impl.cart;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
+import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
 import org.apache.commons.lang3.StringUtils;
 import org.scleropages.core.concurrent.ExecutorServices;
 import org.slf4j.Logger;
@@ -60,16 +61,25 @@ public class ConcurrencyCartPromotionChainStarterRunner implements PromotionChai
 
     @Override
     public void run(CartPromotionChainStarter invocationChainStarter) {
-        List<CartPromotionChainStarterFactory.HeadOfChain> headOfGoodsChain = invocationChainStarter.getHeadOfGoodsChain();
+        List<ActivityPromotionInvocationChain> activityPromotionInvocationChains = invocationChainStarter.headOfChains();
+        if (activityPromotionInvocationChains.size() == 3) {
+            activityPromotionInvocationChains.forEach(activityPromotionInvocationChain -> activityPromotionInvocationChain.start());
+            invocationChainStarter.finalChain().start();
+            return;
+        }
 
-        CountDownLatch latch = new CountDownLatch(headOfGoodsChain.size());
-        List<Future> futures = calculatingInternal(latch, headOfGoodsChain);
+
+        List<ActivityPromotionInvocationChain> headOfChains = invocationChainStarter.headOfChains();
+
+        CountDownLatch latch = new CountDownLatch(headOfChains.size());
+        List<Future> futures = calculatingInternal(latch, headOfChains);
         try {
             if (latch.await(1000, TimeUnit.MILLISECONDS)) {
                 for (Future future : futures) {
                     future.get();
                 }
             } else {
+                futures.forEach(future -> future.cancel(true));
                 throw new IllegalStateException("timeout waiting goods-calculating task....");
             }
         } catch (InterruptedException e) {
@@ -78,20 +88,20 @@ public class ConcurrencyCartPromotionChainStarterRunner implements PromotionChai
         } catch (ExecutionException e) {
             throw new IllegalStateException(e);
         }
-        List<CartPromotionChainStarterFactory.HeadOfChain> headOfOrdersChain = invocationChainStarter.getHeadOfOrdersChain();
-        calculatingInternal(latch, headOfOrdersChain);
-
+        ActivityPromotionInvocationChain finalChain = invocationChainStarter.finalChain();
+        finalChain.start();
     }
 
-    public List<Future> calculatingInternal(CountDownLatch latch, List<CartPromotionChainStarterFactory.HeadOfChain> headOfOrdersChain) {
+    public List<Future> calculatingInternal(CountDownLatch latch, List<ActivityPromotionInvocationChain> headOfChains) {
         List<Future> futures = Lists.newArrayList();
-        for (int i = 0; i < headOfOrdersChain.size(); i++) {
+        for (int i = 0; i < headOfChains.size(); i++) {
             int finalI = i;
             futures.add(executorService.submit(() -> {
                 try {
-                    headOfOrdersChain.get(finalI).startInternal();
+                    headOfChains.get(finalI).start();
                 } catch (Exception e) {
                     logger.warn("detected an error was occurred when calculating.", e);
+                    Thread.currentThread().interrupt();
                     throw new IllegalStateException(e);
                 } finally {
                     latch.countDown();

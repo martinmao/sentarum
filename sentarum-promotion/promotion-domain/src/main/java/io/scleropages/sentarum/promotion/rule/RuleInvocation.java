@@ -30,12 +30,15 @@ import org.springframework.util.Assert;
 public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
 
 
+    /////系统保留
     Integer PROMOTION_INVOCATION = 0;
     /**
      * 条件连接 {@link ConjunctionCondition}
      */
     Integer CONJUNCTION_CONDITION_ID = 1;
     Integer ALWAYS_TRUE_CONDITION_ID = 2;
+
+    /////应用使用
     /**
      * 促销参与渠道规则id {@link ChannelCondition}
      */
@@ -102,10 +105,10 @@ public interface RuleInvocation<R extends Rule, C extends InvocationContext> {
      * @return
      */
     default String information() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + "{");
-        sb.append("id: ").append(id());
-        sb.append("name: ").append(name());
-        sb.append("rule: ").append(ruleClass());
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName()/* + "@" + Integer.toHexString(hashCode()) */ + "{ ");
+        sb.append("id: ").append(id()).append(", ");
+        sb.append("name: ").append(name()).append(", ");
+        sb.append("rule: ").append(ruleClass().getSimpleName()).append(" ");
         sb.append("}");
         return sb.toString();
     }

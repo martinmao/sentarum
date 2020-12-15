@@ -19,27 +19,24 @@ import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCondition;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
-import io.scleropages.sentarum.promotion.rule.model.Rule;
 
 /**
+ * condition that matches always return true.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class TrueCondition implements PromotionCondition<Rule, InvocationContext> {
+public class TrueCondition implements PromotionCondition<TrueCondition.TrueConditionRule, InvocationContext> {
 
 
     /**
      * default instance of true condition.
      */
     public static final PromotionCondition TRUE_CONDITION = new TrueCondition();
-
-    public static final ConditionRule TRUE_CONDITION_RULE = new AbstractConditionRule() {
-
-
-    };
+    public static final ConditionRule TRUE_CONDITION_RULE = new TrueConditionRule();
 
 
     @Override
-    public boolean match(Rule rule, InvocationContext invocationContext) {
+    public boolean match(TrueConditionRule rule, InvocationContext invocationContext) {
         return Boolean.TRUE;
     }
 
@@ -57,4 +54,14 @@ public class TrueCondition implements PromotionCondition<Rule, InvocationContext
     public String description() {
         return "对于没有设置条件的活动，默认使用该条件，促销无任何限制.";
     }
+
+
+    public static final class TrueConditionRule extends AbstractConditionRule {
+
+        @Override
+        public String description() {
+            return "无条件规则";
+        }
+    }
+
 }

@@ -16,9 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.impl.cart;
 
 import com.google.common.collect.Lists;
-import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
-import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarterFactory;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
@@ -27,6 +25,8 @@ import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -36,46 +36,47 @@ import java.util.List;
  */
 public class CartPromotionChainStarterFactory implements PromotionChainStarterFactory<CartPromotionContext> {
 
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * create chain starter by given cart promotion context.
+     *
+     * @param cartPromotionContext
+     * @param ruleContainer        container of rules.
+     * @return
+     */
     @Override
     public PromotionChainStarter createChainStarter(CartPromotionContext cartPromotionContext, RuleContainer ruleContainer) {
         Assert.notNull(cartPromotionContext, "cartPromotionContext must not be null.");
-        HeadOfChain headOfChain = createHeadOfChain(cartPromotionContext, ruleContainer);//仅一个cart head of chain.
-        List<HeadOfChain> headOfOrdersChain = Lists.newArrayList();//每个订单一个head of chain.
-        List<HeadOfChain> headOfGoodsChain = Lists.newArrayList();//每个商品一个head of chain.
+        //group by order dimension and add head chain(from goods chain's list).
+        List<ActivityPromotionInvocationChain> headOfChains = Lists.newArrayList();
         for (OrderPromotionContext orderPromotionContext : cartPromotionContext.orderPromotionContexts()) {
-            headOfOrdersChain.add(createHeadOfChain(orderPromotionContext, ruleContainer));
-            for (GoodsPromotionContext goodsPromotionContext : orderPromotionContext.goodsPromotionContexts()) {
-                headOfGoodsChain.add(createHeadOfChain(goodsPromotionContext, ruleContainer));
+            //order chain is last chain in goods calculating chains.
+            ActivityPromotionInvocationChain nextGoodsChain = createChain(orderPromotionContext, ruleContainer, null, "order-calculating-> {seller union id: " + orderPromotionContext.sellerUnionId() + ", seller id: " + orderPromotionContext.sellerId() + "}");
+            List<GoodsPromotionContext> goodsPromotionContexts = orderPromotionContext.goodsPromotionContexts();
+            for (int i = goodsPromotionContexts.size() - 1; i > -1; i--) {//reverse iterator for building goods chain's.
+                GoodsPromotionContext goodsPromotionContext = goodsPromotionContexts.get(i);
+                nextGoodsChain = createChain(goodsPromotionContext, ruleContainer, nextGoodsChain, "goods-calculating-> {goods id: " + goodsPromotionContext.goodsId() + ", goods specs id: " + goodsPromotionContext.specsId() + "}");
             }
+            //add head chain.
+            headOfChains.add(nextGoodsChain);
         }
-        return new CartPromotionChainStarter(headOfChain, headOfOrdersChain, headOfGoodsChain);
+        //cart chain as final chain for calculating.
+        ActivityPromotionInvocationChain finalChain = createChain(cartPromotionContext, ruleContainer, null, "cart-calculating-> {buyer id: " + cartPromotionContext.buyerId() + ", channel type: " + cartPromotionContext.channelType() + "channel id: " + cartPromotionContext.channelId() + "}");
+        if (logger.isDebugEnabled()) {
+            logger.debug("creating promotion chain starter: ");
+            for (int i = 0; i < headOfChains.size(); i++) {
+                ActivityPromotionInvocationChain headChain = headOfChains.get(i);
+                logger.debug(" HeadChain[{}]->", i);
+                headChain.logInformation(logger);
+
+            }
+            finalChain.logInformation(logger);
+        }
+        return new CartPromotionChainStarter(headOfChains, finalChain);
     }
 
-    private HeadOfChain createHeadOfChain(PromotionContext promotionContext, RuleContainer ruleContainer) {
-        ActivityPromotionInvocationChain previousChain = null;
-        List<Activity> activities = promotionContext.activities();
-        for (int i = activities.size() - 1; i > -1; i--) {
-            ActivityPromotionInvocationChain orderChain = new ActivityPromotionInvocationChain(promotionContext.activities(), ruleContainer, previousChain);
-            previousChain = orderChain;
-        }
-        return new HeadOfChain(previousChain, promotionContext);
-    }
-
-
-    protected class HeadOfChain {
-        private final InvocationChain invocationChain;
-        private final InvocationContext invocationContext;
-
-        private HeadOfChain(InvocationChain invocationChain, InvocationContext invocationContext) {
-            Assert.notNull(invocationContext, "invocationContext must not be null.");
-            this.invocationChain = invocationChain;
-            this.invocationContext = invocationContext;
-        }
-
-        protected void startInternal() {
-            if (null != invocationChain)
-                invocationChain.next(invocationContext);
-        }
+    private ActivityPromotionInvocationChain createChain(PromotionContext promotionContext, RuleContainer ruleContainer, InvocationChain nextChain, String name) {
+        return new ActivityPromotionInvocationChain(promotionContext, ruleContainer, nextChain, name);
     }
 }

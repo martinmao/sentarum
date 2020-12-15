@@ -16,7 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.impl.cart;
 
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
-import io.scleropages.sentarum.promotion.rule.impl.cart.CartPromotionChainStarterFactory.HeadOfChain;
+import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
 
 import java.util.List;
 
@@ -25,25 +25,24 @@ import java.util.List;
  */
 public class CartPromotionChainStarter implements PromotionChainStarter {
 
-    private final HeadOfChain headOfChain;//仅一个cart head of chain.
-    private final List<HeadOfChain> headOfOrdersChain;//每个订单一个head of chain.
-    private final List<HeadOfChain> headOfGoodsChain;//每个商品一个head of chain.
 
-    public CartPromotionChainStarter(HeadOfChain headOfChain, List<HeadOfChain> headOfOrdersChain, List<HeadOfChain> headOfGoodsChain) {
-        this.headOfChain = headOfChain;
-        this.headOfOrdersChain = headOfOrdersChain;
-        this.headOfGoodsChain = headOfGoodsChain;
+    private final List<ActivityPromotionInvocationChain> headOfChains;
+
+    private final ActivityPromotionInvocationChain finalChain;
+
+
+    public CartPromotionChainStarter(List<ActivityPromotionInvocationChain> headOfChains, ActivityPromotionInvocationChain finalChain) {
+        this.headOfChains = headOfChains;
+        this.finalChain = finalChain;
     }
 
-    protected HeadOfChain getHeadOfChain() {
-        return headOfChain;
+    @Override
+    public List<ActivityPromotionInvocationChain> headOfChains() {
+        return headOfChains;
     }
 
-    protected List<HeadOfChain> getHeadOfOrdersChain() {
-        return headOfOrdersChain;
-    }
-
-    protected List<HeadOfChain> getHeadOfGoodsChain() {
-        return headOfGoodsChain;
+    @Override
+    public ActivityPromotionInvocationChain finalChain() {
+        return finalChain;
     }
 }

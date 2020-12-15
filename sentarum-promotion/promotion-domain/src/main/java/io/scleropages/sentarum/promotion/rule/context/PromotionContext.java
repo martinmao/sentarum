@@ -78,6 +78,14 @@ public interface PromotionContext extends InvocationContext {
 
 
     /**
+     * return promotion results of this context.
+     *
+     * @return
+     */
+    List<PromotionResult> promotionResults();
+
+
+    /**
      * builder class of promotion result.
      */
     class PromotionResultBuilder {
@@ -136,6 +144,14 @@ public interface PromotionContext extends InvocationContext {
                 @Override
                 public Amount adjustFee() {
                     return adjustFee;
+                }
+
+                @Override
+                public String toString() {
+                    StringBuilder sb = new StringBuilder("{ ");
+                    sb.append("name: ").append(name).append(", ");
+                    sb.append("adjustFee: ").append(adjustFee).append(" }");
+                    return sb.toString();
                 }
             };
         }

@@ -54,8 +54,15 @@ public class ActivityPromotionInvocation implements RuleInvocation<ConditionRule
 
     @Override
     public void execute(ConditionRule rule, PromotionContext invocationContext, InvocationChain chain) {
-        if (rootCondition.match(rule, invocationContext)) {
+        boolean match = rootCondition.match(rule, invocationContext);
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("evaluated condition by: {}[{}] and result is: {}", rule.getClass().getSimpleName(), rule.description(), match);
+        }
+        if (match) {
             calculator.calculate(calculatorRule, invocationContext);
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("evaluated calculating by: {}[{}]. result is: {}", calculatorRule.getClass().getSimpleName(), calculatorRule.description(), invocationContext.promotionResults());
+            }
         }
         chain.next(invocationContext);
     }
@@ -67,11 +74,21 @@ public class ActivityPromotionInvocation implements RuleInvocation<ConditionRule
 
     @Override
     public String name() {
-        return "促销计算执行";
+        return "促销计算单元";
     }
 
     @Override
     public String description() {
-        return "将促销条件与促销执行合并到一个执行";
+        return "将促销条件与促销计算合并到一个执行单元.";
+    }
+
+
+    @Override
+    public String information() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("condition-> ").append(rootCondition.information()).append(", ");
+        sb.append("calculating[" + calculatorRule.id() + "]-> ").append(calculator.information()).append(" ");
+        sb.append("}");
+        return sb.toString();
     }
 }

@@ -15,7 +15,6 @@
  */
 package io.scleropages.sentarum.promotion.rule.context;
 
-import com.google.common.collect.Lists;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 
 import java.util.Collections;
@@ -31,8 +30,6 @@ public class OrderPromotionContextImpl extends AbstractPromotionContext implemen
     private final Long sellerUnionId;
     private final Long sellerId;
     private final List<GoodsPromotionContext> goodsPromotionContexts;
-
-    private final List<PromotionResult> promotionResults = Lists.newArrayList();
 
 
     protected OrderPromotionContextImpl(CartPromotionContext cartPromotionContext, Long sellerUnionId, Long sellerId, List<GoodsPromotionContext> goodsPromotionContexts) {
@@ -70,10 +67,5 @@ public class OrderPromotionContextImpl extends AbstractPromotionContext implemen
     @Override
     public Long buyerId() {
         return cartPromotionContext.buyerId();
-    }
-
-    @Override
-    public void addPromotionResult(PromotionResult promotionResult) {
-        promotionResults.add(promotionResult);
     }
 }

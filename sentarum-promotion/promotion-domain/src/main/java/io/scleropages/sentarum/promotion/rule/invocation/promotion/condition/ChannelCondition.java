@@ -19,6 +19,8 @@ import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * 促销参与渠道规则
  *
@@ -29,7 +31,8 @@ public class ChannelCondition implements AbstractPromotionCondition<ChannelCondi
 
     @Override
     public boolean match(ChannelConditionRule rule, PromotionContext invocationContext) {
-        return false;
+
+        return Objects.equals(rule.getChannelId(), invocationContext.channelId());
     }
 
     @Override

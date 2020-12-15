@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import org.slf4j.Logger;
+
 /**
  * represent a chain of invocations.
  *
@@ -22,10 +24,30 @@ package io.scleropages.sentarum.promotion.rule;
  */
 public interface InvocationChain {
 
+
+    /**
+     * name of this chain.
+     *
+     * @return
+     */
+    String name();
+
+    /**
+     * start this chain.
+     */
+    void start();
+
     /**
      * call next invocation.
      *
      * @param invocationContext context of current chain.
      */
     void next(InvocationContext invocationContext);
+
+    /**
+     * information of this chain.
+     *
+     * @return
+     */
+    void logInformation(Logger logger);
 }

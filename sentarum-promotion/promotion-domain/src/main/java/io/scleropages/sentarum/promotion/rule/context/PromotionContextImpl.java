@@ -15,10 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.context;
 
-import com.google.common.collect.Lists;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -28,8 +25,6 @@ public class PromotionContextImpl extends AbstractPromotionContext implements Pr
     private final ChannelConditionRule.ChannelType channelType;
     private final Integer channelId;
     private final Long buyerId;
-
-    private final List<PromotionResult> promotionResults = Lists.newArrayList();
 
     protected PromotionContextImpl(ChannelConditionRule.ChannelType channelType, Integer channelId, Long buyerId) {
         this.channelType = channelType;
@@ -50,10 +45,5 @@ public class PromotionContextImpl extends AbstractPromotionContext implements Pr
     @Override
     public Long buyerId() {
         return buyerId;
-    }
-
-    @Override
-    public void addPromotionResult(PromotionResult promotionResult) {
-        promotionResults.add(promotionResult);
     }
 }
