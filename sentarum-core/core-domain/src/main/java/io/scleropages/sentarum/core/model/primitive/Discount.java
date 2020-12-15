@@ -139,13 +139,15 @@ public class Discount {
     public Amount finalAmount(Amount originalPrice, boolean keepScale) {
         if (Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE) || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)) {
             assertDiscount();
+            Assert.notNull(originalPrice, "originalPrice must not be null.");
             switch (discountType) {
                 case DECREASE_WITHOUT_ORIGINAL_PRICE: {
                     Assert.isTrue(originalPrice.gt(new Amount(discountValue)), "discount value must less than original price with: " + discountType);
                     return originalPrice.subtract(new Amount(discountValue));
                 }
-                case DISCOUNT_WITHOUT_ORIGINAL_PRICE:
+                case DISCOUNT_WITHOUT_ORIGINAL_PRICE: {
                     return originalPrice.subtract(originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), keepScale));
+                }
             }
         }
         throw new IllegalStateException("illegal operation.");
@@ -191,11 +193,15 @@ public class Discount {
         if (Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE) || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)) {
             assertDiscount();
             switch (discountType) {
-                case DECREASE_WITHOUT_ORIGINAL_PRICE:
-                    Assert.isTrue(originalPrice.gt(new Amount(discountValue)), "discount value must less than original price with: " + discountType);
+                case DECREASE_WITHOUT_ORIGINAL_PRICE: {
+                    if (null != originalPrice)
+                        Assert.isTrue(originalPrice.gt(new Amount(discountValue)), "discount value must less than original price with: " + discountType);
                     return new Amount(discountValue);
-                case DISCOUNT_WITHOUT_ORIGINAL_PRICE:
+                }
+                case DISCOUNT_WITHOUT_ORIGINAL_PRICE: {
+                    Assert.notNull(originalPrice, "originalPrice must not be null.");
                     return originalPrice.multiply(new Amount(discountValue.intValue() * 0.01), keepScale);
+                }
             }
         }
         throw new IllegalStateException("illegal operation.");

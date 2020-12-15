@@ -44,13 +44,10 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
         resultBuilder.withRuleId(rule.id());
         resultBuilder.withDescription(rule.description());
         resultBuilder.withName(rule.activity().name() + "-" + rule.activity().tag());
-        Amount totalAmount = new Amount();
         Amount adjustFee = new Amount();
-        for (GoodsPromotionContext goodsPromotionContext : promotionContext.goodsPromotionContexts()) {
-            totalAmount = totalAmount.add(goodsPromotionContext.originalPrice());
-        }
         switch (rule.getOverflowDiscountType()) {
             case FIXED_FEE_OVERFLOW: {
+                Amount totalAmount = calculateTotalAmount(promotionContext);
                 Integer limit = rule.getOverflowCycleLimit();
                 List<OverflowDiscount> overflowDiscounts = rule.getOverflowDiscounts();
                 if (CollectionUtils.isEmpty(overflowDiscounts)) {
@@ -74,19 +71,56 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
                         break;
                     }
                 }
+                break;
             }
             case STEPPED_FEE_OVERFLOW: {
+                Amount totalAmount = calculateTotalAmount(promotionContext);
                 List<OverflowDiscount> overflowDiscounts = rule.getOverflowDiscounts();
                 if (CollectionUtils.isEmpty(overflowDiscounts)) {
                     logger.warn("no price-break discounts found for rule: {}. ignore to calculating....", rule.id());
                     return;
                 }
-                overflowDiscounts.forEach(overflowDiscount -> {
-
-                });
+                OverflowDiscount hit = null;
+                for (OverflowDiscount overflowDiscount : overflowDiscounts) {
+                    if (totalAmount.gte(overflowDiscount.getOverflowFee())) {
+                        hit = overflowDiscount;
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+                if (null == hit) {
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("no price-break hits[total={}] for {}. ends calculating.....", totalAmount, rule.id());
+                    }
+                    return;
+                }
+                Discount overflowDiscount = hit.getOverflowDiscount();
+                adjustFee = overflowDiscount.discountAmount(totalAmount, true);
+                break;
+            }
+            case FIXED_GOODS_NUM_OVERFLOW: {
+                Integer totalNum = calculateTotalNum(promotionContext);
+                break;
             }
         }
         resultBuilder.withAdjustFee(adjustFee);
         promotionContext.addPromotionResult(resultBuilder.build());
+    }
+
+    private final Amount calculateTotalAmount(OrderPromotionContext promotionContext) {
+        Amount totalAmount = new Amount();
+        for (GoodsPromotionContext goodsPromotionContext : promotionContext.goodsPromotionContexts()) {
+            totalAmount = totalAmount.add(goodsPromotionContext.originalPrice());
+        }
+        return totalAmount;
+    }
+
+    private final Integer calculateTotalNum(OrderPromotionContext promotionContext) {
+        int totalNum = 0;
+        for (GoodsPromotionContext goodsPromotionContext : promotionContext.goodsPromotionContexts()) {
+            totalNum += goodsPromotionContext.num();
+        }
+        return totalNum;
     }
 }
