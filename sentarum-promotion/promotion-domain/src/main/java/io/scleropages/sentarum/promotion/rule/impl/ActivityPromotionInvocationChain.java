@@ -23,7 +23,7 @@ import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.invocation.ActivityPromotionInvocation;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.ActivityPromotionInvocation;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.TrueCondition;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;

@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.invocation;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.RuleInvocation;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCalculator;
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCondition;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import org.slf4j.Logger;
