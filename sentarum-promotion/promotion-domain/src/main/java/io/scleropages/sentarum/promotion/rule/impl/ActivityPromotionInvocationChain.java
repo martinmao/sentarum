@@ -46,7 +46,7 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
     protected static final Logger logger = LoggerFactory.getLogger(ActivityPromotionInvocationChain.class);
 
     //sequential invocations of this chain.
-    private final List<ActivityPromotionInvocationFrame> invocationFrames;
+    private final List<ActivityPromotionInvocationChainFrame> invocationFrames;
     //next chain if sequential invocations finished.
     private final InvocationChain nextInvocationChain;
     private final PromotionContext initialContext;
@@ -90,7 +90,7 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
                 }
                 return;
             }
-            ActivityPromotionInvocationFrame next = invocationFrames.get(currentPosition++);
+            ActivityPromotionInvocationChainFrame next = invocationFrames.get(currentPosition++);
             ConditionRule rule = next.conditionRule;
             ActivityPromotionInvocation invocation = next.activityPromotionInvocation;
             Activity activity = next.activity;
@@ -106,7 +106,7 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
         if (invocationFrames.size() == 0) {
             logger.debug("      no activities");
         }
-        for (ActivityPromotionInvocationFrame invocationFrame : invocationFrames) {
+        for (ActivityPromotionInvocationChainFrame invocationFrame : invocationFrames) {
             Activity activity = invocationFrame.activity;
             ConditionRule conditionRule = invocationFrame.conditionRule;
             ActivityPromotionInvocation invocation = invocationFrame.activityPromotionInvocation;
@@ -133,10 +133,10 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
         }
     }
 
-    private List<ActivityPromotionInvocationFrame> create(List<Activity> activities, RuleContainer ruleContainer) {
+    private List<ActivityPromotionInvocationChainFrame> create(List<Activity> activities, RuleContainer ruleContainer) {
         if (activities.isEmpty())
             return Collections.emptyList();
-        List<ActivityPromotionInvocationFrame> activityPromotionInvocations = Lists.newArrayList();
+        List<ActivityPromotionInvocationChainFrame> activityPromotionInvocations = Lists.newArrayList();
         for (int i = 0; i < activities.size(); i++) {
             Activity activity = activities.get(i);
             List<Rule> rules = activity.conditionRules();
@@ -145,7 +145,7 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
                 logger.warn("detected activity[{}] no calculator rule set. ignoring to calculating.", activity.id());
                 continue;
             }
-            activityPromotionInvocations.add(new ActivityPromotionInvocationFrame(
+            activityPromotionInvocations.add(new ActivityPromotionInvocationChainFrame(
                             conditionRule
                             , new ActivityPromotionInvocation(activity, ruleContainer.getCondition(conditionRule), ruleContainer)
                             , activity
@@ -159,12 +159,12 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
     /**
      * frame of promotion invocation.
      */
-    private static class ActivityPromotionInvocationFrame {
+    private static class ActivityPromotionInvocationChainFrame {
         private final ConditionRule conditionRule;
         private final ActivityPromotionInvocation activityPromotionInvocation;
         private final Activity activity;
 
-        public ActivityPromotionInvocationFrame(ConditionRule conditionRule, ActivityPromotionInvocation activityPromotionInvocation, Activity activity) {
+        public ActivityPromotionInvocationChainFrame(ConditionRule conditionRule, ActivityPromotionInvocation activityPromotionInvocation, Activity activity) {
             this.conditionRule = conditionRule;
             this.activityPromotionInvocation = activityPromotionInvocation;
             this.activity = activity;
