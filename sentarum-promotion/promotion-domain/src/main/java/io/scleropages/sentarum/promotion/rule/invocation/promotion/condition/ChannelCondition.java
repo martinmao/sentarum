@@ -17,7 +17,6 @@ package io.scleropages.sentarum.promotion.rule.invocation.promotion.condition;
 
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -26,27 +25,28 @@ import java.util.Objects;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Component
-public class ChannelCondition implements AbstractPromotionCondition<ChannelConditionRule> {
+public interface ChannelCondition extends AbstractPromotionCondition<ChannelConditionRule> {
+
+    Integer ID = CHANNEL_INVOCATION_ID;
+
 
     @Override
-    public boolean match(ChannelConditionRule rule, PromotionContext invocationContext) {
-
+    default boolean match(ChannelConditionRule rule, PromotionContext invocationContext) {
         return Objects.equals(rule.getChannelId(), invocationContext.channelId());
     }
 
     @Override
-    public Integer id() {
-        return CHANNEL_INVOCATION_ID;
+    default Integer id() {
+        return ID;
     }
 
     @Override
-    public String name() {
+    default String name() {
         return "促销参与渠道";
     }
 
     @Override
-    public String description() {
+    default String description() {
         return "限定性规则：将促销活动中关联的商品限定到某一（或多）个渠道进行.只有在限定渠道内购买才可以获得优惠.";
     }
 }

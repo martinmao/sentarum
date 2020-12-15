@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CartPromotionChainStarterFactory implements PromotionChainStarterFactory<CartPromotionContext> {
+public class DefaultPromotionChainStarterFactory implements PromotionChainStarterFactory<CartPromotionContext> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -72,7 +72,7 @@ public class CartPromotionChainStarterFactory implements PromotionChainStarterFa
             }
             finalChain.logInformation(logger);
         }
-        return new CartPromotionChainStarter(headOfChains, finalChain);
+        return new DefaultPromotionChainStarter(headOfChains, finalChain);
     }
 
     private ActivityPromotionInvocationChain createChain(PromotionContext promotionContext, RuleContainer ruleContainer, InvocationChain nextChain, String name) {

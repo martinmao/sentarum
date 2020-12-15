@@ -25,6 +25,7 @@ import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.ActivityPromotionInvocation;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.TrueCondition;
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
 import org.scleropages.core.mapper.JsonMapper2;
@@ -168,6 +169,9 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
             this.conditionRule = conditionRule;
             this.activityPromotionInvocation = activityPromotionInvocation;
             this.activity = activity;
+            if (conditionRule instanceof AbstractRule) {
+                ((AbstractRule) conditionRule).setActivity(activity);
+            }
         }
     }
 }

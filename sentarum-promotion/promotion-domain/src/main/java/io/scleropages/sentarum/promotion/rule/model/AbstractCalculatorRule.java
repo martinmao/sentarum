@@ -39,4 +39,9 @@ public class AbstractCalculatorRule extends AbstractRule implements CalculatorRu
     public CalculateLevel calculateLevel() {
         return getCalculateLevel();
     }
+
+    @Override
+    protected Integer defaultRuleInvocationImplementation() {
+        throw new IllegalStateException("not implemented.");
+    }
 }

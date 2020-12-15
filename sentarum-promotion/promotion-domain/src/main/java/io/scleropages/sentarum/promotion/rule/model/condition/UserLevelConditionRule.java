@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.condition;
 
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.UserLevelCondition;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 
 /**
@@ -49,5 +50,10 @@ public class UserLevelConditionRule extends AbstractConditionRule {
 
     public void setLevelName(String levelName) {
         this.levelName = levelName;
+    }
+
+    @Override
+    protected Integer defaultRuleInvocationImplementation() {
+        return UserLevelCondition.ID;
     }
 }

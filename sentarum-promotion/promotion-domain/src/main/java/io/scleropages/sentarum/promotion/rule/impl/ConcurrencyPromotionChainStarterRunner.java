@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class ConcurrencyCartPromotionChainStarterRunner implements PromotionChainStarterRunner<CartPromotionChainStarter>, InitializingBean, DisposableBean {
+public class ConcurrencyPromotionChainStarterRunner implements PromotionChainStarterRunner<DefaultPromotionChainStarter>, InitializingBean, DisposableBean {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -59,7 +59,7 @@ public class ConcurrencyCartPromotionChainStarterRunner implements PromotionChai
     private ExecutorService executorService;
 
     @Override
-    public void run(CartPromotionChainStarter invocationChainStarter) {
+    public void run(DefaultPromotionChainStarter invocationChainStarter) {
         List<ActivityPromotionInvocationChain> activityPromotionInvocationChains = invocationChainStarter.headOfChains();
         if (activityPromotionInvocationChains.size() == 3) {
             activityPromotionInvocationChains.forEach(activityPromotionInvocationChain -> activityPromotionInvocationChain.start());

@@ -15,24 +15,33 @@
  */
 package io.scleropages.sentarum.promotion.rule.impl;
 
-import io.scleropages.sentarum.promotion.rule.PromotionCalculateEngine;
-import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
-import org.springframework.beans.factory.InitializingBean;
+import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class DefaultPromotionCalculateEngine implements PromotionCalculateEngine, InitializingBean {
+public class DefaultPromotionChainStarter implements PromotionChainStarter {
 
 
-    private DefaultPromotionChainStarterFactory cartPromotionChainStarterFactory;
+    private final List<ActivityPromotionInvocationChain> headOfChains;
 
-    private PromotionChainStarterRunner promotionChainStarterRunner;
+    private final ActivityPromotionInvocationChain finalChain;
 
 
+    public DefaultPromotionChainStarter(List<ActivityPromotionInvocationChain> headOfChains, ActivityPromotionInvocationChain finalChain) {
+        this.headOfChains = headOfChains;
+        this.finalChain = finalChain;
+    }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public List<ActivityPromotionInvocationChain> headOfChains() {
+        return headOfChains;
+    }
 
+    @Override
+    public ActivityPromotionInvocationChain finalChain() {
+        return finalChain;
     }
 }

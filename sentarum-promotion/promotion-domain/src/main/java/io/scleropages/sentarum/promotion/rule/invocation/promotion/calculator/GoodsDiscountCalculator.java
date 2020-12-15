@@ -15,34 +15,29 @@
  */
 package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
-import org.springframework.stereotype.Component;
 
 /**
+ * spi interface for {@link GoodsDiscountRule} calculating.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Component
-public class GoodsDiscountCalculator implements GoodsCalculator<GoodsDiscountRule> {
+public interface GoodsDiscountCalculator extends GoodsCalculator<GoodsDiscountRule> {
 
+    Integer ID = PROMOTION_INVOCATION_ID + 1;
 
     @Override
-    public void calculate(GoodsDiscountRule rule, GoodsPromotionContext promotionContext) {
-
+    default Integer id() {
+        return ID;
     }
 
     @Override
-    public Integer id() {
-        return PROMOTION_INVOCATION_ID + 1;
-    }
-
-    @Override
-    public String name() {
+    default String name() {
         return "商品促销";
     }
 
     @Override
-    public String description() {
-        return "计算规则：根据购买的商品计算商品级促销.";
+    default String description() {
+        return "商品折扣规则，可对活动关联的一组商品来源设置折扣，支持统一折扣（品牌，品类，店铺）、也支持商品折扣（可具体到规格）、也支持会员折扣（对应到不同的会员级别）.";
     }
 }

@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.condition;
 
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.ChannelCondition;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 
 import javax.validation.constraints.NotEmpty;
@@ -100,6 +101,11 @@ public class ChannelConditionRule extends AbstractConditionRule {
 
     public void setSellerId(Long sellerId) {
         this.sellerId = sellerId;
+    }
+
+    @Override
+    protected Integer defaultRuleInvocationImplementation() {
+        return ChannelCondition.ID;
     }
 
     public enum ChannelType {

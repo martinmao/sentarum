@@ -20,6 +20,7 @@ import io.scleropages.sentarum.promotion.rule.InvocationChain;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.RuleInvocation;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import org.slf4j.Logger;
@@ -47,6 +48,8 @@ public class ActivityPromotionInvocation implements RuleInvocation<ConditionRule
         Assert.notNull(ruleContainer, "ruleContainer must not be null.");
         this.rootCondition = rootCondition;
         calculatorRule = (CalculatorRule) activity.promotionalRule();
+        if (calculatorRule instanceof AbstractRule)
+            ((AbstractRule) calculatorRule).setActivity(activity);
         calculator = ruleContainer.getPromotionCalculator(calculatorRule);
     }
 

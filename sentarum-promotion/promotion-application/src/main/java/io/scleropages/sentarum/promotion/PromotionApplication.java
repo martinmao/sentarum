@@ -30,9 +30,9 @@ import io.scleropages.sentarum.promotion.rule.RuleContainer;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContextBuilder;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContextBuilder.PromotionGoodsSpecs;
-import io.scleropages.sentarum.promotion.rule.impl.CartPromotionChainStarter;
-import io.scleropages.sentarum.promotion.rule.impl.CartPromotionChainStarterFactory;
-import io.scleropages.sentarum.promotion.rule.impl.SimpleCartPromotionChainStarterRunner;
+import io.scleropages.sentarum.promotion.rule.impl.DefaultPromotionChainStarter;
+import io.scleropages.sentarum.promotion.rule.impl.DefaultPromotionChainStarterFactory;
+import io.scleropages.sentarum.promotion.rule.impl.SimplePromotionChainStarterRunner;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
@@ -70,10 +70,10 @@ public class PromotionApplication {
     public void calculateDiscount(PromotionCalculateRequest request) {
         Assert.notNull(request, "request must not be null.");
         PromotionContext promotionContext = buildPromotionContext(request);
-        PromotionChainStarterFactory chainStarterFactory = new CartPromotionChainStarterFactory();
+        PromotionChainStarterFactory chainStarterFactory = new DefaultPromotionChainStarterFactory();
         PromotionChainStarter chainStarter = chainStarterFactory.createChainStarter(promotionContext, ruleContainer);
-        SimpleCartPromotionChainStarterRunner runner = new SimpleCartPromotionChainStarterRunner();
-        runner.run((CartPromotionChainStarter) chainStarter);
+        SimplePromotionChainStarterRunner runner = new SimplePromotionChainStarterRunner();
+        runner.run((DefaultPromotionChainStarter) chainStarter);
     }
 
 

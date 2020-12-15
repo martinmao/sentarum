@@ -16,8 +16,6 @@
 package io.scleropages.sentarum.promotion.rule.model;
 
 import io.scleropages.sentarum.promotion.activity.model.Activity;
-import io.scleropages.sentarum.promotion.rule.RuleContainer;
-import org.scleropages.crud.FrameworkContext;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -47,13 +45,20 @@ public abstract class AbstractRule implements Rule {
         return activity;
     }
 
-    @Null(groups = Update.class)
+    @Null
     public Integer getRuleInvocationImplementation() {
         if (null == ruleInvocationImplementation) {
-            ruleInvocationImplementation = FrameworkContext.getBean(RuleContainer.class).ruleInvocationImplementation((Class<AbstractRule>) getClass());
+            ruleInvocationImplementation = defaultRuleInvocationImplementation();
         }
         return ruleInvocationImplementation;
     }
+
+    /**
+     * sub class must implementation this method and returned a Integer value identified for {@link io.scleropages.sentarum.promotion.rule.RuleInvocation}
+     *
+     * @return
+     */
+    protected abstract Integer defaultRuleInvocationImplementation();
 
     @NotEmpty(groups = Create.class)
     public String getDescription() {

@@ -13,33 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.condition;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.impl;
 
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.UserTagCondition;
-import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.ChannelCondition;
+import org.springframework.stereotype.Component;
 
 /**
- * 促销参与用户标签规则
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class UserTagConditionRule extends AbstractConditionRule {
+@Component
+public class ChannelConditionImpl implements ChannelCondition {
 
-    /**
-     * 用户标签
-     */
-    private String tag;
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    @Override
-    protected Integer defaultRuleInvocationImplementation() {
-        return UserTagCondition.ID;
-    }
 }

@@ -15,33 +15,21 @@
  */
 package io.scleropages.sentarum.promotion.rule.impl;
 
-import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
-
-import java.util.List;
+import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
 
 /**
+ * simple (sequence computing) implementation of {@link DefaultPromotionChainStarter} runner.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class CartPromotionChainStarter implements PromotionChainStarter {
+public class SimplePromotionChainStarterRunner implements PromotionChainStarterRunner<DefaultPromotionChainStarter> {
 
-
-    private final List<ActivityPromotionInvocationChain> headOfChains;
-
-    private final ActivityPromotionInvocationChain finalChain;
-
-
-    public CartPromotionChainStarter(List<ActivityPromotionInvocationChain> headOfChains, ActivityPromotionInvocationChain finalChain) {
-        this.headOfChains = headOfChains;
-        this.finalChain = finalChain;
-    }
 
     @Override
-    public List<ActivityPromotionInvocationChain> headOfChains() {
-        return headOfChains;
-    }
-
-    @Override
-    public ActivityPromotionInvocationChain finalChain() {
-        return finalChain;
+    public void run(DefaultPromotionChainStarter promotionChainStarter) {
+        promotionChainStarter.headOfChains().forEach(activityPromotionInvocationChain -> {
+            activityPromotionInvocationChain.start();
+        });
+        promotionChainStarter.finalChain().start();
     }
 }

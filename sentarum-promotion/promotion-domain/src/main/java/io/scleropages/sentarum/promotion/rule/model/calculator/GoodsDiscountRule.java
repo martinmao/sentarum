@@ -24,6 +24,7 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.AllOfGoods;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.GoodsHolder;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.GoodsDiscountCalculator;
 import io.scleropages.sentarum.promotion.rule.model.AbstractCalculatorRule;
 import org.scleropages.core.util.Namings;
 import org.springframework.util.Assert;
@@ -189,6 +190,11 @@ public class GoodsDiscountRule extends AbstractCalculatorRule {
 
     public void setUserLevelDiscounts(List<UserLevelDiscount> userLevelDiscounts) {
         this.userLevelDiscounts = userLevelDiscounts;
+    }
+
+    @Override
+    protected Integer defaultRuleInvocationImplementation() {
+        return GoodsDiscountCalculator.ID;
     }
 
     /**

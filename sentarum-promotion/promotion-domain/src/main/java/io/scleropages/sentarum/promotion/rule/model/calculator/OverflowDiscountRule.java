@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.calculator;
 
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.OverflowDiscountCalculator;
 import io.scleropages.sentarum.promotion.rule.model.AbstractCalculatorRule;
 
 import javax.validation.constraints.NotNull;
@@ -85,6 +86,11 @@ public class OverflowDiscountRule extends AbstractCalculatorRule {
 
     public void setOverflowDiscounts(List<OverflowDiscount> overflowDiscounts) {
         this.overflowDiscounts = overflowDiscounts;
+    }
+
+    @Override
+    protected Integer defaultRuleInvocationImplementation() {
+        return OverflowDiscountCalculator.ID;
     }
 
     /**

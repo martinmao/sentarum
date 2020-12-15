@@ -13,33 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.model.condition;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.UserTagCondition;
-import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
+import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
+import org.springframework.stereotype.Component;
 
 /**
- * 促销参与用户标签规则
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class UserTagConditionRule extends AbstractConditionRule {
-
-    /**
-     * 用户标签
-     */
-    private String tag;
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
+@Component
+public class GoodsDiscountCalculatorImpl implements GoodsDiscountCalculator {
     @Override
-    protected Integer defaultRuleInvocationImplementation() {
-        return UserTagCondition.ID;
+    public void calculate(GoodsDiscountRule rule, GoodsPromotionContext promotionContext) {
+
     }
 }

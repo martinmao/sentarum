@@ -15,6 +15,8 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.condition;
 
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.SellerUserLevelCondition;
+
 /**
  * 促销参与用户的店铺会员级别设置
  *
@@ -66,5 +68,10 @@ public class SellerUserLevelConditionRule extends UserLevelConditionRule {
 
     public void setSellerId(Long sellerId) {
         this.sellerId = sellerId;
+    }
+
+    @Override
+    protected Integer defaultRuleInvocationImplementation() {
+        return SellerUserLevelCondition.ID;
     }
 }

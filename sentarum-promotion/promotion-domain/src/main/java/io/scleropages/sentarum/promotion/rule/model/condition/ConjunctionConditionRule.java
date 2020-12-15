@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.model.condition;
 
 import com.google.common.collect.Lists;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.ConjunctionCondition;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import org.springframework.util.Assert;
@@ -83,6 +84,11 @@ public class ConjunctionConditionRule extends AbstractConditionRule {
             ((AbstractConditionRule) conditionRule).setParent(this);
         }
         getConditions().add(conditionRule);
+    }
+
+    @Override
+    protected Integer defaultRuleInvocationImplementation() {
+        return ConjunctionCondition.ID;
     }
 
 
