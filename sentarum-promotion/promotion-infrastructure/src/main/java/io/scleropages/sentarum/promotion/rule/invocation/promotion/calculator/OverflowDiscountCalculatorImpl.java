@@ -83,10 +83,10 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
                 OverflowDiscount hit = null;
                 for (OverflowDiscount overflowDiscount : overflowDiscounts) {
                     if (totalAmount.gte(overflowDiscount.getOverflowFee())) {
-                        hit = overflowDiscount;
-                        continue;
-                    } else {
-                        break;
+                        if (null == hit)
+                            hit = overflowDiscount;
+                        else if (hit.getOverflowFee().lt(overflowDiscount.getOverflowFee()))
+                            hit = overflowDiscount;
                     }
                 }
                 if (null == hit) {
@@ -101,6 +101,11 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
             }
             case FIXED_GOODS_NUM_OVERFLOW: {
                 Integer totalNum = calculateTotalNum(promotionContext);
+                //todo
+                break;
+            }
+            case STEPPED_GOODS_NUM_OVERFLOW: {
+                //todo
                 break;
             }
         }

@@ -49,11 +49,11 @@ public class OverflowDiscountRule extends AbstractCalculatorRule {
     public static final Integer BIZ_TYPE_OVERFLOW_DISCOUNT = 23;
 
     /**
-     * 满减条件
+     * 满减类型
      */
     private OverflowDiscountType overflowDiscountType;
     /**
-     * 循环满减上限, {@link #getOverflowDiscountType()}=={@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#FIXED_GOODS_NUM_OVERFLOW} 时有效，-1为上不封顶 <br>
+     * 循环满减上限,仅限固定满减 {@link #getOverflowDiscountType()}=={@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#FIXED_GOODS_NUM_OVERFLOW} 时有效，-1为上不封顶
      */
     private Integer overflowCycleLimit;
     /**
