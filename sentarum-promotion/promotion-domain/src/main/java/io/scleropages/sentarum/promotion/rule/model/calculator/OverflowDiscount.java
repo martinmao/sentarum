@@ -146,4 +146,8 @@ public class OverflowDiscount implements CalculatorGoodsSourceAware {
     public void setCalculatorGoodsSource(CalculatorGoodsSource calculatorGoodsSource) {
         this.calculatorGoodsSource = calculatorGoodsSource;
     }
+
+    public CalculatorGoodsSource getCalculatorGoodsSource() {
+        return calculatorGoodsSource;
+    }
 }
