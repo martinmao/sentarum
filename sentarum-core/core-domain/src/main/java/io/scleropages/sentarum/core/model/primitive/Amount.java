@@ -151,6 +151,17 @@ public class Amount {
     }
 
     /**
+     * this * multiplicand (scale=2 and round half up)
+     *
+     * @param multiplicand
+     * @param keepScale    true if keep scale(2).
+     * @return this * multiplicand
+     */
+    public Amount multiply(Integer multiplicand, boolean keepScale) {
+        return multiply(new Amount(multiplicand), keepScale);
+    }
+
+    /**
      * this / divisor (scale=2 and round half up)
      * <p>
      * NOTE: if keepScale set to false. the ROUND_DOWN(ignore any scales) as rounding mode.

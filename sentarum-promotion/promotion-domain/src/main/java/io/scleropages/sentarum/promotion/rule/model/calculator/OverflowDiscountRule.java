@@ -17,6 +17,7 @@ package io.scleropages.sentarum.promotion.rule.model.calculator;
 
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.OverflowDiscountCalculator;
 import io.scleropages.sentarum.promotion.rule.model.AbstractCalculatorRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceInitializableRule;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -24,29 +25,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource.GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT;
+
 /**
  * 满减促销规则，其主要目的通过满减让用户购买更多的商品，常见的包括"每满减，每满多少固定减"，"阶梯满减，满多少减多少等"
  * <pre>
  *     支持以下规则定义：
  *
- *     固定满减：只允许设置一个 {@link #overflowDiscounts}。{@link #getOverflowCycleLimit()} 可设置上限，-1为上不封顶
+ *     固定满减：只允许设置一个 {@link #detailedConfigures}。{@link #getOverflowCycleLimit()} 可设置上限，-1为上不封顶
  *      固定金额满减 {@link OverflowDiscount#setOverflowFee}：满100元触发，可并持续叠加直至上限
  *      固定商品数满减 {@link OverflowDiscount#setOverflowNum}：满10件触发，可并持续叠加直至上限
- *     阶梯满减：可设置多个 {@link #overflowDiscounts}。不支持 {@link #getOverflowCycleLimit()}
- *      阶梯金额满减 {@link OverflowDiscount#setOverflowFee}：满100元触发，满300元触发，限定在 {@link #overflowDiscounts} 范围内
- *      阶梯商品数满减 {@link OverflowDiscount#setOverflowNum}：满10件触发，满30件触发，限定在 {@link #overflowDiscounts} 范围内
- *     满赠规则：
+ *     阶梯满减：可设置多个 {@link #detailedConfigures}。不支持 {@link #getOverflowCycleLimit()}
+ *      阶梯金额满减 {@link OverflowDiscount#setOverflowFee}：满100元触发，满300元触发，限定在 {@link #detailedConfigures} 范围内
+ *      阶梯商品数满减 {@link OverflowDiscount#setOverflowNum}：满10件触发，满30件触发，限定在 {@link #detailedConfigures} 范围内
+ *     满赠说明：
  *      减金额：设置 {@link OverflowDiscount#getOverflowDiscount}
  *      折扣：设置 {@link OverflowDiscount#getOverflowDiscount}
- *      发赠品：设置 {@link OverflowDiscount#getGiftSource}
+ *      发赠品：匹配到{@link OverflowDiscount} 挂靠的 {@link io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource}
  * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OverflowDiscountRule extends AbstractCalculatorRule {
-
-
-    public static final Integer BIZ_TYPE_OVERFLOW_DISCOUNT = 23;
+public class OverflowDiscountRule extends AbstractCalculatorRule implements CalculatorGoodsSourceInitializableRule<OverflowDiscount> {
 
     /**
      * 满减类型
@@ -56,10 +56,6 @@ public class OverflowDiscountRule extends AbstractCalculatorRule {
      * 循环满减上限,仅限固定满减 {@link #getOverflowDiscountType()}=={@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#FIXED_GOODS_NUM_OVERFLOW} 时有效，-1为上不封顶
      */
     private Integer overflowCycleLimit;
-    /**
-     * 满减折扣详情
-     */
-    private List<OverflowDiscount> overflowDiscounts;
 
     @NotNull(groups = Create.class)
     @Null(groups = Update.class)
@@ -71,11 +67,6 @@ public class OverflowDiscountRule extends AbstractCalculatorRule {
         return overflowCycleLimit;
     }
 
-    @Null
-    public List<OverflowDiscount> getOverflowDiscounts() {
-        return overflowDiscounts;
-    }
-
     public void setOverflowDiscountType(OverflowDiscountType overflowDiscountType) {
         this.overflowDiscountType = overflowDiscountType;
     }
@@ -84,13 +75,20 @@ public class OverflowDiscountRule extends AbstractCalculatorRule {
         this.overflowCycleLimit = overflowCycleLimit;
     }
 
-    public void setOverflowDiscounts(List<OverflowDiscount> overflowDiscounts) {
-        this.overflowDiscounts = overflowDiscounts;
-    }
-
     @Override
     protected Integer defaultRuleInvocationImplementation() {
         return OverflowDiscountCalculator.ID;
+    }
+
+
+    @Override
+    public Integer goodsSourceType() {
+        return GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT;
+    }
+
+    @Override
+    public List<OverflowDiscount> detailedConfigures() {
+        throw new IllegalStateException("not initialized.");
     }
 
     /**

@@ -121,7 +121,7 @@
         <heap>1000</heap>
     </cache>
 
-    <cache alias="io.scleropages.sentarum.promotion.rule.calculator.repo.BaseCalculatorRuleRepository.findAllByActivity_Id">
+    <cache alias="io.scleropages.sentarum.promotion.rule.calculator.repo.BaseCalculatorRuleRepository.readAllByActivity_Id">
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>

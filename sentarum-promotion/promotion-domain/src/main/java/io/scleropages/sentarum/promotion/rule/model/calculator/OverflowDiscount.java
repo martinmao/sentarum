@@ -18,17 +18,30 @@ package io.scleropages.sentarum.promotion.rule.model.calculator;
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.core.model.primitive.Discount.DiscountType;
+import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule.OverflowDiscountType;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceAware;
 import org.springframework.util.Assert;
 
 import java.util.Objects;
 
 /**
- * 满减促销规则 {@link OverflowDiscountRule} 明细.
+ * 满减促销规则 {@link OverflowDiscountRule} 明细：
+ * <pre>
+ *      条件包含两类：
+ *          满金额 {@link #overflowFee}：匹配 {@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#STEPPED_FEE_OVERFLOW}
+ *          满件数 {@link #overflowNum}：匹配 {@link OverflowDiscountType#FIXED_GOODS_NUM_OVERFLOW} || {@link OverflowDiscountType#STEPPED_GOODS_NUM_OVERFLOW}
+ *      结果包含两类：
+ *          折扣 {@link #overflowDiscount}：优先，无类型区分，该值为空时代表发赠品.
+ *          发赠品 {@link #userGiftNum}：{@link #overflowDiscount} 为空时有效.
+ * </pre>
+ * <p>
+ * NOTE:结构存储上没有定义专用表结构，将其信息作为扩展属性落到 {@link DetailedGoodsSource} 上.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OverflowDiscount {
+public class OverflowDiscount implements CalculatorGoodsSourceAware {
 
     /**
      * 满减折扣，{@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#STEPPED_FEE_OVERFLOW} 时有效.<br>
@@ -44,11 +57,16 @@ public class OverflowDiscount {
      */
     private Amount overflowFee;
     /**
-     * 满赠商品时有效：用户可选赠品总数，-1为全选
+     * 满赠商品时有效(overflowDiscount 为空时)：用户可选赠品总数，-1为全选
      */
-    private Integer userSelectNum;
+    private Integer userGiftNum;
 
 
+    /**
+     * 检查规则（当前设置是否可落到给定规则上）
+     *
+     * @param overflowDiscountRule
+     */
     public void assertValid(OverflowDiscountRule overflowDiscountRule) {
 
         Assert.notNull(overflowDiscountRule, "overflowDiscountRule must not be null.");
@@ -84,8 +102,8 @@ public class OverflowDiscount {
                             || Objects.equals(overflowDiscount, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE),
                     "discount type must be DECREASE_WITHOUT_ORIGINAL_PRICE or DISCOUNT_WITHOUT_ORIGINAL_PRICE for: " + overflowDiscountType);
         } else {
-            Assert.notNull(userSelectNum, "overflowDiscount or userSelectNum must specified at least one.");
-            Assert.isTrue(userSelectNum == -1 || userSelectNum > 0, "userSelectNum must be '-1' or greater than 0.");
+            Assert.notNull(userGiftNum, "overflowDiscount or userGiftNum must specified at least one.");
+            Assert.isTrue(userGiftNum == -1 || userGiftNum > 0, "userGiftNum must be '-1' or greater than 0.");
         }
     }
 
@@ -102,8 +120,8 @@ public class OverflowDiscount {
         return overflowFee;
     }
 
-    public Integer getUserSelectNum() {
-        return userSelectNum;
+    public Integer getUserGiftNum() {
+        return userGiftNum;
     }
 
     public void setOverflowDiscount(Discount overflowDiscount) {
@@ -118,7 +136,14 @@ public class OverflowDiscount {
         this.overflowFee = overflowFee;
     }
 
-    public void setUserSelectNum(Integer userSelectNum) {
-        this.userSelectNum = userSelectNum;
+    public void setUserGiftNum(Integer userGiftNum) {
+        this.userGiftNum = userGiftNum;
+    }
+
+    private CalculatorGoodsSource calculatorGoodsSource;
+
+    @Override
+    public void setCalculatorGoodsSource(CalculatorGoodsSource calculatorGoodsSource) {
+        this.calculatorGoodsSource = calculatorGoodsSource;
     }
 }

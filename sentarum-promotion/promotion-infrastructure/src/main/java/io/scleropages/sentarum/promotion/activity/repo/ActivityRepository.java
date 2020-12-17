@@ -25,9 +25,7 @@ import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsSpecsEntity;
-import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
 import io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository.GoodsSourceJoin;
-import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer;
 import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer.AdditionalAttributesSavingCallback;
 import io.scleropages.sentarum.promotion.goods.repo.GoodsRepository.GoodsJoin;
 import org.jooq.Condition;
@@ -49,8 +47,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.COLUMN_ATTRIBUTE_PAYLOAD;
-import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.COLUMN_ID;
 import static io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository.GoodsSourceConditionsAssembler.applyGoodsSourceCondition;
 import static io.scleropages.sentarum.promotion.goods.repo.GoodsRepository.GoodsConditionsAssembler.applyGoodsCondition;
 
@@ -83,7 +79,6 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
         baseQuery.addConditions(promActivity.STATUS.eq(activityStatus));
         return fetchRecordsInternal(promActivity, () -> baseQuery, record -> true);
     }
-
 
 
     @Cacheable(key = "#goodsId+'-'+#goodsSpecsId")
@@ -155,13 +150,13 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
         ActivityEntity entity = new ActivityEntity();
         dslRecordInto(record, entity);
         if (null != classifiedGoodsSourceRepository) {
-            classifiedGoodsSourceRepository.consumeEntitiesByRecord(classifiedGoodsSourceRepository.readByBizTypeAndBizId(
+            classifiedGoodsSourceRepository.consumeEntitiesByRecord(classifiedGoodsSourceRepository.readAllByBizTypeAndBizId(
                     ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY
-                    , activityId)
+                    , activityId, null)
                     , e -> entity.getGoodsSource().add(e));
         }
         if (null != detailedGoodsSourceRepository) {
-            detailedGoodsSourceRepository.consumeEntitiesByRecord(detailedGoodsSourceRepository.readByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId), e -> entity.getGoodsSource().add(e));
+            detailedGoodsSourceRepository.consumeEntitiesByRecord(detailedGoodsSourceRepository.readAllByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId, null), e -> entity.getGoodsSource().add(e));
         }
         return Optional.of(entity);
     }
@@ -181,7 +176,7 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
 
 
     @Override
-    default void save(Activity activity, Map<String, Object> attributes){
+    default void save(Activity activity, Map<String, Object> attributes) {
         Assert.notNull(activity, "activity must not be null.");
         Long id = activity.id();
         Assert.notNull(id, "activity id must not be null.");
@@ -192,7 +187,7 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
     }
 
     @Override
-    default Map<String, Object> additionalAttributesMap(ActivityEntity entity){
+    default Map<String, Object> additionalAttributesMap(ActivityEntity entity) {
         Assert.notNull(entity, "activity entity must not be null.");
         return payloadToAttributes(entity.getAttributePayLoad());
     }

@@ -17,7 +17,7 @@ package io.scleropages.sentarum.promotion.rule.entity.calculator.goods.mapper;
 
 import io.scleropages.sentarum.promotion.goods.entity.mapper.DetailedGoodsSourceEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.CalculatorGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceModel;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 
@@ -25,6 +25,7 @@ import org.scleropages.crud.ModelMapper;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface CalculatorGoodsSourceEntityMapper extends DetailedGoodsSourceEntityMapper<CalculatorGoodsSourceEntity, CalculatorGoodsSource> {
+public interface CalculatorGoodsSourceEntityMapper extends DetailedGoodsSourceEntityMapper<CalculatorGoodsSourceEntity, CalculatorGoodsSourceModel> {
+
 
 }

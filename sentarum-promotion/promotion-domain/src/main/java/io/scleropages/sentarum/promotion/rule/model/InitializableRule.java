@@ -13,22 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.repo;
-
-import io.scleropages.sentarum.promotion.rule.entity.calculator.BaseCalculatorRuleEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.repository.NoRepositoryBean;
-
-import java.util.List;
+package io.scleropages.sentarum.promotion.rule.model;
 
 /**
+ * identified interface that mark this rule is initializable.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface AbstractCalculatorRuleRepository<E extends BaseCalculatorRuleEntity, T extends Table, R extends Record> extends AbstractRuleRepository<E, T, R> {
-
-//    @Cacheable(key = "#root.target+'-'+#activityId")
-//    List<E> readAllByActivity_Id(Long activityId);
+public interface InitializableRule {
 }

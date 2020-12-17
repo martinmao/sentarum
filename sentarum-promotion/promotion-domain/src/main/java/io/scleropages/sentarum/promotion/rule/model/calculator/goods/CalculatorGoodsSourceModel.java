@@ -15,27 +15,32 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.calculator.goods;
 
-import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
-import org.scleropages.core.util.Namings;
+import io.scleropages.sentarum.promotion.goods.model.impl.AbstractDetailedGoodsSource;
+import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
+
+import javax.validation.constraints.Null;
 
 /**
- * promotional goods source for calculator rule references.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CalculatorGoodsSource extends DetailedGoodsSource {
+public class CalculatorGoodsSourceModel extends AbstractDetailedGoodsSource implements CalculatorGoodsSource {
 
 
-    int BIZ_TYPE_OF_CALCULATOR = 1;
+    private CalculatorRule calculatorRule;
+
+    @Null
+    public CalculatorRule getCalculatorRule() {
+        return calculatorRule;
+    }
+
+    public void setCalculatorRule(CalculatorRule calculatorRule) {
+        this.calculatorRule = calculatorRule;
+    }
 
 
-    int GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT = 1;
-
-
-    int DETAILED_GOODS_SOURCE_TYPE = 4;//商品明细
-
-
-    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_CLASS = Namings.snakeCaseName(CalculatorGoodsSourceAware.class.getSimpleName()) + ".clazz";
-    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_PAYLOAD = Namings.snakeCaseName(CalculatorGoodsSourceAware.class.getSimpleName()) + ".payload";
+    @Null
+    public Integer getBizType() {
+        return BIZ_TYPE_OF_CALCULATOR;
+    }
 
 }

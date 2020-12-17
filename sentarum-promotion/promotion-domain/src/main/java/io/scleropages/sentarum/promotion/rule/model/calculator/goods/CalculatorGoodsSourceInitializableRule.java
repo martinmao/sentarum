@@ -15,27 +15,32 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.calculator.goods;
 
-import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
-import org.scleropages.core.util.Namings;
+import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
+import io.scleropages.sentarum.promotion.rule.model.InitializableRule;
+
+import java.util.List;
 
 /**
- * promotional goods source for calculator rule references.
+ * 可初始化规则接口，其详情配置信息落在 {@link CalculatorGoodsSource} 维度.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CalculatorGoodsSource extends DetailedGoodsSource {
+public interface CalculatorGoodsSourceInitializableRule<T extends CalculatorGoodsSourceAware> extends CalculatorRule, InitializableRule {
 
 
-    int BIZ_TYPE_OF_CALCULATOR = 1;
+    /**
+     * return goods source type of this rule.
+     *
+     * @return
+     */
+    Integer goodsSourceType();
 
-
-    int GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT = 1;
-
-
-    int DETAILED_GOODS_SOURCE_TYPE = 4;//商品明细
-
-
-    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_CLASS = Namings.snakeCaseName(CalculatorGoodsSourceAware.class.getSimpleName()) + ".clazz";
-    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_PAYLOAD = Namings.snakeCaseName(CalculatorGoodsSourceAware.class.getSimpleName()) + ".payload";
-
+    /**
+     * return detailed configures of this rule.
+     *
+     * @return
+     */
+    default List<T> detailedConfigures() {
+        throw new IllegalStateException("not initialized.");
+    }
 }

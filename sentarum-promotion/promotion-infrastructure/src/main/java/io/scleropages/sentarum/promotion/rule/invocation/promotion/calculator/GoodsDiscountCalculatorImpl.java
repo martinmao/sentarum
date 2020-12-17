@@ -24,6 +24,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class GoodsDiscountCalculatorImpl implements GoodsDiscountCalculator {
+
+
     @Override
     public void calculate(GoodsDiscountRule rule, GoodsPromotionContext promotionContext) {
 

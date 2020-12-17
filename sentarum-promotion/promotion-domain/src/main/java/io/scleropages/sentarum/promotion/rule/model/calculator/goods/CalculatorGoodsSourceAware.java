@@ -15,27 +15,29 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.calculator.goods;
 
-import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
-import org.scleropages.core.util.Namings;
+import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
 
 /**
- * promotional goods source for calculator rule references.
+ * inject interface that wish to be holds associated {@link CalculatorGoodsSource}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CalculatorGoodsSource extends DetailedGoodsSource {
+public interface CalculatorGoodsSourceAware {
+
+    /**
+     * callback for {@link CalculatorGoodsSource} set.
+     *
+     * @return
+     */
+    void setCalculatorGoodsSource(CalculatorGoodsSource calculatorGoodsSource);
 
 
-    int BIZ_TYPE_OF_CALCULATOR = 1;
+    /**
+     * not required extension method. determined how to recovery states(not persistence fields) from {@link AdditionalAttributes}(from holds goods source ).
+     *
+     * @param additionalAttributes
+     */
+    default void recovery(AdditionalAttributes additionalAttributes) {
 
-
-    int GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT = 1;
-
-
-    int DETAILED_GOODS_SOURCE_TYPE = 4;//商品明细
-
-
-    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_CLASS = Namings.snakeCaseName(CalculatorGoodsSourceAware.class.getSimpleName()) + ".clazz";
-    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_PAYLOAD = Namings.snakeCaseName(CalculatorGoodsSourceAware.class.getSimpleName()) + ".payload";
-
+    }
 }

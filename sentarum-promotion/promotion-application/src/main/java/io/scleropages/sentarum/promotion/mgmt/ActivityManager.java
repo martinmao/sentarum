@@ -45,6 +45,8 @@ import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
 import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.goods.model.ClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSource;
+import io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer;
 import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceReaderInitializer;
 import org.scleropages.crud.GenericManager;
@@ -112,7 +114,6 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      */
     private AdditionalAttributesInitializer additionalAttributesInitializer;
     private DetailedGoodsSourceReaderInitializer detailedGoodsSourceReaderInitializer;
-
 
 
     /**
@@ -236,9 +237,9 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     /**
      * 根据 {@link DetailedGoodsSource} 中的条件检索活动
      *
-     * @param status           活动状态
-     * @param goodsId          商品id
-     * @param goodsSpecsId     商品规格id.
+     * @param status       活动状态
+     * @param goodsId      商品id
+     * @param goodsSpecsId 商品规格id.
      * @return
      */
     @Transactional(readOnly = true)
@@ -257,7 +258,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     @Transactional(readOnly = true)
     @BizError("52")
     public List<? extends Activity> getActivities(List<Long> ids, boolean fetchGoodsSource) {
-        if(CollectionUtils.isEmpty(ids))
+        if (CollectionUtils.isEmpty(ids))
             return Collections.emptyList();
         List<Activity> activities = Lists.newArrayList();
         ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
@@ -320,7 +321,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     public ActivityClassifiedGoodsSource getActivityClassifiedGoodsSource(Long id) {
         ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity classified goods source found: " + id));
         ActivityClassifiedGoodsSourceModel model = classifiedGoodsSourceEntityMapper.mapForRead(entity);
-        return (ActivityClassifiedGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, classifiedGoodsSourceRepository, false, false);
+        return (ActivityClassifiedGoodsSource) initializeGoodsSource(model, entity, classifiedGoodsSourceRepository);
     }
 
     /**
@@ -334,7 +335,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     public ActivityDetailedGoodsSource getActivityDetailedGoodsSource(Long id) {
         ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity detailed goods source found: " + id));
         ActivityDetailedGoodsSourceModel model = detailedGoodsSourceEntityMapper.mapForRead(entity);
-        return (ActivityDetailedGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, detailedGoodsSourceRepository, false, false);
+        return (ActivityDetailedGoodsSource) initializeGoodsSource(model, entity, detailedGoodsSourceRepository);
     }
 
     /**
@@ -380,7 +381,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
         List<ActivityClassifiedGoodsSourceEntity> classifiedGoodsSourceEntities = classifiedGoodsSourceRepository.findByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId);
         for (ActivityClassifiedGoodsSourceEntity entity : classifiedGoodsSourceEntities) {
             ActivityClassifiedGoodsSourceModel model = classifiedGoodsSourceEntityMapper.mapForRead(entity);
-            goodsSources.add((ActivityGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, classifiedGoodsSourceRepository, false, false));
+            goodsSources.add((ActivityGoodsSource) initializeGoodsSource(model, entity, classifiedGoodsSourceRepository));
         }
         if (goodsSources.isEmpty()) {
             List<ActivityDetailedGoodsSourceEntity> detailedGoodsSourceEntities = detailedGoodsSourceRepository.findByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId);
@@ -390,10 +391,19 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
                 }
                 ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceEntities.get(0);
                 ActivityDetailedGoodsSourceModel model = detailedGoodsSourceEntityMapper.mapForRead(entity);
-                goodsSources.add((ActivityGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, detailedGoodsSourceRepository, false, false, detailedGoodsSourceReaderInitializer));
+                goodsSources.add((ActivityGoodsSource) initializeGoodsSource(model, entity, detailedGoodsSourceRepository));
             }
         }
         return goodsSources;
+    }
+
+    /**
+     * 初始化商品来源，使其 {@link GoodsSource#additionalAttributes()} 及其兼容类型的 {@link DetailedGoodsSource#detailedGoodsSourceReader()} 可用.
+     *
+     * @return
+     */
+    protected GoodsSource initializeGoodsSource(GoodsSource model, Object entity, AbstractGoodsSourceRepository goodsSourceRepository) {
+        return (GoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, goodsSourceRepository, false, false, model instanceof DetailedGoodsSource ? detailedGoodsSourceReaderInitializer : null);
     }
 
 

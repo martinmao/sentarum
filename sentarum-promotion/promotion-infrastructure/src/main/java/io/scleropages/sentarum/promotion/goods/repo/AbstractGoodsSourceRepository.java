@@ -24,6 +24,7 @@ import org.jooq.Field;
 import org.jooq.JoinType;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectQuery;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -59,13 +60,16 @@ public interface AbstractGoodsSourceRepository<E extends AbstractGoodsSourceEnti
 
     Boolean existsByGoodsSourceType(Integer goodsSourceType);
 
-    @Cacheable(key = "#root.target+'-'+#bizType+'-'+#bizId")
-    default Result<R> readByBizTypeAndBizId(Integer bizType, Long bizId) {
+    @Cacheable(key = "#root.target+'-'+#bizType+'-'+#bizId+'-'+#goodsSourceId")
+    default Result<R> readAllByBizTypeAndBizId(Integer bizType, Long bizId, Integer goodsSourceId) {
         T t = dslTable();
-        return dslContext().selectFrom(t)
+        SelectConditionStep query = dslContext().selectFrom(t)
                 .where(t.field(AbstractGoodsSourceEntity.COLUMN_BIZ_TYPE.toUpperCase()).eq(bizType))
-                .and(t.field(AbstractGoodsSourceEntity.COLUMN_BIZ_ID.toUpperCase()).eq(bizId))
-                .fetch();
+                .and(t.field(AbstractGoodsSourceEntity.COLUMN_BIZ_ID.toUpperCase()).eq(bizId));
+        if (null != goodsSourceId) {
+            query.and(t.field(AbstractGoodsSourceEntity.COLUMN_GOODS_SOURCE_TYPE.toUpperCase()).eq(goodsSourceId));
+        }
+        return query.fetch();
     }
 
     default void consumeEntitiesByRecord(Result<R> rs, Consumer<E> consumer) {

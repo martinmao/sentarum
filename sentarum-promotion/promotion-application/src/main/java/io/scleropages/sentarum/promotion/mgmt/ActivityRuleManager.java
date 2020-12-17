@@ -23,20 +23,11 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsS
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.activity.repo.ActivityRepository;
-import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsRepository;
-import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSourceRepository;
-import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSpecsRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.repo.BaseCalculatorRuleRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.repo.OverflowDiscountRuleRepository;
 import io.scleropages.sentarum.promotion.rule.entity.AbstractRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.BaseCalculatorRuleEntity;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.OverflowDiscountRuleEntity;
-import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.CalculatorGoodsEntity;
-import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.CalculatorGoodsSourceEntity;
-import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.CalculatorGoodsSpecsEntity;
-import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.mapper.CalculatorGoodsEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.mapper.CalculatorGoodsSourceEntityMapper;
-import io.scleropages.sentarum.promotion.rule.entity.calculator.goods.mapper.CalculatorGoodsSpecsEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.mapper.BaseCalculatorRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.mapper.OverflowDiscountRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.condition.BaseConditionRuleEntity;
@@ -54,6 +45,7 @@ import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.ChannelC
 import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.SellerUserLevelConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserLevelConditionRuleRepository;
 import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserTagConditionRuleRepository;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculatorRuleInitializer;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
@@ -65,7 +57,7 @@ import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoods;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
-import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSpecs;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceModel;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
@@ -87,6 +79,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -110,6 +103,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
      * managers
      */
     private ActivityManager activityManager;
+    private CalculatorGoodsManager calculatorGoodsManager;
 
     /**
      * activity base repositories.
@@ -131,12 +125,6 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     private BaseCalculatorRuleRepository baseCalculatorRuleRepository;
     private OverflowDiscountRuleRepository overflowDiscountRuleRepository;
 
-    /**
-     * calculator goods repositories.
-     */
-    private CalculatorGoodsSourceRepository calculatorGoodsSourceRepository;
-    private CalculatorGoodsRepository calculatorGoodsRepository;
-    private CalculatorGoodsSpecsRepository calculatorGoodsSpecsRepository;
 
     /**
      * condition rule mappers.
@@ -154,11 +142,9 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     private OverflowDiscountRuleEntityMapper overflowDiscountRuleEntityMapper;
 
     /**
-     * promotion goods mappers.
+     * other components
      */
-    private CalculatorGoodsSourceEntityMapper calculatorGoodsSourceEntityMapper;
-    private CalculatorGoodsEntityMapper calculatorGoodsEntityMapper;
-    private CalculatorGoodsSpecsEntityMapper calculatorGoodsSpecsEntityMapper;
+    private List<CalculatorRuleInitializer> calculatorRuleInitializers = Collections.emptyList();
 
 
     /**
@@ -301,12 +287,13 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         Assert.notNull(overflowDiscount, "overflowDiscount must not be null.");
         OverflowDiscountRule overflowDiscountRule = overflowDiscountRuleEntityMapper.mapForRead(overflowDiscountRuleRepository.get(overflowDiscountRuleId).orElseThrow(() -> new IllegalArgumentException("no overflow discount rule found: " + overflowDiscountRuleId)));
         overflowDiscount.assertValid(overflowDiscountRule);
-        CalculatorGoodsSource calculatorGoodsSource = new CalculatorGoodsSource();
+        //实际物理上不存储 OverflowDiscount结构，而是将其信息作为扩展属性落在 CalculatorGoodsSource 维度.使其可在goods维度存储赠品信息.
+        CalculatorGoodsSourceModel calculatorGoodsSource = new CalculatorGoodsSourceModel();
         calculatorGoodsSource.setBizType(CalculatorGoodsSource.BIZ_TYPE_OF_CALCULATOR);
-        calculatorGoodsSource.setBizId(overflowDiscountRule.id());
+        calculatorGoodsSource.setBizId(overflowDiscountRuleId);
         calculatorGoodsSource.setComment("满减促销");
         calculatorGoodsSource.setGoodsSourceType(GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT);
-        return createCalculatorGoodsSource(calculatorGoodsSource, overflowDiscountRuleId, overflowDiscount);
+        return calculatorGoodsManager.createCalculatorGoodsSource(calculatorGoodsSource, overflowDiscount);
     }
 
 
@@ -321,76 +308,13 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     @Transactional
     @BizError("18")
     public Long createOverflowDiscountGift(@Valid Gift gift, Long overflowDiscountId) {
-        calculatorGoodsSourceRepository.get(overflowDiscountId).orElseThrow(() -> new IllegalArgumentException("no overflow discount found: " + overflowDiscountId));
+        calculatorGoodsManager.get(overflowDiscountId).orElseThrow(() -> new IllegalArgumentException("no overflow discount found: " + overflowDiscountId));
         CalculatorGoods goods = new CalculatorGoods();
         goods.setGoodsId(gift.getGoodsId());
         goods.setName(gift.getName());
         goods.setOuterGoodsId(gift.getOuterGoodsId());
-        return createCalculatorGoods(goods, overflowDiscountId, gift);
+        return calculatorGoodsManager.createCalculatorGoods(goods, overflowDiscountId, gift);
     }
-
-
-    /**
-     * 创建规则维度商品来源.
-     *
-     * @param calculatorGoodsSource
-     * @param calculatorRuleId
-     * @param initialAdditionalAttributesObject
-     * @return
-     */
-    @Validated(CalculatorGoodsSource.Create.class)
-    @Transactional
-    @BizError("30")
-    public Long createCalculatorGoodsSource(CalculatorGoodsSource calculatorGoodsSource, Long calculatorRuleId, Object initialAdditionalAttributesObject) {
-        CalculatorGoodsSourceEntity entity = calculatorGoodsSourceEntityMapper.mapForSave(calculatorGoodsSource);
-        entity.setAttributePayLoad(JsonMapper2.toJson(initialAdditionalAttributesObject));
-        Assert.isTrue(baseCalculatorRuleRepository.existsById(calculatorRuleId), () -> " no calculator rule found by id: " + calculatorRuleId);
-        entity.setBizId(calculatorRuleId);
-        calculatorGoodsSourceRepository.save(entity);
-        return entity.getId();
-    }
-
-    /**
-     * 创建规则维度商品.
-     *
-     * @param calculatorGoods
-     * @param calculatorGoodsSourceId
-     * @param initialAdditionalAttributesObject
-     * @return
-     */
-    @Validated(CalculatorGoods.Create.class)
-    @Transactional
-    @BizError("31")
-    public Long createCalculatorGoods(CalculatorGoods calculatorGoods, Long calculatorGoodsSourceId, Object initialAdditionalAttributesObject) {
-        CalculatorGoodsEntity entity = calculatorGoodsEntityMapper.mapForSave(calculatorGoods);
-        entity.setAdditionalAttributes(JsonMapper2.toJson(initialAdditionalAttributesObject));
-        CalculatorGoodsSourceEntity calculatorGoodsSourceEntity = calculatorGoodsSourceRepository.get(calculatorGoodsSourceId).orElseThrow(() -> new IllegalArgumentException("no calculator goods source found: " + calculatorGoodsSourceId));
-        entity.setGoodsSource(calculatorGoodsSourceEntity);
-        calculatorGoodsRepository.save(entity);
-        return entity.getId();
-    }
-
-    /**
-     * 创建规则维度商品规格.
-     *
-     * @param calculatorGoodsSpecs
-     * @param calculatorGoodsId
-     * @param initialAdditionalAttributesObject
-     * @return
-     */
-    @Validated(CalculatorGoods.Create.class)
-    @Transactional
-    @BizError("32")
-    public Long createCalculatorGoodsSpecs(CalculatorGoodsSpecs calculatorGoodsSpecs, Long calculatorGoodsId, Object initialAdditionalAttributesObject) {
-        CalculatorGoodsSpecsEntity entity = calculatorGoodsSpecsEntityMapper.mapForSave(calculatorGoodsSpecs);
-        entity.setAdditionalAttributes(JsonMapper2.toJson(initialAdditionalAttributesObject));
-        CalculatorGoodsEntity calculatorGoodsEntity = calculatorGoodsRepository.get(calculatorGoodsId).orElseThrow(() -> new IllegalArgumentException("no calculator goods found: " + calculatorGoodsId));
-        entity.setGoods(calculatorGoodsEntity);
-        entity.setGoodsSource(calculatorGoodsEntity.getGoodsSource());
-        calculatorGoodsSpecsRepository.save(entity);
-        return entity.getId();
-    }
-
 
     /**
      * read condition rules and merge rules to root of rule tree.
@@ -465,13 +389,32 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     @Transactional(readOnly = true)
     @BizError("34")
     public List<CalculatorRule> findAllCalculatorRulesByActivityId(Long activityId, Activity activity) {
-        List<BaseCalculatorRuleEntity> entities = baseCalculatorRuleRepository.findAllByActivity_Id(activityId);
+        List<BaseCalculatorRuleEntity> entities = baseCalculatorRuleRepository.readAllByActivity_Id(activityId);
         List<CalculatorRule> calculatorRules = Lists.newArrayList();
         for (BaseCalculatorRuleEntity entity : entities) {
-            calculatorRules.add((CalculatorRule) mapRule(entity, activity));
+            CalculatorRule calculatorRule = (CalculatorRule) mapRule(entity, activity);
+            for (CalculatorRuleInitializer initializer : calculatorRuleInitializers) {
+                if (initializer.support(calculatorRule)) {
+                    calculatorRule = initializer.initialize(calculatorRule);
+                }
+            }
+            calculatorRules.add(calculatorRule);
         }
         return calculatorRules;
     }
+
+    /**
+     * return all overflow discounts by given id.
+     *
+     * @param overflowDiscountRuleId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @BizError("35")
+    public List<CalculatorGoodsSource> readAllOverflowDiscounts(Long overflowDiscountRuleId) {
+        return calculatorGoodsManager.readAllCalculatorGoodsSourceByRuleId(overflowDiscountRuleId, GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT);
+    }
+
 
     /**
      * map rule entity as rule model and applying to given activity(optional)
@@ -548,6 +491,11 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
+    public void setCalculatorGoodsManager(CalculatorGoodsManager calculatorGoodsManager) {
+        this.calculatorGoodsManager = calculatorGoodsManager;
+    }
+
+    @Autowired
     public void setActivityRepository(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
@@ -588,21 +536,6 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
-    public void setCalculatorGoodsSourceRepository(CalculatorGoodsSourceRepository calculatorGoodsSourceRepository) {
-        this.calculatorGoodsSourceRepository = calculatorGoodsSourceRepository;
-    }
-
-    @Autowired
-    public void setCalculatorGoodsRepository(CalculatorGoodsRepository calculatorGoodsRepository) {
-        this.calculatorGoodsRepository = calculatorGoodsRepository;
-    }
-
-    @Autowired
-    public void setCalculatorGoodsSpecsRepository(CalculatorGoodsSpecsRepository calculatorGoodsSpecsRepository) {
-        this.calculatorGoodsSpecsRepository = calculatorGoodsSpecsRepository;
-    }
-
-    @Autowired
     public void setBaseConditionRuleEntityMapper(BaseConditionRuleEntityMapper baseConditionRuleEntityMapper) {
         this.baseConditionRuleEntityMapper = baseConditionRuleEntityMapper;
     }
@@ -638,18 +571,8 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     @Autowired
-    public void setCalculatorGoodsSourceEntityMapper(CalculatorGoodsSourceEntityMapper calculatorGoodsSourceEntityMapper) {
-        this.calculatorGoodsSourceEntityMapper = calculatorGoodsSourceEntityMapper;
-    }
-
-    @Autowired
-    public void setCalculatorGoodsEntityMapper(CalculatorGoodsEntityMapper calculatorGoodsEntityMapper) {
-        this.calculatorGoodsEntityMapper = calculatorGoodsEntityMapper;
-    }
-
-    @Autowired
-    public void setCalculatorGoodsSpecsEntityMapper(CalculatorGoodsSpecsEntityMapper calculatorGoodsSpecsEntityMapper) {
-        this.calculatorGoodsSpecsEntityMapper = calculatorGoodsSpecsEntityMapper;
+    public void setCalculatorRuleInitializers(List<CalculatorRuleInitializer> calculatorRuleInitializers) {
+        this.calculatorRuleInitializers = calculatorRuleInitializers;
     }
 
     private ClassLoader classLoader;
@@ -658,4 +581,5 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
+
 }

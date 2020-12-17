@@ -31,9 +31,15 @@ import java.util.List;
  */
 public interface BaseCalculatorRuleRepository extends AbstractCalculatorRuleRepository<BaseCalculatorRuleEntity, PromCalcBase, PromCalcBaseRecord> {
 
-    @Override
+    /**
+     * 覆写该方法避免全子表join.默认情况下所有规则设置在基表扩展属性字段中保存.
+     *
+     * @param activityId
+     * @return
+     */
+//    @Override
     @Cacheable
-    default List<BaseCalculatorRuleEntity> findAllByActivity_Id(Long activityId) {
+    default List<BaseCalculatorRuleEntity> readAllByActivity_Id(Long activityId) {
         PromCalcBase table = dslTable();
         List<BaseCalculatorRuleEntity> entities = Lists.newArrayList();
         dslContext().selectFrom(table).where(table.ACTIVITY_ID.eq(activityId)).fetch().forEach(r -> {

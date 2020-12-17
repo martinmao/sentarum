@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.promotion.rule.repo;
+package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.promotion.rule.entity.calculator.BaseCalculatorRuleEntity;
-import org.jooq.Record;
-import org.jooq.Table;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.repository.NoRepositoryBean;
-
-import java.util.List;
+import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 
 /**
+ * spi extension for calculator rule initialize.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@NoRepositoryBean
-public interface AbstractCalculatorRuleRepository<E extends BaseCalculatorRuleEntity, T extends Table, R extends Record> extends AbstractRuleRepository<E, T, R> {
+public interface CalculatorRuleInitializer {
 
-//    @Cacheable(key = "#root.target+'-'+#activityId")
-//    List<E> readAllByActivity_Id(Long activityId);
+
+    /**
+     * return true if given calculator rule needs to initialized.
+     *
+     * @param calculatorRule
+     * @return
+     */
+    boolean support(CalculatorRule calculatorRule);
+
+
+    /**
+     * initialize given calculator rule.
+     * @param calculatorRule
+     * @return
+     */
+    CalculatorRule initialize(CalculatorRule calculatorRule);
 }

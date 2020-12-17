@@ -46,10 +46,8 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
         resultBuilder.withName(rule.activity().name() + "-" + rule.activity().tag());
         Amount adjustFee = new Amount();
         switch (rule.getOverflowDiscountType()) {
-            case FIXED_FEE_OVERFLOW: {
-                Amount totalAmount = calculateTotalAmount(promotionContext);
-                Integer limit = rule.getOverflowCycleLimit();
-                List<OverflowDiscount> overflowDiscounts = rule.getOverflowDiscounts();
+            case FIXED_FEE_OVERFLOW: {//固定满减计算
+                List<OverflowDiscount> overflowDiscounts = rule.detailedConfigures();
                 if (CollectionUtils.isEmpty(overflowDiscounts)) {
                     logger.warn("no price-break discounts found for rule: {}. ignore to calculating....", rule.id());
                     return;
@@ -59,23 +57,25 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
                     logger.warn("found more than one price-break discounts for rule: {}. use first[{}] for calculating...", rule.id(), JsonMapper2.toJson(overflowDiscount));
                 }
                 Discount discount = overflowDiscount.getOverflowDiscount();
-                switch (discount.getDiscountType()) {
-                    case DECREASE_WITHOUT_ORIGINAL_PRICE: {
-                        Amount divisor = totalAmount.divide(overflowDiscount.getOverflowFee(), false);
-                        divisor = limit == -1 ? divisor : divisor.min(new Amount(limit));
-                        adjustFee = discount.multiplyDiscountAmount(divisor, false);
-                        break;
+                if (null != discount) {//减钱
+                    switch (discount.getDiscountType()) {
+                        case DECREASE_WITHOUT_ORIGINAL_PRICE: {
+                            adjustFee = calculateFixedAdjustFee(promotionContext, rule, overflowDiscount);
+                            break;
+                        }
+                        case DISCOUNT_WITHOUT_ORIGINAL_PRICE: {
+                            adjustFee = discount.discountAmount(calculateTotalAmount(promotionContext), true);
+                            break;
+                        }
                     }
-                    case DISCOUNT_WITHOUT_ORIGINAL_PRICE: {
-                        adjustFee = discount.discountAmount(totalAmount, true);
-                        break;
-                    }
+                } else {//发赠品
+
                 }
                 break;
             }
-            case STEPPED_FEE_OVERFLOW: {
+            case STEPPED_FEE_OVERFLOW: {//阶梯满减计算
                 Amount totalAmount = calculateTotalAmount(promotionContext);
-                List<OverflowDiscount> overflowDiscounts = rule.getOverflowDiscounts();
+                List<OverflowDiscount> overflowDiscounts = rule.detailedConfigures();
                 if (CollectionUtils.isEmpty(overflowDiscounts)) {
                     logger.warn("no price-break discounts found for rule: {}. ignore to calculating....", rule.id());
                     return;
@@ -100,7 +100,6 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
                 break;
             }
             case FIXED_GOODS_NUM_OVERFLOW: {
-                Integer totalNum = calculateTotalNum(promotionContext);
                 //todo
                 break;
             }
@@ -113,19 +112,34 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
         promotionContext.addPromotionResult(resultBuilder.build());
     }
 
+
+    /**
+     * 计算固定满减价格调整.
+     *
+     * @param promotionContext
+     * @param rule
+     * @param overflowDiscount
+     * @return
+     */
+    private final Amount calculateFixedAdjustFee(OrderPromotionContext promotionContext, OverflowDiscountRule rule, OverflowDiscount overflowDiscount) {
+        Amount totalAmount = calculateTotalAmount(promotionContext);
+        Amount divisor = totalAmount.divide(overflowDiscount.getOverflowFee(), false);
+        Integer limit = rule.getOverflowCycleLimit();
+        divisor = limit == -1 ? divisor : divisor.min(new Amount(limit));
+        return overflowDiscount.getOverflowDiscount().multiplyDiscountAmount(divisor, false);
+    }
+
+    /**
+     * 计算订单总金额.
+     *
+     * @param promotionContext
+     * @return
+     */
     private final Amount calculateTotalAmount(OrderPromotionContext promotionContext) {
         Amount totalAmount = new Amount();
         for (GoodsPromotionContext goodsPromotionContext : promotionContext.goodsPromotionContexts()) {
-            totalAmount = totalAmount.add(goodsPromotionContext.originalPrice());
+            totalAmount = totalAmount.add(goodsPromotionContext.originalPrice().multiply(goodsPromotionContext.num(), true));
         }
         return totalAmount;
-    }
-
-    private final Integer calculateTotalNum(OrderPromotionContext promotionContext) {
-        int totalNum = 0;
-        for (GoodsPromotionContext goodsPromotionContext : promotionContext.goodsPromotionContexts()) {
-            totalNum += goodsPromotionContext.num();
-        }
-        return totalNum;
     }
 }
