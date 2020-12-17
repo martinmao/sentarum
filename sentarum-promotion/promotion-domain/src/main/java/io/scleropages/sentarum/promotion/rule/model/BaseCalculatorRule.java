@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class AbstractCalculatorRule extends AbstractRule implements CalculatorRule {
+public class BaseCalculatorRule extends AbstractRule implements CalculatorRule {
 
     private CalculateLevel calculateLevel;
 

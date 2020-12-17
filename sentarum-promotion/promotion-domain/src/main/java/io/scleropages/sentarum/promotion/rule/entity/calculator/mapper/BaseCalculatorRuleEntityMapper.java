@@ -17,7 +17,7 @@ package io.scleropages.sentarum.promotion.rule.entity.calculator.mapper;
 
 import io.scleropages.sentarum.promotion.rule.entity.mapper.AbstractRuleEntityMapper;
 import io.scleropages.sentarum.promotion.rule.entity.calculator.BaseCalculatorRuleEntity;
-import io.scleropages.sentarum.promotion.rule.model.AbstractCalculatorRule;
+import io.scleropages.sentarum.promotion.rule.model.BaseCalculatorRule;
 import org.mapstruct.Mapper;
 import org.scleropages.crud.ModelMapper;
 
@@ -25,6 +25,6 @@ import org.scleropages.crud.ModelMapper;
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Mapper(config = ModelMapper.DefaultConfig.class)
-public interface BaseCalculatorRuleEntityMapper extends AbstractRuleEntityMapper<BaseCalculatorRuleEntity, AbstractCalculatorRule> {
+public interface BaseCalculatorRuleEntityMapper extends AbstractRuleEntityMapper<BaseCalculatorRuleEntity, BaseCalculatorRule> {
 
 }

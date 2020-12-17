@@ -25,7 +25,7 @@ import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.AllOfGo
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.GoodsHolder;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.GoodsDiscountCalculator;
-import io.scleropages.sentarum.promotion.rule.model.AbstractCalculatorRule;
+import io.scleropages.sentarum.promotion.rule.model.BaseCalculatorRule;
 import org.scleropages.core.util.Namings;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -54,7 +54,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class GoodsDiscountRule extends AbstractCalculatorRule {
+public class GoodsDiscountRule extends BaseCalculatorRule {
 
 
     public static final String ATTRIBUTE_PREFIX = Namings.snakeCaseName(GoodsDiscountRule.class.getSimpleName()) + ".";

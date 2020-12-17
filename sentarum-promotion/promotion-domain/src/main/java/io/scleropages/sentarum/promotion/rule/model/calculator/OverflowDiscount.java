@@ -21,7 +21,7 @@ import io.scleropages.sentarum.core.model.primitive.Discount.DiscountType;
 import io.scleropages.sentarum.promotion.goods.model.DetailedGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule.OverflowDiscountType;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
-import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceAware;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRuleDetailedConfigure;
 import org.springframework.util.Assert;
 
 import java.util.Objects;
@@ -41,7 +41,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OverflowDiscount implements CalculatorGoodsSourceAware {
+public class OverflowDiscount implements CalculatorInitializableRuleDetailedConfigure<OverflowDiscountRule> {
 
     /**
      * 满减折扣，{@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#STEPPED_FEE_OVERFLOW} 时有效.<br>
@@ -67,7 +67,8 @@ public class OverflowDiscount implements CalculatorGoodsSourceAware {
      *
      * @param overflowDiscountRule
      */
-    public void assertValid(OverflowDiscountRule overflowDiscountRule) {
+    @Override
+    public void assertConfigure(OverflowDiscountRule overflowDiscountRule) {
 
         Assert.notNull(overflowDiscountRule, "overflowDiscountRule must not be null.");
         OverflowDiscountType overflowDiscountType = overflowDiscountRule.getOverflowDiscountType();
@@ -145,6 +146,11 @@ public class OverflowDiscount implements CalculatorGoodsSourceAware {
     @Override
     public void setCalculatorGoodsSource(CalculatorGoodsSource calculatorGoodsSource) {
         this.calculatorGoodsSource = calculatorGoodsSource;
+    }
+
+    @Override
+    public String comment() {
+        return "满减促销明细规则";
     }
 
     public CalculatorGoodsSource getCalculatorGoodsSource() {

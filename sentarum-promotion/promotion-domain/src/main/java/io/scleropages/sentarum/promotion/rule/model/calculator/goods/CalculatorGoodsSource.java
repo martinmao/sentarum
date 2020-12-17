@@ -35,7 +35,7 @@ public interface CalculatorGoodsSource extends DetailedGoodsSource {
     int DETAILED_GOODS_SOURCE_TYPE = 4;//商品明细
 
 
-    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_CLASS = Namings.snakeCaseName(CalculatorGoodsSourceAware.class.getSimpleName()) + ".clazz";
-    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_PAYLOAD = Namings.snakeCaseName(CalculatorGoodsSourceAware.class.getSimpleName()) + ".payload";
+    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_CLASS = Namings.snakeCaseName(CalculatorInitializableRuleDetailedConfigure.class.getSimpleName()) + ".clazz";
+    String ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_PAYLOAD = Namings.snakeCaseName(CalculatorInitializableRuleDetailedConfigure.class.getSimpleName()) + ".payload";
 
 }

@@ -37,6 +37,7 @@ import io.scleropages.sentarum.promotion.rule.impl.SimplePromotionChainStarterRu
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
 import org.scleropages.crud.exception.BizError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,17 @@ public class PromotionApplication {
     private RuleContainer ruleContainer;
     private ItemApi itemApi;
 
+
+    /**
+     * 创建满减促销规则.
+     *
+     * @param rule
+     * @param activityId
+     * @return
+     */
+    public Long createOverflowDiscountRule(OverflowDiscountRule rule, Long activityId) {
+        return activityRuleManager.createCalculatingRule(rule, activityId);
+    }
 
     public void calculateDiscount(PromotionCalculateRequest request) {
         Assert.notNull(request, "request must not be null.");

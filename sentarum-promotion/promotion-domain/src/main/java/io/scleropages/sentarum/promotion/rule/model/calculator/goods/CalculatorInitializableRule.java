@@ -21,11 +21,13 @@ import io.scleropages.sentarum.promotion.rule.model.InitializableRule;
 import java.util.List;
 
 /**
- * 可初始化规则接口，其详情配置信息落在 {@link CalculatorGoodsSource} 维度.
+ * 可初始化计算规则接口.统一并简化计算规则结构.<br>
+ * 结构上，该接口将详情计算规则落在 {@link CalculatorGoodsSource}上. 并向下可扩展到第二维 {@link CalculatorGoods},甚至第三维 {@link CalculatorGoodsSpecs}
+ * 该接口是一个延迟初始化接口，计算引擎在实际执行计算需要时才会对规则进行初始化.初始化意味着加载配置详情信息（{@link CalculatorInitializableRuleDetailedConfigure}）.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CalculatorGoodsSourceInitializableRule<T extends CalculatorGoodsSourceAware> extends CalculatorRule, InitializableRule {
+public interface CalculatorInitializableRule<T extends CalculatorInitializableRuleDetailedConfigure> extends CalculatorRule, InitializableRule {
 
 
     /**
@@ -36,7 +38,7 @@ public interface CalculatorGoodsSourceInitializableRule<T extends CalculatorGood
     Integer goodsSourceType();
 
     /**
-     * return detailed configures of this rule.
+     * initializing and return detailed configures of this rule.
      *
      * @return
      */

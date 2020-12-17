@@ -20,8 +20,8 @@ import io.scleropages.sentarum.promotion.mgmt.CalculatorGoodsManager;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculatorRuleInitializer;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
-import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceAware;
-import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceInitializableRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRuleDetailedConfigure;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRule;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.core.util.Reflections2;
@@ -37,7 +37,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Initializer for {@link CalculatorGoodsSourceInitializableRule}.
+ * Initializer for {@link CalculatorInitializableRule}.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -50,15 +50,15 @@ public class CalculatorGoodsSourceRuleInitializer implements CalculatorRuleIniti
 
     @Override
     public boolean support(CalculatorRule calculatorRule) {
-        return calculatorRule instanceof CalculatorGoodsSourceInitializableRule;
+        return calculatorRule instanceof CalculatorInitializableRule;
     }
 
     @Override
     public CalculatorRule initialize(CalculatorRule calculatorRule) {
-        CalculatorGoodsSourceInitializableRule initializingRule = (CalculatorGoodsSourceInitializableRule) calculatorRule;
+        CalculatorInitializableRule initializingRule = (CalculatorInitializableRule) calculatorRule;
         ProxyFactory proxyFactory = new ProxyFactory(initializingRule);
         proxyFactory.setProxyTargetClass(false);
-        List<CalculatorGoodsSourceAware> awareList = Lists.newArrayList();
+        List<CalculatorInitializableRuleDetailedConfigure> awareList = Lists.newArrayList();
         AtomicBoolean initialized = new AtomicBoolean(false);//mark true if detailedConfigures initialized.
         proxyFactory.addAdvice((MethodInterceptor) invocation -> {
             if (Objects.equals(invocation.getMethod().getName(), "detailedConfigures")) {
@@ -71,8 +71,8 @@ public class CalculatorGoodsSourceRuleInitializer implements CalculatorRuleIniti
                     Class<?> clazz = Reflections2.getClass(String.valueOf(className), classLoader);
                     Object objectPayload = goodsSource.additionalAttributes().getAttribute(CalculatorGoodsSource.ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_PAYLOAD);
                     Object object = JsonMapper2.fromJson(String.valueOf(objectPayload), clazz);
-                    if (object instanceof CalculatorGoodsSourceAware) {
-                        CalculatorGoodsSourceAware actualAware = (CalculatorGoodsSourceAware) object;
+                    if (object instanceof CalculatorInitializableRuleDetailedConfigure) {
+                        CalculatorInitializableRuleDetailedConfigure actualAware = (CalculatorInitializableRuleDetailedConfigure) object;
                         actualAware.setCalculatorGoodsSource(goodsSource);
                         awareList.add(actualAware);
                     } else {

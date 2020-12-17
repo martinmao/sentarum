@@ -16,8 +16,8 @@
 package io.scleropages.sentarum.promotion.rule.model.calculator;
 
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.OverflowDiscountCalculator;
-import io.scleropages.sentarum.promotion.rule.model.AbstractCalculatorRule;
-import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceInitializableRule;
+import io.scleropages.sentarum.promotion.rule.model.BaseCalculatorRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRule;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -46,7 +46,7 @@ import static io.scleropages.sentarum.promotion.rule.model.calculator.goods.Calc
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class OverflowDiscountRule extends AbstractCalculatorRule implements CalculatorGoodsSourceInitializableRule<OverflowDiscount> {
+public class OverflowDiscountRule extends BaseCalculatorRule implements CalculatorInitializableRule<OverflowDiscount> {
 
     /**
      * 满减类型

@@ -48,6 +48,7 @@ import io.scleropages.sentarum.promotion.rule.invocation.condition.repo.UserTagC
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculatorRuleInitializer;
 import io.scleropages.sentarum.promotion.rule.model.AbstractConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
+import io.scleropages.sentarum.promotion.rule.model.BaseCalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
@@ -58,6 +59,8 @@ import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountR
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoods;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSourceModel;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRuleDetailedConfigure;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ConjunctionConditionRule.ConditionConjunction;
@@ -257,6 +260,25 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     /**
+     * 创建计算规则.
+     *
+     * @param calculatorRule
+     * @param activityId
+     * @return
+     */
+    @Validated(BaseCalculatorRule.Create.class)
+    @Transactional
+    @BizError("16")
+    public Long createCalculatingRule(@Valid BaseCalculatorRule calculatorRule, Long activityId) {
+        Assert.notNull(activityId, "activityId must not be null.");
+        BaseCalculatorRuleEntity entity = baseCalculatorRuleEntityMapper.mapForSave(calculatorRule);
+        entity.setActivity(getRequiredActivityEntity(activityId));
+        preRuleCreating(calculatorRule, entity);
+        baseCalculatorRuleRepository.save(entity);
+        return entity.getId();
+    }
+
+    /**
      * 创建满减促销规则.
      *
      * @param overflowDiscountRule
@@ -275,6 +297,31 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     /**
+     * 创建计算规则详情
+     *
+     * @param configure
+     * @param calculatorRuleId
+     * @return
+     */
+    @Transactional
+    @BizError("16")
+    public Long createCalculatingRuleDetailedConfig(CalculatorInitializableRuleDetailedConfigure configure, Long calculatorRuleId) {
+        Assert.notNull(configure, "configure must not be null.");
+        Assert.notNull(calculatorRuleId, "calculatorRuleId must not be null.");
+        BaseCalculatorRuleEntity baseCalculatorRuleEntity = baseCalculatorRuleRepository.get(calculatorRuleId).orElseThrow(() -> new IllegalArgumentException("no calculator rule found: " + calculatorRuleId));
+        AbstractRule rule = mapRule(baseCalculatorRuleEntity, null);
+        Assert.isInstanceOf(CalculatorInitializableRule.class, rule, "not an instanceof CalculatorInitializableRule by given rule id:" + calculatorRuleId);
+        CalculatorInitializableRule initializableRule = (CalculatorInitializableRule) rule;
+        configure.assertConfigure(initializableRule);
+        CalculatorGoodsSourceModel calculatorGoodsSource = new CalculatorGoodsSourceModel();
+        calculatorGoodsSource.setBizType(CalculatorGoodsSource.BIZ_TYPE_OF_CALCULATOR);
+        calculatorGoodsSource.setBizId(calculatorRuleId);
+        calculatorGoodsSource.setComment(configure.comment());
+        calculatorGoodsSource.setGoodsSourceType(initializableRule.goodsSourceType());
+        return calculatorGoodsManager.createCalculatorGoodsSource(calculatorGoodsSource, configure);
+    }
+
+    /**
      * 创建满减促销规则明细.
      *
      * @param overflowDiscount
@@ -286,7 +333,7 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     public Long createOverflowDiscount(OverflowDiscount overflowDiscount, Long overflowDiscountRuleId) {
         Assert.notNull(overflowDiscount, "overflowDiscount must not be null.");
         OverflowDiscountRule overflowDiscountRule = overflowDiscountRuleEntityMapper.mapForRead(overflowDiscountRuleRepository.get(overflowDiscountRuleId).orElseThrow(() -> new IllegalArgumentException("no overflow discount rule found: " + overflowDiscountRuleId)));
-        overflowDiscount.assertValid(overflowDiscountRule);
+        overflowDiscount.assertConfigure(overflowDiscountRule);
         //实际物理上不存储 OverflowDiscount结构，而是将其信息作为扩展属性落在 CalculatorGoodsSource 维度.使其可在goods维度存储赠品信息.
         CalculatorGoodsSourceModel calculatorGoodsSource = new CalculatorGoodsSourceModel();
         calculatorGoodsSource.setBizType(CalculatorGoodsSource.BIZ_TYPE_OF_CALCULATOR);
