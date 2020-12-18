@@ -165,8 +165,8 @@ public class CalculatorTestcase {
 
     @Test
     public void testCalculateDiscount() {
-        initPlatformActivity();
-        initSellerActivity();
+//        initPlatformActivity();
+//        initSellerActivity();
         PromotionCalculateRequest request = new PromotionCalculateRequest();
         request.setBuyerId(1l);
         request.setChannelType(ChannelConditionRule.ChannelType.APP_MALL);
