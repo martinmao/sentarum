@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.mgmt;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSpecsRepository;
@@ -39,6 +40,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -81,7 +83,10 @@ public class CalculatorGoodsManager {
     @BizError("10")
     public Long createCalculatorGoodsSource(@Valid CalculatorGoodsSourceModel calculatorGoodsSource, Object initialAdditionalAttributesObject) {
         CalculatorGoodsSourceEntity entity = calculatorGoodsSourceEntityMapper.mapForSave(calculatorGoodsSource);
-        entity.setAttributePayLoad(JsonMapper2.toJson(initialAdditionalAttributesObject));
+        Map<String, Object> attributePayload = Maps.newHashMap();
+        attributePayload.put(CalculatorGoodsSource.ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_CLASS, initialAdditionalAttributesObject.getClass().getName());
+        attributePayload.put(CalculatorGoodsSource.ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_PAYLOAD, JsonMapper2.toJson(initialAdditionalAttributesObject));
+        entity.setAttributePayLoad(JsonMapper2.toJson(attributePayload));
         calculatorGoodsSourceRepository.save(entity);
         return entity.getId();
     }
@@ -135,7 +140,7 @@ public class CalculatorGoodsManager {
      */
     @Transactional(readOnly = true)
     @BizError("12")
-    public Optional<CalculatorGoodsSource> get(Long id) {
+    public Optional<CalculatorGoodsSource> getGoodsSource(Long id) {
         Assert.notNull(id, "id must not be null.");
         Optional<CalculatorGoodsSourceEntity> optional = calculatorGoodsSourceRepository.get(id);
         if (!optional.isPresent()) {

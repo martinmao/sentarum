@@ -21,12 +21,9 @@ import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.COLUMN_BIZ_ID;
-import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity.COLUMN_BIZ_TYPE;
 
 /**
  * referenced from {@link CalculatorGoodsSource}
@@ -34,7 +31,10 @@ import static io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSource
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @Entity
-@Table(name = "prom_calc_goods_source", uniqueConstraints = @UniqueConstraint(columnNames = {COLUMN_BIZ_TYPE, COLUMN_BIZ_ID}))
+@Table(name = "prom_calc_goods_source"
+/*, uniqueConstraints = @UniqueConstraint(columnNames = {COLUMN_BIZ_TYPE, COLUMN_BIZ_ID})*/
+        , indexes = @Index(columnList = "biz_type,biz_id")
+)
 @SequenceGenerator(name = "prom_calc_goods_source_id", sequenceName = "seq_prom_calc_goods_source", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
 public class CalculatorGoodsSourceEntity extends DetailedGoodsSourceEntity {
 

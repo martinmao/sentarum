@@ -30,6 +30,7 @@ import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsSpecsM
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculateLevel;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule.GoodsDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule.GoodsSpecsDiscount;

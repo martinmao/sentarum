@@ -25,6 +25,7 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
+import io.scleropages.sentarum.promotion.mgmt.CalculatorGoodsManager;
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarterFactory;
 import io.scleropages.sentarum.promotion.rule.RuleContainer;
@@ -37,19 +38,27 @@ import io.scleropages.sentarum.promotion.rule.impl.SimplePromotionChainStarterRu
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.Gift;
+import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoods;
 import org.scleropages.crud.exception.BizError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource.CLASSIFIED_GOODS_SOURCE_TYPE_ALL;
 import static io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource.CLASSIFIED_GOODS_SOURCE_TYPE_SELLER;
 
 /**
@@ -65,6 +74,7 @@ public class PromotionApplication {
 
     private ActivityManager activityManager;
     private ActivityRuleManager activityRuleManager;
+    private CalculatorGoodsManager calculatorGoodsManager;
     private RuleContainer ruleContainer;
     private ItemApi itemApi;
 
@@ -76,9 +86,50 @@ public class PromotionApplication {
      * @param activityId
      * @return
      */
+    @BizError("01")
+    @Transactional
     public Long createOverflowDiscountRule(OverflowDiscountRule rule, Long activityId) {
-        return activityRuleManager.createCalculatingRule(rule, activityId);
+        Long id = activityRuleManager.createCalculatingRule(rule, activityId);
+        if (!CollectionUtils.isEmpty(rule.getOverflowDiscounts())) {
+            for (OverflowDiscount overflowDiscount : rule.getOverflowDiscounts()) {
+                createOverflowDiscount(overflowDiscount, id);
+            }
+        }
+        return id;
     }
+
+    /**
+     * 创建满减促销规则明细.
+     *
+     * @param discount
+     * @param overflowDiscountRuleId
+     * @return
+     */
+    @BizError("01")
+    @Transactional
+    public Long createOverflowDiscount(OverflowDiscount discount, Long overflowDiscountRuleId) {
+        return activityRuleManager.createCalculatingRuleDetailedConfig(discount, overflowDiscountRuleId);
+    }
+
+    /**
+     * 创建满减促销赠品.
+     *
+     * @param gift
+     * @param overflowDiscountId
+     * @return
+     */
+    @Validated(Gift.Create.class)
+    @BizError("03")
+    @Transactional
+    public Long createOverflowDiscountGift(@Valid Gift gift, Long overflowDiscountId) {
+        calculatorGoodsManager.getGoodsSource(overflowDiscountId).orElseThrow(() -> new IllegalArgumentException("no overflow discount found: " + overflowDiscountId));
+        CalculatorGoods goods = new CalculatorGoods();
+        goods.setGoodsId(gift.getGoodsId());
+        goods.setName(gift.getName());
+        goods.setOuterGoodsId(gift.getOuterGoodsId());
+        return calculatorGoodsManager.createCalculatorGoods(goods, overflowDiscountId, gift);
+    }
+
 
     public void calculateDiscount(PromotionCalculateRequest request) {
         Assert.notNull(request, "request must not be null.");
@@ -120,6 +171,9 @@ public class PromotionApplication {
         Long sellerId = item.sellerId();
         //可用的商家活动....
         List<Activity> activities = Lists.newArrayList(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId), true));
+        //可用的平台活动...
+        activities.addAll(Lists.newArrayList(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_ALL, sellerUnionId, sellerId), true)));
+        //TODO
         //可用的品类活动...
         //TODO
         //可用的品牌活动...
@@ -131,7 +185,7 @@ public class PromotionApplication {
 
 
     /**
-     * get sku from item center.
+     * getGoodsSource sku from item center.
      *
      * @param goodsSpecs
      * @return
@@ -239,6 +293,11 @@ public class PromotionApplication {
     @Autowired
     public void setActivityRuleManager(ActivityRuleManager activityRuleManager) {
         this.activityRuleManager = activityRuleManager;
+    }
+
+    @Autowired
+    public void setCalculatorGoodsManager(CalculatorGoodsManager calculatorGoodsManager) {
+        this.calculatorGoodsManager = calculatorGoodsManager;
     }
 
     @Autowired

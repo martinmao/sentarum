@@ -99,8 +99,8 @@ public class OverflowDiscount implements CalculatorInitializableRuleDetailedConf
         Assert.notNull(overflowFee, "overflow fee is required for: " + overflowDiscountType);
         if (null != overflowDiscount) {
             Assert.isTrue(
-                    Objects.equals(overflowDiscount, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE)
-                            || Objects.equals(overflowDiscount, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE),
+                    Objects.equals(overflowDiscount.getDiscountType(), DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE)
+                            || Objects.equals(overflowDiscount.getDiscountType(), DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE),
                     "discount type must be DECREASE_WITHOUT_ORIGINAL_PRICE or DISCOUNT_WITHOUT_ORIGINAL_PRICE for: " + overflowDiscountType);
         } else {
             Assert.notNull(userGiftNum, "overflowDiscount or userGiftNum must specified at least one.");

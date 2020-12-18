@@ -24,6 +24,7 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.AllOfGoods;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.GoodsHolder;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculateLevel;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.GoodsDiscountCalculator;
 import io.scleropages.sentarum.promotion.rule.model.BaseCalculatorRule;
 import org.scleropages.core.util.Namings;
@@ -78,6 +79,10 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
      */
     private List<UserLevelDiscount> userLevelDiscounts;
 
+    @Override
+    public CalculateLevel calculateLevel() {
+        return CalculateLevel.GOODS_DISCOUNT;
+    }
 
     public void applyActivityDetailedGoodsSourceConfigure(ActivityDetailedGoodsSource goodsSource) {
         Assert.notEmpty(goodsDiscounts, "goods discounts must not empty while current activity associated a detailed goods source.");

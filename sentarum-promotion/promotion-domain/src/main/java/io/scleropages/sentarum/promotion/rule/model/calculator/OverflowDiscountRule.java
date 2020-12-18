@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.calculator;
 
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculateLevel;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.OverflowDiscountCalculator;
 import io.scleropages.sentarum.promotion.rule.model.BaseCalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRule;
@@ -57,6 +58,8 @@ public class OverflowDiscountRule extends BaseCalculatorRule implements Calculat
      */
     private Integer overflowCycleLimit;
 
+    private List<OverflowDiscount> overflowDiscounts;
+
     @NotNull(groups = Create.class)
     @Null(groups = Update.class)
     public OverflowDiscountType getOverflowDiscountType() {
@@ -67,12 +70,26 @@ public class OverflowDiscountRule extends BaseCalculatorRule implements Calculat
         return overflowCycleLimit;
     }
 
+
+    public List<OverflowDiscount> getOverflowDiscounts() {
+        return overflowDiscounts;
+    }
+
     public void setOverflowDiscountType(OverflowDiscountType overflowDiscountType) {
         this.overflowDiscountType = overflowDiscountType;
     }
 
     public void setOverflowCycleLimit(Integer overflowCycleLimit) {
         this.overflowCycleLimit = overflowCycleLimit;
+    }
+
+    public void setOverflowDiscounts(List<OverflowDiscount> overflowDiscounts) {
+        this.overflowDiscounts = overflowDiscounts;
+    }
+
+    @Override
+    public CalculateLevel calculateLevel() {
+        return CalculateLevel.RANGE_PROMOTION;
     }
 
     @Override

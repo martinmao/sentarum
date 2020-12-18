@@ -114,7 +114,7 @@
         <heap>1000</heap>
     </cache>
 
-    <cache alias="io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository.readByBizTypeAndBizId">
+    <cache alias="io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository.readAllByBizTypeAndBizId">
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>

@@ -249,7 +249,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     }
 
     /**
-     * get activities by ids
+     * getGoodsSource activities by ids
      *
      * @param ids              id list for activity
      * @param fetchGoodsSource true if want to fetch goods source.
@@ -404,6 +404,19 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      */
     protected GoodsSource initializeGoodsSource(GoodsSource model, Object entity, AbstractGoodsSourceRepository goodsSourceRepository) {
         return (GoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, goodsSourceRepository, false, false, model instanceof DetailedGoodsSource ? detailedGoodsSourceReaderInitializer : null);
+    }
+
+
+    /**
+     * 初始化活动，使其 {@link Activity#additionalAttributes()}可用.
+     *
+     * @param entity
+     * @param model  optional.
+     * @return
+     */
+    protected Activity initializeActivity(ActivityEntity entity, Activity model) {
+        model = null != model ? model : getModelMapper().mapForRead(entity);
+        return (Activity) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, activityRepository, false, false);
     }
 
 

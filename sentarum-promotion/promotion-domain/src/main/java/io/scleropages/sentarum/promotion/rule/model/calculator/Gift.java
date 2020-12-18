@@ -58,7 +58,7 @@ public class Gift {
     /**
      * 可赠总数.
      */
-    private Integer num;
+    private Integer totalNum;
     /**
      * 补差价，例如：满100元+5元送牙刷
      */
@@ -110,8 +110,8 @@ public class Gift {
     }
 
     @NotNull(groups = Create.class)
-    public Integer getNum() {
-        return num;
+    public Integer getTotalNum() {
+        return totalNum;
     }
 
     public Amount getAdjustFee() {
@@ -119,6 +119,7 @@ public class Gift {
     }
 
     @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
     public Amount getPrice() {
         return price;
     }
@@ -151,8 +152,8 @@ public class Gift {
         this.userNum = userNum;
     }
 
-    public void setNum(Integer num) {
-        this.num = num;
+    public void setTotalNum(Integer totalNum) {
+        this.totalNum = totalNum;
     }
 
     public void setAdjustFee(Amount adjustFee) {
