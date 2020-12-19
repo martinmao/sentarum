@@ -59,13 +59,18 @@ public class TrueCondition implements PromotionCondition<TrueCondition.TrueCondi
     public static final class TrueConditionRule extends AbstractConditionRule {
 
         @Override
+        public Long id() {
+            return -1l;
+        }
+
+        @Override
         protected Integer defaultRuleInvocationImplementation() {
             return ALWAYS_TRUE_CONDITION_ID;
         }
 
         @Override
         public String description() {
-            return "无条件规则";
+            return "无条件，始终通过";
         }
     }
 

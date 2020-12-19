@@ -17,11 +17,13 @@ package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Discount;
+import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,8 +97,14 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
                     }
                     return;
                 }
-                Discount overflowDiscount = hit.getOverflowDiscount();
-                adjustFee = overflowDiscount.discountAmount(totalAmount, true);
+                Discount discount = hit.getOverflowDiscount();
+                if (null != discount) {
+                    adjustFee = discount.discountAmount(totalAmount, true);
+                } else {
+                    CalculatorGoodsSource calculatorGoodsSource = hit.getCalculatorGoodsSource();
+                    DetailedGoodsSourceReader.AllOfGoods allOfGoods = calculatorGoodsSource.detailedGoodsSourceReader().allOfGoods();
+
+                }
                 break;
             }
             case FIXED_GOODS_NUM_OVERFLOW: {

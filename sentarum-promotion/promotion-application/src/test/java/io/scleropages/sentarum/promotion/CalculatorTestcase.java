@@ -61,7 +61,7 @@ public class CalculatorTestcase {
     private void initPlatformActivity() {
         ActivityModel overflowActivity = new ActivityModel();
         overflowActivity.setName("overflowActivity");
-        overflowActivity.setTag("平台满减活动");
+        overflowActivity.setTag("平台满500减20活动，无条件");
         overflowActivity.setDescription("平台满500减20活动，无条件");
         overflowActivity.setStatus(1);
         overflowActivity.setStartTime(new Date());
@@ -83,7 +83,7 @@ public class CalculatorTestcase {
         rule.setDescription("平台满500减20活动，无条件");
         Long overflowDiscountRuleId = promotionApplication.createOverflowDiscountRule(rule, activityId);
         OverflowDiscount overflowDiscount = new OverflowDiscount();
-        overflowDiscount.setOverflowFee(new Amount(200));
+        overflowDiscount.setOverflowFee(new Amount(500));
         overflowDiscount.setOverflowDiscount(new Discount(Discount.DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE, 20, null));
         promotionApplication.createOverflowDiscount(overflowDiscount, overflowDiscountRuleId);
     }
@@ -112,7 +112,7 @@ public class CalculatorTestcase {
 
         OverflowDiscountRule rule = new OverflowDiscountRule();
         rule.setOverflowCycleLimit(-1);
-        rule.setOverflowDiscountType(OverflowDiscountRule.OverflowDiscountType.FIXED_FEE_OVERFLOW);
+        rule.setOverflowDiscountType(OverflowDiscountRule.OverflowDiscountType.STEPPED_FEE_OVERFLOW);
         rule.setDescription("店铺满6666赠蓝牙耳机，满7777赠VR眼镜，满8888赠magic2 mouse");
         Long overflowDiscountRuleId = promotionApplication.createOverflowDiscountRule(rule, activityId);
 
@@ -159,7 +159,7 @@ public class CalculatorTestcase {
         magicMouse.setUserNum(1);
         magicMouse.setOuterGoodsId("gift936l");
         magicMouse.setOuterGoodsSpecsId("gift9361l");
-        promotionApplication.createOverflowDiscountGift(vryj, overflowDiscountId8888);
+        promotionApplication.createOverflowDiscountGift(magicMouse, overflowDiscountId8888);
     }
 
 

@@ -20,8 +20,8 @@ import io.scleropages.sentarum.promotion.mgmt.CalculatorGoodsManager;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculatorRuleInitializer;
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
-import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRuleDetailedConfigure;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRuleDetailedConfigure;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.core.util.Reflections2;
@@ -57,7 +57,7 @@ public class CalculatorGoodsSourceRuleInitializer implements CalculatorRuleIniti
     public CalculatorRule initialize(CalculatorRule calculatorRule) {
         CalculatorInitializableRule initializingRule = (CalculatorInitializableRule) calculatorRule;
         ProxyFactory proxyFactory = new ProxyFactory(initializingRule);
-        proxyFactory.setProxyTargetClass(false);
+        proxyFactory.setProxyTargetClass(true);//force use cglib to proxy. Usually calculator methods declared a actual rule type
         List<CalculatorInitializableRuleDetailedConfigure> awareList = Lists.newArrayList();
         AtomicBoolean initialized = new AtomicBoolean(false);//mark true if detailedConfigures initialized.
         proxyFactory.addAdvice((MethodInterceptor) invocation -> {

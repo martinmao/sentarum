@@ -24,14 +24,8 @@ import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.ActivityPromotionInvocation;
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.condition.TrueCondition;
-import io.scleropages.sentarum.promotion.rule.model.AbstractRule;
-import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
-import io.scleropages.sentarum.promotion.rule.model.Rule;
-import org.scleropages.core.mapper.JsonMapper2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,9 +65,6 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
 
     @Override
     public void start() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("promotion-calculating-chain starting: " + name());
-        }
         next(initialContext);
     }
 
@@ -81,26 +72,58 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
     public void next(InvocationContext invocationContext) {
         if (null != nextInvocationChain && currentPosition == invocationFrames.size()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("{}forwarding to next promotion-calculating-chain: {}", invocationFrames.size() == 0 ? "no calculating found. " : "", nextInvocationChain.name());
-            }
-            nextInvocationChain.next(invocationContext);
-        } else {
-            if (null == nextInvocationChain) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("no more promotion-calculating and chains to forwarding. exit.");
+                if (invocationFrames.size() == 0) {
+                    logger.debug("  no calculating found.");
                 }
-                return;
+                logger.debug("forwarding to next: {}", nextInvocationChain.name());
             }
+//            nextInvocationChain.next(invocationContext);
+            nextInvocationChain.start();
+        } else if (currentPosition < invocationFrames.size()) {
             ActivityPromotionInvocationChainFrame next = invocationFrames.get(currentPosition++);
-            ConditionRule rule = next.conditionRule;
             ActivityPromotionInvocation invocation = next.activityPromotionInvocation;
-            Activity activity = next.activity;
             if (logger.isDebugEnabled()) {
-                logger.debug("invoking promotion-calculating[{}/{}]: {} for activity: {}", currentPosition, invocationFrames.size(), invocation.information(), activity.name());
+                logger.debug("invoking calculating[{}/{}]: for activity: {}", currentPosition, invocationFrames.size(), next.activity.name());
             }
-            invocation.execute(rule, (PromotionContext) invocationContext, this);
+            invocation.execute(null, (PromotionContext) invocationContext, this);
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("  no more promotion-calculating chains to forwarding. exit.");
+            }
+            return;
         }
     }
+
+    private List<ActivityPromotionInvocationChainFrame> create(List<Activity> activities, RuleContainer ruleContainer) {
+        if (activities.isEmpty())
+            return Collections.emptyList();
+        List<ActivityPromotionInvocationChainFrame> activityPromotionInvocations = Lists.newArrayList();
+        for (int i = 0; i < activities.size(); i++) {
+            Activity activity = activities.get(i);
+
+            activityPromotionInvocations.add(new ActivityPromotionInvocationChainFrame(
+                            new ActivityPromotionInvocation(activity, ruleContainer)
+                            , activity
+                    )
+            );
+        }
+        return activityPromotionInvocations;
+    }
+
+
+    /**
+     * frame of promotion invocation.
+     */
+    private static class ActivityPromotionInvocationChainFrame {
+        private final ActivityPromotionInvocation activityPromotionInvocation;
+        private final Activity activity;
+
+        public ActivityPromotionInvocationChainFrame(ActivityPromotionInvocation activityPromotionInvocation, Activity activity) {
+            this.activityPromotionInvocation = activityPromotionInvocation;
+            this.activity = activity;
+        }
+    }
+
 
     @Override
     public void logInformation(Logger logger) {
@@ -109,11 +132,11 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
         }
         for (ActivityPromotionInvocationChainFrame invocationFrame : invocationFrames) {
             Activity activity = invocationFrame.activity;
-            ConditionRule conditionRule = invocationFrame.conditionRule;
+//            ConditionRule conditionRule = invocationFrame.conditionRule;
             ActivityPromotionInvocation invocation = invocationFrame.activityPromotionInvocation;
             logger.debug("      activity[{}-{}-{}]: with context: {}", activity.id(), activity.name(), activity.tag(), initialContextInformation(initialContext));
-            logger.debug("         condition-rule[{}-{}]: {}", conditionRule.id(), conditionRule.description(), JsonMapper2.toJson(conditionRule));
-            logger.debug("         {}", invocation.information());
+//            logger.debug("         condition-rule[{}-{}]: {}", conditionRule.id(), conditionRule.description(), JsonMapper2.toJson(conditionRule));
+//            logger.debug("         {}", invocation.information());
         }
         if (null != nextInvocationChain) {
             logger.debug("  ->next chain:{}", nextInvocationChain.name());
@@ -131,47 +154,6 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
             return String.format("OrderPromotionContext: seller [%s-%s] sell goods size: %s.", orderPromotionContext.sellerUnionId(), orderPromotionContext.sellerId(), orderPromotionContext.goodsPromotionContexts().size());
         } else {
             return String.format("CartPromotionContext: buyer %s from %s[%s].", initialContext.buyerId(), initialContext.channelType(), initialContext.channelId());
-        }
-    }
-
-    private List<ActivityPromotionInvocationChainFrame> create(List<Activity> activities, RuleContainer ruleContainer) {
-        if (activities.isEmpty())
-            return Collections.emptyList();
-        List<ActivityPromotionInvocationChainFrame> activityPromotionInvocations = Lists.newArrayList();
-        for (int i = 0; i < activities.size(); i++) {
-            Activity activity = activities.get(i);
-            List<Rule> rules = activity.conditionRules();
-            ConditionRule conditionRule = CollectionUtils.isEmpty(rules) ? TrueCondition.TRUE_CONDITION_RULE : (ConditionRule) rules.get(0);
-            if (activity.promotionalRule() == null) {
-                logger.warn("detected activity[{}] no calculator rule set. ignoring to calculating.", activity.id());
-                continue;
-            }
-            activityPromotionInvocations.add(new ActivityPromotionInvocationChainFrame(
-                            conditionRule
-                            , new ActivityPromotionInvocation(activity, ruleContainer.getCondition(conditionRule), ruleContainer)
-                            , activity
-                    )
-            );
-        }
-        return activityPromotionInvocations;
-    }
-
-
-    /**
-     * frame of promotion invocation.
-     */
-    private static class ActivityPromotionInvocationChainFrame {
-        private final ConditionRule conditionRule;
-        private final ActivityPromotionInvocation activityPromotionInvocation;
-        private final Activity activity;
-
-        public ActivityPromotionInvocationChainFrame(ConditionRule conditionRule, ActivityPromotionInvocation activityPromotionInvocation, Activity activity) {
-            this.conditionRule = conditionRule;
-            this.activityPromotionInvocation = activityPromotionInvocation;
-            this.activity = activity;
-            if (conditionRule instanceof AbstractRule) {
-                ((AbstractRule) conditionRule).setActivity(activity);
-            }
         }
     }
 }

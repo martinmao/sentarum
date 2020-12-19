@@ -143,8 +143,8 @@ public class ActivityManagerTestcase {
 
 
         activity.setName("TEST22");
-        activity.setTag("商家活动");
-        activity.setDescription("商家活动测试");
+        activity.setTag("商家店铺折扣，全店商品均直减7元.");
+        activity.setDescription("商家店铺折扣，全店商品均直减7元.");
         activity.setStatus(1);
         activity.setStartTime(new Date());
         activity.setEndTime(DateUtils.addDays(new Date(), 20));
@@ -215,21 +215,15 @@ public class ActivityManagerTestcase {
 
         ActivityGoods activityGoods = activityManager.getActivityGoods(activityGoodsId);
 
-        activityGoods.additionalAttributes().setAttribute("k5", "v5", true);
-        activityGoods.additionalAttributes().setAttribute("k6", "v6", true);
-        activityGoods.additionalAttributes().save();
+        activityGoods.additionalAttributes().setAttribute("k5", "v5", true).setAttribute("k6", "v6", true).save();
 
         activityGoods = activityManager.getActivityGoods(activityGoodsId2);
 
-        activityGoods.additionalAttributes().setAttribute("k51", "v51", true);
-        activityGoods.additionalAttributes().setAttribute("k61", "v61", true);
-        activityGoods.additionalAttributes().save();
+        activityGoods.additionalAttributes().setAttribute("k51", "v51", true).setAttribute("k61", "v61", true).save();
 
         activityGoods = activityManager.getActivityGoods(activityGoodsId3);
 
-        activityGoods.additionalAttributes().setAttribute("k52", "v52", true);
-        activityGoods.additionalAttributes().setAttribute("k62", "v62", true);
-        activityGoods.additionalAttributes().save();
+        activityGoods.additionalAttributes().setAttribute("k52", "v52", true).setAttribute("k62", "v62", true).save();
 
         ActivityGoodsSpecsModel goodsSpecsModel = new ActivityGoodsSpecsModel();
         goodsSpecsModel.setSpecsId(1l);

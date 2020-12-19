@@ -61,15 +61,15 @@ public class DefaultPromotionChainStarterFactory implements PromotionChainStarte
             headOfChains.add(nextGoodsChain);
         }
         //cart chain as final chain for calculating.
-        ActivityPromotionInvocationChain finalChain = createChain(cartPromotionContext, ruleContainer, null, "cart-calculating-> {buyer id: " + cartPromotionContext.buyerId() + ", channel type: " + cartPromotionContext.channelType() + "channel id: " + cartPromotionContext.channelId() + "}");
+        ActivityPromotionInvocationChain finalChain = createChain(cartPromotionContext, ruleContainer, null, "cart-calculating-> {buyer id: " + cartPromotionContext.buyerId() + ", channel type: " + cartPromotionContext.channelType() + ", channel id: " + cartPromotionContext.channelId() + "}");
         if (logger.isDebugEnabled()) {
             logger.debug("creating promotion chain starter: ");
             for (int i = 0; i < headOfChains.size(); i++) {
                 ActivityPromotionInvocationChain headChain = headOfChains.get(i);
-                logger.debug(" HeadChain[{}]->", i);
+                logger.debug(" HeadChain[{}]->{}", i, headChain.name());
                 headChain.logInformation(logger);
-
             }
+            logger.debug(" FinalChain->{}", finalChain.name());
             finalChain.logInformation(logger);
         }
         return new DefaultPromotionChainStarter(headOfChains, finalChain);

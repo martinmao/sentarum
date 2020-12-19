@@ -22,7 +22,6 @@ import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
-import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
 import org.apache.commons.collections.ComparatorUtils;
 import org.springframework.util.Assert;
@@ -432,22 +431,23 @@ public final class PromotionContextBuilder {
         if (CollectionUtils.isEmpty(activities)) { //if empty build a no activities goods context.
             return this;
         }
-        activities.forEach(activity -> {//将活动分组，根据所处级别构建计算上下文.
-            if (activity.goodsSource().size() > 1) {//多个分类(多店、多品牌、多品类)都属于购物车级促销.
+        for (Activity activity : activities) {//将活动分组，根据所处级别构建计算上下文.
+            List<ActivityGoodsSource> goodsSources = activity.goodsSource();
+            if (goodsSources.size() > 1) {//多个分类(多店、多品牌、多品类)都属于购物车级促销.
                 withActivity(activity);
-            } else {
-                ActivityGoodsSource activityGoodsSource = activity.goodsSource().get(0);
-                if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
-                    if (Objects.equals(activityGoodsSource.goodsSourceType(), CLASSIFIED_GOODS_SOURCE_TYPE_SELLER)) {//只有一个店家分类为店铺活动对应到订单级促销.
-                        orderPromotionContextBuilder.withActivity(activity);
-                    } else {//非店家分类，如品牌，品类等，则为跨店活动，将其对应到购物车级促销.
-                        withActivity(activity);
-                    }
-                } else if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {//对应到商品级促销.
-                    goodsPromotionContextBuilder.withActivity(activity);
-                }
+                break;
             }
-        });
+            ActivityGoodsSource activityGoodsSource = activity.goodsSource().get(0);
+            if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
+                if (Objects.equals(activityGoodsSource.goodsSourceType(), CLASSIFIED_GOODS_SOURCE_TYPE_SELLER)) {//只有一个店家分类为店铺活动对应到订单级促销.
+                    orderPromotionContextBuilder.withActivity(activity);
+                } else {//非店家分类，如品牌，品类等，则为跨店活动，将其对应到购物车级促销.
+                    withActivity(activity);
+                }
+            } else if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {//对应到商品级促销.
+                goodsPromotionContextBuilder.withActivity(activity);
+            }
+        }
         return this;
     }
 

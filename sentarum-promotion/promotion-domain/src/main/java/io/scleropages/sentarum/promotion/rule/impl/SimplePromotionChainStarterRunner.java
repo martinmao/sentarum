@@ -16,6 +16,10 @@
 package io.scleropages.sentarum.promotion.rule.impl;
 
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * simple (sequence computing) implementation of {@link DefaultPromotionChainStarter} runner.
@@ -24,12 +28,27 @@ import io.scleropages.sentarum.promotion.rule.PromotionChainStarterRunner;
  */
 public class SimplePromotionChainStarterRunner implements PromotionChainStarterRunner<DefaultPromotionChainStarter> {
 
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void run(DefaultPromotionChainStarter promotionChainStarter) {
-        promotionChainStarter.headOfChains().forEach(activityPromotionInvocationChain -> {
-            activityPromotionInvocationChain.start();
-        });
-        promotionChainStarter.finalChain().start();
+        if (logger.isDebugEnabled()) {
+            logger.debug("start calculating.....");
+        }
+        List<ActivityPromotionInvocationChain> headOfChains = promotionChainStarter.headOfChains();
+        for (int i = 0; i < headOfChains.size(); i++) {
+            ActivityPromotionInvocationChain headChain = headOfChains.get(i);
+            if (logger.isDebugEnabled()) {
+                logger.debug("HeadChain[{}]->", i);
+                logger.debug("  {}", headChain.name());
+            }
+            headChain.start();
+        }
+        ActivityPromotionInvocationChain finalChain = promotionChainStarter.finalChain();
+        if (logger.isDebugEnabled()) {
+            logger.debug("FinalChain->");
+            logger.debug("  {}", finalChain.name());
+        }
+        finalChain.start();
     }
 }
