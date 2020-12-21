@@ -31,6 +31,7 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +66,9 @@ public class CalculatorGoodsSourceRuleInitializer implements CalculatorRuleIniti
                 if (initialized.get())
                     return awareList;
                 initialized.set(true);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("reading detailedConfigures of: {}.", ClassUtils.getQualifiedMethodName(invocation.getMethod()));
+                }
                 List<CalculatorGoodsSource> goodsSources = calculatorGoodsManager.readAllCalculatorGoodsSourceByRuleId(initializingRule.id(), initializingRule.goodsSourceType());
                 goodsSources.forEach(goodsSource -> {
                     Object className = goodsSource.additionalAttributes().getAttribute(CalculatorGoodsSource.ADDITIONAL_ATTRIBUTE_GOODS_SOURCE_HOLDER_CLASS);
@@ -83,6 +87,9 @@ public class CalculatorGoodsSourceRuleInitializer implements CalculatorRuleIniti
             }
             return invocation.proceed();
         });
+        if (logger.isDebugEnabled()) {
+            logger.debug("creating proxy for: {}", calculatorRule.getClass().getSimpleName());
+        }
         return (CalculatorRule) proxyFactory.getProxy();
     }
 

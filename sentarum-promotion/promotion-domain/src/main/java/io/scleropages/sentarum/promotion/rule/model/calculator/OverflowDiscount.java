@@ -29,10 +29,10 @@ import java.util.Objects;
 /**
  * 满减促销规则 {@link OverflowDiscountRule} 明细：
  * <pre>
- *      条件包含两类：
+ *      条件：
  *          满金额 {@link #overflowFee}：匹配 {@link OverflowDiscountType#FIXED_FEE_OVERFLOW} || {@link OverflowDiscountType#STEPPED_FEE_OVERFLOW}
  *          满件数 {@link #overflowNum}：匹配 {@link OverflowDiscountType#FIXED_GOODS_NUM_OVERFLOW} || {@link OverflowDiscountType#STEPPED_GOODS_NUM_OVERFLOW}
- *      结果包含两类：
+ *      结果：
  *          折扣 {@link #overflowDiscount}：优先，无类型区分，该值为空时代表发赠品.
  *          发赠品 {@link #userGiftNum}：{@link #overflowDiscount} 为空时有效.
  * </pre>

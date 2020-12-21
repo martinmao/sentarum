@@ -17,6 +17,8 @@ package io.scleropages.sentarum.promotion.mgmt;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer;
+import io.scleropages.sentarum.promotion.goods.repo.DetailedGoodsSourceReaderInitializer;
 import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.rule.calculator.goods.repo.CalculatorGoodsSpecsRepository;
@@ -32,6 +34,7 @@ import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorG
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSpecs;
 import org.scleropages.core.mapper.JsonMapper2;
 import org.scleropages.crud.exception.BizError;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +52,7 @@ import java.util.Optional;
 @Service
 @Validated
 @BizError("23")
-public class CalculatorGoodsManager {
+public class CalculatorGoodsManager implements InitializingBean {
 
     /**
      * managers
@@ -70,6 +73,13 @@ public class CalculatorGoodsManager {
     private CalculatorGoodsSourceEntityMapper calculatorGoodsSourceEntityMapper;
     private CalculatorGoodsEntityMapper calculatorGoodsEntityMapper;
     private CalculatorGoodsSpecsEntityMapper calculatorGoodsSpecsEntityMapper;
+
+
+    /**
+     * other components.
+     */
+    private AdditionalAttributesInitializer additionalAttributesInitializer;
+    private DetailedGoodsSourceReaderInitializer detailedGoodsSourceReaderInitializer;
 
     /**
      * 创建规则维度商品来源.
@@ -166,7 +176,7 @@ public class CalculatorGoodsManager {
                         , bizId
                         , goodsSourceType)
                 , entity -> {
-                    CalculatorGoodsSource calculatorGoodsSource = (CalculatorGoodsSource) activityManager.initializeGoodsSource(calculatorGoodsSourceEntityMapper.mapForRead(entity), entity, calculatorGoodsSourceRepository);
+                    CalculatorGoodsSource calculatorGoodsSource = (CalculatorGoodsSource) activityManager.initializeGoodsSource(calculatorGoodsSourceEntityMapper.mapForRead(entity), entity, calculatorGoodsSourceRepository, detailedGoodsSourceReaderInitializer);
                     goodsSources.add(calculatorGoodsSource);
                 });
         return goodsSources;
@@ -205,5 +215,21 @@ public class CalculatorGoodsManager {
     @Autowired
     public void setCalculatorGoodsSpecsEntityMapper(CalculatorGoodsSpecsEntityMapper calculatorGoodsSpecsEntityMapper) {
         this.calculatorGoodsSpecsEntityMapper = calculatorGoodsSpecsEntityMapper;
+    }
+
+    @Autowired
+    public void setAdditionalAttributesInitializer(AdditionalAttributesInitializer additionalAttributesInitializer) {
+        this.additionalAttributesInitializer = additionalAttributesInitializer;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(calculatorGoodsRepository, "calculatorGoodsRepository must not be null");
+        Assert.notNull(calculatorGoodsSpecsRepository, "calculatorGoodsSpecsRepository must not be null");
+        Assert.notNull(calculatorGoodsEntityMapper, "calculatorGoodsEntityMapper must not be null");
+        Assert.notNull(calculatorGoodsSpecsEntityMapper, "calculatorGoodsSpecsEntityMapper must not be null");
+        Assert.notNull(additionalAttributesInitializer, "additionalAttributesInitializer must not be null");
+
+        detailedGoodsSourceReaderInitializer = new DetailedGoodsSourceReaderInitializer(calculatorGoodsRepository, calculatorGoodsSpecsRepository, calculatorGoodsEntityMapper, calculatorGoodsSpecsEntityMapper, additionalAttributesInitializer);
     }
 }

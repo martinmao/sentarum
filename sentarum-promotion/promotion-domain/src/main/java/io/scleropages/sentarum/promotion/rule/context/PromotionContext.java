@@ -21,6 +21,7 @@ import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.goods.model.Goods;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
+import org.scleropages.core.mapper.JsonMapper2;
 import org.springframework.util.Assert;
 
 import java.util.Collections;
@@ -100,7 +101,7 @@ public interface PromotionContext extends InvocationContext {
         private String description;
         private Amount adjustFee;
         private AdjustMode adjustMode = AdjustMode.DECREASE;
-        private List<GiftBuilder> giftsBuilder = Lists.newArrayList();
+        private transient List<GiftBuilder> giftsBuilder = Lists.newArrayList();
 
 
         private PromotionResultBuilder() {
@@ -172,46 +173,89 @@ public interface PromotionContext extends InvocationContext {
             Assert.notNull(id, "id must not be null.");
             Assert.notNull(name, "name must not be null.");
             Assert.notNull(adjustFee, "adjustFee must not be null.");
+            return new PromotionResultImpl(this);
+        }
+    }
 
-            return new PromotionResult() {
-                @Override
-                public Long id() {
-                    return id;
-                }
 
-                @Override
-                public String name() {
-                    return name;
-                }
+    class PromotionResultImpl implements PromotionResult {
+        private final Long id;
+        private final String name;
+        private final String description;
+        private final Amount adjustFee;
+        private final AdjustMode adjustMode;
+        private final List<Gift> gifts;
 
-                @Override
-                public String description() {
-                    return description;
-                }
+        private PromotionResultImpl(PromotionResultBuilder builder) {
+            this.id = builder.id;
+            this.name = builder.name;
+            this.description = builder.description;
+            this.adjustFee = builder.adjustFee;
+            this.adjustMode = builder.adjustMode;
+            this.gifts = Collections.unmodifiableList(builder.giftsBuilder.stream().map(giftBuilder -> giftBuilder.build()).collect(Collectors.toList()));
+        }
 
-                @Override
-                public Amount adjustFee() {
-                    return adjustFee;
-                }
+        public Long getId() {
+            return id;
+        }
 
-                @Override
-                public AdjustMode adjustMode() {
-                    return adjustMode;
-                }
+        public String getName() {
+            return name;
+        }
 
-                @Override
-                public List<Gift> gifts() {
-                    return Collections.unmodifiableList(giftsBuilder.stream().map(giftBuilder -> giftBuilder.build()).collect(Collectors.toList()));
-                }
+        public String getDescription() {
+            return description;
+        }
 
-                @Override
-                public String toString() {
-                    StringBuilder sb = new StringBuilder("{ ");
-                    sb.append("name: ").append(name).append(", ");
-                    sb.append("adjustFee: ").append(adjustFee).append(" }");
-                    return sb.toString();
-                }
-            };
+        public Amount getAdjustFee() {
+            return adjustFee;
+        }
+
+        public AdjustMode getAdjustMode() {
+            return adjustMode;
+        }
+
+        public List<Gift> getGifts() {
+            return gifts;
+        }
+
+        @Override
+        public Long id() {
+            return getId();
+        }
+
+        @Override
+        public String name() {
+            return getName();
+        }
+
+        @Override
+        public String description() {
+            return getDescription();
+        }
+
+        @Override
+        public Amount adjustFee() {
+            return getAdjustFee();
+        }
+
+        @Override
+        public AdjustMode adjustMode() {
+            return getAdjustMode();
+        }
+
+        @Override
+        public List<Gift> gifts() {
+            return getGifts();
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("{ ");
+            sb.append(" name: ").append(name).append(", ");
+            sb.append(" adjustFee: ").append(adjustFee);
+            sb.append(" gifts: ").append(JsonMapper2.toJson(gifts())).append(" }");
+            return sb.toString();
         }
     }
 
@@ -308,7 +352,101 @@ public interface PromotionContext extends InvocationContext {
          */
         Amount price();
 
+    }
 
+    class GiftImpl implements Gift {
+
+        private final Long id;
+        private final Long goodsId;
+        private final Long goodsSpecsId;
+        private final String outerGoodsId;
+        private final String outerGoodsSpecsId;
+        private final String name;
+        private final Amount adjustFee;
+        private final Amount price;
+
+        public GiftImpl(GiftBuilder builder) {
+            this.id = builder.id;
+            this.goodsId = builder.goodsId;
+            this.goodsSpecsId = builder.goodsSpecsId;
+            this.outerGoodsId = builder.outerGoodsId;
+            this.outerGoodsSpecsId = builder.outerGoodsSpecsId;
+            this.name = builder.name;
+            this.adjustFee = builder.adjustFee;
+            this.price = builder.price;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public Long getGoodsId() {
+            return goodsId;
+        }
+
+        public Long getGoodsSpecsId() {
+            return goodsSpecsId;
+        }
+
+        public String getOuterGoodsId() {
+            return outerGoodsId;
+        }
+
+        public String getOuterGoodsSpecsId() {
+            return outerGoodsSpecsId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Amount getAdjustFee() {
+            return adjustFee;
+        }
+
+        public Amount getPrice() {
+            return price;
+        }
+
+        @Override
+        public Long id() {
+            return getId();
+        }
+
+        @Override
+        public Long goodsId() {
+            return getGoodsId();
+        }
+
+        @Override
+        public Long goodsSpecsId() {
+            return getGoodsSpecsId();
+        }
+
+        @Override
+        public String outerGoodsId() {
+            return getOuterGoodsId();
+        }
+
+        @Override
+        public String outerGoodsSpecsId() {
+            return getOuterGoodsSpecsId();
+        }
+
+        @Override
+        public String name() {
+            return getName();
+        }
+
+        @Override
+        public Amount adjustFee() {
+            return getAdjustFee();
+        }
+
+        @Override
+        public Amount price() {
+            return getPrice();
+        }
     }
 
     class GiftBuilder {
@@ -359,7 +497,7 @@ public interface PromotionContext extends InvocationContext {
         }
 
         public GiftBuilder withAdjustFee(Amount adjustFee) {
-            this.adjustFee = adjustFee;
+            this.adjustFee = null != adjustFee ? adjustFee : new Amount();
             return this;
         }
 
@@ -370,48 +508,8 @@ public interface PromotionContext extends InvocationContext {
 
 
         private Gift build() {
-            return new Gift() {
-
-                @Override
-                public Long id() {
-                    return id;
-                }
-
-                @Override
-                public Long goodsId() {
-                    return goodsId;
-                }
-
-                @Override
-                public Long goodsSpecsId() {
-                    return goodsSpecsId;
-                }
-
-                @Override
-                public String outerGoodsId() {
-                    return outerGoodsId;
-                }
-
-                @Override
-                public String outerGoodsSpecsId() {
-                    return outerGoodsSpecsId;
-                }
-
-                @Override
-                public String name() {
-                    return name;
-                }
-
-                @Override
-                public Amount adjustFee() {
-                    return adjustFee;
-                }
-
-                @Override
-                public Amount price() {
-                    return price;
-                }
-            };
+            done();
+            return new GiftImpl(this);
         }
     }
 

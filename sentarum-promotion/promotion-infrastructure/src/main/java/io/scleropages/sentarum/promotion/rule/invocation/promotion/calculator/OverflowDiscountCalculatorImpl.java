@@ -131,7 +131,7 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
                 .withGoodsSpecsId(gift.getGoodsSpecsId())
                 .withOuterGoodsSpecsId(gift.getOuterGoodsSpecsId())
                 .withAdjustFee(gift.getAdjustFee())
-                .withPrice(gift.getPrice()).done();
+                .withPrice(gift.getPrice());
     }
 
 

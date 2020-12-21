@@ -272,23 +272,6 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return entity.getId();
     }
 
-//    /**
-//     * 创建满减促销规则.
-//     *
-//     * @param overflowDiscountRule
-//     * @param activityId
-//     * @return
-//     */
-//    @Validated(OverflowDiscountRule.Create.class)
-//    @Transactional
-//    @BizError("16")
-//    public Long createOverflowDiscountRule(@Valid OverflowDiscountRule overflowDiscountRule, Long activityId) {
-//        OverflowDiscountRuleEntity entity = overflowDiscountRuleEntityMapper.mapForSave(overflowDiscountRule);
-//        entity.setActivity(getRequiredActivityEntity(activityId));
-//        preRuleCreating(overflowDiscountRule, entity);
-//        overflowDiscountRuleRepository.save(entity);
-//        return entity.getId();
-//    }
 
     /**
      * 创建计算规则详情
@@ -315,27 +298,6 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         return calculatorGoodsManager.createCalculatorGoodsSource(calculatorGoodsSource, configure);
     }
 
-//    /**
-//     * 创建满减促销规则明细.
-//     *
-//     * @param overflowDiscount
-//     * @param overflowDiscountRuleId
-//     * @return
-//     */
-//    @Transactional
-//    @BizError("17")
-//    public Long createOverflowDiscount(OverflowDiscount overflowDiscount, Long overflowDiscountRuleId) {
-//        Assert.notNull(overflowDiscount, "overflowDiscount must not be null.");
-//        OverflowDiscountRule overflowDiscountRule = overflowDiscountRuleEntityMapper.mapForRead(overflowDiscountRuleRepository.getGoodsSource(overflowDiscountRuleId).orElseThrow(() -> new IllegalArgumentException("no overflow discount rule found: " + overflowDiscountRuleId)));
-//        overflowDiscount.assertConfigure(overflowDiscountRule);
-//        //实际物理上不存储 OverflowDiscount结构，而是将其信息作为扩展属性落在 CalculatorGoodsSource 维度.使其可在goods维度存储赠品信息.
-//        CalculatorGoodsSourceModel calculatorGoodsSource = new CalculatorGoodsSourceModel();
-//        calculatorGoodsSource.setBizType(CalculatorGoodsSource.BIZ_TYPE_OF_CALCULATOR);
-//        calculatorGoodsSource.setBizId(overflowDiscountRuleId);
-//        calculatorGoodsSource.setComment("满减促销");
-//        calculatorGoodsSource.setGoodsSourceType(GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT);
-//        return calculatorGoodsManager.createCalculatorGoodsSource(calculatorGoodsSource, overflowDiscount);
-//    }
 
     /**
      * read condition rules and merge rules to root of rule tree.
@@ -423,18 +385,6 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
         }
         return calculatorRules;
     }
-
-//    /**
-//     * return all overflow discounts by given id.
-//     *
-//     * @param overflowDiscountRuleId
-//     * @return
-//     */
-//    @Transactional(readOnly = true)
-//    @BizError("35")
-//    public List<CalculatorGoodsSource> readAllOverflowDiscounts(Long overflowDiscountRuleId) {
-//        return calculatorGoodsManager.readAllCalculatorGoodsSourceByRuleId(overflowDiscountRuleId, GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT);
-//    }
 
 
     /**
