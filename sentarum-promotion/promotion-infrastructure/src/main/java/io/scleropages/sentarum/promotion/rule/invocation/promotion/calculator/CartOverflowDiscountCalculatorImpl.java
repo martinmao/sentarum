@@ -15,27 +15,14 @@
  */
 package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
+import io.scleropages.sentarum.promotion.rule.context.CartPromotionContext;
+import org.springframework.stereotype.Component;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface OverflowDiscountCalculator extends OrderCalculator<OverflowDiscountRule> {
+@Component
+public class CartOverflowDiscountCalculatorImpl extends AbstractOverflowDiscountCalculator<CartPromotionContext> implements CartOverflowDiscountCalculator {
 
-    Integer ID = PROMOTION_INVOCATION_ID + 2;
 
-    @Override
-    default Integer id() {
-        return ID;
-    }
-
-    @Override
-    default String name() {
-        return "满减促销";
-    }
-
-    @Override
-    default String description() {
-        return "满减：支持\"每满减(固定满减)，每满多少固定减\"，\"阶梯满减，满多少减多少等，\"满赠等规则\"";
-    }
 }

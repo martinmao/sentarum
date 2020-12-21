@@ -57,6 +57,13 @@ public interface PromotionContext extends InvocationContext {
      */
     Long buyerId();
 
+    /**
+     * 总金额.
+     *
+     * @return
+     */
+    Amount totalAmount();
+
 
     /**
      * 活动列表

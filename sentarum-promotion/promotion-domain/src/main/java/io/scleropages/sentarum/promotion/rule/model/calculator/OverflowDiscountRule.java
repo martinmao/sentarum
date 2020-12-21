@@ -16,7 +16,8 @@
 package io.scleropages.sentarum.promotion.rule.model.calculator;
 
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculateLevel;
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.OverflowDiscountCalculator;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CartOverflowDiscountCalculator;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.OrderOverflowDiscountCalculator;
 import io.scleropages.sentarum.promotion.rule.model.BaseCalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorInitializableRule;
 
@@ -25,6 +26,7 @@ import javax.validation.constraints.Null;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource.GOODS_SOURCE_TYPE_OVERFLOW_DISCOUNT;
 
@@ -49,6 +51,8 @@ import static io.scleropages.sentarum.promotion.rule.model.calculator.goods.Calc
  */
 public class OverflowDiscountRule extends BaseCalculatorRule implements CalculatorInitializableRule<OverflowDiscount> {
 
+
+    private Scope scope;
     /**
      * 满减类型
      */
@@ -59,6 +63,12 @@ public class OverflowDiscountRule extends BaseCalculatorRule implements Calculat
     private Integer overflowCycleLimit;
 
     private List<OverflowDiscount> overflowDiscounts;
+
+    @NotNull(groups = Create.class)
+    @Null(groups = Update.class)
+    public Scope getScope() {
+        return scope;
+    }
 
     @NotNull(groups = Create.class)
     @Null(groups = Update.class)
@@ -73,6 +83,11 @@ public class OverflowDiscountRule extends BaseCalculatorRule implements Calculat
 
     public List<OverflowDiscount> getOverflowDiscounts() {
         return overflowDiscounts;
+    }
+
+
+    public void setScope(Scope scope) {
+        this.scope = scope;
     }
 
     public void setOverflowDiscountType(OverflowDiscountType overflowDiscountType) {
@@ -94,7 +109,7 @@ public class OverflowDiscountRule extends BaseCalculatorRule implements Calculat
 
     @Override
     protected Integer defaultRuleInvocationImplementation() {
-        return OverflowDiscountCalculator.ID;
+        return Objects.equals(getScope(), Scope.SELLER) ? OrderOverflowDiscountCalculator.ID : CartOverflowDiscountCalculator.ID;
     }
 
 
@@ -173,6 +188,20 @@ public class OverflowDiscountRule extends BaseCalculatorRule implements Calculat
         public static OverflowDiscountType getByOrdinal(int ordinal) {
             return ordinalMappings.get(ordinal);
         }
+    }
+
+    /**
+     * 满减作用域
+     */
+    enum Scope {
+        /**
+         * 平台满减
+         */
+        PLATFORM,
+        /**
+         * 商家满减
+         */
+        SELLER
     }
 }
 

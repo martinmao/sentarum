@@ -19,9 +19,8 @@ import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader;
 import io.scleropages.sentarum.promotion.goods.model.Goods;
-import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
-import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
+import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCalculator;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GiftModel;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
@@ -29,7 +28,6 @@ import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorG
 import org.scleropages.core.mapper.JsonMapper2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -37,13 +35,13 @@ import java.util.List;
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-@Component
-public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculator {
+public abstract class AbstractOverflowDiscountCalculator<C extends PromotionContext> implements PromotionCalculator<OverflowDiscountRule, C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+
     @Override
-    public void calculate(OverflowDiscountRule rule, OrderPromotionContext promotionContext) {
+    public void calculate(OverflowDiscountRule rule, C promotionContext) {
         PromotionContext.PromotionResultBuilder resultBuilder = promotionContext.promotionResultBuilder();
         resultBuilder.withActivity(rule.activity());
         Amount adjustFee = new Amount();
@@ -122,18 +120,8 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
         }
         resultBuilder.withAdjustFee(adjustFee);
         promotionContext.addPromotionResult(resultBuilder.build());
-    }
 
-    private void addGift(PromotionContext.PromotionResultBuilder resultBuilder, Goods goods) {
-        GiftModel gift = new GiftModel(goods);
-        resultBuilder.withGift()
-                .withGoods(goods)
-                .withGoodsSpecsId(gift.getGoodsSpecsId())
-                .withOuterGoodsSpecsId(gift.getOuterGoodsSpecsId())
-                .withAdjustFee(gift.getAdjustFee())
-                .withPrice(gift.getPrice());
     }
-
 
     /**
      * 计算固定满减价格调整.
@@ -143,7 +131,7 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
      * @param overflowDiscount
      * @return
      */
-    private final Amount calculateFixedAdjustFee(OrderPromotionContext promotionContext, OverflowDiscountRule rule, OverflowDiscount overflowDiscount) {
+    private final Amount calculateFixedAdjustFee(C promotionContext, OverflowDiscountRule rule, OverflowDiscount overflowDiscount) {
         Amount totalAmount = calculateTotalAmount(promotionContext);
         Amount divisor = totalAmount.divide(overflowDiscount.getOverflowFee(), false);
         Integer limit = rule.getOverflowCycleLimit();
@@ -152,16 +140,29 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
     }
 
     /**
+     * 添加赠品到上下文
+     *
+     * @param resultBuilder
+     * @param goods
+     */
+    private final void addGift(PromotionContext.PromotionResultBuilder resultBuilder, Goods goods) {
+        GiftModel gift = new GiftModel(goods);
+        resultBuilder.withGift()
+                .withGoods(goods)
+                .withGoodsSpecsId(gift.getGoodsSpecsId())
+                .withOuterGoodsSpecsId(gift.getOuterGoodsSpecsId())
+                .withAdjustFee(gift.getAdjustFee())
+                .withPrice(gift.getPrice());
+    }
+
+    /**
      * 计算订单总金额.
      *
      * @param promotionContext
      * @return
      */
-    private final Amount calculateTotalAmount(OrderPromotionContext promotionContext) {
-        Amount totalAmount = new Amount();
-        for (GoodsPromotionContext goodsPromotionContext : promotionContext.goodsPromotionContexts()) {
-            totalAmount = totalAmount.add(goodsPromotionContext.originalPrice().multiply(goodsPromotionContext.num(), true));
-        }
-        return totalAmount;
+    protected Amount calculateTotalAmount(C promotionContext) {
+        return promotionContext.totalAmount();
     }
+
 }

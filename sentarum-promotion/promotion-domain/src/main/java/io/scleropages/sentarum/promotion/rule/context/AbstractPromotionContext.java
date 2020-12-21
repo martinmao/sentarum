@@ -16,6 +16,7 @@
 package io.scleropages.sentarum.promotion.rule.context;
 
 import com.google.common.collect.Lists;
+import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 
 import java.util.Collections;
@@ -26,10 +27,20 @@ import java.util.List;
  */
 public abstract class AbstractPromotionContext implements PromotionContext {
 
+    private Amount totalAmount;
 
     private List<Activity> activities = Collections.emptyList();
 
     private final List<PromotionResult> promotionResults = Lists.newArrayList();
+
+    protected void setTotalAmount(Amount totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    @Override
+    public Amount totalAmount() {
+        return totalAmount;
+    }
 
     @Override
     public List<Activity> activities() {

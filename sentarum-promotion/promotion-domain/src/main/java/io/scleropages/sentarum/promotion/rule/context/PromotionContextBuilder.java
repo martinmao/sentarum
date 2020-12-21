@@ -151,15 +151,22 @@ public final class PromotionContextBuilder {
         if (!CollectionUtils.isEmpty(activities)) {
             cartPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), false));
         }
-        orderPromotionContextBuilders.values().forEach(orderPromotionContextBuilder -> {
+        Amount cartTotalAmount = new Amount();
+        for (OrderPromotionContextBuilder orderPromotionContextBuilder : orderPromotionContextBuilders.values()) {
             List<GoodsPromotionContext> goodsPromotionContexts = Lists.newArrayList();
             OrderPromotionContext orderPromotionContext = orderPromotionContextBuilder.build(cartPromotionContext, goodsPromotionContexts);
             orderPromotionContexts.add(orderPromotionContext);
-            orderPromotionContextBuilder.goodsPromotionContextBuilders.forEach(goodsPromotionContextBuilder -> {
+            Amount orderTotalAmount = new Amount();
+            for (GoodsPromotionContextBuilder goodsPromotionContextBuilder : orderPromotionContextBuilder.goodsPromotionContextBuilders) {
                 GoodsPromotionContext goodsPromotionContext = goodsPromotionContextBuilder.build(cartPromotionContext, orderPromotionContext);
                 goodsPromotionContexts.add(goodsPromotionContext);
-            });
-        });
+                orderTotalAmount = orderTotalAmount.add(goodsPromotionContext.totalAmount());
+            }
+            ((AbstractPromotionContext) orderPromotionContext).setTotalAmount(orderTotalAmount);
+            cartTotalAmount = cartTotalAmount.add(orderTotalAmount);
+        }
+        ((AbstractPromotionContext) cartPromotionContext).setTotalAmount(cartTotalAmount);
+
         return cartPromotionContext;
     }
 
@@ -361,6 +368,7 @@ public final class PromotionContextBuilder {
         private GoodsPromotionContext build(CartPromotionContext cartPromotionContext, OrderPromotionContext orderPromotionContext) {
             done();
             GoodsPromotionContextImpl goodsPromotionContext = new GoodsPromotionContextImpl(cartPromotionContext, orderPromotionContext, goodsId, outerGoodsId, specsId, outerSpecsId, num, originalPrice);
+            goodsPromotionContext.setTotalAmount(originalPrice.multiply(num, true));
             goodsPromotionContext.setActivities(sortingActivitiesForCalculating(Lists.newArrayList(activities.values()), false));
             return goodsPromotionContext;
         }

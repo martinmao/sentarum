@@ -15,17 +15,14 @@
  */
 package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCalculator;
-import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
-import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
 
 /**
- * 订单级促销计算(整单优惠)已与特定商业主体关联.
- * 其处于整个促销计算第二级别.但实际执行顺序应对订单级促销结果进行兜底.即计算完商品级促销规则后合并计算order级别优惠.
+ * 满减对应的购物车级促销.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface OrderCalculator<R extends CalculatorRule> extends PromotionCalculator<R, OrderPromotionContext> {
+public interface CartOverflowDiscountCalculator extends CartCalculator<OverflowDiscountRule> {
 
     Integer ID = PROMOTION_INVOCATION_ID + 3;
 
@@ -36,7 +33,7 @@ public interface OrderCalculator<R extends CalculatorRule> extends PromotionCalc
 
     @Override
     default String name() {
-        return "满减促销";
+        return "平台满减促销";
     }
 
     @Override
