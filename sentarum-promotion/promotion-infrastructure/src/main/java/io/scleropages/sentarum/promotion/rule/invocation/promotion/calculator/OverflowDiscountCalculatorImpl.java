@@ -18,9 +18,11 @@ package io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator;
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader;
+import io.scleropages.sentarum.promotion.goods.model.Goods;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.OrderPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GiftModel;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
@@ -43,9 +45,7 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
     @Override
     public void calculate(OverflowDiscountRule rule, OrderPromotionContext promotionContext) {
         PromotionContext.PromotionResultBuilder resultBuilder = promotionContext.promotionResultBuilder();
-        resultBuilder.withRuleId(rule.id());
-        resultBuilder.withDescription(rule.description());
-        resultBuilder.withName(rule.activity().name() + "-" + rule.activity().tag());
+        resultBuilder.withActivity(rule.activity());
         Amount adjustFee = new Amount();
         switch (rule.getOverflowDiscountType()) {
             case FIXED_FEE_OVERFLOW: {//固定满减计算
@@ -70,8 +70,8 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
                             break;
                         }
                     }
-                } else {//发赠品
-
+                } else {
+                    //todo 可用赠品,某些场景下需要用户选择（例如加价赠，或n选一场景），需在gift中进行标识.
                 }
                 break;
             }
@@ -101,23 +101,37 @@ public class OverflowDiscountCalculatorImpl implements OverflowDiscountCalculato
                 if (null != discount) {
                     adjustFee = discount.discountAmount(totalAmount, true);
                 } else {
+                    //todo 可用赠品,某些场景下需要用户选择（例如加价赠，或n选一场景），需在gift中进行标识.
                     CalculatorGoodsSource calculatorGoodsSource = hit.getCalculatorGoodsSource();
                     DetailedGoodsSourceReader.AllOfGoods allOfGoods = calculatorGoodsSource.detailedGoodsSourceReader().allOfGoods();
-
+                    for (Long id : allOfGoods.ids()) {
+                        Goods goods = allOfGoods.goods(id).get();
+                        addGift(resultBuilder, goods);
+                    }
                 }
                 break;
             }
             case FIXED_GOODS_NUM_OVERFLOW: {
-                //todo
+                //todo 满固定商品数时触发规则.
                 break;
             }
             case STEPPED_GOODS_NUM_OVERFLOW: {
-                //todo
+                //todo 满阶梯商品数时触发规则.
                 break;
             }
         }
         resultBuilder.withAdjustFee(adjustFee);
         promotionContext.addPromotionResult(resultBuilder.build());
+    }
+
+    private void addGift(PromotionContext.PromotionResultBuilder resultBuilder, Goods goods) {
+        GiftModel gift = new GiftModel(goods);
+        resultBuilder.withGift()
+                .withGoods(goods)
+                .withGoodsSpecsId(gift.getGoodsSpecsId())
+                .withOuterGoodsSpecsId(gift.getOuterGoodsSpecsId())
+                .withAdjustFee(gift.getAdjustFee())
+                .withPrice(gift.getPrice()).done();
     }
 
 

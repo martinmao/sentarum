@@ -15,17 +15,74 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.calculator;
 
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.core.model.primitive.Amount;
+import io.scleropages.sentarum.promotion.goods.model.Goods;
+import org.apache.commons.collections.MapUtils;
+import org.scleropages.core.util.Namings;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.util.Map;
 
 /**
  * 赠品,统一描述为单规格商品，如存在多规格，做不同 gift 处理.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class Gift {
+public class GiftModel {
+
+
+    private static final String KEY_GOODS_SPECS_ID = Namings.snakeCaseName("goodsSpecsId");
+    private static final String KEY_OUTER_GOODS_SPECS_ID = Namings.snakeCaseName("outerGoodsSpecsId");
+    private static final String KEY_USER_NUM = Namings.snakeCaseName("userNum");
+    private static final String KEY_TOTAL_NUM = Namings.snakeCaseName("totalNum");
+    private static final String KEY_ADJUST_FEE = Namings.snakeCaseName("adjustFee");
+    private static final String KEY_PRICE = Namings.snakeCaseName("price");
+
+
+    public Map buildAttributes() {
+        Map<String, Object> map = Maps.newHashMap();
+        map.put(KEY_GOODS_SPECS_ID, getGoodsSpecsId());
+        map.put(KEY_OUTER_GOODS_SPECS_ID, getOuterGoodsSpecsId());
+        map.put(KEY_USER_NUM, getUserNum());
+        map.put(KEY_TOTAL_NUM, getTotalNum());
+        map.put(KEY_ADJUST_FEE, getAdjustFee());
+        map.put(KEY_PRICE, getPrice());
+        return map;
+    }
+
+    private void applyAttributes(Map<String, Object> attributes) {
+        setGoodsSpecsId(MapUtils.getLong(attributes, KEY_GOODS_SPECS_ID));
+        setOuterGoodsSpecsId(MapUtils.getString(attributes, KEY_OUTER_GOODS_SPECS_ID));
+        setUserNum(MapUtils.getInteger(attributes, KEY_USER_NUM));
+        setTotalNum(MapUtils.getInteger(attributes, KEY_TOTAL_NUM));
+        Map adjustFeeMap = MapUtils.getMap(attributes, KEY_ADJUST_FEE);
+        if (MapUtils.isNotEmpty(adjustFeeMap))
+            setAdjustFee(new Amount(adjustFeeMap));
+        Map priceMap = MapUtils.getMap(attributes, KEY_PRICE);
+        if (MapUtils.isNotEmpty(priceMap))
+            setPrice(new Amount(priceMap));
+    }
+
+    public GiftModel() {
+
+    }
+
+    /**
+     * create gift from goods.
+     *
+     * @param goods
+     */
+    public GiftModel(Goods goods) {
+        Assert.notNull(goods, "goods must not be null.");
+        setId(goods.id());
+        setGoodsId(goods.goodsId());
+        setOuterGoodsId(goods.outerGoodsId());
+        setName(goods.name());
+        applyAttributes(goods.additionalAttributes().getAttributes());
+    }
 
     /**
      * 赠品唯一标识.

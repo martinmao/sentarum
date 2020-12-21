@@ -104,7 +104,7 @@ public class CalculatorGoodsManager {
     @BizError("11")
     public Long createCalculatorGoods(@Valid CalculatorGoods calculatorGoods, Long calculatorGoodsSourceId, Object initialAdditionalAttributesObject) {
         CalculatorGoodsEntity entity = calculatorGoodsEntityMapper.mapForSave(calculatorGoods);
-        entity.setAdditionalAttributes(JsonMapper2.toJson(initialAdditionalAttributesObject));
+        entity.setAdditionalAttributes(null != initialAdditionalAttributesObject ? JsonMapper2.toJson(initialAdditionalAttributesObject) : "{}");
         CalculatorGoodsSourceEntity calculatorGoodsSourceEntity = calculatorGoodsSourceRepository.get(calculatorGoodsSourceId).orElseThrow(() -> new IllegalArgumentException("no calculator goods source found: " + calculatorGoodsSourceId));
         entity.setGoodsSource(calculatorGoodsSourceEntity);
         calculatorGoodsRepository.save(entity);

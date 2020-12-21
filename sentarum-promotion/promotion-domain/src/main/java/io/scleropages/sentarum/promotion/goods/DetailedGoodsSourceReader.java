@@ -18,6 +18,8 @@ package io.scleropages.sentarum.promotion.goods;
 import io.scleropages.sentarum.promotion.goods.model.Goods;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 
+import java.util.Set;
+
 /**
  * spi strategy interface for detailed goods reading.
  *
@@ -44,6 +46,13 @@ public interface DetailedGoodsSourceReader {
          * @return
          */
         GoodsHolder goods(Long id);
+
+        /**
+         * return all id of goods.
+         *
+         * @return
+         */
+        Set<Long> ids();
     }
 
     /**
@@ -65,6 +74,13 @@ public interface DetailedGoodsSourceReader {
          * @return
          */
         GoodsSpecs goodsSpecs(Long id);
+
+        /**
+         * return all id of goods specs.
+         *
+         * @return
+         */
+        Set<Long> ids();
 
         /**
          * return true if goods specs is empty.

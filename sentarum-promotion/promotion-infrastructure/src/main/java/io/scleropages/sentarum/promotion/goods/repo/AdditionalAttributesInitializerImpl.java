@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.goods.repo;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributesProvider;

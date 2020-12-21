@@ -18,6 +18,7 @@ package io.scleropages.sentarum.promotion.goods.repo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader;
+import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.AllOfGoods;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.GoodsHolder;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsEntity;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsSpecsEntity;
@@ -34,6 +35,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * advice of {@link DetailedGoodsSourceReader} and proxied to {@link io.scleropages.sentarum.promotion.goods.AdditionalAttributesProvider}.
@@ -64,33 +67,36 @@ public class DetailedGoodsSourceReaderInitializer implements MethodInterceptor {
 
             Object target = invocation.getThis();
 
-            if (target instanceof DetailedGoodsSource) {
-                DetailedGoodsSource detailedGoodsSource = (DetailedGoodsSource) target;
-                Assert.notNull(detailedGoodsSource.id(), "no id found by given detailed goods source.");
-                return (DetailedGoodsSourceReader) () -> {
-                    Map<Long, GoodsHolder> goodsMap = Maps.newHashMap();
-                    goodsRepository.findAllByGoodsSource_Id(detailedGoodsSource.id()).forEach(entity -> {
-                        GoodsEntity goodsEntity = (GoodsEntity) entity;
-                        Goods goodsModel = (Goods) goodsEntityMapper.mapForRead(goodsEntity);
-                        final Long goodsId = goodsModel.id();
-                        goodsModel = (Goods) additionalAttributesInitializer.initializeAdditionalAttributes(goodsModel, goodsEntity, goodsRepository, false, false, (MethodInterceptor) methodInvocation -> {
-                            if (Objects.equals(methodInvocation.getMethod().getName(), "getSpecs") || Objects.equals(methodInvocation.getMethod().getName(), "specs")) {
-                                List<GoodsSpecs> goodsSpecs = Lists.newArrayList();
-                                List<? extends GoodsSpecsEntity> goodsSpecsEntities = goodsRepository.findAllGoodsSpecsByGoodsId(goodsSpecsRepository, goodsId);
-                                goodsSpecsEntities.forEach(goodsSpecsEntity -> {
-                                    GoodsSpecs goodsSpecsModel = (GoodsSpecs) goodsSpecsEntityMapper.mapForRead(goodsSpecsEntity);
-                                    goodsSpecs.add((GoodsSpecs) additionalAttributesInitializer.initializeAdditionalAttributes(goodsSpecsModel, goodsSpecsEntity, goodsSpecsRepository, false, false));
-                                });
-                                return goodsSpecs;
-                            }
-                            return methodInvocation.proceed();
-                        });
-                        goodsMap.put(goodsId, new GoodsHolderImpl(goodsModel));
-                    });
-                    return id -> goodsMap.get(id);
-                };
+            if (!(target instanceof DetailedGoodsSource)) {
+                return invocation.proceed();
             }
-            return invocation.proceed();
+            DetailedGoodsSource detailedGoodsSource = (DetailedGoodsSource) target;
+            Assert.notNull(detailedGoodsSource.id(), "no id found by given detailed goods source.");
+            AtomicReference<AllOfGoods> allOfGoods = new AtomicReference<>(null);
+            return (DetailedGoodsSourceReader) () -> {
+                if (null != allOfGoods.get()) {
+                    return allOfGoods.get();
+                }
+                Map<Long, GoodsHolder> goodsMap = Maps.newHashMap();
+                goodsRepository.findAllByGoodsSource_Id(detailedGoodsSource.id()).forEach(entity -> {
+                    GoodsEntity goodsEntity = (GoodsEntity) entity;
+                    Goods goodsModel = (Goods) goodsEntityMapper.mapForRead(goodsEntity);
+                    goodsMap.put(goodsModel.id(), new GoodsHolderImpl(goodsModel, goodsEntity));
+                });
+                allOfGoods.compareAndSet(null, new AllOfGoods() {
+
+                    @Override
+                    public GoodsHolder goods(Long id) {
+                        return goodsMap.get(id);
+                    }
+
+                    @Override
+                    public Set<Long> ids() {
+                        return goodsMap.keySet();
+                    }
+                });
+                return allOfGoods.get();
+            };
         }
         return invocation.proceed();
     }
@@ -100,8 +106,19 @@ public class DetailedGoodsSourceReaderInitializer implements MethodInterceptor {
         private Goods goods;
         private Map<Long, GoodsSpecs> goodsSpecsMap;
 
-        private GoodsHolderImpl(Goods goods) {
-            this.goods = goods;
+        private GoodsHolderImpl(Goods goods, GoodsEntity goodsEntity) {
+            this.goods = (Goods) additionalAttributesInitializer.initializeAdditionalAttributes(goods, goodsEntity, goodsRepository, false, false, (MethodInterceptor) methodInvocation -> {
+                if (Objects.equals(methodInvocation.getMethod().getName(), "getSpecs") || Objects.equals(methodInvocation.getMethod().getName(), "specs")) {
+                    List<GoodsSpecs> goodsSpecs = Lists.newArrayList();
+                    List<? extends GoodsSpecsEntity> goodsSpecsEntities = goodsRepository.findAllGoodsSpecsByGoodsId(goodsSpecsRepository, goods.id());
+                    goodsSpecsEntities.forEach(goodsSpecsEntity -> {
+                        GoodsSpecs goodsSpecsModel = (GoodsSpecs) goodsSpecsEntityMapper.mapForRead(goodsSpecsEntity);
+                        goodsSpecs.add((GoodsSpecs) additionalAttributesInitializer.initializeAdditionalAttributes(goodsSpecsModel, goodsSpecsEntity, goodsSpecsRepository, false, false));
+                    });
+                    return goodsSpecs;
+                }
+                return methodInvocation.proceed();
+            });
         }
 
         @Override
@@ -109,19 +126,31 @@ public class DetailedGoodsSourceReaderInitializer implements MethodInterceptor {
             return goods;
         }
 
-        @Override
-        public GoodsSpecs goodsSpecs(Long id) {
+
+        private final void initGoodsSpecsMapIfNecessary() {
             if (goodsSpecsMap == null) {
                 goodsSpecsMap = Maps.newHashMap();
                 goods.specs().forEach(goodsSpecs -> {
                     goodsSpecsMap.put(goodsSpecs.id(), goodsSpecs);
                 });
             }
+        }
+
+        @Override
+        public GoodsSpecs goodsSpecs(Long id) {
+            initGoodsSpecsMapIfNecessary();
             return goodsSpecsMap.get(id);
         }
 
         @Override
+        public Set<Long> ids() {
+            initGoodsSpecsMapIfNecessary();
+            return goodsSpecsMap.keySet();
+        }
+
+        @Override
         public Boolean emptySpecs() {
+            initGoodsSpecsMapIfNecessary();
             return CollectionUtils.isEmpty(goods.specs());
         }
     }

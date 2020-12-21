@@ -38,7 +38,7 @@ import io.scleropages.sentarum.promotion.rule.impl.SimplePromotionChainStarterRu
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
-import io.scleropages.sentarum.promotion.rule.model.calculator.Gift;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GiftModel;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoods;
@@ -118,16 +118,16 @@ public class PromotionApplication {
      * @param overflowDiscountId
      * @return
      */
-    @Validated(Gift.Create.class)
+    @Validated(GiftModel.Create.class)
     @BizError("03")
     @Transactional
-    public Long createOverflowDiscountGift(@Valid Gift gift, Long overflowDiscountId) {
+    public Long createOverflowDiscountGift(@Valid GiftModel gift, Long overflowDiscountId) {
         calculatorGoodsManager.getGoodsSource(overflowDiscountId).orElseThrow(() -> new IllegalArgumentException("no overflow discount found: " + overflowDiscountId));
         CalculatorGoods goods = new CalculatorGoods();
         goods.setGoodsId(gift.getGoodsId());
         goods.setName(gift.getName());
         goods.setOuterGoodsId(gift.getOuterGoodsId());
-        return calculatorGoodsManager.createCalculatorGoods(goods, overflowDiscountId, gift);
+        return calculatorGoodsManager.createCalculatorGoods(goods, overflowDiscountId, gift.buildAttributes());
     }
 
 

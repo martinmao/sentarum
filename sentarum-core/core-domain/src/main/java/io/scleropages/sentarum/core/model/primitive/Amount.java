@@ -15,12 +15,14 @@
  */
 package io.scleropages.sentarum.core.model.primitive;
 
+import org.apache.commons.collections.MapUtils;
 import org.springframework.util.Assert;
 
 import java.beans.Transient;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -39,6 +41,15 @@ public class Amount {
      */
     public Amount() {
         this(0);
+    }
+
+    /**
+     * new amount by amount-map.
+     *
+     * @param amountMap
+     */
+    public Amount(Map<String, Object> amountMap) {
+        this(MapUtils.getString(amountMap, "amount"), Currency.getInstance(MapUtils.getString(amountMap, "currency")));
     }
 
     /**

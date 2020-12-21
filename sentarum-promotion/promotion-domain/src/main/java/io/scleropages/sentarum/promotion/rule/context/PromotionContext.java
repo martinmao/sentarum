@@ -15,12 +15,17 @@
  */
 package io.scleropages.sentarum.promotion.rule.context;
 
+import com.google.common.collect.Lists;
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.goods.model.Goods;
 import io.scleropages.sentarum.promotion.rule.InvocationContext;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule.ChannelType;
+import org.springframework.util.Assert;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * base interface of promotion context.
@@ -90,11 +95,12 @@ public interface PromotionContext extends InvocationContext {
      */
     class PromotionResultBuilder {
 
-        private Long ruleId;
+        private Long id;
         private String name;
         private String description;
         private Amount adjustFee;
         private AdjustMode adjustMode = AdjustMode.DECREASE;
+        private List<GiftBuilder> giftsBuilder = Lists.newArrayList();
 
 
         private PromotionResultBuilder() {
@@ -105,18 +111,44 @@ public interface PromotionContext extends InvocationContext {
             return new PromotionResultBuilder();
         }
 
-        public PromotionResultBuilder withRuleId(Long ruleId) {
-            this.ruleId = ruleId;
+
+        /**
+         * use {@link #withActivity(Activity)} instead.
+         *
+         * @param id
+         * @return
+         */
+        private PromotionResultBuilder withId(Long id) {
+            this.id = id;
             return this;
         }
 
-        public PromotionResultBuilder withName(String name) {
+        /**
+         * use {@link #withActivity(Activity)} instead.
+         *
+         * @param name
+         * @return
+         */
+        private PromotionResultBuilder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public PromotionResultBuilder withDescription(String description) {
+        /**
+         * use {@link #withActivity(Activity)} instead.
+         *
+         * @param description
+         * @return
+         */
+        private PromotionResultBuilder withDescription(String description) {
             this.description = description;
+            return this;
+        }
+
+        public PromotionResultBuilder withActivity(Activity activity) {
+            withId(activity.id());
+            withName(activity.name() + "-" + activity.tag());
+            withDescription(activity.description());
             return this;
         }
 
@@ -130,11 +162,21 @@ public interface PromotionContext extends InvocationContext {
             return this;
         }
 
+        public GiftBuilder withGift() {
+            GiftBuilder giftBuilder = new GiftBuilder(this);
+            this.giftsBuilder.add(giftBuilder);
+            return giftBuilder;
+        }
+
         public PromotionResult build() {
+            Assert.notNull(id, "id must not be null.");
+            Assert.notNull(name, "name must not be null.");
+            Assert.notNull(adjustFee, "adjustFee must not be null.");
+
             return new PromotionResult() {
                 @Override
-                public Long ruleId() {
-                    return ruleId;
+                public Long id() {
+                    return id;
                 }
 
                 @Override
@@ -158,6 +200,11 @@ public interface PromotionContext extends InvocationContext {
                 }
 
                 @Override
+                public List<Gift> gifts() {
+                    return Collections.unmodifiableList(giftsBuilder.stream().map(giftBuilder -> giftBuilder.build()).collect(Collectors.toList()));
+                }
+
+                @Override
                 public String toString() {
                     StringBuilder sb = new StringBuilder("{ ");
                     sb.append("name: ").append(name).append(", ");
@@ -175,14 +222,14 @@ public interface PromotionContext extends InvocationContext {
     interface PromotionResult {
 
         /**
-         * 规则id.
+         * 唯一标识.
          *
          * @return
          */
-        Long ruleId();
+        Long id();
 
         /**
-         * 规则名称
+         * 名称
          *
          * @return
          */
@@ -190,7 +237,7 @@ public interface PromotionContext extends InvocationContext {
 
 
         /**
-         * 规则描述
+         * 描述
          *
          * @return
          */
@@ -210,6 +257,162 @@ public interface PromotionContext extends InvocationContext {
          * @return
          */
         AdjustMode adjustMode();
+
+        /**
+         * 赠品
+         *
+         * @return
+         */
+        List<Gift> gifts();
+    }
+
+
+    interface Gift {
+        /**
+         * 赠品唯一标识.
+         */
+        Long id();
+
+        /**
+         * 商品id
+         */
+        Long goodsId();
+
+        /**
+         * 商品规格id
+         */
+        Long goodsSpecsId();
+
+        /**
+         * 商品外部编码
+         */
+        String outerGoodsId();
+
+        /**
+         * 商品规格外部编码
+         */
+        String outerGoodsSpecsId();
+
+        /**
+         * 名称
+         */
+        String name();
+
+        /**
+         * 补差价，例如：满100元+5元送牙刷
+         */
+        Amount adjustFee();
+
+        /**
+         * 赠品单价
+         */
+        Amount price();
+
+
+    }
+
+    class GiftBuilder {
+
+        private final PromotionResultBuilder resultBuilder;
+
+        private Long id;
+        private Long goodsId;
+        private Long goodsSpecsId;
+        private String outerGoodsId;
+        private String outerGoodsSpecsId;
+        private String name;
+        private Amount adjustFee;
+        private Amount price;
+
+        public GiftBuilder(PromotionResultBuilder resultBuilder) {
+            this.resultBuilder = resultBuilder;
+        }
+
+        public PromotionResultBuilder done() {
+            Assert.notNull(id, "id must not be null.");
+            Assert.notNull(goodsId, "goodsId must not be null.");
+            Assert.notNull(goodsSpecsId, "goodsSpecsId must not be null.");
+            Assert.notNull(outerGoodsId, "outerGoodsId must not be null.");
+            Assert.notNull(outerGoodsSpecsId, "outerGoodsSpecsId must not be null.");
+            Assert.notNull(name, "name must not be null.");
+            Assert.notNull(adjustFee, "adjustFee must not be null.");
+            Assert.notNull(price, "price must not be null.");
+            return resultBuilder;
+        }
+
+        public GiftBuilder withGoods(Goods goods) {
+            this.id = goods.id();
+            this.goodsId = goods.goodsId();
+            this.outerGoodsId = goods.outerGoodsId();
+            this.name = goods.name();
+            return this;
+        }
+
+        public GiftBuilder withGoodsSpecsId(Long goodsSpecsId) {
+            this.goodsSpecsId = goodsSpecsId;
+            return this;
+        }
+
+        public GiftBuilder withOuterGoodsSpecsId(String outerGoodsSpecsId) {
+            this.outerGoodsSpecsId = outerGoodsSpecsId;
+            return this;
+        }
+
+        public GiftBuilder withAdjustFee(Amount adjustFee) {
+            this.adjustFee = adjustFee;
+            return this;
+        }
+
+        public GiftBuilder withPrice(Amount price) {
+            this.price = price;
+            return this;
+        }
+
+
+        private Gift build() {
+            return new Gift() {
+
+                @Override
+                public Long id() {
+                    return id;
+                }
+
+                @Override
+                public Long goodsId() {
+                    return goodsId;
+                }
+
+                @Override
+                public Long goodsSpecsId() {
+                    return goodsSpecsId;
+                }
+
+                @Override
+                public String outerGoodsId() {
+                    return outerGoodsId;
+                }
+
+                @Override
+                public String outerGoodsSpecsId() {
+                    return outerGoodsSpecsId;
+                }
+
+                @Override
+                public String name() {
+                    return name;
+                }
+
+                @Override
+                public Amount adjustFee() {
+                    return adjustFee;
+                }
+
+                @Override
+                public Amount price() {
+                    return price;
+                }
+            };
+        }
     }
 
     /**
