@@ -16,6 +16,8 @@
 package io.scleropages.sentarum.promotion.rule.impl;
 
 import io.scleropages.sentarum.promotion.rule.PromotionChainStarter;
+import io.scleropages.sentarum.promotion.rule.context.CartPromotionContext;
+import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 
 import java.util.List;
 
@@ -25,12 +27,15 @@ import java.util.List;
 public class DefaultPromotionChainStarter implements PromotionChainStarter {
 
 
+    private final CartPromotionContext cartPromotionContext;
+
     private final List<ActivityPromotionInvocationChain> headOfChains;
 
     private final ActivityPromotionInvocationChain finalChain;
 
 
-    public DefaultPromotionChainStarter(List<ActivityPromotionInvocationChain> headOfChains, ActivityPromotionInvocationChain finalChain) {
+    public DefaultPromotionChainStarter(CartPromotionContext cartPromotionContext, List<ActivityPromotionInvocationChain> headOfChains, ActivityPromotionInvocationChain finalChain) {
+        this.cartPromotionContext = cartPromotionContext;
         this.headOfChains = headOfChains;
         this.finalChain = finalChain;
     }
@@ -43,5 +48,10 @@ public class DefaultPromotionChainStarter implements PromotionChainStarter {
     @Override
     public ActivityPromotionInvocationChain finalChain() {
         return finalChain;
+    }
+
+    @Override
+    public PromotionContext promotionContext() {
+        return cartPromotionContext;
     }
 }

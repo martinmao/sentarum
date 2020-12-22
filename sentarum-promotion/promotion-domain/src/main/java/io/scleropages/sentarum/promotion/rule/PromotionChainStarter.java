@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule;
 
+import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.impl.ActivityPromotionInvocationChain;
 
 import java.util.List;
@@ -40,5 +41,13 @@ public interface PromotionChainStarter {
      * @return
      */
     ActivityPromotionInvocationChain finalChain();
+
+
+    /**
+     * return promotion context.
+     * @return
+     */
+    PromotionContext promotionContext();
+
 
 }

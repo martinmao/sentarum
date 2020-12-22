@@ -72,7 +72,7 @@ public class DefaultPromotionChainStarterFactory implements PromotionChainStarte
             logger.debug(" FinalChain->{}", finalChain.name());
             finalChain.logInformation(logger);
         }
-        return new DefaultPromotionChainStarter(headOfChains, finalChain);
+        return new DefaultPromotionChainStarter(cartPromotionContext, headOfChains, finalChain);
     }
 
     private ActivityPromotionInvocationChain createChain(PromotionContext promotionContext, RuleContainer ruleContainer, InvocationChain nextChain, String name) {
