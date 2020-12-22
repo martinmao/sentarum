@@ -31,7 +31,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class GiftModel {
+public class SimpleGift {
 
 
     private static final String KEY_GOODS_SPECS_ID = Namings.snakeCaseName("goodsSpecsId");
@@ -66,7 +66,7 @@ public class GiftModel {
             setPrice(new Amount(priceMap));
     }
 
-    public GiftModel() {
+    public SimpleGift() {
 
     }
 
@@ -75,7 +75,7 @@ public class GiftModel {
      *
      * @param goods
      */
-    public GiftModel(Goods goods) {
+    public SimpleGift(Goods goods) {
         Assert.notNull(goods, "goods must not be null.");
         setId(goods.id());
         setGoodsId(goods.goodsId());

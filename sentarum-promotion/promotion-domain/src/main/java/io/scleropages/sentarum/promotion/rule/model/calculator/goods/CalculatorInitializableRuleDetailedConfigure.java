@@ -18,7 +18,7 @@ package io.scleropages.sentarum.promotion.rule.model.calculator.goods;
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
 
 /**
- * represent a detailed configure for {@link CalculatorInitializableRule}.
+ * represent a detailed configure of {@link CalculatorInitializableRule}.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */

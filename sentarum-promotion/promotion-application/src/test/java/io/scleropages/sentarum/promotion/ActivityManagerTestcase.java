@@ -62,6 +62,9 @@ public class ActivityManagerTestcase {
     @Autowired
     private ActivityRuleManager activityRuleManager;
 
+    @Autowired
+    private PromotionApplication promotionApplication;
+
     @Test
     public void _1_createSimpleActivity() {
 
@@ -139,7 +142,7 @@ public class ActivityManagerTestcase {
 
         goodsDiscountRule.setDescription("品类打折，全场商品均直减5元.");
 
-        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+        promotionApplication.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
 
         activity.setName("TEST22");
@@ -162,7 +165,7 @@ public class ActivityManagerTestcase {
 
         goodsDiscountRule = new GoodsDiscountRule(new Discount(Discount.DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE, 7, null), null);
         goodsDiscountRule.setDescription("商家店铺折扣，全店商品均直减7元.");
-        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+        promotionApplication.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
 
         activity.setName("TEST3");
@@ -257,7 +260,7 @@ public class ActivityManagerTestcase {
                         new GoodsDiscountRule.UserLevelDiscount(
                                 new Discount(Discount.DiscountType.DECREASE_AMOUNT, 299, new Amount(7999)), 1l, 1l, "vip会员"))));
 
-        activityRuleManager.createGoodsDiscountRule(goodsDiscountRule, activityId);
+        promotionApplication.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
 
         System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, 888l, 19888l), true)));

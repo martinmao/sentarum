@@ -21,7 +21,7 @@ import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader;
 import io.scleropages.sentarum.promotion.goods.model.Goods;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.PromotionCalculator;
-import io.scleropages.sentarum.promotion.rule.model.calculator.GiftModel;
+import io.scleropages.sentarum.promotion.rule.model.calculator.SimpleGift;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoodsSource;
@@ -146,7 +146,7 @@ public abstract class AbstractOverflowDiscountCalculator<C extends PromotionCont
      * @param goods
      */
     private final void addGift(PromotionContext.PromotionResultBuilder resultBuilder, Goods goods) {
-        GiftModel gift = new GiftModel(goods);
+        SimpleGift gift = new SimpleGift(goods);
         resultBuilder.withGift()
                 .withGoods(goods)
                 .withGoodsSpecsId(gift.getGoodsSpecsId())

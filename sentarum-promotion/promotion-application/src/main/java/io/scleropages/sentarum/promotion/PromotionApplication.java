@@ -21,6 +21,8 @@ import io.scleropages.sentarum.item.ItemApi;
 import io.scleropages.sentarum.item.core.model.Item;
 import io.scleropages.sentarum.item.core.model.Sku;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
+import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
+import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.AdditionalAttributes;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
@@ -38,13 +40,15 @@ import io.scleropages.sentarum.promotion.rule.impl.SimplePromotionChainStarterRu
 import io.scleropages.sentarum.promotion.rule.model.CalculatorRule;
 import io.scleropages.sentarum.promotion.rule.model.ConditionRule;
 import io.scleropages.sentarum.promotion.rule.model.Rule;
-import io.scleropages.sentarum.promotion.rule.model.calculator.GiftModel;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.SimpleGift;
 import io.scleropages.sentarum.promotion.rule.model.calculator.goods.CalculatorGoods;
 import org.scleropages.crud.exception.BizError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,16 +122,41 @@ public class PromotionApplication {
      * @param overflowDiscountId
      * @return
      */
-    @Validated(GiftModel.Create.class)
+    @Validated(SimpleGift.Create.class)
     @BizError("03")
     @Transactional
-    public Long createOverflowDiscountGift(@Valid GiftModel gift, Long overflowDiscountId) {
+    public Long createOverflowDiscountGift(@Valid SimpleGift gift, Long overflowDiscountId) {
         calculatorGoodsManager.getGoodsSource(overflowDiscountId).orElseThrow(() -> new IllegalArgumentException("no overflow discount found: " + overflowDiscountId));
         CalculatorGoods goods = new CalculatorGoods();
         goods.setGoodsId(gift.getGoodsId());
         goods.setName(gift.getName());
         goods.setOuterGoodsId(gift.getOuterGoodsId());
         return calculatorGoodsManager.createCalculatorGoods(goods, overflowDiscountId, gift.buildAttributes());
+    }
+
+
+    /**
+     * 创建商品折扣规则.
+     *
+     * @param goodsDiscountRule
+     * @param activityId
+     * @return
+     */
+    @Validated(GoodsDiscountRule.Create.class)
+    @Transactional
+    @BizError("04")
+    public Long createGoodsDiscountRule(@Valid GoodsDiscountRule goodsDiscountRule, Long activityId) {
+        List<ActivityGoodsSource> activityGoodsSources = activityManager.findAllActivityGoodsSource(activityId);
+        Assert.notEmpty(activityGoodsSources, "no activity goods source found.");
+        activityGoodsSources.forEach(activityGoodsSource -> {
+            if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {
+                goodsDiscountRule.applyActivityDetailedGoodsSourceConfigure((ActivityDetailedGoodsSource) activityGoodsSource);
+            } else if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
+                goodsDiscountRule.applyActivityClassifiedGoodsSourceConfigure((ActivityClassifiedGoodsSource) activityGoodsSource);
+            } else
+                throw new IllegalStateException("unsupported activity goods source: " + AopUtils.getTargetClass(activityGoodsSource).getSimpleName());
+        });
+        return activityRuleManager.createCalculatingRule(goodsDiscountRule, activityId);
     }
 
 

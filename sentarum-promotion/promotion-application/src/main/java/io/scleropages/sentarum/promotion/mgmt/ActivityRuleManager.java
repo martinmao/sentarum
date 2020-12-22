@@ -222,36 +222,6 @@ public class ActivityRuleManager implements BeanClassLoaderAware {
     }
 
     /**
-     * 创建商品折扣规则.
-     *
-     * @param goodsDiscountRule
-     * @param activityId
-     * @return
-     */
-    @Validated(GoodsDiscountRule.Create.class)
-    @Transactional
-    @BizError("15")
-    public Long createGoodsDiscountRule(@Valid GoodsDiscountRule goodsDiscountRule, Long activityId) {
-        List<ActivityGoodsSource> activityGoodsSources = activityManager.findAllActivityGoodsSource(activityId);
-        Assert.notEmpty(activityGoodsSources, "no activity goods source found.");
-        activityGoodsSources.forEach(activityGoodsSource -> {
-            if (activityGoodsSource instanceof ActivityDetailedGoodsSource) {
-                goodsDiscountRule.applyActivityDetailedGoodsSourceConfigure((ActivityDetailedGoodsSource) activityGoodsSource);
-            } else if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {
-                goodsDiscountRule.applyActivityClassifiedGoodsSourceConfigure((ActivityClassifiedGoodsSource) activityGoodsSource);
-            } else
-                throw new IllegalStateException("unsupported activity goods source: " + AopUtils.getTargetClass(activityGoodsSource).getSimpleName());
-        });
-        BaseCalculatorRuleEntity entity = baseCalculatorRuleEntityMapper.mapForSave(goodsDiscountRule);
-        ActivityEntity activityEntity = getRequiredActivityEntity(activityId);
-        activityManager.initializeActivity(activityEntity, null).additionalAttributes().setAttribute(ATTRIBUTE_CALCULATE_LEVEL, goodsDiscountRule.calculateLevel(), true).save();
-        entity.setActivity(activityEntity);
-        preRuleCreating(goodsDiscountRule, entity);
-        baseCalculatorRuleRepository.save(entity);
-        return entity.getId();
-    }
-
-    /**
      * 创建计算规则.
      *
      * @param calculatorRule

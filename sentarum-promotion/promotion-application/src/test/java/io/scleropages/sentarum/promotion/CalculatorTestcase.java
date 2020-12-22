@@ -23,7 +23,7 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
-import io.scleropages.sentarum.promotion.rule.model.calculator.GiftModel;
+import io.scleropages.sentarum.promotion.rule.model.calculator.SimpleGift;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
@@ -119,7 +119,7 @@ public class CalculatorTestcase {
         overflowDiscount6666.setOverflowFee(new Amount(6666));
         overflowDiscount6666.setUserGiftNum(1);
         Long overflowDiscountId6666 = promotionApplication.createOverflowDiscount(overflowDiscount6666, overflowDiscountRuleId);
-        GiftModel lyrj = new GiftModel();
+        SimpleGift lyrj = new SimpleGift();
         lyrj.setGoodsId(934l);
         lyrj.setGoodsSpecsId(9341l);
         lyrj.setName("蓝牙耳机");
@@ -134,7 +134,7 @@ public class CalculatorTestcase {
         overflowDiscount7777.setOverflowFee(new Amount(7777));
         overflowDiscount7777.setUserGiftNum(1);
         Long overflowDiscountId7777 = promotionApplication.createOverflowDiscount(overflowDiscount7777, overflowDiscountRuleId);
-        GiftModel vryj = new GiftModel();
+        SimpleGift vryj = new SimpleGift();
         vryj.setGoodsId(935l);
         vryj.setGoodsSpecsId(9351l);
         vryj.setName("VR眼镜");
@@ -149,7 +149,7 @@ public class CalculatorTestcase {
         overflowDiscount8888.setOverflowFee(new Amount(8888));
         overflowDiscount8888.setUserGiftNum(1);
         Long overflowDiscountId8888 = promotionApplication.createOverflowDiscount(overflowDiscount8888, overflowDiscountRuleId);
-        GiftModel magicMouse = new GiftModel();
+        SimpleGift magicMouse = new SimpleGift();
         magicMouse.setGoodsId(936l);
         magicMouse.setGoodsSpecsId(9361l);
         magicMouse.setName("Magic2 mouse");
