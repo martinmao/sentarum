@@ -267,7 +267,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
 
 
     /**
-     * 获取活动详情
+     * 获取活动详情,该方法会初始化以下
      *
      * @param id               id of activity
      * @param fetchGoodsSource true if want to fetch goods source(a read only goods source).
@@ -289,11 +289,12 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
         if (fetchGoodsSource) {
             List<ActivityGoodsSource> goodsSources = model.goodsSource();
             List<AbstractGoodsSourceEntity> goodsSourcesEntity = entity.getGoodsSource();
+            List<ActivityGoodsSource> goodsSourceProxies = Lists.newArrayList();
             for (int i = 0; i < goodsSources.size(); i++) {
                 ActivityGoodsSource activityGoodsSource = goodsSources.get(i);
                 AbstractGoodsSourceEntity abstractGoodsSourceEntity = goodsSourcesEntity.get(i);
                 boolean detailedGoodsSource = abstractGoodsSourceEntity instanceof ActivityDetailedGoodsSourceEntity;
-                additionalAttributesInitializer.initializeAdditionalAttributes(
+                ActivityGoodsSource proxyGoodsSource = (ActivityGoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(
                         activityGoodsSource
                         , abstractGoodsSourceEntity
                         , detailedGoodsSource ?
@@ -305,7 +306,9 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
                                 detailedGoodsSourceReaderInitializer
                                 : null
                 );
+                goodsSourceProxies.add(proxyGoodsSource);
             }
+            model.setGoodsSource(goodsSourceProxies);
         }
         return (Activity) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, activityRepository, false, true);
     }
@@ -321,7 +324,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     public ActivityClassifiedGoodsSource getActivityClassifiedGoodsSource(Long id) {
         ActivityClassifiedGoodsSourceEntity entity = classifiedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity classified goods source found: " + id));
         ActivityClassifiedGoodsSourceModel model = classifiedGoodsSourceEntityMapper.mapForRead(entity);
-        return (ActivityClassifiedGoodsSource) initializeGoodsSource(model, entity, classifiedGoodsSourceRepository,detailedGoodsSourceReaderInitializer);
+        return (ActivityClassifiedGoodsSource) initializeGoodsSource(model, entity, classifiedGoodsSourceRepository, detailedGoodsSourceReaderInitializer);
     }
 
     /**
@@ -335,7 +338,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
     public ActivityDetailedGoodsSource getActivityDetailedGoodsSource(Long id) {
         ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceRepository.get(id).orElseThrow(() -> new IllegalArgumentException("no activity detailed goods source found: " + id));
         ActivityDetailedGoodsSourceModel model = detailedGoodsSourceEntityMapper.mapForRead(entity);
-        return (ActivityDetailedGoodsSource) initializeGoodsSource(model, entity, detailedGoodsSourceRepository,detailedGoodsSourceReaderInitializer);
+        return (ActivityDetailedGoodsSource) initializeGoodsSource(model, entity, detailedGoodsSourceRepository, detailedGoodsSourceReaderInitializer);
     }
 
     /**
@@ -381,7 +384,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
         List<ActivityClassifiedGoodsSourceEntity> classifiedGoodsSourceEntities = classifiedGoodsSourceRepository.findByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId);
         for (ActivityClassifiedGoodsSourceEntity entity : classifiedGoodsSourceEntities) {
             ActivityClassifiedGoodsSourceModel model = classifiedGoodsSourceEntityMapper.mapForRead(entity);
-            goodsSources.add((ActivityGoodsSource) initializeGoodsSource(model, entity, classifiedGoodsSourceRepository,detailedGoodsSourceReaderInitializer));
+            goodsSources.add((ActivityGoodsSource) initializeGoodsSource(model, entity, classifiedGoodsSourceRepository, detailedGoodsSourceReaderInitializer));
         }
         if (goodsSources.isEmpty()) {
             List<ActivityDetailedGoodsSourceEntity> detailedGoodsSourceEntities = detailedGoodsSourceRepository.findByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId);
@@ -391,7 +394,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
                 }
                 ActivityDetailedGoodsSourceEntity entity = detailedGoodsSourceEntities.get(0);
                 ActivityDetailedGoodsSourceModel model = detailedGoodsSourceEntityMapper.mapForRead(entity);
-                goodsSources.add((ActivityGoodsSource) initializeGoodsSource(model, entity, detailedGoodsSourceRepository,detailedGoodsSourceReaderInitializer));
+                goodsSources.add((ActivityGoodsSource) initializeGoodsSource(model, entity, detailedGoodsSourceRepository, detailedGoodsSourceReaderInitializer));
             }
         }
         return goodsSources;
@@ -402,7 +405,7 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      *
      * @return
      */
-    protected GoodsSource initializeGoodsSource(GoodsSource model, Object entity, AbstractGoodsSourceRepository goodsSourceRepository,DetailedGoodsSourceReaderInitializer detailedGoodsSourceReaderInitializer) {
+    protected GoodsSource initializeGoodsSource(GoodsSource model, Object entity, AbstractGoodsSourceRepository goodsSourceRepository, DetailedGoodsSourceReaderInitializer detailedGoodsSourceReaderInitializer) {
         return (GoodsSource) additionalAttributesInitializer.initializeAdditionalAttributes(model, entity, goodsSourceRepository, false, false, model instanceof DetailedGoodsSource ? detailedGoodsSourceReaderInitializer : null);
     }
 

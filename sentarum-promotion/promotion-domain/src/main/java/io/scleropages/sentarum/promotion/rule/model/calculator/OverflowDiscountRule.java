@@ -193,7 +193,7 @@ public class OverflowDiscountRule extends BaseCalculatorRule implements Calculat
     /**
      * 满减作用域
      */
-    enum Scope {
+    public enum Scope {
         /**
          * 平台满减
          */

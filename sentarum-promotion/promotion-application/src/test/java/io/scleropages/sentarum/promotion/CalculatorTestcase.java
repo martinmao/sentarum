@@ -87,6 +87,7 @@ public class CalculatorTestcase {
         rule.setOverflowCycleLimit(-1);
         rule.setOverflowDiscountType(OverflowDiscountRule.OverflowDiscountType.FIXED_FEE_OVERFLOW);
         rule.setDescription("平台满500减20活动，无条件");
+        rule.setScope(OverflowDiscountRule.Scope.PLATFORM);
         Long overflowDiscountRuleId = promotionApplication.createOverflowDiscountRule(rule, activityId);
         OverflowDiscount overflowDiscount = new OverflowDiscount();
         overflowDiscount.setOverflowFee(new Amount(500));
@@ -120,6 +121,7 @@ public class CalculatorTestcase {
         rule.setOverflowCycleLimit(-1);
         rule.setOverflowDiscountType(OverflowDiscountRule.OverflowDiscountType.STEPPED_FEE_OVERFLOW);
         rule.setDescription("店铺满6666赠蓝牙耳机，满7777赠VR眼镜，满8888赠magic2 mouse");
+        rule.setScope(OverflowDiscountRule.Scope.SELLER);
         Long overflowDiscountRuleId = promotionApplication.createOverflowDiscountRule(rule, activityId);
 
         OverflowDiscount overflowDiscount6666 = new OverflowDiscount();
@@ -237,9 +239,9 @@ public class CalculatorTestcase {
 
     @Test
     public void testCalculateDiscount() {
-        initPlatformActivity();
-        initSellerActivity();
-        initGoodsActivity();
+//        initPlatformActivity();
+//        initSellerActivity();
+//        initGoodsActivity();
         PromotionCalculateRequest request = new PromotionCalculateRequest();
         request.setBuyerId(1l);
         request.setChannelType(ChannelConditionRule.ChannelType.APP_MALL);
