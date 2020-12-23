@@ -15,17 +15,24 @@
  */
 package io.scleropages.sentarum.promotion;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.scleropages.sentarum.core.model.primitive.Amount;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.item.ItemApi;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityClassifiedGoodsSourceModel;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityDetailedGoodsSourceModel;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsModel;
+import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsSpecsModel;
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
-import io.scleropages.sentarum.promotion.rule.model.calculator.SimpleGift;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule.GoodsDiscount;
+import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule.GoodsSpecsDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.OverflowDiscountRule;
+import io.scleropages.sentarum.promotion.rule.model.calculator.SimpleGift;
 import io.scleropages.sentarum.promotion.rule.model.condition.ChannelConditionRule;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
@@ -161,11 +168,78 @@ public class CalculatorTestcase {
         promotionApplication.createOverflowDiscountGift(magicMouse, overflowDiscountId8888);
     }
 
+    private void initGoodsActivity() {
+        ActivityModel activity = new ActivityModel();
+        activity.setName("goodsDiscountActivity");
+        activity.setTag("商品折扣");
+        activity.setDescription("商品折扣");
+        activity.setStatus(1);
+        activity.setStartTime(new Date());
+        activity.setEndTime(DateUtils.addDays(new Date(), 20));
+        Long activityId = activityManager.createActivity(activity);
+
+        ActivityDetailedGoodsSourceModel activityDetailedGoodsSourceModel = new ActivityDetailedGoodsSourceModel();
+        activityDetailedGoodsSourceModel.setBizId(activityId);
+        activityDetailedGoodsSourceModel.setComment("活动关联商品.");
+        activityDetailedGoodsSourceModel.setGoodsSourceType(ActivityGoodsSource.DETAILED_GOODS_SOURCE_TYPE);
+        Long activityDetailedGoodsSourceId = activityManager.createActivityDetailedGoodsSource(activityDetailedGoodsSourceModel, activityId);
+
+        ActivityGoodsModel goodsModel = new ActivityGoodsModel();
+        goodsModel.setGoodsId(1l);
+        goodsModel.setName("iPhoneX1");
+        goodsModel.setOuterGoodsId("iPhoneX1");
+        goodsModel.setTotalNum(111);
+        goodsModel.setUserNum(1);
+        Long activityGoodsId = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
+
+        ActivityGoodsSpecsModel goodsSpecsModel = new ActivityGoodsSpecsModel();
+        goodsSpecsModel.setSpecsId(1l);
+        goodsSpecsModel.setName("iPhoneX1-128g");
+        goodsSpecsModel.setOuterSpecsId("iPhoneX1-128g");
+        goodsSpecsModel.setTotalNum(10);
+        goodsSpecsModel.setUserNum(1);
+        Long activityGoodsSpecsId = activityManager.createActivityGoodsSpecs(goodsSpecsModel, activityGoodsId);
+
+        goodsModel.setGoodsId(2l);
+        goodsModel.setName("iPhoneX2");
+        goodsModel.setOuterGoodsId("x1221212121212121");
+        goodsModel.setTotalNum(222);
+        goodsModel.setUserNum(2);
+        Long activityGoodsId2 = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
+
+        goodsModel.setGoodsId(3l);
+        goodsModel.setName("iPhoneX3");
+        goodsModel.setOuterGoodsId("x1221212121212121");
+        goodsModel.setTotalNum(333);
+        goodsModel.setUserNum(1);
+        Long activityGoodsId3 = activityManager.createActivityGoods(goodsModel, activityDetailedGoodsSourceId);
+
+
+        GoodsDiscountRule goodsDiscountRule = new GoodsDiscountRule(null, Lists.newArrayList());
+        goodsDiscountRule.setDescription("商品折扣规则");
+        goodsDiscountRule.getGoodsDiscounts().add(
+                new GoodsDiscount(activityGoodsId, new Discount(Discount.DiscountType.DISCOUNT, 85, null), Lists.newArrayList(
+                        new GoodsSpecsDiscount(activityGoodsSpecsId, new Discount(Discount.DiscountType.OVERRIDE_AMOUNT, 3500, new Amount(4444))))));
+
+
+        goodsDiscountRule.getGoodsDiscounts().add(
+                new GoodsDiscount(activityGoodsId2, new Discount(Discount.DiscountType.DISCOUNT, 95, new Amount(7999)), Lists.newArrayList()));
+
+
+        goodsDiscountRule.getGoodsDiscounts().add(
+                new GoodsDiscount(activityGoodsId3, Lists.newArrayList(
+                        new GoodsDiscountRule.UserLevelDiscount(
+                                new Discount(Discount.DiscountType.DECREASE_AMOUNT, 299, new Amount(7999)), 1l, 1l, "vip会员"))));
+
+        promotionApplication.createGoodsDiscountRule(goodsDiscountRule, activityId);
+    }
+
 
     @Test
     public void testCalculateDiscount() {
-//        initPlatformActivity();
-//        initSellerActivity();
+        initPlatformActivity();
+        initSellerActivity();
+        initGoodsActivity();
         PromotionCalculateRequest request = new PromotionCalculateRequest();
         request.setBuyerId(1l);
         request.setChannelType(ChannelConditionRule.ChannelType.APP_MALL);
