@@ -24,7 +24,9 @@ import io.scleropages.sentarum.jooq.tables.records.PromActivityRecord;
 import io.scleropages.sentarum.promotion.activity.entity.ActivityEntity;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
+import io.scleropages.sentarum.promotion.goods.entity.AbstractGoodsSourceEntity;
 import io.scleropages.sentarum.promotion.goods.entity.GoodsSpecsEntity;
+import io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository;
 import io.scleropages.sentarum.promotion.goods.repo.AbstractGoodsSourceRepository.GoodsSourceJoin;
 import io.scleropages.sentarum.promotion.goods.repo.AdditionalAttributesInitializer.AdditionalAttributesSavingCallback;
 import io.scleropages.sentarum.promotion.goods.repo.GoodsRepository.GoodsJoin;
@@ -137,26 +139,22 @@ public interface ActivityRepository extends GenericRepository<ActivityEntity, Lo
     /**
      * read activity by given record
      *
-     * @param optionalRecord                  required record use {@link #readById(Long)} to fetch.
-     * @param classifiedGoodsSourceRepository (optional) required if want to fetch classified goods source
-     * @param detailedGoodsSourceRepository   (optional) required if want to fetch detailed goods source
+     * @param optionalRecord        required record use {@link #readById(Long)} to fetch.
+     * @param goodsSourceRepository (optional) required if want to fetch goods source
      * @return
      */
-    default Optional<ActivityEntity> readByRecord(Optional<PromActivityRecord> optionalRecord, ActivityClassifiedGoodsSourceRepository classifiedGoodsSourceRepository, ActivityDetailedGoodsSourceRepository detailedGoodsSourceRepository) {
+    default Optional<ActivityEntity> readByRecord(Optional<PromActivityRecord> optionalRecord, AbstractGoodsSourceRepository goodsSourceRepository) {
         if (!optionalRecord.isPresent())
             return Optional.empty();
         PromActivityRecord record = optionalRecord.get();
         Long activityId = record.getId();
         ActivityEntity entity = new ActivityEntity();
         dslRecordInto(record, entity);
-        if (null != classifiedGoodsSourceRepository) {
-            classifiedGoodsSourceRepository.consumeEntitiesByRecord(classifiedGoodsSourceRepository.readAllByBizTypeAndBizId(
+        if (null != goodsSourceRepository) {
+            goodsSourceRepository.consumeEntitiesByRecord(goodsSourceRepository.readAllByBizTypeAndBizId(
                     ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY
                     , activityId, null)
-                    , e -> entity.getGoodsSource().add(e));
-        }
-        if (null != detailedGoodsSourceRepository) {
-            detailedGoodsSourceRepository.consumeEntitiesByRecord(detailedGoodsSourceRepository.readAllByBizTypeAndBizId(ActivityGoodsSource.BIZ_TYPE_OF_ACTIVITY, activityId, null), e -> entity.getGoodsSource().add(e));
+                    , e -> entity.getGoodsSource().add((AbstractGoodsSourceEntity) e));
         }
         return Optional.of(entity);
     }

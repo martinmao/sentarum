@@ -58,6 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
@@ -252,38 +253,35 @@ public class ActivityManager implements GenericManager<ActivityModel, Long, Acti
      * getGoodsSource activities by ids
      *
      * @param ids              id list for activity
-     * @param fetchGoodsSource true if want to fetch goods source.
+     * @param goodsSourceClazz optional if want to fetch goods source.
      * @return
      */
     @Transactional(readOnly = true)
     @BizError("52")
-    public List<? extends Activity> getActivities(List<Long> ids, boolean fetchGoodsSource) {
+    public List<? extends Activity> getActivities(List<Long> ids, Class<? extends GoodsSource> goodsSourceClazz) {
         if (CollectionUtils.isEmpty(ids))
             return Collections.emptyList();
         List<Activity> activities = Lists.newArrayList();
-        ids.forEach(id -> activities.add(getActivity(id, fetchGoodsSource)));
+        ids.forEach(id -> activities.add(getActivity(id, goodsSourceClazz)));
         return activities;
     }
 
 
     /**
-     * 获取活动详情,该方法会初始化以下
+     * 获取活动详情
      *
      * @param id               id of activity
-     * @param fetchGoodsSource true if want to fetch goods source(a read only goods source).
+     * @param goodsSourceClazz optional. if want to fetch goods source(a read only goods source).
      * @return
      */
     @Transactional(readOnly = true)
     @BizError("53")
-    public Activity getActivity(Long id, boolean fetchGoodsSource) {
+    public Activity getActivity(Long id, Class<? extends GoodsSource> goodsSourceClazz) {
+        boolean fetchGoodsSource = null != goodsSourceClazz;
+        AbstractGoodsSourceRepository goodsSourceRepository = ClassUtils.isAssignable(ClassifiedGoodsSource.class, goodsSourceClazz) ? classifiedGoodsSourceRepository : detailedGoodsSourceRepository;
         ActivityEntity entity = activityRepository.readByRecord(
                 activityRepository.readById(id)
-                , fetchGoodsSource ?
-                        classifiedGoodsSourceRepository
-                        : null
-                , fetchGoodsSource ?
-                        detailedGoodsSourceRepository
-                        : null
+                , fetchGoodsSource ? goodsSourceRepository : null
         ).orElseThrow(() -> new IllegalArgumentException("no activity found: " + id));
         ActivityModel model = getModelMapper().mapForRead(entity);
         if (fetchGoodsSource) {

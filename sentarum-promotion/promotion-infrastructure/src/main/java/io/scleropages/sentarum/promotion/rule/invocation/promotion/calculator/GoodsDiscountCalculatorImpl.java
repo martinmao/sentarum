@@ -20,8 +20,10 @@ import io.scleropages.sentarum.promotion.activity.model.Activity;
 import io.scleropages.sentarum.promotion.activity.model.ActivityClassifiedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSource;
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
-import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader;
+import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.AllOfGoods;
+import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.GoodsHolder;
 import io.scleropages.sentarum.promotion.goods.model.Goods;
+import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.context.GoodsPromotionContext;
 import io.scleropages.sentarum.promotion.rule.context.PromotionContext;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -58,10 +61,32 @@ public class GoodsDiscountCalculatorImpl implements GoodsDiscountCalculator {
             if (activityGoodsSource instanceof ActivityClassifiedGoodsSource) {//单品牌、品类、店铺统一折扣.
                 adjustFee = calculateUnifiedDiscount(rule, promotionContext);
             } else {//商品促销
-                ActivityDetailedGoodsSource detailedGoodsSource = (ActivityDetailedGoodsSource) activityGoodsSource;
-                DetailedGoodsSourceReader.GoodsHolder goodsHolder = detailedGoodsSource.detailedGoodsSourceReader().allOfGoods().goods(promotionContext.goodsId());
-                Goods goods = goodsHolder.get();
 
+                Long goodsId = promotionContext.goodsId();
+
+                ActivityDetailedGoodsSource detailedGoodsSource = (ActivityDetailedGoodsSource) activityGoodsSource;
+                AllOfGoods allOfGoods = detailedGoodsSource.detailedGoodsSourceReader().allOfGoods();
+                Goods goods = null;
+                for (Long id : allOfGoods.ids()) {
+                    GoodsHolder goodsHolder = allOfGoods.goods(id);
+                    if (Objects.equals(goodsHolder.get().goodsId(), goodsId)) {
+                        goods = goodsHolder.get();
+                    }
+                }
+
+                List<GoodsDiscountRule.GoodsDiscount> goodsDiscounts = rule.getGoodsDiscounts();
+                for (GoodsDiscountRule.GoodsDiscount goodsDiscount : goodsDiscounts) {
+                    if (Objects.equals(goodsDiscount.getNativeGoodsId(), goods.id())) {
+                        List<GoodsDiscountRule.GoodsSpecsDiscount> goodsSpecsDiscounts = goodsDiscount.getGoodsSpecsDiscounts();
+                        for (GoodsDiscountRule.GoodsSpecsDiscount goodsSpecsDiscount : goodsSpecsDiscounts) {
+                            for (GoodsSpecs specs : goods.specs()) {
+                                if(Objects.equals(specs.id(),goodsSpecsDiscount.getNativeGoodsSpecsId())){
+
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         resultBuilder.withAdjustFee(adjustFee);

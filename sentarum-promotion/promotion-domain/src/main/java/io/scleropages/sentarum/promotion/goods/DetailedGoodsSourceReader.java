@@ -40,7 +40,7 @@ public interface DetailedGoodsSourceReader {
      */
     interface AllOfGoods {
         /**
-         * return a goods holder by id.
+         * return a goods holder by id (native id).
          *
          * @param id
          * @return

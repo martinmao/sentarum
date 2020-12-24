@@ -251,6 +251,11 @@ public class CalculatorTestcase {
         request.getCalculatingGoodsSpecs().add(new PromotionCalculateRequest.CalculatingGoodsSpecs(3l, 1));
         request.getCalculatingGoodsSpecs().add(new PromotionCalculateRequest.CalculatingGoodsSpecs(4l, 1));
         request.getCalculatingGoodsSpecs().add(new PromotionCalculateRequest.CalculatingGoodsSpecs(5l, 1));
+
+        promotionApplication.calculateDiscount(request);
+        System.out.println(".............................");
+        promotionApplication.calculateDiscount(request);
+        System.out.println(".............................");
         promotionApplication.calculateDiscount(request);
     }
 

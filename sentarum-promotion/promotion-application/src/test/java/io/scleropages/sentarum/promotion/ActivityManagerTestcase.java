@@ -30,7 +30,6 @@ import io.scleropages.sentarum.promotion.activity.model.impl.ActivityGoodsSpecsM
 import io.scleropages.sentarum.promotion.activity.model.impl.ActivityModel;
 import io.scleropages.sentarum.promotion.mgmt.ActivityManager;
 import io.scleropages.sentarum.promotion.mgmt.ActivityRuleManager;
-import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculateLevel;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule.GoodsDiscount;
 import io.scleropages.sentarum.promotion.rule.model.calculator.GoodsDiscountRule.GoodsSpecsDiscount;
@@ -102,7 +101,7 @@ public class ActivityManagerTestcase {
         activityManager.createActivityClassifiedGoodsSource(brandGoodsSource, activityId);
 
 
-        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, 1, null, null), true)));
+        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, 1, null, null), ActivityClassifiedGoodsSource.class)));
         System.out.println(JsonMapper2.toJson(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, 1, null, null)));
 
 
@@ -136,7 +135,7 @@ public class ActivityManagerTestcase {
 
         activityManager.createActivityClassifiedGoodsSource(categoryGoodsSource, activityId);
 
-        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, 2, null, null), true)));
+        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, 2, null, null), ActivityClassifiedGoodsSource.class)));
 
         GoodsDiscountRule goodsDiscountRule = new GoodsDiscountRule(new Discount(Discount.DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE, 5, null), null);
 
@@ -263,9 +262,9 @@ public class ActivityManagerTestcase {
         promotionApplication.createGoodsDiscountRule(goodsDiscountRule, activityId);
 
 
-        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, 888l, 19888l), true)));
+        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, 888l, 19888l), ActivityDetailedGoodsSource.class)));
 
-        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, 888l, 19889l), true)));
+        System.out.println(JsonMapper2.toJson(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, 888l, 19889l), ActivityDetailedGoodsSource.class)));
 
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

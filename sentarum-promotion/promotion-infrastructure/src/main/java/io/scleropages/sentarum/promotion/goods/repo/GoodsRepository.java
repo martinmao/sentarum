@@ -51,7 +51,7 @@ import static io.scleropages.sentarum.promotion.goods.entity.GoodsSpecsEntity.CO
 @NoRepositoryBean
 public interface GoodsRepository<E extends GoodsEntity, T extends Table, R extends Record> extends GenericRepository<E, Long>, JooqRepository<T, R, E>, AdditionalAttributesSavingCallback<Goods, E>, MapAttributesMapper {
 
-
+    @Cacheable(key = "#root.target+'-'+#goodsSourceId")
     List<E> findAllByGoodsSource_Id(Long goodsSourceId);
 
     @Cacheable

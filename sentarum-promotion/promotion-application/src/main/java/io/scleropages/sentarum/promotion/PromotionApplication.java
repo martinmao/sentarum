@@ -167,6 +167,7 @@ public class PromotionApplication {
         PromotionChainStarter chainStarter = chainStarterFactory.createChainStarter(promotionContext, ruleContainer);
         SimplePromotionChainStarterRunner runner = new SimplePromotionChainStarterRunner();
         runner.run((DefaultPromotionChainStarter) chainStarter);
+        System.out.println(promotionContext);
     }
 
 
@@ -199,14 +200,14 @@ public class PromotionApplication {
         Long sellerUnionId = item.sellerUnionId();
         Long sellerId = item.sellerId();
         //可用的商家活动....
-        List<Activity> activities = Lists.newArrayList(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId), true));
+        List<Activity> activities = Lists.newArrayList(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_SELLER, sellerUnionId, sellerId), ActivityClassifiedGoodsSource.class));
         //可用的平台活动...
-        activities.addAll(Lists.newArrayList(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_ALL, null, null), true)));
+        activities.addAll(Lists.newArrayList(activityManager.getActivities(activityManager.findAllActivityIdsByClassifiedGoodsSource(1, CLASSIFIED_GOODS_SOURCE_TYPE_ALL, null, null), ActivityClassifiedGoodsSource.class)));
         //TODO
         //可用的品类活动...
         //TODO
         //可用的品牌活动...
-        activities.addAll(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, item.id(), sku.id()), true));
+        activities.addAll(activityManager.getActivities(activityManager.findAllActivityIdsByDetailedGoodsSource(1, item.id(), sku.id()), ActivityDetailedGoodsSource.class));
         return activities.stream().map(activity -> new CalculatingActivity(activity, activityRuleManager)).collect(Collectors.toList());
     }
 
