@@ -156,6 +156,7 @@ public class PromotionApplication {
             } else
                 throw new IllegalStateException("unsupported activity goods source: " + AopUtils.getTargetClass(activityGoodsSource).getSimpleName());
         });
+        goodsDiscountRule.beforeSerialize();
         return activityRuleManager.createCalculatingRule(goodsDiscountRule, activityId);
     }
 

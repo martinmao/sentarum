@@ -15,6 +15,7 @@
  */
 package io.scleropages.sentarum.promotion.rule.model.calculator;
 
+import com.google.common.collect.Maps;
 import io.scleropages.sentarum.core.model.primitive.Discount;
 import io.scleropages.sentarum.core.model.primitive.Discount.DiscountType;
 import io.scleropages.sentarum.promotion.activity.model.Activity;
@@ -23,6 +24,7 @@ import io.scleropages.sentarum.promotion.activity.model.ActivityDetailedGoodsSou
 import io.scleropages.sentarum.promotion.activity.model.ActivityGoodsSource;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.AllOfGoods;
 import io.scleropages.sentarum.promotion.goods.DetailedGoodsSourceReader.GoodsHolder;
+import io.scleropages.sentarum.promotion.goods.model.Goods;
 import io.scleropages.sentarum.promotion.goods.model.GoodsSpecs;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.CalculateLevel;
 import io.scleropages.sentarum.promotion.rule.invocation.promotion.calculator.GoodsDiscountCalculator;
@@ -33,7 +35,9 @@ import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -79,80 +83,21 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
      */
     private List<UserLevelDiscount> userLevelDiscounts;
 
-    @Override
-    public CalculateLevel calculateLevel() {
-        return CalculateLevel.GOODS_DISCOUNT;
-    }
+    /**
+     * 商品
+     */
+    private Map<Long, GoodsDiscount> goodsDiscountMap;
 
-    public void applyActivityDetailedGoodsSourceConfigure(ActivityDetailedGoodsSource goodsSource) {
-        Assert.notEmpty(goodsDiscounts, "goods discounts must not empty while current activity associated a detailed goods source.");
-        AllOfGoods allOfGoods = goodsSource.detailedGoodsSourceReader().allOfGoods();
-        goodsDiscounts.forEach(goodsDiscount -> {
-            GoodsHolder goodsHolder = allOfGoods.goods(goodsDiscount.getNativeGoodsId());
-            Assert.notNull(goodsHolder, () -> "no goods configured by id: " + goodsDiscount.getNativeGoodsId());
-            if (goodsHolder.emptySpecs()) {
-                Assert.isTrue(CollectionUtils.isEmpty(goodsDiscount.getGoodsSpecsDiscounts()), () -> "given goods no specs configured. but provide specs discounts: " + goodsDiscount.getNativeGoodsId());
-                Discount discount = goodsDiscount.getDiscount();
-                List<UserLevelDiscount> userLevelDiscounts = goodsDiscount.getUserLevelDiscounts();
-                if (null != discount) {
-                    assertDetailedGoodsSourceDiscount(discount);
-                    goodsHolder.get().additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, discount, true).save();
-                } else if (!CollectionUtils.isEmpty(userLevelDiscounts)) {
-                    for (UserLevelDiscount userLevelDiscount : userLevelDiscounts) {
-                        assertDetailedGoodsSourceDiscount(userLevelDiscount.getDiscount());
-                    }
-                    goodsHolder.get().additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_USER_LEVEL_DISCOUNT, userLevelDiscounts, true).save();
-                } else
-                    throw new IllegalArgumentException("discount must not be null or user-level discounts must not empty for goods:" + goodsDiscount.getNativeGoodsId());
-            } else {
-                List<GoodsSpecsDiscount> goodsSpecsDiscounts = goodsDiscount.getGoodsSpecsDiscounts();
-                Assert.isTrue(!CollectionUtils.isEmpty(goodsSpecsDiscounts), () -> "given goods has specs configured. but no specs discounts: " + goodsDiscount.getNativeGoodsId());
-                goodsSpecsDiscounts.forEach(goodsSpecsDiscount -> {
-                    GoodsSpecs goodsSpecs = goodsHolder.goodsSpecs(goodsSpecsDiscount.getNativeGoodsSpecsId());
-                    Assert.notNull(goodsSpecs, () -> "no goods specs configured by id: " + goodsSpecsDiscount.getNativeGoodsSpecsId());
-                    Discount discount = goodsSpecsDiscount.getDiscount();
-                    List<UserLevelDiscount> userLevelDiscounts = goodsSpecsDiscount.getUserLevelDiscounts();
-                    if (null != discount) {
-                        assertDetailedGoodsSourceDiscount(discount);
-                        goodsSpecs.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, discount, true).save();
-                    } else if (!CollectionUtils.isEmpty(userLevelDiscounts)) {
-                        for (UserLevelDiscount userLevelDiscount : userLevelDiscounts) {
-                            assertDetailedGoodsSourceDiscount(userLevelDiscount.getDiscount());
-                        }
-                        goodsSpecs.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_USER_LEVEL_DISCOUNT, userLevelDiscounts, true).save();
-                    } else
-                        throw new IllegalArgumentException("discount must not be null or user-level discounts must not empty for goods specs:" + goodsSpecsDiscount.getNativeGoodsSpecsId());
-                });
+
+    public final void beforeSerialize() {
+        if (!CollectionUtils.isEmpty(goodsDiscounts)) {
+            goodsDiscountMap = Maps.newHashMap();
+            for (GoodsDiscount goodsDiscount : goodsDiscounts) {
+                goodsDiscountMap.put(goodsDiscount.getGoodsId(), goodsDiscount);
+                goodsDiscount.beforeSerialize();
             }
-        });
-    }
-
-
-    public void applyActivityClassifiedGoodsSourceConfigure(ActivityClassifiedGoodsSource goodsSource) {
-        Assert.isTrue(CollectionUtils.isEmpty(getGoodsDiscounts()), "goodsDiscounts must empty while activity associates classified goods source");
-        Discount discount = getDiscount();
-        Assert.notNull(discount, "discount must not be null for goods source: " + goodsSource.id());
-        assertClassifiedGoodsSourceDiscount(discount);
-        goodsSource.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, discount, true).save();
-    }
-
-    private void assertDetailedGoodsSourceDiscount(Discount discount) {
-        discount.assertDiscount();
-        DiscountType discountType = discount.getDiscountType();
-        Assert.isTrue(
-                Objects.equals(discountType, DiscountType.DISCOUNT)
-                        || Objects.equals(discountType, DiscountType.DECREASE_AMOUNT)
-                        || Objects.equals(discountType, DiscountType.OVERRIDE_AMOUNT)
-                , "not supported discount type for detailed goods source");
-    }
-
-    private void assertClassifiedGoodsSourceDiscount(Discount discount) {
-        discount.assertDiscount();
-        DiscountType discountType = discount.getDiscountType();
-        Assert.isTrue(
-                Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE)
-                        || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)
-                , "not supported discount type for classified goods source.");
+            goodsDiscounts = null;
+        }
     }
 
 
@@ -185,6 +130,11 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
         return userLevelDiscounts;
     }
 
+    @Null
+    public Map<Long, GoodsDiscount> getGoodsDiscountMap() {
+        return goodsDiscountMap;
+    }
+
     public void setDiscount(Discount discount) {
         this.discount = discount;
     }
@@ -195,6 +145,15 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
 
     public void setUserLevelDiscounts(List<UserLevelDiscount> userLevelDiscounts) {
         this.userLevelDiscounts = userLevelDiscounts;
+    }
+
+    public void setGoodsDiscountMap(Map<Long, GoodsDiscount> goodsDiscountMap) {
+        this.goodsDiscountMap = goodsDiscountMap;
+    }
+
+    @Override
+    public CalculateLevel calculateLevel() {
+        return CalculateLevel.GOODS_DISCOUNT;
     }
 
     @Override
@@ -226,6 +185,27 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
          * 会员规格统一折扣.
          */
         private List<UserLevelDiscount> userLevelDiscounts;
+
+
+        /**
+         * 商品id，非客户端设置字段.
+         */
+        private Long goodsId;
+        /**
+         * 商品规格map，非客户端设置字段.
+         */
+        private Map<Long, GoodsSpecsDiscount> goodsSpecsDiscountMap;
+
+        private final void beforeSerialize() {
+            if (!CollectionUtils.isEmpty(goodsSpecsDiscounts)) {
+                goodsSpecsDiscountMap = Maps.newHashMap();
+                for (GoodsSpecsDiscount goodsSpecsDiscount : goodsSpecsDiscounts) {
+                    goodsSpecsDiscountMap.put(goodsSpecsDiscount.getGoodsSpecsId(), goodsSpecsDiscount);
+                }
+                goodsSpecsDiscounts = null;
+            }
+        }
+
 
         public GoodsDiscount() {
         }
@@ -263,9 +243,20 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
             return userLevelDiscounts;
         }
 
+        @Null
+        public Long getGoodsId() {
+            return goodsId;
+        }
+
+        @Null
+        public Map<Long, GoodsSpecsDiscount> getGoodsSpecsDiscountMap() {
+            return goodsSpecsDiscountMap;
+        }
+
         public void setNativeGoodsId(Long nativeGoodsId) {
             this.nativeGoodsId = nativeGoodsId;
         }
+
 
         public void setDiscount(Discount discount) {
             this.discount = discount;
@@ -277,6 +268,14 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
 
         public void setUserLevelDiscounts(List<UserLevelDiscount> userLevelDiscounts) {
             this.userLevelDiscounts = userLevelDiscounts;
+        }
+
+        public void setGoodsId(Long goodsId) {
+            this.goodsId = goodsId;
+        }
+
+        public void setGoodsSpecsDiscountMap(Map<Long, GoodsSpecsDiscount> goodsSpecsDiscountMap) {
+            this.goodsSpecsDiscountMap = goodsSpecsDiscountMap;
         }
     }
 
@@ -298,6 +297,12 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
          * 会员规格折扣.
          */
         private List<UserLevelDiscount> userLevelDiscounts;
+
+
+        /**
+         * 商品规格id,非客户端设置
+         */
+        private Long goodsSpecsId;
 
         public GoodsSpecsDiscount() {
 
@@ -326,6 +331,11 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
             return userLevelDiscounts;
         }
 
+        @Null
+        public Long getGoodsSpecsId() {
+            return goodsSpecsId;
+        }
+
         public void setNativeGoodsSpecsId(Long nativeGoodsSpecsId) {
             this.nativeGoodsSpecsId = nativeGoodsSpecsId;
         }
@@ -336,6 +346,10 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
 
         public void setUserLevelDiscounts(List<UserLevelDiscount> userLevelDiscounts) {
             this.userLevelDiscounts = userLevelDiscounts;
+        }
+
+        public void setGoodsSpecsId(Long goodsSpecsId) {
+            this.goodsSpecsId = goodsSpecsId;
         }
     }
 
@@ -404,5 +418,81 @@ public class GoodsDiscountRule extends BaseCalculatorRule {
             this.levelName = levelName;
         }
     }
+
+
+    public void applyActivityDetailedGoodsSourceConfigure(ActivityDetailedGoodsSource goodsSource) {
+        Assert.notEmpty(goodsDiscounts, "goods discounts must not empty while current activity associated a detailed goods source.");
+        AllOfGoods allOfGoods = goodsSource.detailedGoodsSourceReader().allOfGoods();
+        goodsDiscounts.forEach(goodsDiscount -> {
+            GoodsHolder goodsHolder = allOfGoods.goods(goodsDiscount.getNativeGoodsId());
+            Assert.notNull(goodsHolder, () -> "no goods configured by id: " + goodsDiscount.getNativeGoodsId());
+            Goods goods = goodsHolder.get();
+            goodsDiscount.setGoodsId(goods.goodsId());
+            if (goodsHolder.emptySpecs()) {
+                Assert.isTrue(CollectionUtils.isEmpty(goodsDiscount.getGoodsSpecsDiscounts()), () -> "given goods no specs configured. but provide specs discounts: " + goodsDiscount.getNativeGoodsId());
+                Discount discount = goodsDiscount.getDiscount();
+                List<UserLevelDiscount> userLevelDiscounts = goodsDiscount.getUserLevelDiscounts();
+                if (null != discount) {
+                    assertDetailedGoodsSourceDiscount(discount);
+                    goods.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, discount, true).save();
+                } else if (!CollectionUtils.isEmpty(userLevelDiscounts)) {
+                    for (UserLevelDiscount userLevelDiscount : userLevelDiscounts) {
+                        assertDetailedGoodsSourceDiscount(userLevelDiscount.getDiscount());
+                    }
+                    goods.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_USER_LEVEL_DISCOUNT, userLevelDiscounts, true).save();
+                } else
+                    throw new IllegalArgumentException("discount must not be null or user-level discounts must not empty for goods:" + goodsDiscount.getNativeGoodsId());
+            } else {
+                List<GoodsSpecsDiscount> goodsSpecsDiscounts = goodsDiscount.getGoodsSpecsDiscounts();
+                Assert.isTrue(!CollectionUtils.isEmpty(goodsSpecsDiscounts), () -> "given goods has specs configured. but no specs discounts: " + goodsDiscount.getNativeGoodsId());
+                goodsSpecsDiscounts.forEach(goodsSpecsDiscount -> {
+                    GoodsSpecs goodsSpecs = goodsHolder.goodsSpecs(goodsSpecsDiscount.getNativeGoodsSpecsId());
+                    Assert.notNull(goodsSpecs, () -> "no goods specs configured by id: " + goodsSpecsDiscount.getNativeGoodsSpecsId());
+                    goodsSpecsDiscount.setGoodsSpecsId(goodsSpecs.specsId());
+                    Discount discount = goodsSpecsDiscount.getDiscount();
+                    List<UserLevelDiscount> userLevelDiscounts = goodsSpecsDiscount.getUserLevelDiscounts();
+                    if (null != discount) {
+                        assertDetailedGoodsSourceDiscount(discount);
+                        goodsSpecs.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, discount, true).save();
+                    } else if (!CollectionUtils.isEmpty(userLevelDiscounts)) {
+                        for (UserLevelDiscount userLevelDiscount : userLevelDiscounts) {
+                            assertDetailedGoodsSourceDiscount(userLevelDiscount.getDiscount());
+                        }
+                        goodsSpecs.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_USER_LEVEL_DISCOUNT, userLevelDiscounts, true).save();
+                    } else
+                        throw new IllegalArgumentException("discount must not be null or user-level discounts must not empty for goods specs:" + goodsSpecsDiscount.getNativeGoodsSpecsId());
+                });
+            }
+        });
+    }
+
+
+    public void applyActivityClassifiedGoodsSourceConfigure(ActivityClassifiedGoodsSource goodsSource) {
+        Assert.isTrue(CollectionUtils.isEmpty(getGoodsDiscounts()), "goodsDiscounts must empty while activity associates classified goods source");
+        Discount discount = getDiscount();
+        Assert.notNull(discount, "discount must not be null for goods source: " + goodsSource.id());
+        assertClassifiedGoodsSourceDiscount(discount);
+        goodsSource.additionalAttributes().setAttribute(GoodsDiscountRule.ATTRIBUTE_DISCOUNT, discount, true).save();
+    }
+
+    private void assertDetailedGoodsSourceDiscount(Discount discount) {
+        discount.assertDiscount();
+        DiscountType discountType = discount.getDiscountType();
+        Assert.isTrue(
+                Objects.equals(discountType, DiscountType.DISCOUNT)
+                        || Objects.equals(discountType, DiscountType.DECREASE_AMOUNT)
+                        || Objects.equals(discountType, DiscountType.OVERRIDE_AMOUNT)
+                , "not supported discount type for detailed goods source");
+    }
+
+    private void assertClassifiedGoodsSourceDiscount(Discount discount) {
+        discount.assertDiscount();
+        DiscountType discountType = discount.getDiscountType();
+        Assert.isTrue(
+                Objects.equals(discountType, DiscountType.DECREASE_WITHOUT_ORIGINAL_PRICE)
+                        || Objects.equals(discountType, DiscountType.DISCOUNT_WITHOUT_ORIGINAL_PRICE)
+                , "not supported discount type for classified goods source.");
+    }
+
 
 }
