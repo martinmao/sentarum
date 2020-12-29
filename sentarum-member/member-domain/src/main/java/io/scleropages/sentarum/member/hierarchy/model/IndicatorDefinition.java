@@ -61,7 +61,7 @@ public interface IndicatorDefinition<L extends IndicatorLine> {
     Boolean enabled();
 
     /**
-     * 该指标所占权重，权重越高该价值指标占比越重.权重值取值1-99。
+     * 该指标所占权重，权重越高该价值指标占比越重.
      *
      * @return
      */
