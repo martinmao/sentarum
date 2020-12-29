@@ -16,8 +16,8 @@
 package io.scleropages.sentarum.member.card;
 
 import io.scleropages.sentarum.member.customer.model.Customer;
-import io.scleropages.sentarum.member.hierarchy.model.MemberHierarchy;
 import io.scleropages.sentarum.member.hierarchy.model.HierarchyLevel;
+import io.scleropages.sentarum.member.hierarchy.model.MemberHierarchy;
 
 /**
  * represent card of member(levels in member hierarchy).
@@ -34,7 +34,7 @@ public interface MemberCard {
     Long id();
 
     /**
-     * card no of this card.
+     * number of this card.
      *
      * @return
      */

@@ -96,7 +96,7 @@ public interface IndicatorDefinition<L extends IndicatorLine> {
         /**
          * 基础信息完整度指标
          */
-        BASE(4, "基础信息完整度指标", "根据用户基本信息的完整度而设立的成长指标，如电话、地址、门店大小、床位等.");
+        BASE_INFO(4, "基础信息完整度指标", "根据用户基本信息的完整度而设立的成长指标，如电话、地址、门店大小、床位等.");
 
         private final int ordinal;
         private final String tag;

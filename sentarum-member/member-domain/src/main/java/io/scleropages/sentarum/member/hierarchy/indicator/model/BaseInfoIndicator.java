@@ -18,12 +18,12 @@ package io.scleropages.sentarum.member.hierarchy.indicator.model;
 import io.scleropages.sentarum.member.hierarchy.model.IndicatorDefinition;
 import io.scleropages.sentarum.member.hierarchy.model.IndicatorLine;
 
-import static io.scleropages.sentarum.member.hierarchy.indicator.model.BaseIndicator.BaseIndicatorLine;
+import static io.scleropages.sentarum.member.hierarchy.indicator.model.BaseInfoIndicator.BaseIndicatorLine;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface BaseIndicator extends IndicatorDefinition<BaseIndicatorLine> {
+public interface BaseInfoIndicator extends IndicatorDefinition<BaseIndicatorLine> {
 
 
     interface BaseIndicatorLine extends IndicatorLine {
