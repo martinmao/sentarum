@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.customer.model;
+package io.scleropages.sentarum.member.card;
 
-import io.scleropages.sentarum.member.hierarchy.model.CustomerHierarchy;
+import io.scleropages.sentarum.member.customer.model.Customer;
+import io.scleropages.sentarum.member.hierarchy.model.MemberHierarchy;
 import io.scleropages.sentarum.member.hierarchy.model.HierarchyLevel;
 
 /**
- * represent card of customer(levels in customer hierarchy).
+ * represent card of member(levels in member hierarchy).
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Card {
+public interface MemberCard {
 
     /**
      * id of this card.
@@ -51,7 +52,7 @@ public interface Card {
      *
      * @return
      */
-    CustomerHierarchy customerHierarchy();
+    MemberHierarchy customerHierarchy();
 
     /**
      * level of customer hierarchy.

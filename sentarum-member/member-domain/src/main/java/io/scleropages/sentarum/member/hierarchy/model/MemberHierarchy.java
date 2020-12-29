@@ -16,11 +16,11 @@
 package io.scleropages.sentarum.member.hierarchy.model;
 
 /**
- * represent levels hierarchy of customer.
+ * represent levels hierarchy of member.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface CustomerHierarchy {
+public interface MemberHierarchy {
 
     /**
      * id of this hierarchy.
