@@ -28,6 +28,8 @@ public class Address {
 
     private String districtCode;
 
+    private Integer usedType;
+
     public Address() {
     }
 
@@ -59,6 +61,10 @@ public class Address {
         return districtCode;
     }
 
+    public Integer getUsedType() {
+        return usedType;
+    }
+
     public void setBaseAddress(BaseAddress baseAddress) {
         this.baseAddress = baseAddress;
     }
@@ -69,5 +75,9 @@ public class Address {
 
     public void setDistrictCode(String districtCode) {
         this.districtCode = districtCode;
+    }
+
+    public void setUsedType(Integer usedType) {
+        this.usedType = usedType;
     }
 }

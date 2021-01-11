@@ -13,44 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.hierarchy.indicator.model;
+package io.scleropages.sentarum.member.membership.indicator.model;
 
-import io.scleropages.sentarum.member.hierarchy.model.IndicatorDefinition;
-import io.scleropages.sentarum.member.hierarchy.model.IndicatorLine;
+import io.scleropages.sentarum.core.model.primitive.Amount;
+import io.scleropages.sentarum.member.membership.model.IndicatorDefinition;
+import io.scleropages.sentarum.member.membership.model.IndicatorLine;
 
-import static io.scleropages.sentarum.member.hierarchy.indicator.model.BaseInfoIndicator.BaseIndicatorLine;
+import static io.scleropages.sentarum.member.membership.indicator.model.ConsumingIndicator.*;
 
 /**
+ * represent indicator of customer historic consumings.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface BaseInfoIndicator extends IndicatorDefinition<BaseIndicatorLine> {
+public interface ConsumingIndicator extends IndicatorDefinition<ConsumingIndicatorLine> {
 
 
-    interface BaseIndicatorLine extends IndicatorLine {
+    /**
+     * represent line of customer historic consumings.
+     */
+    interface ConsumingIndicatorLine extends IndicatorLine {
 
         /**
-         * value of this line.
+         * 历史消费总金额
          *
          * @return
          */
-        Integer value();
+        Amount historicConsumingAmount();
 
         /**
-         * name of this line.
-         *
-         * @return
-         */
-        String name();
-
-        /**
-         * description of this line.
-         *
-         * @return
-         */
-        String description();
-
-        /**
-         * score of this line.
+         * score of total amount.
          *
          * @return
          */

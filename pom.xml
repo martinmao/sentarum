@@ -134,6 +134,11 @@
                 <artifactId>squirrel-foundation</artifactId>
                 <version>0.3.8</version>
             </dependency>
+            <dependency>
+                <groupId>com.vesoft</groupId>
+                <artifactId>client</artifactId>
+                <version>1.0.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

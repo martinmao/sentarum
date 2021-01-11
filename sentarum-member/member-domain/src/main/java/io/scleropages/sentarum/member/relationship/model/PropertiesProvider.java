@@ -13,40 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.hierarchy.model;
+package io.scleropages.sentarum.member.relationship.model;
 
 /**
- * represent edge from source hierarchy level to target.
+ * provider of {@link Properties}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface HierarchyLevelEdge {
+public interface PropertiesProvider {
+
 
     /**
-     * id of this edge.
+     * return properties.
      *
      * @return
      */
-    Long id();
-
-    /**
-     * edge source hierarchy level from.
-     *
-     * @return
-     */
-    HierarchyLevel from();
-
-    /**
-     * edge target hierarchy level to.
-     *
-     * @return
-     */
-    HierarchyLevel to();
-
-    /**
-     * growth value.
-     *
-     * @return
-     */
-    Integer value();
+    Properties properties();
 }

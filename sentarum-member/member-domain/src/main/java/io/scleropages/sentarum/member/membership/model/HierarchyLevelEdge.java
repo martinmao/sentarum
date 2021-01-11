@@ -13,12 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.customer.model;
+package io.scleropages.sentarum.member.membership.model;
 
 /**
+ * represent edge from source hierarchy level to target.
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Customer {
+public interface HierarchyLevelEdge {
 
+    /**
+     * id of this edge.
+     *
+     * @return
+     */
+    Long id();
 
+    /**
+     * edge source hierarchy level from.
+     *
+     * @return
+     */
+    HierarchyLevel from();
+
+    /**
+     * edge target hierarchy level to.
+     *
+     * @return
+     */
+    HierarchyLevel to();
+
+    /**
+     * score of this edge.
+     *
+     * @return
+     */
+    Integer score();
+
+    /**
+     * associated membership hierarchy of this edge.
+     *
+     * @return
+     */
+    MembershipHierarchy membershipHierarchy();
 }

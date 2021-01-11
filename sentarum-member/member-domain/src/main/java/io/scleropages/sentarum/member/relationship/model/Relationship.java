@@ -13,33 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.hierarchy.model;
+package io.scleropages.sentarum.member.relationship.model;
 
 /**
- * represent member hierarchy level.
+ * represent a relationship. connect from source node to target.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface HierarchyLevel {
+public interface Relationship<S extends Node, T extends Node> extends PropertiesProvider {
+
 
     /**
-     * id of this level.
+     * source node of this relationship.
      *
      * @return
      */
-    Long id();
+    S sourceNode();
 
     /**
-     * name of this level.
+     * target node of this relationship.
      *
      * @return
      */
-    String name();
+    T targetNode();
 
     /**
-     * description of this level.
+     * definition of this relationship.
      *
      * @return
      */
-    String description();
+    RelationshipDefinition relationshipDefinition();
 }

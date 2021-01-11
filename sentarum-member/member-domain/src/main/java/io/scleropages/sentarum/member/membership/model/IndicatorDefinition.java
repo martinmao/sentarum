@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.hierarchy.model;
+package io.scleropages.sentarum.member.membership.model;
 
 import io.scleropages.sentarum.core.model.primitive.Percentage;
 
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 价值指标定义，会员的等级成长值由一组价值指标统筹计算得出，而价值指标作为一种计算规则定义了在满足其条件基础上计算得出的成长值。该值根据指标类型 {@link IndicatorType} 的不同可增可减.
+ * 价值指标定义，会员的等级成长值由一组价值指标计算得出，而价值指标作为一种计算规则定义了在满足其条件基础上计算得出的得分。该值根据指标类型 {@link IndicatorType} 的不同可增可减.
  * <pre>
  *     会员价值计算公式为:
  *     指标A计算结果*指标A权重%+指标B计算结果*指标B权重%+指标N计算结果*指标N权重%，其中指标A权重+指标B权重+指标N权重=100%.
@@ -74,6 +74,13 @@ public interface IndicatorDefinition<L extends IndicatorLine> {
      * @return
      */
     List<L> lines();
+
+    /**
+     * associated membership hierarchy of this indicator.
+     *
+     * @return
+     */
+    MembershipHierarchy membershipHierarchy();
 
 
     /**

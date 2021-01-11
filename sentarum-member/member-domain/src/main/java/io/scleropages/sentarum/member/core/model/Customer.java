@@ -13,25 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.hierarchy.model;
+package io.scleropages.sentarum.member.core.model;
+
+import io.scleropages.sentarum.core.model.primitive.Address;
+import io.scleropages.sentarum.core.model.primitive.Tel;
+
+import java.util.List;
 
 /**
- * represent a line of {@link IndicatorDefinition}.
+ * represent a conceptual customer.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface IndicatorLine {
+public interface Customer {
 
     /**
-     * id of this line.
+     * id of this customer.
      *
      * @return
      */
     Long id();
 
     /**
-     * return true if this indicator line enabled.
+     * name of this customer.
+     *
      * @return
      */
-    Boolean enabled();
+    String name();
+
+    /**
+     * nickname of this customer.
+     *
+     * @return
+     */
+    String nickname();
+
+    /**
+     * tel of this customer.
+     *
+     * @return
+     */
+    Tel tel();
+
+    /**
+     * addresses of this customer.
+     *
+     * @return
+     */
+    List<Address> addresses();
 }

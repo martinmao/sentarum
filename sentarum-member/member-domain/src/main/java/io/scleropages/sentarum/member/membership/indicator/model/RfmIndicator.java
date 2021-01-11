@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.hierarchy.indicator.model;
+package io.scleropages.sentarum.member.membership.indicator.model;
 
 import io.scleropages.sentarum.core.model.primitive.Amount;
-import io.scleropages.sentarum.member.hierarchy.model.IndicatorDefinition;
-import io.scleropages.sentarum.member.hierarchy.model.IndicatorLine;
+import io.scleropages.sentarum.member.membership.model.IndicatorDefinition;
+import io.scleropages.sentarum.member.membership.model.IndicatorLine;
 
-import static io.scleropages.sentarum.member.hierarchy.indicator.model.RfmIndicator.*;
+import static io.scleropages.sentarum.member.membership.indicator.model.RfmIndicator.*;
 
 /**
  * represent indicator of rfm (Recency Frequency Monetary).

@@ -28,6 +28,8 @@ public class EmbeddableAddress extends EmbeddableBaseAddress {
 
     private String detailAddress;
 
+    private Integer usedType;
+
     @Column(name = "address_detail", nullable = false)
     public String getDetailAddress() {
         return detailAddress;
@@ -45,7 +47,16 @@ public class EmbeddableAddress extends EmbeddableBaseAddress {
         return super.getName();
     }
 
+    @Column(name = "used_type", nullable = false)
+    public Integer getUsedType() {
+        return usedType;
+    }
+
     public void setDetailAddress(String detailAddress) {
         this.detailAddress = detailAddress;
+    }
+
+    public void setUsedType(Integer usedType) {
+        this.usedType = usedType;
     }
 }

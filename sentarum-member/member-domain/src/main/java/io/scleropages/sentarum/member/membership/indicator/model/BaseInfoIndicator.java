@@ -13,50 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.hierarchy.indicator.model;
+package io.scleropages.sentarum.member.membership.indicator.model;
 
-import io.scleropages.sentarum.member.hierarchy.model.IndicatorDefinition;
-import io.scleropages.sentarum.member.hierarchy.model.IndicatorLine;
+import io.scleropages.sentarum.member.membership.model.IndicatorDefinition;
+import io.scleropages.sentarum.member.membership.model.IndicatorLine;
 
-import static io.scleropages.sentarum.member.hierarchy.indicator.model.BehaviourIndicator.*;
+import static io.scleropages.sentarum.member.membership.indicator.model.BaseInfoIndicator.BaseIndicatorLine;
 
 /**
- * represent indicator of customer behaviours
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface BehaviourIndicator extends IndicatorDefinition<BehaviourIndicatorLine> {
+public interface BaseInfoIndicator extends IndicatorDefinition<BaseIndicatorLine> {
 
 
-    /**
-     * represent line of customer behaviours
-     */
-    interface BehaviourIndicatorLine extends IndicatorLine {
-
+    interface BaseIndicatorLine extends IndicatorLine {
 
         /**
-         * value of this behaviour.
+         * value of this line.
          *
          * @return
          */
         Integer value();
 
         /**
-         * name of this behaviour.
+         * name of this line.
          *
          * @return
          */
         String name();
 
         /**
-         * description of this behaviour.
+         * description of this line.
          *
          * @return
          */
         String description();
 
         /**
-         * score of this behaviour.
+         * score of this line.
          *
          * @return
          */

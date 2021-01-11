@@ -13,34 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.member.hierarchy.model;
+package io.scleropages.sentarum.member.membership.model;
 
 /**
- * represent levels hierarchy of member.
+ * represent membership hierarchy level.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface MemberHierarchy {
+public interface HierarchyLevel {
 
     /**
-     * id of this hierarchy.
+     * id of this level.
      *
      * @return
      */
     Long id();
 
     /**
-     * name of this hierarchy.
+     * name of this level.
      *
      * @return
      */
     String name();
 
-
     /**
-     * description of this hierarchy.
+     * description of this level.
      *
      * @return
      */
     String description();
+
+    /**
+     * associated membership hierarchy of this level.
+     *
+     * @return
+     */
+    MembershipHierarchy membershipHierarchy();
 }

@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>member-domain</module>
+        <module>member-infrastructure</module>
     </modules>
 
 </project>
