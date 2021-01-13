@@ -17,19 +17,37 @@ package io.scleropages.sentarum.member.relationship;
 
 
 import com.facebook.thrift.TException;
-import com.vesoft.nebula.client.graph.GraphClient;
-import com.vesoft.nebula.client.graph.GraphClientImpl;
+import com.vesoft.nebula.client.graph.NebulaPoolConfig;
+import com.vesoft.nebula.client.graph.data.HostAddress;
+import com.vesoft.nebula.client.graph.data.ResultSet;
+import com.vesoft.nebula.client.graph.exception.AuthFailedException;
+import com.vesoft.nebula.client.graph.exception.IOErrorException;
+import com.vesoft.nebula.client.graph.exception.NotValidConnectionException;
+import com.vesoft.nebula.client.graph.net.NebulaPool;
+import com.vesoft.nebula.client.graph.net.Session;
+
+import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 public class NebulaTests {
 
-    public static void main(String[] args) throws TException {
-        GraphClient client = new GraphClientImpl("localhost", 3699);
-        client.setUser("user");
-        client.setPassword("password");
-        client.connect();
-        client.switchSpace("sales_team");
+    public static void main(String[] args) throws TException, UnknownHostException, NotValidConnectionException, IOErrorException, AuthFailedException, UnsupportedEncodingException {
+        NebulaPoolConfig nebulaPoolConfig = new NebulaPoolConfig();
+        nebulaPoolConfig.setMaxConnSize(10);
+        List<HostAddress> addresses = Arrays.asList(new HostAddress("127.0.0.1", 9669));
+        NebulaPool pool = new NebulaPool();
+        pool.init(addresses, nebulaPoolConfig);
+        Session session = pool.getSession("root", "nebula", false);
+        ResultSet rs = session.execute("SHOW HOSTS;");
+        System.out.println(rs.getColumnNames());
+        System.out.println(rs.getRows());
+
+        session.release();
+        pool.close();
     }
 }
