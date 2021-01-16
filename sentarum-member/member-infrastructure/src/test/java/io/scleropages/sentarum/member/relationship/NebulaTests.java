@@ -16,7 +16,6 @@
 package io.scleropages.sentarum.member.relationship;
 
 
-import com.facebook.thrift.TException;
 import com.vesoft.nebula.client.graph.NebulaPoolConfig;
 import com.vesoft.nebula.client.graph.data.HostAddress;
 import com.vesoft.nebula.client.graph.data.ResultSet;
@@ -36,7 +35,7 @@ import java.util.List;
  */
 public class NebulaTests {
 
-    public static void main(String[] args) throws TException, UnknownHostException, NotValidConnectionException, IOErrorException, AuthFailedException, UnsupportedEncodingException {
+    public static void main(String[] args) throws UnknownHostException, NotValidConnectionException, IOErrorException, AuthFailedException, UnsupportedEncodingException {
         NebulaPoolConfig nebulaPoolConfig = new NebulaPoolConfig();
         nebulaPoolConfig.setMaxConnSize(10);
         List<HostAddress> addresses = Arrays.asList(new HostAddress("127.0.0.1", 9669));
@@ -46,7 +45,6 @@ public class NebulaTests {
         ResultSet rs = session.execute("SHOW HOSTS;");
         System.out.println(rs.getColumnNames());
         System.out.println(rs.getRows());
-
         session.release();
         pool.close();
     }
