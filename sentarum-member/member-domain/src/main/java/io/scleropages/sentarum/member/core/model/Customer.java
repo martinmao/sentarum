@@ -18,7 +18,9 @@ package io.scleropages.sentarum.member.core.model;
 import io.scleropages.sentarum.core.model.primitive.Address;
 import io.scleropages.sentarum.core.model.primitive.Tel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * represent a conceptual customer.
@@ -49,6 +51,20 @@ public interface Customer {
     String nickname();
 
     /**
+     * gender of this customer.
+     *
+     * @return
+     */
+    Gender gender();
+
+    /**
+     * avatar of this customer.
+     *
+     * @return
+     */
+    String avatar();
+
+    /**
      * tel of this customer.
      *
      * @return
@@ -61,4 +77,48 @@ public interface Customer {
      * @return
      */
     List<Address> addresses();
+
+
+    enum Gender {
+
+        UNKNOWN(0, "未知"),
+        MALE(1, "男性"),
+        FEMALE(2, "女性");
+
+        private final int ordinal;
+        private final String tag;
+
+        Gender(int ordinal, String tag) {
+            this.ordinal = ordinal;
+            this.tag = tag;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+
+        private static final Map<String, Gender> nameMappings = new HashMap<>();
+        private static final Map<Integer, Gender> ordinalMappings = new HashMap<>();
+
+        static {
+            for (Gender gender : Gender.values()) {
+                nameMappings.put(gender.name(), gender);
+                ordinalMappings.put(gender.getOrdinal(), gender);
+            }
+        }
+
+
+        public static Gender getByName(String name) {
+            return (name != null ? nameMappings.get(name) : null);
+        }
+
+        public static Gender getByOrdinal(int ordinal) {
+            return ordinalMappings.get(ordinal);
+        }
+    }
 }

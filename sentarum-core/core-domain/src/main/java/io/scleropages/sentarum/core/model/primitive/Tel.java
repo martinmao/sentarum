@@ -26,6 +26,7 @@ import java.util.Optional;
  */
 public class Tel {
 
+    private static final String TEL_PATTERN = "^0?[1-9]{2,3}-?\\d{8}$";
     private final String tel;
 
     public Tel(String tel) {
@@ -59,8 +60,7 @@ public class Tel {
      */
     public static boolean isValid(String tel) {
         Assert.hasText(tel, "tel must not empty.");
-        String pattern = "^0?[1-9]{2,3}-?\\d{8}$";
-        return tel.matches(pattern);
+        return tel.matches(TEL_PATTERN);
     }
 
     /**

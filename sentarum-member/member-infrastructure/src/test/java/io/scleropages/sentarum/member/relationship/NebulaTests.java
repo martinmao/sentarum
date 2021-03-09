@@ -16,6 +16,8 @@
 package io.scleropages.sentarum.member.relationship;
 
 
+import com.vesoft.nebula.Row;
+import com.vesoft.nebula.Value;
 import com.vesoft.nebula.client.graph.NebulaPoolConfig;
 import com.vesoft.nebula.client.graph.data.HostAddress;
 import com.vesoft.nebula.client.graph.data.ResultSet;
@@ -24,6 +26,7 @@ import com.vesoft.nebula.client.graph.exception.IOErrorException;
 import com.vesoft.nebula.client.graph.exception.NotValidConnectionException;
 import com.vesoft.nebula.client.graph.net.NebulaPool;
 import com.vesoft.nebula.client.graph.net.Session;
+import org.junit.Assert;
 
 import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
@@ -42,9 +45,25 @@ public class NebulaTests {
         NebulaPool pool = new NebulaPool();
         pool.init(addresses, nebulaPoolConfig);
         Session session = pool.getSession("root", "nebula", false);
-        ResultSet rs = session.execute("SHOW HOSTS;");
+        Assert.assertTrue(session.execute("use nba").isSucceeded());
+        String stmt = "go from \"100\" over follow bidirect yield follow._src,$$.player.name, follow._dst, $^.player.name";
+        ResultSet rs = session.execute(stmt);
+        if (!rs.isSucceeded()) {
+            System.out.println(String.format("Execute: `%s', failed: %s",
+                    stmt, rs.getErrorMessage()));
+            System.exit(1);
+        }
         System.out.println(rs.getColumnNames());
-        System.out.println(rs.getRows());
+        List<Row> rows = rs.getRows();
+        rs.rowValues(1).values().forEach(valueWrapper -> valueWrapper.isBoolean());
+        rows.forEach(row -> {
+            List<Value> values = row.getValues();
+            values.forEach(value -> {
+
+                System.out.print(new String(value.getSVal()) + " ");
+            });
+            System.out.println("\n-------------------------------");
+        });
         session.release();
         pool.close();
     }
