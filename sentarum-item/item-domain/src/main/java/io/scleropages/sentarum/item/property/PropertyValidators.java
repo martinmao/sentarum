@@ -90,7 +90,7 @@ public abstract class PropertyValidators {
      * validate given properties metadata. also support constraint depends check.{@link Constraint#getConstraintDepends()}
      *
      * @param propertiesMetadata
-     * @return If the check passes, it returns null. otherwise it returns the constraint that failed
+     * @return If the check passes returns null. otherwise returns the failed constraint
      */
     public static Constraint validate(PropertyMetadata... propertiesMetadata) {
         Assert.notNull(propertiesMetadata, "propertiesMetadata must not empty.");
