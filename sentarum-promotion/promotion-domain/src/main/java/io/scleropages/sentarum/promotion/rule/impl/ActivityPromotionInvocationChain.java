@@ -133,7 +133,7 @@ public class ActivityPromotionInvocationChain implements InvocationChain {
         for (ActivityPromotionInvocationChainFrame invocationFrame : invocationFrames) {
             Activity activity = invocationFrame.activity;
 //            ConditionRule conditionRule = invocationFrame.conditionRule;
-            ActivityPromotionInvocation invocation = invocationFrame.activityPromotionInvocation;
+//            ActivityPromotionInvocation invocation = invocationFrame.activityPromotionInvocation;
             logger.debug("      activity[{}-{}-{}]: with context: {}", activity.id(), activity.name(), activity.tag(), initialContextInformation(initialContext));
 //            logger.debug("         condition-rule[{}-{}]: {}", conditionRule.id(), conditionRule.description(), JsonMapper2.toJson(conditionRule));
 //            logger.debug("         {}", invocation.information());

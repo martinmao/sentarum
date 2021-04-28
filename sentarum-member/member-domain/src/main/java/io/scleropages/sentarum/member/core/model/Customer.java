@@ -72,6 +72,13 @@ public interface Customer {
     Tel tel();
 
     /**
+     * id of wei-xin.
+     *
+     * @return
+     */
+    String wx();
+
+    /**
      * addresses of this customer.
      *
      * @return
