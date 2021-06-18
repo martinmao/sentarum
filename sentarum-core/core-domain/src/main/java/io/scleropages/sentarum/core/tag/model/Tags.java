@@ -15,38 +15,18 @@
  */
 package io.scleropages.sentarum.core.tag.model;
 
+import java.util.Map;
+
 /**
- * represent definition of tag.
+ * represent domain object tags.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TagDefinition {
+public interface Tags {
 
     /**
-     * id of this tag definition.
-     *
+     * return tags
      * @return
      */
-    Long id();
-
-    /**
-     * business id of this tag definition.
-     *
-     * @return
-     */
-    Long bizId();
-
-    /**
-     * name of this tag definition.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * return true if this tag definition enabled.
-     *
-     * @return
-     */
-    Boolean enabled();
+    Map<Long, String> tags();
 }

@@ -17,6 +17,7 @@
     </modules>
 
     <artifactId>sentarum-promotion</artifactId>
+    <description>营销中心</description>
 
 
 </project>

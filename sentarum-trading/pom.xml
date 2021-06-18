@@ -16,6 +16,6 @@
         <module>trading-application-starter</module>
     </modules>
     <artifactId>sentarum-trading</artifactId>
-
+    <description>交易中心</description>
 
 </project>

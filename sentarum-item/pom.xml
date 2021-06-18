@@ -20,4 +20,5 @@
     </modules>
 
     <artifactId>sentarum-item</artifactId>
+    <description>商品中心</description>
 </project>

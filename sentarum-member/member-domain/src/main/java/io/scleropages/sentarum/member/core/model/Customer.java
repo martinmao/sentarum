@@ -72,7 +72,7 @@ public interface Customer {
     Tel tel();
 
     /**
-     * id of wei-xin.
+     * id of we chat.
      *
      * @return
      */
