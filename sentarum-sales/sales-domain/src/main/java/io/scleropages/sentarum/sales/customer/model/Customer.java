@@ -13,48 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.tag.model;
+package io.scleropages.sentarum.sales.customer.model;
+
+import io.scleropages.sentarum.core.tag.model.TagsHolder;
 
 /**
- * represent tags group.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TagGroup {
-
-    /**
-     * id of this tag group.
-     *
-     * @return
-     */
-    Long id();
-
-    /**
-     * business type of this tag group. eg: user tag, content tag....
-     *
-     * @return
-     */
-    Integer bizType();
-
-    /**
-     * name of this tag group.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * true if this tag group enabled.
-     *
-     * @return
-     */
-    Boolean enabled();
+public interface Customer extends TagsHolder {
 
 
-    /**
-     * single/multiple select for {@link Tag}s.
-     *
-     * @return true if sub tags can multiple select
-     */
-    Boolean multipleSelect();
 }

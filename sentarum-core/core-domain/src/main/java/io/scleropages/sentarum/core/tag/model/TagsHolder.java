@@ -16,45 +16,16 @@
 package io.scleropages.sentarum.core.tag.model;
 
 /**
- * represent tags group.
+ * holder of {@link Tags}
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TagGroup {
+public interface TagsHolder {
 
     /**
-     * id of this tag group.
+     * return {@link Tags} information.
      *
      * @return
      */
-    Long id();
-
-    /**
-     * business type of this tag group. eg: user tag, content tag....
-     *
-     * @return
-     */
-    Integer bizType();
-
-    /**
-     * name of this tag group.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * true if this tag group enabled.
-     *
-     * @return
-     */
-    Boolean enabled();
-
-
-    /**
-     * single/multiple select for {@link Tag}s.
-     *
-     * @return true if sub tags can multiple select
-     */
-    Boolean multipleSelect();
+    Tags tags();
 }

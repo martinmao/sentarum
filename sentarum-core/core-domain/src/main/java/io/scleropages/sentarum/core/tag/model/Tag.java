@@ -15,14 +15,12 @@
  */
 package io.scleropages.sentarum.core.tag.model;
 
-import io.scleropages.sentarum.core.tenant.TenantDomainObject;
-
 /**
  * represent a tag definition.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Tag extends TenantDomainObject {
+public interface Tag {
 
     /**
      * id of this tag.
@@ -61,7 +59,7 @@ public interface Tag extends TenantDomainObject {
     Integer bizType();
 
     /**
-     * sequence number of this tag.
+     * sequence number(marked column index tag1,tag2...) of this tag.
      *
      * @return
      */

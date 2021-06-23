@@ -25,8 +25,40 @@ import java.util.Map;
 public interface Tags {
 
     /**
-     * return tags
+     * return tags map ({@link Tag#id()} as key, {@link Tag#name()} as value)
+     *
      * @return
      */
     Map<Long, String> tags();
+
+    /**
+     * add tags to tags-holder by given tag ids.
+     *
+     * @param tagId
+     */
+    void addTag(Long... tagId);
+
+    /**
+     * remove tags from tags-holder by given tag ids.
+     *
+     * @param tagId
+     */
+    void removeTag(Long... tagId);
+
+    /**
+     * save tags to tags-holder by given tag ids. all tags will clear and given tags will be added
+     *
+     * @param tagIds
+     */
+    void saveTags(Long... tagIds);
+
+    /**
+     * clear(make all tag disabled) all tags.
+     */
+    void clearTags();
+
+    /**
+     * remove(delete tags records) all tags.
+     */
+    void removeTags();
 }

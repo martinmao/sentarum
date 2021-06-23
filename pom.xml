@@ -17,6 +17,7 @@
         <module>sentarum-member</module>
         <module>sentarum-payment</module>
         <module>sentarum-business-connector</module>
+        <module>sentarum-sales</module>
     </modules>
     <packaging>pom</packaging>
 

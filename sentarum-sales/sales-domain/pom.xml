@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>sentarum-sales</artifactId>
+        <groupId>org.scleropages.sentarum</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sales-domain</artifactId>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.scleropages.sentarum</groupId>
+            <artifactId>core-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.scleropages.bukitmerah</groupId>
+            <artifactId>bukitmerah-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.scleropages.sentarum</groupId>
+                        <artifactId>core-domain</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <!-- to deploy client sdk to git packages do following steps.-->
+        <!-- 1. mvn package -DskipTests=true -P client-gen -->
+        <!-- 2. mvn source:jar -DskipTests=true -P client-gen -->
+        <!-- 3. mvn deploy:deploy-file -Durl=https://maven.pkg.github.com/martinmao/sentarum  -Dfile=target/sales-client-0.0.1-SNAPSHOT.jar -Dsources=target/sales-client-0.0.1-SNAPSHOT-sources.jar -DgroupId=org.scleropages.sentarum -DartifactId=sales-client -Dversion=0.0.1-SNAPSHOT -DrepositoryId=github -->
+        <profile>
+            <id>client-gen</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.1.2</version>
+                        <configuration>
+                            <includes>
+                                <include>io/scleropages/sentarum/sales/*Api*</include>
+                                <include>io/scleropages/sentarum/sales/**/model/**</include>
+                            </includes>
+                            <finalName>sales-client-${project.version}</finalName>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <configuration>
+                            <includes>
+                                <include>io/scleropages/sentarum/sales/*Api*</include>
+                                <include>io/scleropages/sentarum/sales/**/model/**</include>
+                            </includes>
+                            <finalName>sales-client-${project.version}</finalName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+</project>

@@ -18,7 +18,7 @@ package io.scleropages.sentarum.core.fsm.model;
 import java.util.Date;
 
 /**
- * Represent a during of transition
+ * Represent a historic execution of transition
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
