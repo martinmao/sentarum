@@ -80,7 +80,7 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    ///~~repositories declaring
+    ///~~repositories
     private StateMachineDefinitionRepository definitionRepository;
     private StateTransitionRepository transitionRepository;
     private EventDefinitionRepository eventDefinitionRepository;
@@ -89,13 +89,14 @@ public abstract class AbstractStateMachineFactory implements StateMachineFactory
     private StateRepository stateRepository;
     private HistoricTransitionExecutionRepository historicTransitionExecutionRepository;
 
-    ///~~ mappers declaring
+    ///~~ mappers
     private StateMachineDefinitionEntityMapper definitionEntityMapper;
     private StateTransitionEntityMapper transitionEntityMapper;
     private StateMachineExecutionEntityMapper stateMachineExecutionEntityMapper;
     private EventEntityMapper eventEntityMapper;
     private EventDefinitionEntityMapper eventDefinitionEntityMapper;
 
+    ///~~ components
     private InvocationContainer invocationContainer;
     private PlatformTransactionManager transactionManager;
     private TransactionTemplate transactionTemplate;

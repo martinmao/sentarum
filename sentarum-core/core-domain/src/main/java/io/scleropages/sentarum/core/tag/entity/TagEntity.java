@@ -13,55 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.tag.model.impl;
+package io.scleropages.sentarum.core.tag.entity;
 
-import io.scleropages.sentarum.core.tag.model.Tag;
-import io.scleropages.sentarum.core.tag.model.TagGroup;
+import io.scleropages.sentarum.core.tenant.entity.TenantAppEntity;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import static io.scleropages.sentarum.core.entity.ColumnNames.*;
 
 /**
+ * referenced model: {@link io.scleropages.sentarum.core.tag.model.impl.TagModel}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class TagModel implements Tag {
+@Entity
+@Table(name = "tag_def", uniqueConstraints = {@UniqueConstraint(columnNames = {COLUMN_APP_ID, COLUMN_BIZ_TYPE, COLUMN_NAME})})
+@SequenceGenerator(name = "tag_def_id", sequenceName = "seq_tag_def", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class TagEntity extends TenantAppEntity {
 
-    private Long id;
     private Integer bizType;
     private String name;
     private Boolean enabled;
-    private TagGroup tagGroup;
     private Integer seq;
     private Float order;
 
-    public Long getId() {
-        return id;
-    }
+    private TagGroupEntity tagGroup;
 
+    @Column(name = COLUMN_BIZ_TYPE, nullable = false)
     public Integer getBizType() {
         return bizType;
     }
 
+    @Column(name = COLUMN_NAME, nullable = false)
     public String getName() {
         return name;
     }
 
+    @Column(name = COLUMN_ENABLED, nullable = false)
     public Boolean getEnabled() {
         return enabled;
     }
 
-    public TagGroup getTagGroup() {
-        return tagGroup;
-    }
-
-
+    @Column(name = "seq_", nullable = false)
     public Integer getSeq() {
         return seq;
     }
 
+    @Column(name = COLUMN_ORDER, nullable = false)
     public Float getOrder() {
         return order;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tag_group_id", nullable = false)
+    public TagGroupEntity getTagGroup() {
+        return tagGroup;
     }
 
     public void setBizType(Integer bizType) {
@@ -76,11 +90,6 @@ public class TagModel implements Tag {
         this.enabled = enabled;
     }
 
-    public void setTagGroup(TagGroup tagGroup) {
-        this.tagGroup = tagGroup;
-    }
-
-
     public void setSeq(Integer seq) {
         this.seq = seq;
     }
@@ -89,38 +98,7 @@ public class TagModel implements Tag {
         this.order = order;
     }
 
-    @Override
-    public Long id() {
-        return getId();
-    }
-
-    @Override
-    public String name() {
-        return getName();
-    }
-
-    @Override
-    public Boolean enabled() {
-        return getEnabled();
-    }
-
-    @Override
-    public TagGroup tagGroup() {
-        return getTagGroup();
-    }
-
-    @Override
-    public Integer bizType() {
-        return getBizType();
-    }
-
-    @Override
-    public Integer seq() {
-        return getSeq();
-    }
-
-    @Override
-    public Float order() {
-        return getOrder();
+    public void setTagGroup(TagGroupEntity tagGroup) {
+        this.tagGroup = tagGroup;
     }
 }

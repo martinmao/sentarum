@@ -13,43 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.tag.model.impl;
+package io.scleropages.sentarum.core.tag.entity;
 
-import io.scleropages.sentarum.core.tag.model.TagGroup;
+import io.scleropages.sentarum.core.tenant.entity.TenantAppEntity;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import static io.scleropages.sentarum.core.entity.ColumnNames.*;
 
 /**
+ * reference model: {@link io.scleropages.sentarum.core.tag.model.impl.TagGroupModel}
+ *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public class TagGroupModel implements TagGroup {
+@Entity
+@Table(name = "tag_group", uniqueConstraints = {@UniqueConstraint(columnNames = {COLUMN_APP_ID, COLUMN_BIZ_TYPE, COLUMN_NAME})})
+@SequenceGenerator(name = "tag_group_id", sequenceName = "seq_tag_group", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class TagGroupEntity extends TenantAppEntity {
 
-    private Long id;
     private Integer bizType;
     private String name;
     private Boolean enabled;
     private Boolean multiple;
 
-    public Long getId() {
-        return id;
-    }
-
+    @Column(name = COLUMN_BIZ_TYPE, nullable = false)
     public Integer getBizType() {
         return bizType;
     }
 
+    @Column(name = COLUMN_NAME, nullable = false)
     public String getName() {
         return name;
     }
 
+    @Column(name = COLUMN_ENABLED, nullable = false)
     public Boolean getEnabled() {
         return enabled;
     }
 
+    @Column(name = "multiple_", nullable = false)
     public Boolean getMultiple() {
         return multiple;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setBizType(Integer bizType) {
@@ -67,31 +76,4 @@ public class TagGroupModel implements TagGroup {
     public void setMultiple(Boolean multiple) {
         this.multiple = multiple;
     }
-
-    @Override
-    public Long id() {
-        return getId();
-    }
-
-    @Override
-    public Integer bizType() {
-        return getBizType();
-    }
-
-    @Override
-    public String name() {
-        return getName();
-    }
-
-    @Override
-    public Boolean enabled() {
-        return getEnabled();
-    }
-
-    @Override
-    public Boolean multiple() {
-        return getMultiple();
-    }
-
-
 }

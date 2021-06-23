@@ -13,33 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.model;
+package io.scleropages.sentarum.core.tenant.entity;
+
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+
+import static io.scleropages.sentarum.core.entity.ColumnNames.COLUMN_APP_ID;
 
 /**
- * represent a tag used for mark specify domain object. the domain object has one or more tag(s).
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Tag {
+@MappedSuperclass
+public class TenantAppEntity extends IdEntity {
 
-    /**
-     * id of tag.
-     *
-     * @return
-     */
-    Long id();
 
-    /**
-     * name of tag.
-     *
-     * @return
-     */
-    String name();
+    private Long appId;
 
-    /**
-     * value of tag.
-     *
-     * @return
-     */
-    String value();
+    @Column(name = COLUMN_APP_ID, nullable = false)
+    public Long getAppId() {
+        return appId;
+    }
+
+    public void setAppId(Long appId) {
+        this.appId = appId;
+    }
 }

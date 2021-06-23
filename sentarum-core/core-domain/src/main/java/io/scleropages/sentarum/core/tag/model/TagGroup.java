@@ -56,5 +56,5 @@ public interface TagGroup {
      *
      * @return true if sub tags can multiple select
      */
-    Boolean multipleSelect();
+    Boolean multiple();
 }

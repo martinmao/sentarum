@@ -15,47 +15,19 @@
  */
 package io.scleropages.sentarum.core.tag.entity;
 
-import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+import io.scleropages.sentarum.core.tenant.entity.TenantAppEntity;
 
-import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 /**
  * base tags entity, wide table supports 100 tags.
- * add index(or constraint) to target table entity
- *
- * <pre>
- * &#64;Index(columnList = "app_id, biz_type, biz_id, tag1, tag2...")
- * or
- * &#64;UniqueConstraint(columnNames = {"app_id", "biz_type","biz_id"})
- * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
 @MappedSuperclass
-public class AbstractTagsEntity extends IdEntity {
-
-    private Long appId;
-    private Integer bizType;
-    private Long bizId;
+public class AbstractTagsEntity extends TenantAppEntity {
 
     private Boolean tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10, tag11, tag12, tag13, tag14, tag15, tag16, tag17, tag18, tag19, tag20, tag21, tag22, tag23, tag24, tag25, tag26, tag27, tag28, tag29, tag30, tag31, tag32, tag33, tag34, tag35, tag36, tag37, tag38, tag39, tag40, tag41, tag42, tag43, tag44, tag45, tag46, tag47, tag48, tag49, tag50, tag51, tag52, tag53, tag54, tag55, tag56, tag57, tag58, tag59, tag60, tag61, tag62, tag63, tag64, tag65, tag66, tag67, tag68, tag69, tag70, tag71, tag72, tag73, tag74, tag75, tag76, tag77, tag78, tag79, tag80, tag81, tag82, tag83, tag84, tag85, tag86, tag87, tag88, tag89, tag90, tag91, tag92, tag93, tag94, tag95, tag96, tag97, tag98, tag99, tag100;
-
-
-    @Column(name = "app_id", nullable = false)
-    public Long getAppId() {
-        return appId;
-    }
-
-    @Column(name = "biz_type", nullable = false)
-    public Integer getBizType() {
-        return bizType;
-    }
-
-    @Column(name = "biz_id", nullable = false)
-    public Long getBizId() {
-        return bizId;
-    }
 
     public Boolean getTag1() {
         return tag1;
@@ -455,18 +427,6 @@ public class AbstractTagsEntity extends IdEntity {
 
     public Boolean getTag100() {
         return tag100;
-    }
-
-    public void setAppId(Long appId) {
-        this.appId = appId;
-    }
-
-    public void setBizType(Integer bizType) {
-        this.bizType = bizType;
-    }
-
-    public void setBizId(Long bizId) {
-        this.bizId = bizId;
     }
 
     public void setTag1(Boolean tag1) {

@@ -13,19 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.tenant;
+package io.scleropages.sentarum.core.entity;
 
 /**
- * represent a tenant app domain object.
+ * utility class for column names:
+ * <pre>
+ * universal column names: biz_type, biz_id, name_...
+ * </pre>
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface TenantDomainObject {
+public abstract class ColumnNames {
 
-    /**
-     * return id of this tenant app
-     *
-     * @return
-     */
-    Long appId();
+    public static final String COLUMN_APP_ID = "app_id";
+
+    public static final String COLUMN_BIZ_TYPE = "biz_type";
+
+    public static final String COLUMN_BIZ_ID = "biz_id";
+
+    public static final String COLUMN_NAME = "name_";
+
+    public static final String COLUMN_ENABLED = "enabled_";
+
+    public static final String COLUMN_ORDER = "order_";
+
 }

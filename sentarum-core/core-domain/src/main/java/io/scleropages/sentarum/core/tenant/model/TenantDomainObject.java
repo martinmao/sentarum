@@ -13,56 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.core.model;
-
-import java.util.List;
+package io.scleropages.sentarum.core.tenant.model;
 
 /**
- * represent a domain object.
+ * represent a tenant app domain object.
  *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface DomainObject {
+public interface TenantDomainObject {
 
     /**
-     * identity of this domain object.
+     * return id of this tenant app
      *
      * @return
      */
-    Long id();
-
-    /**
-     * type id of this domain object.
-     *
-     * @return
-     */
-    Integer typeId();
-
-    /**
-     * name of this domain object.
-     *
-     * @return
-     */
-    String name();
-
-    /**
-     * the tags marked of this domain object.
-     *
-     * @return
-     */
-    List<Tag> tags();
-
-    /**
-     * add tag.
-     *
-     * @param tag
-     */
-    void addTag(Tag tag);
-
-    /**
-     * remove tag.
-     *
-     * @param tag
-     */
-    void removeTag(Tag tag);
+    Long appId();
 }
