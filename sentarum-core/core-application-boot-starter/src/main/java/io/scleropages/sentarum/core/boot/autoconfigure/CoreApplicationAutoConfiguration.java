@@ -18,11 +18,15 @@ package io.scleropages.sentarum.core.boot.autoconfigure;
 import io.scleropages.sentarum.core.model.primitive.BaseAddressReader;
 import io.scleropages.sentarum.core.model.primitive.BaseAddresses;
 import io.scleropages.sentarum.core.model.primitive.impl.ResourceBaseAddressReader;
+import io.scleropages.sentarum.core.tag.entity.TagEntity;
+import io.scleropages.sentarum.core.tag.repo.TagGroupRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Auto configure for core configurations.
@@ -42,5 +46,13 @@ public class CoreApplicationAutoConfiguration implements ApplicationListener<Con
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         BaseAddresses.initIfNecessary(baseAddressReader());
+    }
+
+
+    @EntityScan(basePackageClasses = {TagEntity.class})
+    @EnableJpaRepositories(basePackageClasses = {TagGroupRepository.class})
+//    @ComponentScan(basePackageClasses = {StateMachineManager.class, StateMachineDefinitionEntityMapper.class, StateMachineFactory.class})
+    public static class Configuration {
+
     }
 }

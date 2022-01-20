@@ -15,7 +15,11 @@
  */
 package io.scleropages.sentarum.core.tag.model.impl;
 
+
 import io.scleropages.sentarum.core.tag.model.TagGroup;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
@@ -28,22 +32,29 @@ public class TagGroupModel implements TagGroup {
     private Boolean enabled;
     private Boolean multiple;
 
+    @Null(groups = CreateModel.class)
+    @NotNull(groups = UpdateModel.class)
     public Long getId() {
         return id;
     }
 
+    @NotNull(groups = CreateModel.class)
+    @Null(groups = UpdateModel.class)
     public Integer getBizType() {
         return bizType;
     }
 
+    @NotNull(groups = CreateModel.class)
     public String getName() {
         return name;
     }
 
+    @NotNull(groups = CreateModel.class)
     public Boolean getEnabled() {
         return enabled;
     }
 
+    @NotNull(groups = CreateModel.class)
     public Boolean getMultiple() {
         return multiple;
     }
@@ -91,6 +102,12 @@ public class TagGroupModel implements TagGroup {
     @Override
     public Boolean multiple() {
         return getMultiple();
+    }
+
+    public interface CreateModel {
+    }
+
+    public interface UpdateModel {
     }
 
 

@@ -18,6 +18,9 @@ package io.scleropages.sentarum.core.tag.model.impl;
 import io.scleropages.sentarum.core.tag.model.Tag;
 import io.scleropages.sentarum.core.tag.model.TagGroup;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 /**
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
@@ -31,31 +34,39 @@ public class TagModel implements Tag {
     private Integer seq;
     private Float order;
 
+    @Null(groups = CreateModel.class)
+    @NotNull(groups = UpdateModel.class)
     public Long getId() {
         return id;
     }
 
+    @NotNull(groups = CreateModel.class)
+    @Null(groups = UpdateModel.class)
     public Integer getBizType() {
         return bizType;
     }
 
+    @NotNull(groups = CreateModel.class)
     public String getName() {
         return name;
     }
 
+    @NotNull(groups = CreateModel.class)
     public Boolean getEnabled() {
         return enabled;
     }
 
+    @Null(groups = {CreateModel.class, UpdateModel.class})
     public TagGroup getTagGroup() {
         return tagGroup;
     }
 
-
+    @NotNull(groups = CreateModel.class)
     public Integer getSeq() {
         return seq;
     }
 
+    @NotNull(groups = CreateModel.class)
     public Float getOrder() {
         return order;
     }
@@ -123,4 +134,12 @@ public class TagModel implements Tag {
     public Float order() {
         return getOrder();
     }
+
+
+    public interface CreateModel {
+    }
+
+    public interface UpdateModel {
+    }
+
 }

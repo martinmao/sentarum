@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.sales.customer.model;
+package io.scleropages.sentarum.core.tag.entity.mapper;
 
-import io.scleropages.sentarum.core.tag.model.TagsHolder;
+import io.scleropages.sentarum.core.tag.entity.TagGroupEntity;
+import io.scleropages.sentarum.core.tag.model.impl.TagGroupModel;
+import org.mapstruct.Mapper;
+import org.scleropages.crud.ModelMapper;
 
 /**
- * represent a customer.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Customer extends TagsHolder {
-
-
+@Mapper(config = ModelMapper.DefaultConfig.class)
+public interface TagGroupEntityMapper extends ModelMapper<TagGroupEntity, TagGroupModel> {
 }

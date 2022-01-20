@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.sales.customer.model;
+package io.scleropages.sentarum.core.tag.repo;
 
-import io.scleropages.sentarum.core.tag.model.TagsHolder;
+import io.scleropages.sentarum.core.tag.entity.TagGroupEntity;
+import io.scleropages.sentarum.jooq.tables.TagGroup;
+import io.scleropages.sentarum.jooq.tables.records.TagGroupRecord;
+import org.scleropages.crud.dao.orm.jpa.GenericRepository;
+import org.scleropages.crud.dao.orm.jpa.complement.JooqRepository;
 
 /**
- * represent a customer.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Customer extends TagsHolder {
-
+public interface TagGroupRepository extends GenericRepository<TagGroupEntity, Long>, JooqRepository<TagGroup, TagGroupRecord, TagGroupEntity> {
 
 }

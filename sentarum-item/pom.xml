@@ -17,6 +17,7 @@
         <module>item-application-boot-starter</module>
         <module>item-application-cloud-starter</module>
         <module>item-boot-cloud-client-starter</module>
+        <module>item-application-cloud-starter-netflix</module>
     </modules>
 
     <artifactId>sentarum-item</artifactId>

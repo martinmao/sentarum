@@ -345,7 +345,7 @@ public class ItemManager implements GenericManager<ItemModel, Long, ItemEntityMa
         return skuEntity.getId();
     }
 
-    public void saveSkuInternal(SkuModel model, Map<Long, Object> values) {
+    private void saveSkuInternal(SkuModel model, Map<Long, Object> values) {
         Long skuId = model.id();
         Optional optional = getSkuRepository(model).getById(skuId);
         Assert.isTrue(optional.isPresent(), "no sku found: " + skuId);

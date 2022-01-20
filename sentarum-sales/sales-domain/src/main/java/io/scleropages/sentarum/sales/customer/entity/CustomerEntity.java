@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.scleropages.sentarum.sales.customer.model;
+package io.scleropages.sentarum.sales.customer.entity;
 
-import io.scleropages.sentarum.core.tag.model.TagsHolder;
+import io.scleropages.sentarum.core.tenant.entity.TenantAppEntity;
+import org.scleropages.crud.dao.orm.jpa.entity.IdEntity;
+
+import javax.persistence.Entity;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
- * represent a customer.
- *
  * @author <a href="mailto:martinmao@icloud.com">Martin Mao</a>
  */
-public interface Customer extends TagsHolder {
-
+@Entity
+@Table(name = "sales_customer")
+@SequenceGenerator(name = "sales_customer_id", sequenceName = "seq_sales_customer", allocationSize = IdEntity.SEQ_DEFAULT_ALLOCATION_SIZE, initialValue = IdEntity.SEQ_DEFAULT_INITIAL_VALUE)
+public class CustomerEntity extends TenantAppEntity {
 
 }

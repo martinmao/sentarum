@@ -28,5 +28,4 @@ public class ApplicationTestStarter {
         SpringApplication springApplication = new SpringApplication(ApplicationTestStarter.class);
         springApplication.run(args);
     }
-
 }
