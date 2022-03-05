@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>org.scleropages.sentarum</groupId>
-            <artifactId>item-application</artifactId>
+            <artifactId>item-application-boot-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

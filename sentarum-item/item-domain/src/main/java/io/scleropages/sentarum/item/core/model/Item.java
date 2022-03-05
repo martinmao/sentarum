@@ -327,7 +327,7 @@ public interface Item extends Serializable {
         VENDOR(2, "厂商(品牌商)", "售卖产品或服务"),
         RETAIL(3, "零售商", "其往往是一个商业综合体，包含多家门店"),
         STORE(4, "门店", "终端场所销售"),
-        PLATFORM(5, "平台", "美柠自营");
+        PLATFORM(5, "平台", "自营");
 
         private final int ordinal;
         private final String tag;

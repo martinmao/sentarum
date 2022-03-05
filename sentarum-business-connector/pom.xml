@@ -13,6 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>bc-youzan</module>
+        <module>bc-alipay</module>
+        <module>bc-wechat</module>
     </modules>
 
 

@@ -16,5 +16,6 @@
         <module>core-infrastructure</module>
         <module>core-application</module>
         <module>core-application-boot-starter</module>
+        <module>core-cloud</module>
     </modules>
 </project>
