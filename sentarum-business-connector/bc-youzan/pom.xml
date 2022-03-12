@@ -16,7 +16,7 @@
         <repository>
             <id>youzan</id>
             <name>youzan</name>
-            <url>http://maven.youzanyun.com/repository/maven-public</url>
+            <url>https://maven.youzanyun.com/repository/maven-public</url>
         </repository>
     </repositories>
     <dependencies>
