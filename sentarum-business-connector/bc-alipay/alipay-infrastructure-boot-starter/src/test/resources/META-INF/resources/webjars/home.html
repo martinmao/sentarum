@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>alipay-example</title>
+</head>
+<body>
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.min.js"></script>
+<script src="jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        ap.getAuthCode({
+            appId: '2018071360585567',
+            scopes: ['auth_base']
+        }, function (res) {
+            ap.alert(JSON.stringify(res));
+        });
+        // $.getJSON('https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2018071360585567&scope=auth_base&redirect_uri='+'http://kscfwh.natappfree.cc/alipay/auth_token'+'&jsoncallback=?',function(result){
+        //     alert(JSON.stringify(result));
+        // });
+    });
+</script>
+<h1 class="title">alipay-example</h1>
+</body>
+</html>
