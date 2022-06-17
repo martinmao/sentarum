@@ -47,7 +47,7 @@
         <shiro.version>1.4.2</shiro.version>
         <jjwt.version>0.9.1</jjwt.version>
         <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
-        <fastjson.version>1.2.68</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <bukitmerah.version>0.0.1-SNAPSHOT</bukitmerah.version>
     </properties>
 
